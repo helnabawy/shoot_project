@@ -3,9 +3,13 @@
 ## As the site owner (no code)
 
 1. Admin panel → Personas → Create: singular "Teacher", plural "Teachers",
-   slug `teacher`, description, icon, copy (seeker CTA, provider CTA).
+   slug `teacher`, description, icon, copy (seeker CTA, provider CTA). Switch
+   the locale selector to Arabic and enter "معلّم" / "معلّمون" and the Arabic
+   copy; until you do, the Arabic site shows the English words.
 2. Categories → create "Mathematics", "Physics" and tick the Teacher persona
-   on each.
+   on each. If the brief sentence needs a teacher-only word, add an option
+   set (e.g. `subjects`) and bind a `{subject}` slot in Landing Page → Brief
+   builder; options can also be limited to the Teacher persona.
 3. Site Settings → Active personas → add Teacher (drag to order) → Save.
 4. Landing Page → review copy; placeholders such as `{personas.list}` update
    automatically. Publish.
@@ -19,8 +23,9 @@ them) and activate Teacher.
 
 ## As a developer (seed, fixtures, tests)
 
-1. `shared/payload/seed/personas.ts`: add the persona and categories to the
-   seed arrays (upsert by slug).
+1. `shared/payload/seed/personas.ts` and `seed/categories.ts` (and
+   `seed/option-sets.ts` if needed): add the persona, its categories and any
+   persona-specific options (upsert by slug).
 2. `tests/fixtures/personas.ts`: add the fixture used by component tests.
 3. Run `pnpm test`; the extensibility tests should pass unchanged. If any
    test needed editing to accommodate the new persona, that test was
@@ -34,5 +39,5 @@ them) and activate Teacher.
 - Labels (`singular`, `plural`, copy) are safe to change at any time.
 - `slug` is immutable after launch; the admin UI marks it read-only once
   created. Changing it would orphan users, categories and seed upserts.
-- Deleting a persona is admin-only and blocked while any user or category
-  references it (a `beforeDelete` hook checks and throws a readable error).
+- Deleting a persona is admin-only and blocked while any user, category or the Site
+  Settings active list references it (a `beforeDelete` hook checks and throws a readable error).

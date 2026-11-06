@@ -10,7 +10,7 @@ custom JWT layer (constitution Principle VIII).
 ```ts
 // apps/web/src/modules/auth/collections/Users.ts
 import type { CollectionConfig } from 'payload'
-import { anyone, isAdmin, isAdminOrSelf } from '@/shared/payload/access'
+import { anyone, isAdmin, isAdminOrSelf, isEditor } from '@/shared/payload/access'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -23,7 +23,7 @@ export const Users: CollectionConfig = {
   },
   admin: { useAsTitle: 'email' },
   access: {
-    admin: ({ req }) => Boolean(req.user?.roles?.includes('admin')), // who may open /admin
+    admin: isEditor,          // admins and editors may open /admin (FR-016)
     create: anyone,          // public registration
     read: isAdminOrSelf,
     update: isAdminOrSelf,
@@ -32,11 +32,14 @@ export const Users: CollectionConfig = {
   fields: [
     { name: 'name', type: 'text', required: true },
     { name: 'roles', type: 'select', hasMany: true, defaultValue: ['member'],
-      options: ['admin', 'member'], saveToJWT: true,
+      options: ['admin', 'editor', 'member'], saveToJWT: true,
       access: { create: isAdmin, update: isAdmin } },   // members cannot grant themselves admin
     { name: 'accountType', type: 'select', required: true, options: ['seeker', 'provider'],
       admin: { description: 'seeker = needs a professional; provider = offers services' } },
     { name: 'persona', type: 'relationship', relationTo: 'personas',
+      validate: (value, { data }) => data?.accountType !== 'provider' || Boolean(value) || 'Choose a professional type',
+      admin: { condition: (data) => data.accountType === 'provider' } },
+    { name: 'categories', type: 'relationship', relationTo: 'categories', hasMany: true,
       admin: { condition: (data) => data.accountType === 'provider' } },
     { name: 'phone', type: 'text' },
   ],
@@ -88,16 +91,17 @@ export async function login(_prev: FormState, formData: FormData): Promise<FormS
       path: '/', expires: new Date(exp! * 1000),
     })
   } catch {
-    return { formError: 'Email or password is incorrect.' }   // never reveal which
+    return { formError: 'auth.login.invalid' }   // message key, translated by the form (FR-039); never reveal which field
   }
-  redirect('/account')
+  const next = String(formData.get('next') ?? '/account')
+  redirect({ href: next.startsWith('/') ? next : '/account', locale: await getLocale() })   // from @/i18n/navigation
 }
 ```
 
 - Validation schemas live in `packages/domain/src/auth` and are shared with
   component tests and the API contract.
 - Map every Payload error to a user-safe message. Locked accounts return a
-  distinct message ("Too many attempts, try again in 15 minutes").
+  distinct message key (`auth.login.locked`, "Too many attempts, try again in 15 minutes").
 - Registration = `payload.create({ collection: 'users', data })` followed by
   `payload.login` so the user lands signed in.
 - Logout clears the cookie and redirects.
@@ -117,7 +121,7 @@ Protect routes in the route segment (`account/layout.tsx`) by calling this
 and redirecting to `/login?next=/account` when null. Do not rely on client
 state for authorisation.
 
-## What to test (integration, real Payload + in-memory Mongo)
+## What to test (integration, real Payload + PostgreSQL container)
 
 1. Register with valid data → 201, user has `roles: ['member']`, password hash not returned.
 2. Register with `roles: ['admin']` in the body → still a member.
@@ -125,7 +129,7 @@ state for authorisation.
 4. Login with wrong password 5 times → 6th attempt reports locked even with the right password.
 5. `GET /api/users/me` with and without cookie.
 6. Member cannot read another member's document; admin can.
-7. Member cannot open the admin panel (`access.admin` false).
+7. Member cannot open the admin panel (`access.admin` false); editor and admin can.
 
 Component tests cover the forms' validation messages and pending states;
 one Playwright journey covers register → redirected to account → logout →

@@ -1,0 +1,138 @@
+{
+  "title": "Choose the visual world for Shoot Project",
+  "question": "One direction leads; my own pick and a strong alternate sit beside it. Keep it, take another, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "The Shoot Pass",
+      "kicker": "THE ROLL",
+      "lineage": "UAE event wristbands, gate passes and bilingual boarding passes",
+      "thesis": "Your brief is a pass you fill in and tear off: one sentence of fields, one stub that books the shoot.",
+      "palette": ["#FFD23F", "#14141B", "#2340FF", "#FFFFFF", "#FF5FA2"],
+      "materials": ["Tyvek pass stock", "perforated tear line", "rubber-stamp ink", "tabular field labels"],
+      "viewport": "The whole phone screen is one sodium-yellow pass: the sentence set large as filled fields with bilingual mono labels, a perforation, and a full-width stub reading See who's free.",
+      "risk": "If the perforation and stamp are set timidly it collapses into a yellow form; the pass must carry real structure, not a ticket sticker.",
+      "raised": [
+        {"from": "challenger-kraftwerk", "raise": "Every field snaps to one visible modular grid; labels and values share the same columns on every screen."},
+        {"from": "challenger-shader", "raise": "One accent, stamp blue, is reserved for live state only: the active field and the stub, never decoration."},
+        {"from": "challenger-steprow", "raise": "Unset fields read as open slots of invitation, with a strict state vocabulary: open, set, needs attention."},
+        {"from": "challenger-daylight", "raise": "Date and duration are set in tabular figures as the pass's time axis."},
+        {"from": "challenger-film", "raise": "Each submitted brief is stamped with its edge code along the stub margin, the reference the client keeps."}
+      ],
+      "html": ".impeccable/mocks/decision/assigned.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "model-pick",
+      "label": "Bilingual Wayfinding",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "UAE road and metro signage, Arabic and English set as equals",
+      "thesis": "The brief reads like a route sign: who, what, when, where, with the emirate as the destination.",
+      "palette": ["#00703C", "#FFFFFF", "#0B3D91", "#F2B705"],
+      "materials": ["reflective sign panel", "rounded enamel corners", "direction arrows", "paired Arabic/Latin type"],
+      "viewport": "A green sign panel fills the top of the screen with the sentence as stacked route lines, each slot an arrowed destination, and a blue exit panel as the action.",
+      "risk": "Road-sign green can read municipal, like a government service rather than a creative one; it is also my top-ranked candidate, so it is the more familiar choice."
+      ,"html": ".impeccable/mocks/decision/model-pick.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "challenger-seedbed",
+      "label": "Field and Capsules",
+      "verdict": "competitive",
+      "lineage": "one-colour field with floating white capsule controls",
+      "thesis": "One colour owns the screen and every slot word floats on it as a white capsule you tap.",
+      "palette": ["#82CC5C", "#2F3130", "#FFFFFF", "#F2EFE3", "#F0574C"],
+      "materials": ["flat colour field", "white pill capsules", "48px rounded slabs"],
+      "viewport": "Green field, the sentence as a stack of white capsules, a detached capsule button with a green disc chevron.",
+      "case": "Fuses cleanly and wins on clarity, since capsules are obvious tap targets; loses on audience identification, it reads as any friendly consumer app.",
+      "risk": "Without real photography it drifts toward a generic app template.",
+      "html": ".impeccable/mocks/decision/challenger-seedbed.html",
+      "htmlFrame": "390x844",
+      "hero": "https://impeccable.style/worlds/cards/sd-seedbed-lobes-hero.webp"
+    },
+    {
+      "id": "challenger-film",
+      "label": "Hand-processed Film",
+      "verdict": "declined",
+      "lineage": "16mm film strips, edge codes and light leaks",
+      "thesis": "The page as a strip of processed film.",
+      "palette": ["#1A1A1A", "#9AA0A6", "#FF8A3D"],
+      "materials": ["emulsion grain", "sprocket margin", "edge codes"],
+      "viewport": "A film strip with the brief in frames.",
+      "case": "Fuses poorly: it is the photographer's material, not the client's, and with no real photos the grain becomes chrome.",
+      "risk": "Generic film-grain filter look.",
+      "kept": "Stamped edge codes: each brief carries its reference along the stub.",
+      "hero": "https://impeccable.style/worlds/cards/cinema-cinematography-editing-hand-processed-film-bloom-hero.webp"
+    },
+    {
+      "id": "challenger-steprow",
+      "label": "Drum Machine Step Row",
+      "verdict": "declined",
+      "lineage": "early-80s rhythm machine step keys",
+      "thesis": "Slots as step keys you arm.",
+      "palette": ["#2A2A2E", "#E63B2E", "#F28C28", "#F6D33C"],
+      "materials": ["silkscreen panel", "lit step keys"],
+      "viewport": "A row of step keys for the six slots.",
+      "case": "Fuses poorly: wedding clients do not identify with an instrument panel.",
+      "risk": "Novelty over clarity.",
+      "kept": "Empty slots as visible invitations with a strict state vocabulary.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-drum-machine-step-row-hero.webp"
+    },
+    {
+      "id": "challenger-kraftwerk",
+      "label": "Man-machine Grid",
+      "verdict": "declined",
+      "lineage": "neon line diagrams on a traffic grid",
+      "thesis": "The brief wired along a strict grid.",
+      "palette": ["#000000", "#E3001B", "#F7B500", "#00A651"],
+      "materials": ["enamel fills", "neon connector rules"],
+      "viewport": "Labels wired by orthogonal lines.",
+      "case": "Fuses poorly: cold and abstract for people booking a wedding or a product shoot.",
+      "risk": "Reads as a music-identity pastiche.",
+      "kept": "One visible modular grid that every field snaps to.",
+      "hero": "https://impeccable.style/worlds/cards/kraftwerk-man-machine-hero.webp"
+    },
+    {
+      "id": "challenger-shader",
+      "label": "Shader Portal",
+      "verdict": "declined",
+      "lineage": "experiential studio WebGL portals",
+      "thesis": "A living shader behind thin type.",
+      "palette": ["#0D0B1F", "#6B4DFF", "#FFE45C"],
+      "materials": ["fragment shader", "film grain"],
+      "viewport": "Full-screen shader with one hero word.",
+      "case": "Fuses poorly: breaks the 200 KB budget and hides the action behind atmosphere.",
+      "risk": "Slow on mid-range phones, unclear offer.",
+      "kept": "One accent reserved for live state only.",
+      "hero": "https://impeccable.style/worlds/cards/webgl-shader-portal-hero.webp"
+    },
+    {
+      "id": "challenger-daylight",
+      "label": "Daylight Section",
+      "verdict": "declined",
+      "lineage": "architectural sun-path sections",
+      "thesis": "Time of day as the page's axis.",
+      "palette": ["#F4F1EA", "#2B2B2B", "#E8B547", "#5C7A99"],
+      "materials": ["limewash", "section poche"],
+      "viewport": "A building section with a travelling sunbeam.",
+      "case": "Fuses poorly: elegant but unrelated to booking a shoot.",
+      "risk": "Architectural mood with no offer.",
+      "kept": "Tabular figures for date and duration as a time axis.",
+      "hero": "https://impeccable.style/worlds/cards/architecture-inhabitable-space-daylight-section-hero.webp"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code"},
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A premium photography booking site: moody full-bleed photo, serif headline, booking widget on top.",
+    "palette": ["#0F1726", "#E3A84F", "#F4F1EA"],
+    "materials": ["full-bleed photography", "serif display", "rounded widget card"],
+    "viewport": "Dark photo hero, large serif line, the brief sentence in a rounded card with an amber button.",
+    "risk": "Indistinguishable from shootix.ae and every studio site, and it needs real photography you do not have yet.",
+    "html": ".impeccable/mocks/decision/canon.html",
+    "htmlFrame": "390x844"
+  },
+  "steer": true
+}

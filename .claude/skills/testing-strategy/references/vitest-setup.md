@@ -23,7 +23,7 @@ export default defineConfig({
     projects: [
       {
         extends: true,
-        test: { name: 'unit', environment: 'node', include: ['src/**/*.test.ts'] },
+        test: { name: 'unit', environment: 'node', include: ['src/**/*.test.ts', 'tests/unit/**/*.test.ts'] },
       },
       {
         extends: true,
@@ -37,7 +37,7 @@ export default defineConfig({
         test: {
           name: 'integration', environment: 'node', include: ['tests/integration/**/*.int.test.ts'],
           globalSetup: ['./tests/integration/setup/global-setup.ts'],
-          fileParallelism: false,      // one Payload instance + one DB; files run serially
+          fileParallelism: false,      // one Payload instance + one PostgreSQL container; files run serially
           testTimeout: 30_000, hookTimeout: 60_000,
         },
       },

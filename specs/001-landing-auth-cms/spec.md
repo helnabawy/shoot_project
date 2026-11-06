@@ -6,6 +6,8 @@
 
 **Status**: Draft
 
+**Amended**: 2026-11-06 — added bilingual English/Arabic (US6, FR-034–FR-041) and light/dark appearance (US7, FR-042–FR-045) for the public site and the content area; added the one-sentence brief builder with CMS-managed options (US8, FR-046–FR-054), modelled on shootix.ae's Quick Match step 1. Later Quick Match steps (creator, details, quotation) are feature 003. 2026-11-07 — added client-flow simplicity and design-quality requirements (FR-055–FR-062, SC-015–SC-017); visual direction chosen through the impeccable workflow: "The Shoot Pass" first, replaced the same day by "Bilingual Wayfinding" at the owner's request (premium, more readable, no ticket gimmick), then replaced again the same day by "The Brief Bar", a Spotlight / Quick Actions direction the owner pinned after a re-roll (warmer, more premium, no costume).
+
 **Input**: User description: "New website inspired by shootix.ae. Fast, single-page feel, responsive. Hero section 'You brief. We shoot.' Visitors can register and log in. A CMS lets the owner edit the landing page content and the WhatsApp mobile number. The structure must scale. Unit tests cover all use cases. The target audience (today photographers, videographers and other shooters) must be changeable from the backend in future, e.g. to teachers, without code changes."
 
 ## User Scenarios & Testing *(mandatory)*
@@ -15,7 +17,7 @@
 A visitor, usually on a phone, opens the website and immediately understands
 what the business does ("You brief. We shoot."), who it is for, how it works
 and why to trust it. The page is a single scrolling page with in-page
-navigation to its sections (how it works, specialties, why us, for
+navigation to its sections (how it works, why us, specialties, for
 professionals, FAQ) and feels instant: no full page reloads when moving
 between sections or to the login and registration screens.
 
@@ -31,8 +33,8 @@ the page meets the performance and accessibility targets in Success Criteria.
 
 1. **Given** the site has published landing content, **When** a visitor opens
    the home page, **Then** they see the hero with the headline "You brief. We
-   shoot.", a sub-headline, trust statements, a primary contact action and a
-   secondary action, followed by the published sections in the configured
+   shoot.", a sub-headline, the brief builder as the primary action and a
+   WhatsApp link as the secondary action, followed by the published sections in the configured
    order.
 2. **Given** the visitor is on the home page, **When** they tap an in-page
    navigation link (e.g. "How it works"), **Then** the page scrolls to that
@@ -161,7 +163,7 @@ cheap, retrofitting it later is expensive. The MVP ships with photographers
 and videographers active.
 
 **Independent Test**: As an admin, create a "Teacher" persona with two
-categories, activate it, publish, and confirm the hero selector, the
+categories, activate it, publish, and confirm the brief builder's professional-type slot, the
 category grid, the professionals section and the provider registration
 options all include Teacher within one minute, with no code changed.
 
@@ -180,6 +182,146 @@ options all include Teacher within one minute, with no code changed.
 4. **Given** a persona is referenced by any account or category, **When**
    an admin tries to delete it, **Then** deletion is refused with an
    explanation.
+
+---
+
+### User Story 6 - Read and manage the site in Arabic or English (Priority: P2)
+
+A visitor chooses Arabic or English. The whole public site (landing page,
+login, registration, account) appears in that language, laid out
+right-to-left for Arabic with suitable typefaces, and the choice is
+remembered. Editors enter the Arabic and English version of every piece of
+content in the content area, and can use the content area itself in Arabic
+or English.
+
+**Why this priority**: The target market is the UAE, where a large share of
+visitors read Arabic and competitors offer both languages. It ranks below
+the landing page and WhatsApp contact only because the English site already
+converts; it must ship in the first release.
+
+**Independent Test**: With both languages published, open the Arabic site on
+a phone: every text is Arabic, layout is right-to-left, no overflow; switch
+to English and back without reloads; in the content area edit a field in
+both languages and publish; leave one Arabic field empty and confirm the
+English text shows in its place.
+
+**Acceptance Scenarios**:
+
+1. **Given** content is published in both languages, **When** a visitor opens
+   the Arabic site, **Then** every heading, paragraph, button, label, image
+   description and the WhatsApp opening message are in Arabic and the page is
+   laid out right-to-left.
+2. **Given** a visitor on the English page, **When** they use the language
+   switcher, **Then** the same page appears in Arabic at its own
+   language-specific address without a full reload, keeping the section they
+   were viewing, and the choice is remembered on their next visit.
+3. **Given** a first-time visitor whose browser prefers Arabic, **When** they
+   open the site's root address, **Then** they see the Arabic site; visitors
+   with any other preference see English.
+4. **Given** an editor in the content area, **When** they edit the landing
+   page, personas, categories or site settings, **Then** they can enter the
+   English and the Arabic value of every text field and publish both.
+5. **Given** an Arabic value is missing for a field, **When** the Arabic page
+   renders, **Then** the English value is shown in its place and the content
+   area marks the field as untranslated.
+6. **Given** an editor who prefers Arabic, **When** they open the content
+   area, **Then** its menus, labels, buttons and messages are in Arabic.
+7. **Given** the Arabic site on a 360 px phone, **When** the visitor scrolls,
+   **Then** nothing overflows, phone numbers and email addresses read
+   left-to-right inside the right-to-left text, and directional icons
+   (arrows, chevrons) point the right way.
+8. **Given** a search engine, **When** it crawls either language, **Then**
+   each page declares its language and links to its counterpart in the other
+   language.
+
+---
+
+### User Story 7 - Choose a light or dark appearance (Priority: P3)
+
+A visitor sees the site in the appearance matching their device (light or
+dark) from the very first paint, can switch with a visible toggle, and the
+choice sticks. Editors get the same choice in the content area.
+
+**Why this priority**: Many phones are in dark mode; a light-only site
+glares, and a flash of the wrong theme looks broken. It is last because the
+site is fully usable in a single theme.
+
+**Independent Test**: Open the site with the device in dark mode and confirm
+dark from the first frame; toggle to light; reload and navigate; confirm the
+choice persists; run the accessibility audit in both themes; switch the
+content area to dark in editor preferences.
+
+**Acceptance Scenarios**:
+
+1. **Given** a device set to dark mode, **When** a visitor opens any public
+   page, **Then** it renders in the dark theme immediately, with no flash of
+   the light theme.
+2. **Given** a visitor on any public page, **When** they use the theme
+   toggle, **Then** the appearance changes at once, applies to every page, and
+   is remembered on their next visit; choosing "system" returns to following
+   the device.
+3. **Given** either theme, **When** the page is audited, **Then** text and
+   controls meet the contrast requirements and logos and images remain
+   legible (editors can provide a dark-background variant where needed).
+4. **Given** an editor, **When** they choose light, dark or system in their
+   content-area preferences, **Then** the content area follows that choice.
+
+---
+
+### User Story 8 - Build a brief in one sentence (Priority: P1)
+
+A visitor describes the shoot by completing a sentence made of selectable
+words — "I need a **photographer** for **an event** on **12 Dec** for
+**2 hours** in **Dubai**, shot by **anyone**" — and taps "See who's free". Every selectable word
+(professional type, occasion, date, duration, location, shot by, and any slot the owner
+adds later) comes from the content area, filtered to the chosen
+professional type, so the owner can add "a product shoot", change the
+emirates, or, for a different audience, replace occasions with school
+subjects, without a developer. In this release the completed brief is saved
+as a lead and handed to WhatsApp with the sentence pre-filled; the later
+matching steps (choose a creator, your details, your quotation) are a
+separate feature that will start from the same saved brief.
+
+**Why this priority**: This widget is the heart of the inspiration site and
+the fastest path from "I need a shoot" to a conversation; it also captures
+leads with structured data instead of free text.
+
+**Independent Test**: With the seeded option sets, complete the sentence on
+a phone, submit, and verify that a brief is recorded in the content area and
+that WhatsApp opens with the sentence pre-filled in the page language; add
+an occasion in the content area and see it in the list within a minute.
+
+**Acceptance Scenarios**:
+
+1. **Given** the brief builder is enabled with its option sets, **When** a
+   visitor opens the page, **Then** the sentence renders with each slot
+   showing its default word, and tapping a word opens that slot's options.
+2. **Given** the visitor changes the professional type, **When** they open
+   the occasion slot, **Then** only occasions linked to that type (or to all
+   types) are listed, in the configured order.
+3. **Given** every required slot is filled, **When** the visitor taps "See
+   who's free", **Then** the brief is recorded and WhatsApp opens with the
+   configured message containing every selected word and the date; the
+   visitor stays on the page with a confirmation.
+4. **Given** a required slot is empty or the date is in the past, **When**
+   the visitor submits, **Then** that slot is highlighted with a message and
+   nothing is sent or recorded.
+5. **Given** an editor adds the option "a product shoot" to the Occasions
+   set and publishes, **When** a visitor reloads, **Then** the new option is
+   listed within 60 seconds.
+6. **Given** an editor changes the sentence to add a new slot bound to a
+   new option set (for example "{subject}" for teachers), **When** the page
+   renders, **Then** the new slot appears in the sentence with its options,
+   with no code change.
+7. **Given** the Arabic site, **When** the visitor uses the builder,
+   **Then** the sentence, the options and the WhatsApp message are in
+   Arabic, laid out right-to-left.
+8. **Given** a signed-in member submits a brief, **When** an admin opens
+   the content area, **Then** the brief shows the member's name and contact,
+   and the member sees it listed on their account page.
+9. **Given** JavaScript is disabled, **When** the visitor submits the
+   sentence, **Then** the brief is still recorded and they are taken to the
+   WhatsApp chat.
 
 ---
 
@@ -204,6 +346,40 @@ options all include Teacher within one minute, with no code changed.
   redirects to login and returns to the intended page afterwards.
 - Two editors edit the same page: the last publish wins and the content area
   shows who published last and when.
+- Arabic text containing Latin fragments (brand names, email addresses,
+  phone numbers, URLs): the fragments keep left-to-right direction inside
+  right-to-left lines and never break the WhatsApp number.
+- Persona placeholders in Arabic: {persona.singular} and {persona.plural}
+  resolve to the Arabic names the editor entered; list placeholders use the
+  Arabic conjunction ("أو" / "و").
+- Arabic typeface slow to load: text stays visible in a fallback system
+  typeface; no layout jump larger than the layout-shift budget.
+- Language switch while a form has errors or a `next` destination: the
+  errors are shown in the new language and the destination is preserved.
+- Editor saves Arabic for the hero but leaves a section untranslated: the
+  Arabic page shows the English section text and the content area lists the
+  untranslated fields.
+- Visitor's stored theme or language preference is invalid or cleared: the
+  site falls back to the device setting and English without error.
+- Theme toggle with JavaScript disabled: the site follows the device
+  setting; the toggle is hidden rather than broken.
+- Dark theme and uploaded logos: a logo without a dark variant is shown on a
+  light chip so it stays legible.
+- Brief builder sentence contains a slot token with no matching slot
+  definition: the token is shown verbatim, the content area warns the
+  editor, and submission still works for the defined slots.
+- An option set linked to a slot has no option for the chosen professional
+  type: the slot shows the options available to all types; if none, the
+  slot shows "no options yet" and the brief cannot be submitted.
+- Visitor submits the same brief twice within a minute (double tap or
+  reload): one brief is recorded and WhatsApp opens once.
+- Anonymous visitor submits many briefs quickly: submissions beyond the
+  limit are refused politely and not recorded; signed-in members are not
+  limited.
+- Date slot: dates are interpreted in the business time zone (UAE); today
+  is allowed; the date can be chosen without JavaScript.
+- Very long option labels ("a corporate, branding or advertising shoot"):
+  the sentence wraps across lines without breaking a slot in two.
 
 ## Requirements *(mandatory)*
 
@@ -214,8 +390,9 @@ options all include Teacher within one minute, with no code changed.
 - **FR-001**: The system MUST serve a single public landing page composed of a
   hero area followed by an ordered list of content sections.
 - **FR-002**: The hero MUST display a headline, sub-headline, up to three
-  trust statements, a primary WhatsApp action and a secondary action, all
-  sourced from the content store; the shipped default headline is "You brief.
+  trust statements, the brief builder (FR-046) as the primary action and a
+  WhatsApp link as the secondary action (editors MAY switch to an alternative
+  layout with two plain actions), all sourced from the content store; the shipped default headline is "You brief.
   We shoot.".
 - **FR-003**: The system MUST support at least these section types, each
   fully editable: How it works (ordered steps), Why us (feature list),
@@ -309,17 +486,136 @@ options all include Teacher within one minute, with no code changed.
   that additional instances can be added behind a load balancer without
   code changes.
 
+**Languages**
+
+- **FR-034**: The public site MUST be available in English and Arabic;
+  Arabic pages MUST be laid out right-to-left (text alignment, reading order,
+  mirrored directional icons) with typefaces suited to Arabic script.
+- **FR-035**: Each language MUST have its own address (English at the root,
+  Arabic under a language prefix); every page MUST declare its language and
+  reference its counterpart in the other language for search engines.
+- **FR-036**: Every public page MUST show a language switcher that keeps the
+  visitor on the equivalent page; the chosen language MUST persist across
+  visits; first-time visitors MUST be directed to the language matching
+  their browser preference, defaulting to English.
+- **FR-037**: Every user-visible text in the content store (landing page
+  content, navigation labels, site-settings messages and labels, persona
+  and category names and descriptions, image alternative text) MUST be
+  editable per language; identifiers, numbers, order, flags, images and the
+  WhatsApp number MUST be shared across languages.
+- **FR-038**: Where an Arabic value is missing, the English value MUST be
+  shown in its place, and the content area MUST indicate which fields are
+  untranslated.
+- **FR-039**: Static interface text (navigation, form labels, validation and
+  error messages, account page, theme and language controls) MUST be
+  provided in both languages from versioned translation files, and a missing
+  key MUST fail the automated tests.
+- **FR-040**: The content area MUST be usable in English or Arabic, chosen
+  per editor, with right-to-left presentation for Arabic.
+- **FR-041**: Persona placeholders MUST resolve to the persona names and
+  conjunctions of the language being displayed.
+
+**Appearance**
+
+- **FR-042**: The public site MUST offer light and dark appearance: the
+  default follows the device setting, a visible toggle (light / dark /
+  system) overrides it, the choice persists across visits, and the first
+  paint already uses the correct theme.
+- **FR-043**: Both themes MUST meet the contrast requirements of FR-007;
+  editors MUST be able to provide a dark-background variant for the site
+  logo and for partner logos.
+- **FR-044**: The content area MUST support light and dark appearance per
+  editor preference, following the device setting by default.
+- **FR-045**: Performance, accessibility and responsive criteria (SC-001,
+  SC-007, SC-008) MUST hold for both languages and both themes.
+
+**Brief builder**
+
+- **FR-046**: The landing page MUST offer a brief builder: a sentence
+  defined in the content store whose slot tokens (e.g. {persona},
+  {occasion}, {date}, {duration}, {location}, {shotBy}) render as selectable words,
+  each bound to a slot definition of kind professional type, option set,
+  date or number; a slot MAY additionally let the visitor type their own
+  words when the editor allows it.
+- **FR-047**: Option sets MUST be managed in the content store, each with a
+  name, stable identifier and ordered options; every option MUST have a
+  label per language, a stable value, an order, an active flag and an
+  optional list of professional types it applies to (empty meaning all).
+- **FR-048**: Options shown in a slot MUST be filtered to the currently
+  selected professional type and ordered as configured; changing the
+  professional type MUST re-filter dependent slots and clear selections
+  that are no longer valid.
+- **FR-049**: Submitting a complete brief MUST record it (every slot's value
+  and label, the date, the language, the page, the member if signed in, and
+  the time) and open WhatsApp with the configured message template filled
+  with the selections, using the site's WhatsApp number.
+- **FR-050**: The builder MUST validate required slots and reject dates in
+  the past (business time zone), MUST record at most one brief for repeated
+  identical submissions within one minute, and MUST limit anonymous
+  submissions per visitor to a configurable number per hour.
+- **FR-051**: Editors MUST be able to change the sentence, add or remove
+  slots, bind slots to option sets, set each slot's default and placeholder,
+  the submit label, the helper text and the WhatsApp message template, in
+  both languages, without a developer.
+- **FR-052**: Admins MUST be able to list, filter (by professional type,
+  date range, status) and export briefs, and set each brief's status (new,
+  contacted, closed); members MUST see their own briefs on their account
+  page; no one else MUST be able to read briefs.
+- **FR-053**: The builder MUST be fully usable with a keyboard and screen
+  reader (each slot a labelled control) and MUST work without JavaScript.
+- **FR-054**: Each recorded brief MUST have a stable identifier so that a
+  later feature can resume the matching flow from it.
+
+**Client flow simplicity and design quality**
+
+- **FR-055**: The client journey MUST be: land → adjust any words of the
+  brief (all pre-filled with defaults) → one tap to submit → confirmation
+  with a reference and a WhatsApp chat already written. No account, login,
+  email or phone number MUST be required to submit a brief.
+- **FR-056**: Each screen MUST present exactly one primary action, visually
+  dominant; secondary actions (WhatsApp, login) MUST be visibly secondary.
+- **FR-057**: The brief builder MUST be the first thing on the landing page
+  on every viewport, with the primary action visible without scrolling on a
+  360 × 640 phone.
+- **FR-058**: Every label, hint and error MUST be plain language of at most
+  one short sentence, say what to do next, and appear next to the thing it
+  refers to; no jargon, no codes shown to clients except the brief
+  reference.
+- **FR-059**: After submitting, the client MUST see what happens next
+  (reference, "we'll reply on WhatsApp", expected response time from site
+  settings) and a way to start another brief; members MUST find past briefs
+  on their account page.
+- **FR-060**: Registration MUST ask only name, email, password and account
+  type (plus the professional type for providers); login MUST ask only email
+  and password; both MUST be reachable in one tap from the header and MUST
+  return the client to where they were.
+- **FR-061**: The public site MUST follow the recorded visual direction
+  (The Brief Bar: one Spotlight-style panel, the brief as a search field,
+  options as grouped result rows, the Top Hit as the one primary action),
+  in both languages and both themes, and MUST NOT contain stock gradients,
+  translucent panels other than the brief bar itself, generic icon tiles, or invented proof
+  (testimonials, client logos, counts, ratings).
+- **FR-062**: Interactive feedback MUST be immediate: every tap shows a
+  visible state within 100 ms; pending actions show progress; set route
+  lines show a check and the route progress advances; submission marks the
+  route complete with its reference, and an equivalent non-animated
+  confirmation appears when the visitor prefers reduced motion.
+
 ### Key Entities
 
 - **Landing Page**: the single public page; holds the hero (headline,
-  sub-headline, trust statements, primary and secondary actions, image), an
+  sub-headline, trust statements, layout: brief builder or two actions,
+  optional image), an
   ordered list of sections, search-engine metadata and publication state
   (draft/published, last published by/at).
 - **Section**: one block of the landing page of a given type (how-it-works,
   why-us, categories grid, persona band, FAQ, logos, rich text, call to
   action) with its own fields; sections belong to exactly one landing page.
-- **Site Settings**: site name, WhatsApp number and default message, contact
-  email, social links, and the ordered list of active personas.
+- **Site Settings**: site name, logo (light and dark variants), WhatsApp
+  number (shared) and default message (per language), contact email, social
+  links, interface labels (per language), the expected reply time (per
+  language), the anonymous brief limit per hour and the ordered list of
+  active personas.
 - **Persona**: a kind of professional (singular/plural names, stable
   identifier, description, image, order, active flag, persona-specific call
   to action copy). Referenced by categories, users and site settings.
@@ -328,8 +624,26 @@ options all include Teacher within one minute, with no code changed.
 - **User**: an account with name, email, hashed password, roles (member,
   editor, admin), account type (seeker/provider), optional persona and
   categories (providers), login-attempt and lock state, timestamps.
-- **Media**: an uploaded image with required alternative text and generated
-  size variants, referenced by the hero, sections, personas and categories.
+- **Media**: an uploaded image with required alternative text (per
+  language), optional dark-background variant, and generated size variants,
+  referenced by the hero, sections, personas and categories.
+- **Brief Builder** (part of Landing Page): enabled flag, sentence template
+  per language, ordered slot definitions (token, kind, bound option set,
+  default, placeholder per language, required), submit label, helper text,
+  WhatsApp message template per language.
+- **Option Set**: a named, ordered list of options (name per language,
+  stable identifier) such as Occasions, Durations or Locations; each option
+  has a label per language, a stable value, order, active flag and the
+  professional types it applies to.
+- **Brief**: a visitor's completed sentence: selections (slot token, value,
+  label), date, language, source page, optional member, visitor contact if
+  provided, status (new, contacted, closed), created time, stable
+  identifier and a short reference shown to the client.
+- **Language**: one of the supported languages (English, Arabic) with its
+  text direction; every localised text field holds one value per language,
+  English being the fallback.
+- **Visitor Preferences**: the language and appearance (light, dark, system)
+  a visitor last chose, remembered on their device.
 
 ## Success Criteria *(mandatory)*
 
@@ -360,14 +674,44 @@ options all include Teacher within one minute, with no code changed.
 - **SC-009**: The application can be scaled horizontally: two instances
   behind a load balancer serve the site and the content area without errors
   or lost sessions.
+- **SC-010**: Switching language or appearance takes effect within 1 second
+  and is remembered on the visitor's next visit; a visitor whose device is
+  in dark mode never sees a light frame.
+- **SC-011**: 100% of text fields in the content store can be edited in both
+  languages; an editor can translate the entire default landing page in the
+  content area without developer help.
+- **SC-012**: The Arabic site and the dark theme meet the same performance,
+  accessibility and responsive criteria as the English light site (SC-001,
+  SC-007, SC-008), verified by the same automated audits.
+- **SC-013**: A first-time visitor can complete the brief sentence and reach
+  the WhatsApp chat in under 60 seconds and at most six taps on a phone.
+- **SC-014**: An editor can add an occasion, change a default, or add a new
+  slot with its option set in the content area in under 10 minutes with no
+  developer involvement, and every recorded brief is visible to admins with
+  its structured selections.
+- **SC-015**: In moderated tests with five first-time participants per
+  language, at least four complete a brief without help and none needs more
+  than one attempt at the primary action.
+- **SC-016**: The landing, login, register and account pages pass an
+  independent design review against the recorded visual direction with a
+  ship verdict and zero occurrences of the banned patterns in FR-061.
+- **SC-017**: The happy path from first paint to WhatsApp is at most three
+  taps when the defaults fit (tap a line, pick an option, tap the action) and
+  at most six taps otherwise.
 
 ## Assumptions
 
 - Visitors are primarily in the UAE and arrive mostly on mobile devices;
   WhatsApp is the preferred contact channel. One business WhatsApp number is
   sufficient for the MVP.
-- The MVP is English only; the content model is designed so Arabic (or any
-  language) can be added later without restructuring content.
+- The site ships in English (default) and Modern Standard Arabic. Default
+  content is seeded in both languages; the Arabic seed copy is a starting
+  point for the owner to review. No automatic machine translation is used.
+- Addresses, section anchors and identifiers stay in Latin characters in
+  both languages; numerals use Western Arabic digits (0–9) by default and
+  editors may type Eastern Arabic digits in content if they prefer.
+- The language and appearance preferences are stored on the visitor's device
+  (not in an account) and apply to the whole site.
 - Authentication is email and password. Email verification and password
   reset emails are supported by the account model but are switched off until
   an email provider is configured; one-time codes and social login are out
@@ -378,11 +722,18 @@ options all include Teacher within one minute, with no code changed.
   categories inspired by shootix.ae (Portrait, Events, Fashion & Beauty,
   Wedding & Engagement, Corporate & Branding, Real Estate & Architecture).
   Copy and imagery are placeholders for the owner to replace.
-- Briefs, quotes, bookings, payments, pricing pages, provider public
-  profiles and a provider directory are out of scope for this feature; the
-  persona and account model is built so they can be added later.
-- The account page in this feature shows the member's details and a logout
-  action only.
+- The brief builder in this feature ends at WhatsApp plus a recorded lead.
+  Creator availability, creator selection, client details, quotations,
+  bookings and payments (shootix.ae's Quick Match steps 2–4) are feature
+  003; provider public profiles and the creator directory are feature 002;
+  pricing and corporate packages are feature 004; blog, legal and other
+  marketing pages are feature 005. See `specs/ROADMAP.md`.
+- The seeded slots are professional type, occasion, date, duration,
+  location and shot by, with option sets seeded from shootix.ae's lists
+  (occasions; 1, 2, 3, 4 or 8 hours; the UAE emirates; anyone, a woman, a
+  man); the owner edits them freely.
+- The account page in this feature shows the member's details, their briefs
+  (FR-052, FR-059) and a logout action.
 - Images are uploaded only by editors; members do not upload media in this
   feature.
 - "Single page" means the landing page is one scrolling page and the site

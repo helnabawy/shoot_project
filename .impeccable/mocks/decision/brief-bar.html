@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<style>
+:root{--ground:#EFE9E3;--panel:rgba(255,255,255,.86);--ink:#1D1D1F;--mute:#8A8580;--accent:#0A60FF;--hair:rgba(0,0,0,.08);--tile:#F1EEEA}
+*{box-sizing:border-box;margin:0}
+body{width:min(390px,100vw);min-height:844px;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro","Segoe UI",Roboto,sans-serif;font-feature-settings:"tnum";background:var(--ground);background-image:radial-gradient(60% 40% at 50% 0%,rgba(10,96,255,.10),transparent 70%)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 8px;font-size:14px;font-weight:600}
+.top span{font-weight:500;color:var(--mute)}
+.intro{padding:14px 20px 18px}
+.intro h1{font-size:38px;line-height:1.02;letter-spacing:-.03em;font-weight:700}
+.intro .ar{font-size:19px;color:var(--mute);margin-top:6px;text-align:right}
+.panel{margin:0 12px;background:var(--panel);backdrop-filter:blur(20px);border:1px solid var(--hair);border-radius:14px;box-shadow:0 18px 40px -22px rgba(29,29,31,.35);overflow:hidden}
+.field{display:flex;align-items:center;gap:12px;padding:18px 16px;border-bottom:1px solid var(--hair)}
+.field .mag{width:22px;height:22px;border:2.5px solid var(--ink);border-radius:50%;position:relative;flex:none}
+.field .mag:after{content:"";position:absolute;width:2.5px;height:9px;background:var(--ink);right:-5px;bottom:-7px;transform:rotate(-45deg)}
+.field .q{font-size:22px;font-weight:500;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.field .q i{display:inline-block;width:2px;height:24px;background:var(--accent);vertical-align:-4px;margin-left:2px}
+.grp{padding:6px 0 4px}
+.grp small{display:block;padding:8px 16px 4px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.row{display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:12px;padding:9px 16px;font-size:16px}
+.row .t{width:30px;height:30px;border-radius:8px;background:var(--tile);display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--mute)}
+.row em{font-style:normal;color:var(--mute);font-size:13px}
+.row.hit{background:var(--accent);color:#fff;margin:0 8px;border-radius:9px;padding:11px 12px;font-weight:600;font-size:17px}
+.row.hit .t{background:rgba(255,255,255,.22);color:#fff}
+.row.hit em{color:rgba(255,255,255,.85);font-size:14px}
+.row.set{font-weight:600}
+.row.set em:before{content:"✓ ";}
+</style></head><body>
+<div class="top">Shoot Project<span>العربية &nbsp; ☰</span></div>
+<div class="intro"><h1>You brief.<br>We shoot.</h1><div class="ar">أنت تحدّد. نحن نصوّر.</div></div>
+<div class="panel">
+ <div class="field"><span class="mag"></span><span class="q">Photographer for a wedding in Dubai<i></i></span></div>
+ <div class="grp"><small>Top hit</small>
+  <div class="row hit"><span class="t">→</span><span>See who's free for this</span><em>↩</em></div></div>
+ <div class="grp"><small>Occasion</small>
+  <div class="row set"><span class="t">W</span><span>Wedding</span><em>set</em></div>
+  <div class="row"><span class="t">P</span><span>Proposal</span><em></em></div>
+  <div class="row"><span class="t">B</span><span>Birthday</span><em></em></div></div>
+ <div class="grp"><small>When · how long</small>
+  <div class="row"><span class="t">21</span><span>Fri 21 Nov</span><em>pick a date</em></div>
+  <div class="row set"><span class="t">2h</span><span>2 hours</span><em>set</em></div></div>
+ <div class="grp"><small>Emirate</small>
+  <div class="row set"><span class="t">DXB</span><span>Dubai</span><em>set</em></div>
+  <div class="row"><span class="t">AUH</span><span>Abu Dhabi</span><em></em></div></div>
+ <div class="grp"><small>Actions</small>
+  <div class="row"><span class="t">☏</span><span>WhatsApp us instead</span><em>⌘W</em></div>
+  <div class="row"><span class="t">+</span><span>I'm a photographer</span><em></em></div></div>
+</div>
+</body></html>

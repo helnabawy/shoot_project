@@ -27,7 +27,7 @@ runs the same command, so a local pass predicts a CI pass.
 ## Bundle analysis
 
 ```bash
-ANALYZE=true pnpm --filter web build
+pnpm --filter web analyze   # ANALYZE=true next build
 ```
 
 Open the client bundle report. If a page's first-load JS grew, find the
@@ -37,9 +37,10 @@ instead of per-icon.
 
 ## Common regressions and the fix
 
-- **Hero image not the LCP element / late LCP**: add `priority`, correct
-  `sizes`, make sure the image is not inside a client component that mounts
-  late.
+- **Late LCP**: the headline or the brief panel is the LCP element (there is
+  no photography yet); keep both server-rendered; the system UI font stack
+  means no font request delays it. If an editor adds a hero image, give it `priority` and correct
+  `sizes`.
 - **CLS from CMS content**: set explicit `width`/`height` from the media
   document; reserve min-heights for sections whose content varies.
 - **Big JS jump**: a section became a client component. Split the

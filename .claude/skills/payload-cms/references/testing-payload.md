@@ -1,18 +1,19 @@
-# Integration testing Payload with an in-memory MongoDB
+# Integration testing Payload with a throwaway PostgreSQL
 
-Integration tests boot the real Payload instance against a throwaway MongoDB
-started by `mongodb-memory-server`, so access rules, hooks, validation and auth
-behave exactly as in production. Never mock the database layer (constitution
-Principle III).
+Integration tests boot the real Payload instance against a disposable
+PostgreSQL container started by Testcontainers, with the committed
+migrations applied, so access rules, hooks, validation, constraints and
+auth behave exactly as in production. Never mock the database layer
+(constitution Principle III). Docker must be running locally and in CI.
 
 ## Layout
 
 ```
 apps/web/
-├── vitest.config.ts              # two projects: unit+component (jsdom) and integration (node)
+├── vitest.config.ts              # three projects: unit (node), component (jsdom), integration (node)
 └── tests/
     ├── integration/
-    │   ├── setup/global-setup.ts # starts MongoMemoryReplSet, exports DATABASE_URI
+    │   ├── setup/global-setup.ts # starts PostgreSqlContainer, exports DATABASE_URI, runs migrations
     │   ├── setup/payload.ts      # getTestPayload(), resetDatabase(), asUser()
     │   ├── auth.int.test.ts
     │   ├── personas.int.test.ts
@@ -24,23 +25,22 @@ apps/web/
 
 ```ts
 // tests/integration/setup/global-setup.ts
-import { MongoMemoryReplSet } from 'mongodb-memory-server'
-let server: MongoMemoryReplSet
+import { PostgreSqlContainer, type StartedPostgreSqlContainer } from '@testcontainers/postgresql'
+import { execSync } from 'node:child_process'
+let container: StartedPostgreSqlContainer
 export async function setup() {
-  server = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
-  process.env.DATABASE_URI = server.getUri()
-  process.env.PAYLOAD_SECRET = 'test-secret'
+  container = await new PostgreSqlContainer('postgres:17').start()
+  process.env.DATABASE_URI = container.getConnectionUri()
+  process.env.PAYLOAD_SECRET = 'test-secret-test-secret-test-secret'
   process.env.PAYLOAD_DISABLE_ADMIN = 'true'
+  execSync('pnpm payload migrate', { stdio: 'inherit', env: process.env })  // proves the committed migrations
 }
-export async function teardown() { await server?.stop() }
+export async function teardown() { await container?.stop() }
 ```
 
-A replica set (not a standalone) is used because Payload's MongoDB adapter
-can use transactions; a standalone server makes those code paths silently
-differ from production. Payload's own test suite runs on
-`mongodb-memory-server`, so the adapter is known to work with it. (Payload's
-website *template* instead points Vitest at the `.env` database; we prefer
-the in-memory server so `pnpm test` needs no running service.)
+Running the committed migrations (instead of relying on dev-mode schema
+push) makes every test run a migration test too: a schema change without
+its migration fails here before it fails in production.
 
 ## Test helper
 
@@ -58,8 +58,10 @@ export async function getTestPayload() {
 }
 export async function resetDatabase() {
   const payload = await getTestPayload()
-  for (const { slug } of payload.config.collections)
+  for (const { slug } of payload.config.collections) {
+    if (slug.startsWith('payload-')) continue   // keep Payload's internal migrations/preferences tables
     await payload.delete({ collection: slug, where: {} , context: { disableRevalidate: true } })
+  }
 }
 ```
 
@@ -71,19 +73,19 @@ before the global setup has set the environment variables.
 ```ts
 describe('personas access', () => {
   beforeEach(resetDatabase)
-  it('FR-010: anyone can read active personas', async () => {
+  it('FR-027: anyone can read active personas', async () => {
     const payload = await getTestPayload()
     await payload.create({ collection: 'personas', data: photographer, context: { disableRevalidate: true } })
     const res = await payload.find({ collection: 'personas', overrideAccess: false })  // anonymous
     expect(res.docs).toHaveLength(1)
   })
-  it('FR-011: members cannot create personas', async () => {
+  it('FR-016: members cannot create personas', async () => {
     const payload = await getTestPayload()
     const member = await createMember(payload)
     await expect(payload.create({ collection: 'personas', data: teacher, overrideAccess: false, user: member }))
       .rejects.toThrow(/not allowed/i)
   })
-  it('FR-011: admins can create personas', async () => { /* same with admin user */ })
+  it('FR-016: admins can create personas', async () => { /* same with admin user */ })
 })
 ```
 
@@ -91,8 +93,25 @@ describe('personas access', () => {
   it every test passes vacuously.
 - Pass `context: { disableRevalidate: true }` on writes so hooks do not call
   Next.js revalidation outside a request scope.
-- Name tests after the requirement they prove (`FR-010`) so the spec can be
+- Name tests after the requirement they prove (`FR-027`) so the spec can be
   traced to the suite.
+
+## Testing localisation
+
+```ts
+it('FR-038: Arabic read falls back to English for an untranslated field', async () => {
+  const payload = await getTestPayload()
+  await payload.updateGlobal({ slug: 'landing-page', locale: 'en', data: { hero: { headline: 'You brief. We shoot.' } }, context: { disableRevalidate: true } })
+  const ar = await payload.findGlobal({ slug: 'landing-page', locale: 'ar', fallbackLocale: 'en' })
+  expect(ar.hero.headline).toBe('You brief. We shoot.')
+  const all = await payload.findGlobal({ slug: 'landing-page', locale: 'all' })
+  expect(findUntranslatedFields(all, 'ar')).toContain('hero.headline')
+})
+```
+
+Also assert that writing with `locale: 'ar'` does not change the `en` value,
+and that shared fields (`slug`, `order`, `anchor`, uploads) are identical
+under both locales.
 
 ## Testing hooks
 

@@ -46,12 +46,13 @@ verifies, failing first. The test pyramid is:
 - Unit tests for all framework-free domain logic (validation, persona
   resolution, link builders, formatting). Target: 100% of exported functions.
 - Integration tests for every API endpoint, CMS collection/global access rule,
-  hook and auth flow, executed against a real (in-memory or containerised)
-  MongoDB instance, never against mocks of the database.
+  hook and auth flow, executed against a real, containerised (Testcontainers)
+  PostgreSQL instance with the committed migrations applied, never against mocks of the database.
 - Component tests for every interactive UI component (forms, navigation,
   CMS-driven sections) covering rendering, states and user interaction.
-- End-to-end tests for each P1 user journey (visit landing page, register,
-  log in, contact via WhatsApp, edit content in the CMS and see it live).
+- End-to-end tests for each user journey in the spec (visit the landing
+  page, build and submit a brief, contact via WhatsApp, register, log in,
+  edit content in the CMS and see it live).
 
 Minimum coverage gate: 80% statements and branches repository-wide; the domain
 package gates at 100% statements. Tests are deterministic: no reliance on wall
@@ -105,16 +106,21 @@ rewrite:
 Rationale: one deployable keeps the MVP simple and cheap; explicit boundaries
 keep the option to scale the team and the architecture open.
 
-### VI. Responsive and Accessible by Default
+### VI. Responsive, Accessible, Bilingual and Themed by Default
 
 Every screen is designed mobile-first and verified at 360 px, 768 px, 1024 px
-and 1440 px widths before a task is complete. The site meets WCAG 2.1 AA:
-semantic HTML, keyboard operability, visible focus, colour contrast ≥ 4.5:1,
-labelled form controls, and `prefers-reduced-motion` respected. Touch targets
-are ≥ 44 px. These are acceptance criteria, not polish.
+and 1440 px widths, **in both English (LTR) and Arabic (RTL), and in both the
+light and dark theme**, before a task is complete. The site meets WCAG 2.1
+AA: semantic HTML, keyboard operability, visible focus, colour contrast
+≥ 4.5:1 in each theme, labelled form controls, and `prefers-reduced-motion`
+respected. Touch targets are ≥ 44 px. Layout uses logical (start/end)
+properties so RTL needs no per-component overrides; the theme is applied
+before first paint so there is never a flash of the wrong colours. These are
+acceptance criteria, not polish.
 
-Rationale: most visitors to a creative-services site arrive on a phone, and
-accessibility failures are both a legal risk and a conversion loss.
+Rationale: most visitors to a creative-services site in the UAE arrive on a
+phone, many read Arabic, and many devices are in dark mode; accessibility and
+localisation failures are both a legal risk and a conversion loss.
 
 ### VII. Secure by Default
 
@@ -143,6 +149,36 @@ Prefer platform and framework primitives over third-party packages.
 Rationale: the fastest site and the easiest codebase to scale is the one with
 the least in it.
 
+### IX. Designed, Not Generated
+
+The client flow is as short and plain as it can be, and the interface looks
+deliberately designed for this product, never like a template or an
+AI-generated site.
+
+- **Simple flow**: one primary action per screen; the brief needs no
+  account; every slot has a sensible default; no step asks for information a
+  later step could ask for; plain-language labels and errors; the client
+  always sees what happens next and a way to reach a person (WhatsApp).
+- **Design authority**: `PRODUCT.md` (product truth), the surface briefs in
+  `.impeccable/surfaces/` (direction contracts) and, once the first build is
+  reviewed, `DESIGN.md` + `.impeccable/design.json` (tokens) govern every UI
+  task. The chosen world for the public site is "The Brief Bar" (one
+  Spotlight-style panel: the brief as a search field, options as grouped
+  result rows, the Top Hit as the one action). New UI inherits it; replacing it is a design decision
+  made with the impeccable workflow, never drift.
+- **Craft gates**: every UI task is built with the `impeccable` skill, reads
+  its craft floor before editing, runs the impeccable detector on changed
+  UI, and a surface is done only after the impeccable finish review returns
+  `ship` and the documenter has recorded DESIGN.md.
+- **Banned tells**: stock gradients, glassmorphism, generic icon tiles,
+  centred headline over a row of equal cards, invented testimonials, logos,
+  counts or ratings, and the default font list impeccable flags (unless a
+  surface brief names a reason).
+
+Rationale: the owner asked for a user-friendly, modern site that does not
+look AI-generated; without an explicit authority and gate, every new screen
+regresses to the category default.
+
 ## Technology Stack & Constraints
 
 The stack below is binding for all features unless amended here. Plans MUST
@@ -163,18 +199,26 @@ NOT introduce alternatives without a constitution amendment.
   tokens defined once in the Tailwind theme.
 - **Backend + CMS**: Payload CMS 3.x running inside the same Next.js app
   (admin panel at `/admin`, REST API at `/api/*`, Local API for server-side
-  reads). MongoDB via Payload's MongoDB adapter. Media stored on local disk in
+  reads). PostgreSQL via Payload's Postgres adapter (`@payloadcms/db-postgres`),
+  with versioned migrations committed to the repository and applied on deploy. Media stored on local disk in
   development and object storage (S3-compatible) in production.
 - **Testing**: Vitest for unit, component (React Testing Library) and
   integration tests; Playwright for end-to-end; Lighthouse CI for performance
-  budgets. Integration tests run against an ephemeral MongoDB.
+  budgets. Integration tests run against an ephemeral PostgreSQL container.
 - **Tooling**: ESLint + Prettier with a shared config package; Conventional
   Commits; GitHub Actions for CI.
 - **Browser support**: last 2 versions of evergreen browsers plus iOS Safari
   ≥ 16; no IE.
-- **Internationalisation**: English only for the MVP. Content fields that
-  carry user-visible text are modelled so CMS localisation can be switched on
-  later without a schema rewrite.
+- **Internationalisation**: bilingual from the first release — English
+  (default, LTR) and Arabic (RTL) — for the public site and the CMS admin
+  interface. Every user-visible text field in the CMS is localised with
+  English as the fallback; identifiers, numbers, flags and ordering are shared
+  across languages. Static interface strings live in versioned translation
+  files, one per language. Adding a third language is configuration plus
+  translations, never a code change.
+- **Theming**: light and dark themes for the public site and the CMS admin,
+  driven by design tokens with one value per theme; the default follows the
+  device setting, a visible toggle overrides it, and the choice persists.
 
 ## Development Workflow & Quality Gates
 
@@ -207,11 +251,11 @@ the conflicting artifact is updated.
   principle; MINOR for adding a principle or materially expanding guidance;
   PATCH for clarifications and wording.
 - **Compliance review**: `/speckit-plan` evaluates every plan against the
-  Constitution Check gates derived from Principles I–VIII; `/speckit-analyze`
+  Constitution Check gates derived from Principles I–IX; `/speckit-analyze`
   is run before `/speckit-implement` on every feature. Violations are either
   fixed or justified in the plan's Complexity Tracking table.
 - **Runtime guidance**: `CLAUDE.md` at the repository root and the skills under
   `.claude/skills/` carry day-to-day development guidance and MUST stay
   consistent with this document.
 
-**Version**: 1.0.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-06
+**Version**: 1.3.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-07

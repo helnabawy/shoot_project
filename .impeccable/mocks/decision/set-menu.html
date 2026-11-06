@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600&family=Vazirmatn:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#F4ECE6;--ink:#2A1B18;--card:#7A1F3D;--rice:#FBF3EC;--rice-muted:rgba(251,243,236,.58);--apricot:#E9A868;--rule:rgba(251,243,236,.16)}
+*{box-sizing:border-box;margin:0}
+body{width:min(390px,100vw);min-height:844px;background:var(--ground);color:var(--ink);font-family:'Vazirmatn',sans-serif;font-feature-settings:"tnum"}
+.top{display:flex;justify-content:space-between;align-items:center;padding:18px 22px 14px}
+.top b{font:600 15px 'Vazirmatn';letter-spacing:.02em}.top span{font:500 14px 'Vazirmatn'}
+.card{margin:0 12px;background:var(--card);color:var(--rice);border-radius:6px;padding:26px 22px 22px;min-height:760px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-bottom:18px;border-bottom:1px solid var(--rule)}
+.head h1{font:500 46px/.98 'Markazi Text',serif;letter-spacing:-.01em}
+.head .ar{font:400 22px/1.2 'Markazi Text',serif;color:var(--rice-muted);text-align:right;padding-bottom:4px}
+.course{padding:14px 0 12px;border-bottom:1px solid var(--rule)}
+.course small{display:block;font:500 11px 'Vazirmatn';letter-spacing:.14em;text-transform:uppercase;color:var(--rice-muted)}
+.line{display:flex;align-items:baseline;gap:8px;margin-top:2px}
+.line strong{font:500 26px/1.1 'Markazi Text',serif;white-space:nowrap}
+.line .lead{flex:1;border-bottom:2px dotted var(--rule);transform:translateY(-7px)}
+.line em{font:400 13px 'Vazirmatn';font-style:normal;color:var(--rice-muted)}
+.course.now small{color:var(--apricot)}.course.now .line .lead{border-color:var(--apricot)}.course.now em{color:var(--apricot)}
+.course.open strong{color:var(--rice-muted);font-weight:400}
+.price{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0 6px;font:400 15px 'Vazirmatn';color:var(--rice-muted)}
+.price b{font:500 15px 'Vazirmatn';color:var(--rice)}
+.go{margin-top:14px;background:var(--ink);color:var(--rice);border-radius:4px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;font:500 20px 'Vazirmatn'}
+.go span{font-size:22px}
+.alt{padding:14px 2px 0;font:400 14px 'Vazirmatn';color:var(--rice-muted)}.alt u{color:var(--rice);text-underline-offset:4px}
+</style></head><body>
+<div class="top"><b>Shoot Project</b><span>العربية&nbsp;&nbsp;☰</span></div>
+<div class="card">
+ <div class="head"><h1>You brief.<br>We shoot.</h1><div class="ar">أنت تحدّد.<br>نحن نصوّر.</div></div>
+ <div class="course"><small>I need a</small><div class="line"><strong>Photographer</strong><span class="lead"></span><em>change</em></div></div>
+ <div class="course"><small>For</small><div class="line"><strong>A wedding</strong><span class="lead"></span><em>change</em></div></div>
+ <div class="course now"><small>On</small><div class="line"><strong>Fri 21 Nov</strong><span class="lead"></span><em>choosing</em></div></div>
+ <div class="course open"><small>For</small><div class="line"><strong>How long?</strong><span class="lead"></span><em>choose</em></div></div>
+ <div class="course"><small>In</small><div class="line"><strong>Dubai</strong><span class="lead"></span><em>change</em></div></div>
+ <div class="course"><small>Shot by</small><div class="line"><strong>Anyone available</strong><span class="lead"></span><em>change</em></div></div>
+ <div class="price"><span>Fixed price</span><b>shown before you book</b></div>
+ <div class="go"><span style="font-size:20px">See who's free</span><span>→</span></div>
+ <p class="alt">Rather talk? <u>WhatsApp us</u></p>
+</div>
+</body></html>
