@@ -200,9 +200,9 @@ export const landingPage = {
       heading: { en: 'How it works', ar: 'كيف نعمل' },
       subheading: { en: 'Three steps, one conversation.', ar: 'ثلاث خطوات ومحادثة واحدة.' },
       steps: [
-        { title: { en: 'Brief', ar: 'الطلب' }, body: { en: 'Tell us what you need in one line, in English or Arabic.', ar: 'أخبرنا بما تحتاجه في سطر واحد، بالعربية أو الإنجليزية.' } },
-        { title: { en: 'Match', ar: 'المطابقة' }, body: { en: 'We find a professional who is free on your date.', ar: 'نجد محترفاً متاحاً في التاريخ الذي تختاره.' } },
-        { title: { en: 'Shoot', ar: 'التصوير' }, body: { en: 'They show up and shoot. You get the finished work.', ar: 'يحضر المحترف ويصوّر، وتستلم العمل النهائي.' } },
+        { visual: 'brief', title: { en: 'Brief', ar: 'الطلب' }, body: { en: 'Tell us what you need in one line, in English or Arabic.', ar: 'أخبرنا بما تحتاجه في سطر واحد، بالعربية أو الإنجليزية.' } },
+        { visual: 'match', title: { en: 'Match', ar: 'المطابقة' }, body: { en: 'We find a professional who is free on your date.', ar: 'نجد محترفاً متاحاً في التاريخ الذي تختاره.' } },
+        { visual: 'work', title: { en: 'Shoot', ar: 'التصوير' }, body: { en: 'They show up and shoot. You get the finished work.', ar: 'يحضر المحترف ويصوّر، وتستلم العمل النهائي.' } },
       ],
       cta: { label: { en: '', ar: '' }, kind: 'link', href: '#brief' },
     },
@@ -211,10 +211,10 @@ export const landingPage = {
       anchor: 'why-us',
       heading: { en: 'Why book this way', ar: 'لماذا تحجز بهذه الطريقة' },
       items: [
-        { glyph: { en: 'Aa', ar: 'أب' }, title: { en: 'One sentence, no forms', ar: 'جملة واحدة بلا نماذج' }, body: { en: 'Pick the words that fit. Nothing else to fill in.', ar: 'اختر الكلمات المناسبة. لا شيء آخر لتعبئته.' } },
-        { glyph: { en: 'WA', ar: 'و' }, title: { en: 'A person replies', ar: 'يردّ عليك شخص حقيقي' }, body: { en: 'Your brief reaches our team on WhatsApp.', ar: 'يصل طلبك إلى فريقنا عبر واتساب.' } },
-        { glyph: { en: 'ع', ar: 'En' }, title: { en: 'Arabic and English', ar: 'العربية والإنجليزية' }, body: { en: 'Use the site and talk to us in either language.', ar: 'استخدم الموقع وتحدّث معنا بأي من اللغتين.' } },
-        { glyph: '✓', title: { en: 'No account needed', ar: 'لا حاجة لحساب' }, body: { en: 'Create one later if you want your briefs in one place.', ar: 'أنشئ حساباً لاحقاً إن أردت جمع طلباتك في مكان واحد.' } },
+        { pointsAt: 'sentence', glyph: { en: 'Aa', ar: 'أب' }, title: { en: 'One sentence, no forms', ar: 'جملة واحدة بلا نماذج' }, body: { en: 'Pick the words that fit. Nothing else to fill in.', ar: 'اختر الكلمات المناسبة. لا شيء آخر لتعبئته.' } },
+        { pointsAt: 'whatsapp', glyph: { en: 'WA', ar: 'و' }, title: { en: 'A person replies', ar: 'يردّ عليك شخص حقيقي' }, body: { en: 'Your brief reaches our team on WhatsApp.', ar: 'يصل طلبك إلى فريقنا عبر واتساب.' } },
+        { pointsAt: 'language', glyph: { en: 'ع', ar: 'En' }, title: { en: 'Arabic and English', ar: 'العربية والإنجليزية' }, body: { en: 'Use the site and talk to us in either language.', ar: 'استخدم الموقع وتحدّث معنا بأي من اللغتين.' } },
+        { pointsAt: 'send', glyph: '✓', title: { en: 'No account needed', ar: 'لا حاجة لحساب' }, body: { en: 'Create one later if you want your briefs in one place.', ar: 'أنشئ حساباً لاحقاً إن أردت جمع طلباتك في مكان واحد.' } },
       ],
     },
     {

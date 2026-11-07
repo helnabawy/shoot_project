@@ -13,6 +13,7 @@ export function Section({
   children,
   className,
   emphasis = false,
+  wide = false,
 }: {
   id?: string | null
   heading?: ReactNode
@@ -21,6 +22,11 @@ export function Section({
   className?: string
   /** The closing section: the heading steps up a size, the last word on the page. */
   emphasis?: boolean
+  /**
+   * From 1024 px the heading sits above the content instead of beside it and the content takes the
+   * pane's full width: for a figure that needs the room (the annotated brief).
+   */
+  wide?: boolean
 }) {
   const titled = Boolean(heading || subheading)
   return (
@@ -33,8 +39,13 @@ export function Section({
       )}
     >
       {titled ? (
-        <div className="lg:grid lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-x-16 lg:border-t lg:border-hair lg:pt-8">
-          <div className="lg:sticky lg:top-8 lg:self-start">
+        <div
+          className={cx(
+            'lg:border-t lg:border-hair lg:pt-8',
+            !wide && 'lg:grid lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-x-16',
+          )}
+        >
+          <div className={cx(!wide && 'lg:sticky lg:top-8 lg:self-start')}>
             {heading ? (
               <h2
                 className={cx(
@@ -53,7 +64,7 @@ export function Section({
               </p>
             ) : null}
           </div>
-          <div className="mt-6 lg:mt-0">{children}</div>
+          <div className={cx('mt-6', wide ? 'lg:mt-14' : 'lg:mt-0')}>{children}</div>
         </div>
       ) : (
         children

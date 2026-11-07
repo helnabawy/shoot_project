@@ -55,6 +55,7 @@
     "keyHintReturn": "Return",
     "imAProvider": "I'm a {persona}",
     "successTitle": "Brief sent",
+    "whatsappReference": "Brief ID: {reference}",
     "successReference": "Reference <code>{reference}</code>",
     "successNext": "We'll reply on WhatsApp {replyTime}.",
     "successOpenWhatsapp": "Open WhatsApp",

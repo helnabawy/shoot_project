@@ -163,6 +163,8 @@ describe('server actions', () => {
       expect(state.reference).toMatch(/^B-[A-Z0-9]{5}$/)
       expect(state.whatsappUrl).toMatch(/^https:\/\/wa\.me\/971500000000\?text=/)
       expect(decodeURIComponent(state.whatsappUrl)).toContain(state.sentence)
+      // FR-055 the brief ID travels with the message so the team can find the brief from the chat.
+      expect(decodeURIComponent(state.whatsappUrl)).toContain(`Brief ID: ${state.reference}`)
       expect(jar.get('sp_vid')).toBeTruthy()
     })
 

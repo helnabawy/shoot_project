@@ -5,20 +5,35 @@ export interface CreatorMessage {
   creatorLine?: string
 }
 
+export interface ReferenceMessage {
+  /** Fills the optional {reference} placeholder, e.g. "B-7K4Q2". */
+  reference: string
+  /** Worded line added on its own when the template has no {reference}, e.g. "Brief ID: B-7K4Q2". Defaults to `reference`. */
+  referenceLine?: string
+}
+
 /**
  * Fills a WhatsApp message or sentence template with the chosen labels (FR-049). With a creator
- * (CP-US2-S2) the optional {creator} placeholder is filled; a template without it gets the creator
- * on its own last line, so the owner never has to edit the CMS template for bookings to name them.
+ * (CP-US2-S2) the optional {creator} placeholder is filled; with a brief reference (FR-055) the optional
+ * {reference} placeholder is. A template without a placeholder gets that value on its own last line
+ * (creator first, then the brief ID), so the owner never has to edit the CMS template for them to appear.
  */
 export function renderBriefMessage(
   template: string,
   labels: Readonly<Record<string, string | undefined>>,
-  options: { creator?: CreatorMessage | undefined } = {},
+  options: { creator?: CreatorMessage | undefined; reference?: ReferenceMessage | undefined } = {},
 ): string {
-  const creator = options.creator
-  const withLine = creator && !template.includes('{creator}') ? `${template}\n${creator.creatorLine ?? creator.creator}` : template
-  const all = creator ? { ...labels, creator: creator.creator } : labels
-  return withLine
+  const { creator, reference } = options
+  const lines = [template]
+  if (creator && !template.includes('{creator}')) lines.push(creator.creatorLine ?? creator.creator)
+  if (reference && !template.includes('{reference}')) lines.push(reference.referenceLine ?? reference.reference)
+  const all: Readonly<Record<string, string | undefined>> = {
+    ...labels,
+    ...(creator ? { creator: creator.creator } : {}),
+    ...(reference ? { reference: reference.reference } : {}),
+  }
+  return lines
+    .join('\n')
     .replace(/\{([a-zA-Z][a-zA-Z0-9]*)\}/g, (_match, token: string) => all[token] ?? '')
     .replace(/[ \t]{2,}/g, ' ')
     .replace(/ ([,.،])/g, '$1')

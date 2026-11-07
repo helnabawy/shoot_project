@@ -27,6 +27,18 @@ export const HowItWorks: Block = {
       fields: [
         { name: 'title', type: 'text', required: true, localized: true },
         { name: 'body', type: 'textarea', localized: true },
+        {
+          name: 'visual',
+          type: 'select',
+          defaultValue: 'none',
+          options: [
+            { label: 'No picture', value: 'none' },
+            { label: 'The brief being written', value: 'brief' },
+            { label: 'A professional matched', value: 'match' },
+            { label: 'The finished work', value: 'work' },
+          ],
+          admin: { description: 'A small drawing of the product at this step, shown above the step.' },
+        },
       ],
     },
     optionalCta(),
@@ -49,6 +61,22 @@ export const Features: Block = {
         { name: 'title', type: 'text', required: true, localized: true },
         { name: 'body', type: 'textarea', localized: true },
         glyphField(),
+        {
+          name: 'pointsAt',
+          type: 'select',
+          defaultValue: 'none',
+          options: [
+            { label: 'Not on the drawing', value: 'none' },
+            { label: 'The sentence', value: 'sentence' },
+            { label: 'The language switch', value: 'language' },
+            { label: 'The send row', value: 'send' },
+            { label: 'The WhatsApp row', value: 'whatsapp' },
+          ],
+          admin: {
+            description:
+              'Which part of the drawing of the brief this reason points at. Each part takes one reason; the rest list under the drawing.',
+          },
+        },
       ],
     },
   ],

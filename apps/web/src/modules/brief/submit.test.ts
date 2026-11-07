@@ -23,6 +23,14 @@ describe('brief submission parsing', () => {
     expect(composeMessage(config, result.brief.labels)).toBe('Hi! I need a photographer for a wedding.')
   })
 
+  it('FR-055 the WhatsApp message ends with the brief ID', () => {
+    const result = parseBrief(config, form({ persona: 'photographer', occasion: 'wedding', duration: '2h', location: 'dubai' }), { today: '2026-11-07' })
+    if (!result.ok) throw new Error('expected a valid brief')
+    expect(composeMessage(config, result.brief.labels, result.brief.values, undefined, { reference: 'B-7K4Q2', referenceLine: 'Brief ID: B-7K4Q2' })).toBe(
+      'Hi! I need a photographer for a wedding.\nBrief ID: B-7K4Q2',
+    )
+  })
+
   it('formats a chosen date in the page language', () => {
     const result = parseBrief(config, form({ persona: 'photographer', occasion: 'event', duration: '1h', location: 'sharjah', date: '2026-11-21' }), { today: '2026-11-07' })
     expect(result.ok && result.brief.labels.date).toBe('Sat 21 Nov')

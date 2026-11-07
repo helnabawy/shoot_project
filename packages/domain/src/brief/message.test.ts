@@ -64,6 +64,38 @@ describe('CP-US2-S2 the creator in the message', () => {
   })
 })
 
+describe('FR-055 the brief ID in the message', () => {
+  const labels = { persona: 'photographer' }
+  const reference = { reference: 'B-7K4Q2', referenceLine: 'Brief ID: B-7K4Q2' }
+
+  it('a template without the placeholder gets the brief ID on its own last line', () => {
+    expect(renderBriefMessage('Hi! I need a {persona}.', labels, { reference })).toBe('Hi! I need a photographer.\nBrief ID: B-7K4Q2')
+  })
+
+  it('fills the optional {reference} placeholder instead of adding a line', () => {
+    expect(renderBriefMessage('Hi! Brief {reference}: I need a {persona}.', labels, { reference })).toBe('Hi! Brief B-7K4Q2: I need a photographer.')
+  })
+
+  it('uses the bare reference as the line when no separate line is given', () => {
+    expect(renderBriefMessage('Hi!', labels, { reference: { reference: 'B-7K4Q2' } })).toBe('Hi!\nB-7K4Q2')
+  })
+
+  it('puts the brief ID after the creator line', () => {
+    const creator = { creator: 'Sara Khan (CR-7K4Q2)', creatorLine: 'Creator: Sara Khan (CR-7K4Q2)' }
+    expect(renderBriefMessage('Hi!', labels, { creator, reference })).toBe('Hi!\nCreator: Sara Khan (CR-7K4Q2)\nBrief ID: B-7K4Q2')
+  })
+
+  it('drops a stray {reference} token when there is no reference', () => {
+    expect(renderBriefMessage('Hi! {reference}', labels)).toBe('Hi!')
+  })
+
+  it('keeps the Arabic line intact', () => {
+    expect(renderBriefMessage('أحتاج {persona}.', { persona: 'مصوّر' }, { reference: { reference: 'B-7K4Q2', referenceLine: 'رقم الطلب: B-7K4Q2' } })).toBe(
+      'أحتاج مصوّر.\nرقم الطلب: B-7K4Q2',
+    )
+  })
+})
+
 describe('formatBriefDate', () => {
   it('formats in English and Arabic with Western digits', () => {
     expect(formatBriefDate('2026-11-21', 'en')).toBe('Sat 21 Nov')

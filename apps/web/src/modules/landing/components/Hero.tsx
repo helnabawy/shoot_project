@@ -122,11 +122,6 @@ export function Hero({
             'flex flex-col gap-2.5 pt-4 sm:px-6 lg:max-w-[1080px] lg:flex-row lg:items-baseline lg:justify-between lg:gap-10 lg:pt-5',
         )}
       >
-        {useBuilder && builder?.helperText ? (
-          <p className="brief-helper text-[14px] leading-relaxed text-pretty text-mute">
-            {builder.helperText}
-          </p>
-        ) : null}
         {chips.length ? (
           <ul
             className={cx(

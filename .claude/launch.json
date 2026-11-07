@@ -18,6 +18,15 @@
         "export PATH=\"$HOME/.nvm/versions/node/v24.22.2/bin:$PATH\" && cd apps/web && pnpm dev -p 3001"
       ],
       "port": 3001
+    },
+    {
+      "name": "web-main-3002",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "export PATH=\"$HOME/.nvm/versions/node/v24.22.2/bin:$PATH\" && cd apps/web && DATABASE_URI=postgres://shoot:shoot@127.0.0.1:5432/shoot_infographics NEXT_PUBLIC_SITE_URL=http://localhost:3002 pnpm dev -p 3002"
+      ],
+      "port": 3002
     }
   ]
 }

@@ -365,3 +365,35 @@ html.js .native-picker::-webkit-calendar-picker-indicator {
 :lang(ar) :is(h1, h2, h3) {
   letter-spacing: 0;
 }
+
+/* How it works: the track draws itself across, start to end, as the steps scroll into view, and the
+   chevron at its end arrives last. Only where scroll-driven animation exists and motion is welcome;
+   everywhere else the track is simply there. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .step-track {
+      transform-origin: 0 50%;
+      animation: step-track-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 30% cover 42%;
+    }
+    [dir='rtl'] .step-track {
+      transform-origin: 100% 50%;
+    }
+    .step-track-end {
+      animation: step-track-end linear both;
+      animation-timeline: view();
+      animation-range: entry 70% cover 46%;
+    }
+  }
+}
+@keyframes step-track-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes step-track-end {
+  from {
+    opacity: 0;
+  }
+}

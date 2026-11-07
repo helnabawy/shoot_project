@@ -1,5 +1,5 @@
 import { joinSentence, omitTokens, parseSentence } from '@shoot/domain/brief/sentence'
-import { formatBriefDate, renderBriefMessage, type CreatorMessage } from '@shoot/domain/brief/message'
+import { formatBriefDate, renderBriefMessage, type CreatorMessage, type ReferenceMessage } from '@shoot/domain/brief/message'
 import { optionsForSlot } from '@shoot/domain/brief/options'
 import { joinMultiValue, splitMultiValue, validateBrief, type SlotRule } from '@shoot/domain/brief/validate'
 import { joinList } from '@shoot/domain/personas'
@@ -124,10 +124,11 @@ const withoutUnset = (config: BriefBuilderConfig, template: string, values: Reco
 export const composeSentence = (config: BriefBuilderConfig, labels: Record<string, string>, values: Record<string, string> = {}) =>
   renderBriefMessage(withoutUnset(config, config.sentence, values), labels)
 
-/** The WhatsApp message, worded the same way as the sentence; with a creator it names them (CP-US2-S2). */
+/** The WhatsApp message, worded the same way as the sentence; it names a creator (CP-US2-S2) and carries the brief ID (FR-055). */
 export const composeMessage = (
   config: BriefBuilderConfig,
   labels: Record<string, string>,
   values: Record<string, string> = {},
   creator?: CreatorMessage,
-) => renderBriefMessage(withoutUnset(config, config.whatsappTemplate, values), labels, { creator })
+  reference?: ReferenceMessage,
+) => renderBriefMessage(withoutUnset(config, config.whatsappTemplate, values), labels, { creator, reference })

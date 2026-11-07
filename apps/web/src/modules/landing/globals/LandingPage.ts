@@ -164,7 +164,7 @@ export const LandingPage: GlobalConfig = {
               name: 'whatsappTemplate',
               type: 'textarea',
               localized: true,
-              admin: { description: 'The WhatsApp message sent with the brief. Uses the same {words} as the sentence.' },
+              admin: { description: 'The WhatsApp message sent with the brief. Uses the same {words} as the sentence; the brief ID is added on its own line, or where you put {reference}.' },
             },
             { name: 'successMessage', type: 'textarea', localized: true },
             {

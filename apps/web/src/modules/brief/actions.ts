@@ -67,8 +67,6 @@ export async function submitBrief(_prev: BriefState, form: FormData): Promise<Br
   const sentence = composeSentence(config, brief.labels, brief.values)
   const creatorText = creator ? `${creator.displayName} (${formatCreatorCode(settings.creatorCodePrefix ?? 'CR', creator.code)})` : null
   const creatorLine = creatorText ? (await getTranslations({ locale, namespace: 'creators.booking' }))('whatsappLine', { creator: creatorText }) : null
-  const message = composeMessage(config, brief.labels, brief.values, creatorText && creatorLine ? { creator: creatorText, creatorLine } : undefined)
-  const whatsappUrl = buildWhatsAppLink(settings.whatsappNumber, message)
   const replyTime = settings.expectedReplyTime ?? ''
 
   try {
@@ -111,6 +109,17 @@ export async function submitBrief(_prev: BriefState, form: FormData): Promise<Br
       })
       reference = created.reference ?? ''
     }
+
+    // The brief ID goes in the message so the team can find the brief from the chat (FR-055).
+    const referenceLine = reference ? (await getTranslations({ locale, namespace: 'brief' }))('whatsappReference', { reference }) : null
+    const message = composeMessage(
+      config,
+      brief.labels,
+      brief.values,
+      creatorText && creatorLine ? { creator: creatorText, creatorLine } : undefined,
+      reference && referenceLine ? { reference, referenceLine } : undefined,
+    )
+    const whatsappUrl = buildWhatsAppLink(settings.whatsappNumber, message)
 
     if (!hasJs) redirect(whatsappUrl)
     return { status: 'ok', reference: reference ?? '', whatsappUrl, sentence, replyTime }

@@ -954,7 +954,7 @@ export interface LandingPage {
     submitLabel?: string | null;
     helperText?: string | null;
     /**
-     * The WhatsApp message sent with the brief. Uses the same {words} as the sentence.
+     * The WhatsApp message sent with the brief. Uses the same {words} as the sentence; the brief ID is added on its own line, or where you put {reference}.
      */
     whatsappTemplate?: string | null;
     successMessage?: string | null;
@@ -1018,6 +1018,10 @@ export interface HowItWorksBlock {
     | {
         title: string;
         body?: string | null;
+        /**
+         * A small drawing of the product at this step, shown above the step.
+         */
+        visual?: ('none' | 'brief' | 'match' | 'work') | null;
         id?: string | null;
       }[]
     | null;
@@ -1055,6 +1059,10 @@ export interface FeaturesBlock {
          * Up to 3 characters shown in the small tile at the start of the row, e.g. "W" or "DXB".
          */
         glyph?: string | null;
+        /**
+         * Which part of the drawing of the brief this reason points at. Each part takes one reason; the rest list under the drawing.
+         */
+        pointsAt?: ('none' | 'sentence' | 'language' | 'send' | 'whatsapp') | null;
         id?: string | null;
       }[]
     | null;
@@ -1451,6 +1459,7 @@ export interface HowItWorksBlockSelect<T extends boolean = true> {
     | {
         title?: T;
         body?: T;
+        visual?: T;
         id?: T;
       };
   cta?:
@@ -1477,6 +1486,7 @@ export interface FeaturesBlockSelect<T extends boolean = true> {
         title?: T;
         body?: T;
         glyph?: T;
+        pointsAt?: T;
         id?: T;
       };
   id?: T;

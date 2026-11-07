@@ -55,6 +55,7 @@
     "keyHintReturn": "إدخال",
     "imAProvider": "أنا {persona}",
     "successTitle": "تم إرسال الطلب",
+    "whatsappReference": "رقم الطلب: {reference}",
     "successReference": "رقم المرجع <code>{reference}</code>",
     "successNext": "سنردّ عليك عبر واتساب {replyTime}.",
     "successOpenWhatsapp": "افتح واتساب",
