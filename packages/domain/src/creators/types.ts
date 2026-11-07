@@ -41,6 +41,8 @@ export interface CreatorSummary {
   featured: boolean
   /** ISO date of the first publication; drives newest-first ordering. */
   publishedAt: string
+  /** Option values the creator satisfies for brief slots that filter creators (feature 003, research §5). */
+  matchValues?: string[]
 }
 
 export interface DirectoryFilters {

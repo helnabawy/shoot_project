@@ -37,6 +37,8 @@ describe('creator summary', () => {
       languages: ['en', 'ar'], sampleCounts: { '5': 1, '6': 1 }, sampleCount: 3, featured: true, publishedAt: '2026-11-07T08:00:00.000Z',
     })
     expect(toSummary(profile(), listing({ verifiedAt: null }), parents, '2026-01-01').publishedAt).toBe('2026-01-01')
+    expect(s.matchValues).toEqual([])
+    expect(toSummary(profile(), { ...listing(), matchValues: ['woman'] }, parents).matchValues).toEqual(['woman'])
   })
 
   it('uses the thumbnail, then the card size, then the original; none gives no photo', () => {

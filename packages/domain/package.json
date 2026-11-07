@@ -15,7 +15,9 @@
     "./brief/validate": "./src/brief/validate.ts",
     "./brief/sentence": "./src/brief/sentence.ts",
     "./brief/options": "./src/brief/options.ts",
-    "./brief/message": "./src/brief/message.ts"
+    "./brief/message": "./src/brief/message.ts",
+    "./pricing": "./src/pricing/index.ts",
+    "./booking": "./src/booking/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",

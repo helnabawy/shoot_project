@@ -19,11 +19,21 @@ import { LegalAcceptances } from './modules/legal/collections/LegalAcceptances'
 import { LegalDocuments } from './modules/legal/collections/LegalDocuments'
 import { Locations } from './modules/creators/collections/Locations'
 import { LandingPage } from './modules/landing/globals/LandingPage'
+import { AvailabilityBlocks } from './modules/booking/collections/AvailabilityBlocks'
+import { BookingEvents } from './modules/booking/collections/BookingEvents'
+import { Bookings } from './modules/booking/collections/Bookings'
+import { Notifications } from './modules/booking/collections/Notifications'
+import { Payments } from './modules/booking/collections/Payments'
+import { Quotations } from './modules/booking/collections/Quotations'
 import { Media } from './modules/media/collections/Media'
 import { Categories } from './modules/personas/collections/Categories'
 import { Pages } from './modules/pages/collections/Pages'
 import { RemovedPaths } from './modules/pages/collections/RemovedPaths'
 import { Personas } from './modules/personas/collections/Personas'
+import { AddOns } from './modules/pricing/collections/AddOns'
+import { PromoCodes } from './modules/pricing/collections/PromoCodes'
+import { ServiceTiers } from './modules/pricing/collections/ServiceTiers'
+import { TravelFees } from './modules/pricing/collections/TravelFees'
 import { SiteSettings } from './modules/site-settings/globals/SiteSettings'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -36,7 +46,35 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: ' · Shoot Project' },
   },
-  collections: [Users, Personas, Categories, Locations, CreatorProfiles, CreatorListings, OptionSets, Briefs, Media, RateLimits, Pages, RemovedPaths, LegalDocuments, LegalAcceptances, Articles, ArticleCategories, Authors],
+  collections: [
+    Users,
+    Personas,
+    Categories,
+    Locations,
+    CreatorProfiles,
+    CreatorListings,
+    OptionSets,
+    Briefs,
+    Bookings,
+    Quotations,
+    Payments,
+    AvailabilityBlocks,
+    BookingEvents,
+    Notifications,
+    ServiceTiers,
+    TravelFees,
+    AddOns,
+    PromoCodes,
+    Media,
+    RateLimits,
+    Pages,
+    RemovedPaths,
+    LegalDocuments,
+    LegalAcceptances,
+    Articles,
+    ArticleCategories,
+    Authors,
+  ],
   globals: [LandingPage, SiteSettings],
   localization: {
     locales: [

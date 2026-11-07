@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import { adminToken, auth, expectNoSeriousA11yIssues } from './helpers'
+import { setQuickMatch } from './helpers'
 
 // Demo seed: D2222 Sara (photographer, 4 samples, featured), D7777 Maya (photo + video, 4 samples),
 // D6666 Kareem (no samples), D5555 Noor (in review), D8888 Zane (paused).
@@ -29,6 +30,7 @@ const stubWhatsApp = (page: Page) =>
   page.context().route(/https:\/\/(wa\.me|api\.whatsapp\.com)\/.*/, (route) => route.fulfill({ body: 'whatsapp' }))
 
 test.describe('CP-US2 view a creator profile', () => {
+
   test('@smoke CP-US2-S1 CP-FR-007 the profile renders every section from the data, and the code redirects to one address', async ({ page }, info) => {
     await page.goto('/creators/CR-D2222')
     await expect(page).toHaveURL(/\/creators\/d2222$/)
@@ -108,6 +110,9 @@ test.describe('CP-US2 view a creator profile', () => {
 })
 
 test.describe('CP-US2-S2 booking a creator', () => {
+  // Feature 002 flow: the brief goes to WhatsApp. Quick Match (003) has its own specs.
+  test.beforeAll(async ({ request }) => setQuickMatch(request, false))
+  test.afterAll(async ({ request }) => setQuickMatch(request, true))
   test('@smoke CP-US2-S2 "Book with this creator" opens the brief with the creator fixed; sending it names them and records them', async ({ page, request }, info) => {
     test.skip(info.project.name === 'nojs' || info.project.name === 'ar-mobile', 'the JavaScript flow in English; the no-JS and Arabic forms are covered below')
     await stubWhatsApp(page)

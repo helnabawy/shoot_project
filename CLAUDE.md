@@ -29,7 +29,15 @@ implemented on this branch, open items in its `tasks.md`). Feature 005 is
 `specs/005-marketing-pages/` (editor-built pages, versioned legal documents, guides with RSS, `/hire/…`
 intent pages, not-found/removed: modules `apps/web/src/modules/{pages,legal,guides}/`, rules in
 `packages/domain/src/pages/`, test-id prefix `MP-`; implemented on this branch, open items in its
-`tasks.md`). The shootix.ae feature map and drafts for 003 and 004 are in `specs/ROADMAP.md`.
+`tasks.md`).
+Feature 003 is `specs/003-quick-match-booking/`
+(Quick Match steps 2–4 and bookings: `/match/{ref}/{key}` (step 2), `/match/{ref}/{key}/details`
+(step 3), `/q/{ref}/{key}` (quotation + booking status, print layout), `/account/bookings`,
+`/account/availability`, cron `/api/cron/bookings`; modules `apps/web/src/modules/booking/` and
+`apps/web/src/modules/pricing/` (the price-rule core 004 builds on), rules in
+`packages/domain/src/booking/` and `packages/domain/src/pricing/`, test-id prefix `QM-`; no payment
+provider: payments are recorded by an admin). The shootix.ae feature map and the draft for 004 are in
+`specs/ROADMAP.md`.
 
 ## Stack (binding, see constitution "Technology Stack & Constraints")
 
@@ -89,7 +97,7 @@ pnpm db:migrate                   # apply committed migrations
 pnpm seed                         # default bilingual content + admin from .env
 pnpm dev                          # http://localhost:3000, admin at /admin
 pnpm typecheck && pnpm lint && pnpm test
-pnpm check:scenarios              # every quickstart scenario has a test named with its CP-/MP- id
+pnpm check:scenarios              # every quickstart scenario has a test named with its CP-/MP-/QM- id
 pnpm test:coverage                # domain 100 %, app >= 80 %
 pnpm build && pnpm test:e2e       # or BASE_URL=http://localhost:3100 against a running server
 pnpm db:migration:create <name>   # after any schema change; CI fails on drift

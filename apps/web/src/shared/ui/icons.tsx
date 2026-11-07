@@ -153,3 +153,37 @@ export const PlayIcon = (p: IconProps) => (
     <path d="M7 4.75v10.5L15.25 10Z" fill="currentColor" />
   </Svg>
 )
+export const PlusIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M10 4.5v11M4.5 10h11" />
+  </Svg>
+)
+export const MinusIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M4.5 10h11" />
+  </Svg>
+)
+export const AlertIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M10 3.5 17 16H3l7-12.5Z" />
+    <path d="M10 8.5v3.25M10 14h.01" />
+  </Svg>
+)
+export const BellIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M5.5 13.5V9a4.5 4.5 0 0 1 9 0v4.5l1.25 1.5H4.25l1.25-1.5Z" />
+    <path d="M8.5 17h3" />
+  </Svg>
+)
+export const DocumentIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M6 2.75h5.5L15 6.25v11H6a1 1 0 0 1-1-1V3.75a1 1 0 0 1 1-1Z" />
+    <path d="M11.25 2.75v3.75H15M7.75 10.5h4.5M7.75 13.5h4.5" />
+  </Svg>
+)
+export const HelpIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="10" cy="10" r="7" />
+    <path d="M8 8a2 2 0 1 1 2.75 1.85c-.45.2-.75.6-.75 1.1v.3M10 13.75h.01" />
+  </Svg>
+)

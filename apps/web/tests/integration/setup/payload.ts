@@ -41,3 +41,26 @@ export async function createUser(
     context: quiet,
   })
 }
+
+/** A read the caller may not make at all counts as nothing read (Payload throws Forbidden instead). */
+export async function readable<T extends { totalDocs: number }>(run: () => Promise<T>): Promise<number> {
+  try {
+    return (await run()).totalDocs
+  } catch (error) {
+    if ((error as Error).name === 'Forbidden') return 0
+    throw error
+  }
+}
+
+/** Rejects with a ValidationError or APIError carrying this message key. */
+export async function rejectsWithKey(run: Promise<unknown>, key: string): Promise<void> {
+  try {
+    await run
+  } catch (error) {
+    const e = error as Error & { data?: unknown }
+    const text = `${e.message} ${JSON.stringify(e.data ?? '')}`
+    if (text.includes(key)) return
+    throw new Error(`expected ${key}, got: ${text}`)
+  }
+  throw new Error(`expected a rejection with ${key}`)
+}

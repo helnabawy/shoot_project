@@ -39,4 +39,4 @@ export interface BriefBuilderConfig {
 export type BriefState =
   | { status: 'idle' }
   | { status: 'error'; errors: Record<string, string>; formError?: string }
-  | { status: 'ok'; reference: string; whatsappUrl: string; sentence: string; replyTime: string }
+  | { status: 'ok'; reference: string; whatsappUrl: string; sentence: string; replyTime: string; /** Step 2 of Quick Match, when it is on (feature 003). */ matchUrl?: string }

@@ -178,9 +178,17 @@ describe('server actions', () => {
       expect((await payload.count({ collection: 'briefs' })).totalDocs).toBe(1)
     })
 
-    it('FR-055 without JavaScript the visitor is sent straight to WhatsApp', async () => {
+    it('FR-055 without JavaScript the visitor is sent straight to WhatsApp (Quick Match off)', async () => {
+      const payload = await getTestPayload()
+      await payload.updateGlobal({ slug: 'site-settings', data: { quickMatch: { enabled: false } } as never, context: { disableRevalidate: true } })
       const target = await expectRedirect(() => submitBrief({ status: 'idle' }, briefForm({ js: '0' })))
       expect(String(target)).toMatch(/^https:\/\/wa\.me\//)
+      await payload.updateGlobal({ slug: 'site-settings', data: { quickMatch: { enabled: true } } as never, context: { disableRevalidate: true } })
+    })
+
+    it('QM-FR-001 without JavaScript, with Quick Match on, the visitor goes to step 2', async () => {
+      const target = await expectRedirect(() => submitBrief({ status: 'idle' }, briefForm({ js: '0', occasion: 'portrait' })))
+      expect(String(target)).toMatch(/^\/match\/B-[0-9A-Z]{5}\/[A-Za-z0-9_-]{43}$/)
     })
 
     it('FR-048 an option outside the set is a field error', async () => {

@@ -3,6 +3,7 @@ import type { GlobalConfig } from 'payload'
 import { anyone, isAdmin } from '@/shared/payload/access'
 import { validateSlug } from '@/shared/payload/fields/slug'
 import { revalidateTagAfterChange } from '@/shared/payload/hooks/revalidate'
+import { quickMatchTab } from './quickMatch'
 
 const normalisePhone = ({ value }: { value?: unknown }) =>
   typeof value === 'string' && value ? (normaliseE164(value) ?? value) : value
@@ -181,6 +182,7 @@ export const SiteSettings: GlobalConfig = {
             },
           ],
         },
+        quickMatchTab,
       ],
     },
   ],

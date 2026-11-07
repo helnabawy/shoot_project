@@ -18,8 +18,14 @@ export const envSchema = z
     S3_ENDPOINT: optional,
     S3_ACCESS_KEY_ID: optional,
     S3_SECRET_ACCESS_KEY: optional,
+    NODE_ENV: optional,
+    E2E_CLOCK: optional,
   })
   .superRefine((env, ctx) => {
+    // The e2e clock override moves time for /api/cron/bookings; it must never reach a deployment.
+    if (env.E2E_CLOCK === '1' && env.NODE_ENV === 'production' && !/^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(env.NEXT_PUBLIC_SITE_URL)) {
+      ctx.addIssue({ code: 'custom', path: ['E2E_CLOCK'], message: 'is for local end-to-end runs only; unset it in production' })
+    }
     const set = s3Keys.filter((k) => env[k])
     if (set.length > 0 && set.length < s3Keys.length) {
       ctx.addIssue({

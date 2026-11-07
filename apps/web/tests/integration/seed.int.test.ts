@@ -1,3 +1,4 @@
+import { NOTIFICATION_EVENTS, NOTIFICATION_PLACEHOLDERS, notificationsFor } from '@shoot/domain/booking'
 import { findUnknownPlaceholders, KNOWN_PLACEHOLDERS } from '@shoot/domain/content'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { seed } from '@/shared/payload/seed/seed'
@@ -52,7 +53,7 @@ describe('FR-032 seed', () => {
 
   it('seed copy contains no unknown placeholders in either language', async () => {
     const payload = await getTestPayload()
-    const known = [...KNOWN_PLACEHOLDERS, 'persona', 'occasion', 'date', 'duration', 'location', 'shotBy']
+    const known = [...KNOWN_PLACEHOLDERS, 'persona', 'occasion', 'date', 'duration', 'location', 'shotBy', ...NOTIFICATION_PLACEHOLDERS]
     for (const locale of ['en', 'ar'] as const) {
       const landing = await payload.findGlobal({ slug: 'landing-page', locale })
       const settings = await payload.findGlobal({ slug: 'site-settings', locale })
@@ -130,4 +131,55 @@ describe('002 seed: no invented proof', () => {
     const featured = await payload.find({ collection: 'creator-listings', where: { featured: { equals: true } }, depth: 0 })
     expect(featured.totalDocs).toBe(1)
   }, 120_000)
+})
+
+describe('003 seed: Quick Match wording, no invented prices', () => {
+  beforeAll(async () => {
+    await resetDatabase()
+    await seed(await getTestPayload(), { log: () => {} })
+  })
+
+  it('turns Quick Match on with every notification message in both languages', async () => {
+    const payload = await getTestPayload()
+    for (const locale of ['en', 'ar'] as const) {
+      const settings = (await payload.findGlobal({ slug: 'site-settings', locale, depth: 0 })) as unknown as { quickMatch: { enabled: boolean; quotationValidDays: number; templates: { event: string; audience: string; text: string }[] } }
+      expect(settings.quickMatch).toMatchObject({ enabled: true, quotationValidDays: 7 })
+      for (const event of NOTIFICATION_EVENTS) {
+        for (const audience of notificationsFor(event)) {
+          const row = settings.quickMatch.templates.find((t) => t.event === event && t.audience === audience)
+          expect(row?.text, `${locale} ${event} ${audience}`).toBeTruthy()
+        }
+      }
+    }
+  })
+
+  it('marks "anyone" as no preference, the shot-by step as filtering, and links occasions to specialties', async () => {
+    const payload = await getTestPayload()
+    const shotBy = (await payload.find({ collection: 'option-sets', where: { slug: { equals: 'shot-by' } }, depth: 0 })).docs[0]!
+    expect(shotBy.options?.find((o) => o.value === 'anyone')?.matchesAny).toBe(true)
+    expect(shotBy.options?.find((o) => o.value === 'woman')?.matchesAny).toBe(false)
+    const occasions = (await payload.find({ collection: 'option-sets', where: { slug: { equals: 'occasions' } }, depth: 1 })).docs[0]!
+    const wedding = occasions.options?.find((o) => o.value === 'wedding-engagement')?.category
+    expect(typeof wedding === 'object' && wedding?.slug).toBe('wedding-engagement')
+    const landing = await payload.findGlobal({ slug: 'landing-page', depth: 0 })
+    expect(landing.briefBuilder?.slots?.find((s) => s.token === 'shotBy')?.filtersCreators).toBe(true)
+  })
+
+  it('creates no prices, promo codes, bookings or quotations; the demo seed adds demo prices only', async () => {
+    const payload = await getTestPayload()
+    for (const collection of ['service-tiers', 'travel-fees', 'add-ons', 'promo-codes', 'bookings', 'quotations'] as const) {
+      expect((await payload.count({ collection })).totalDocs, collection).toBe(0)
+    }
+    const options = { log: () => {}, demoCreators: true, siteUrl: 'http://localhost:3000', demoPassword: 'demo-password-1' }
+    await seed(payload, options)
+    await seed(payload, options)
+    expect((await payload.count({ collection: 'service-tiers' })).totalDocs).toBe(10)
+    expect((await payload.count({ collection: 'travel-fees' })).totalDocs).toBe(8)
+    expect((await payload.count({ collection: 'promo-codes', where: { code: { equals: 'WELCOME20' } } })).totalDocs).toBe(1)
+    // One demo quotation (Lighthouse), idempotent; never in the default seed (checked above).
+    expect((await payload.find({ collection: 'bookings', depth: 0, overrideAccess: true })).docs.map((b) => [b.reference, b.state])).toEqual([['Q-D2222', 'quoted']])
+    expect((await payload.find({ collection: 'briefs', where: { reference: { equals: 'B-D2222' } }, depth: 0 })).totalDocs).toBe(1)
+    const tier = (await payload.find({ collection: 'service-tiers', limit: 1, locale: 'ar', depth: 0 })).docs[0]!
+    expect(tier.title).toContain('سعر تجريبي')
+  }, 180_000)
 })

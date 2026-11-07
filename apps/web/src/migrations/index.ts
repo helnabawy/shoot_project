@@ -4,6 +4,7 @@ import * as migration_20261107_005309_brief_multiple_personas from './20261107_0
 import * as migration_20261107_073926_creator_profiles from './20261107_073926_creator_profiles';
 import * as migration_20261107_115156_landing_infographics from './20261107_115156_landing_infographics';
 import * as migration_20261107_133522_marketing_pages from './20261107_133522_marketing_pages';
+import * as migration_20261107_150007_quick_match from './20261107_150007_quick_match';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20261107_133522_marketing_pages.up,
     down: migration_20261107_133522_marketing_pages.down,
-    name: '20261107_133522_marketing_pages'
+    name: '20261107_133522_marketing_pages',
+  },
+  {
+    up: migration_20261107_150007_quick_match.up,
+    down: migration_20261107_150007_quick_match.down,
+    name: '20261107_150007_quick_match'
   },
 ];

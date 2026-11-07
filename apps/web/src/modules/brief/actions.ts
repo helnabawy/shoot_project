@@ -9,6 +9,8 @@ import { getTranslations } from 'next-intl/server'
 import { isLocale, type Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
 import { errorStatus } from '@/shared/payload/errors'
+import { accessKey, newSalt } from '../booking/keys'
+import { matchPath } from '../booking/paths'
 import { getCurrentUser } from '../auth/session'
 import { getCreatorByCode } from '../creators'
 import { getActivePersonas } from '../personas/queries'
@@ -81,6 +83,14 @@ export async function submitBrief(_prev: BriefState, form: FormData): Promise<Br
       depth: 0,
     })
     let reference = recent.docs[0]?.reference ?? null
+    // Quick Match (feature 003): the brief gets a private link to step 2 (research §1–§2).
+    const quickMatch = settings.quickMatch?.enabled === true
+    const salt = quickMatch ? newSalt() : null
+
+    if (reference && salt) {
+      // A replayed brief keeps its record but gets a fresh working link.
+      await payload.update({ collection: 'briefs', id: recent.docs[0]!.id, data: { accessSalt: salt } as never, overrideAccess: true, context: { disableRevalidate: true } })
+    }
 
     if (!reference) {
       const slugs = brief.personaSlugs
@@ -105,7 +115,7 @@ export async function submitBrief(_prev: BriefState, form: FormData): Promise<Br
         overrideAccess: false,
         user: user ?? undefined,
         // `creatorResolved` lets the briefs hook keep the creator; REST callers cannot set it.
-        context: { visitorId: visitor, ...(creator ? { creatorResolved: true } : {}) },
+        context: { visitorId: visitor, ...(creator ? { creatorResolved: true } : {}), ...(salt ? { accessSalt: salt } : {}) },
       })
       reference = created.reference ?? ''
     }
@@ -121,8 +131,10 @@ export async function submitBrief(_prev: BriefState, form: FormData): Promise<Br
     )
     const whatsappUrl = buildWhatsAppLink(settings.whatsappNumber, message)
 
-    if (!hasJs) redirect(whatsappUrl)
-    return { status: 'ok', reference: reference ?? '', whatsappUrl, sentence, replyTime }
+    // Quick Match (feature 003): continue to step 2 when it is on; WhatsApp stays the secondary action.
+    const matchUrl = salt && reference ? matchPath(reference, accessKey(salt, 'brief'), locale) : undefined
+    if (!hasJs) redirect(matchUrl ?? whatsappUrl)
+    return { status: 'ok', reference: reference ?? '', whatsappUrl, sentence, replyTime, ...(matchUrl ? { matchUrl } : {}) }
   } catch (error) {
     if (errorStatus(error) === 429) {
       return { status: 'error', errors: {}, formError: 'brief.errors.tooMany' }

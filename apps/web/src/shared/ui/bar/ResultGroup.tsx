@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
 import { cx } from './cx'
 
 /**
@@ -20,7 +20,12 @@ export function ResultGroup({
   message?: ReactNode
   className?: string
 }) {
-  const heading = <span className="group-label block px-4 pt-2.5 pb-1">{label}</span>
+  const labelId = `${useId()}-label`
+  const heading = (
+    <span id={labelId} className="group-label block px-4 pt-2.5 pb-1">
+      {label}
+    </span>
+  )
   if (as === 'fieldset') {
     return (
       <fieldset
@@ -35,7 +40,7 @@ export function ResultGroup({
     )
   }
   return (
-    <div id={id} role="group" className={cx('pb-1', className)}>
+    <div id={id} role="group" aria-labelledby={labelId} className={cx('pb-1', className)}>
       {heading}
       {message}
       {children}

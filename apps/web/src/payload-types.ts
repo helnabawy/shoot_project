@@ -75,6 +75,16 @@ export interface Config {
     'creator-listings': CreatorListing;
     'option-sets': OptionSet;
     briefs: Brief;
+    bookings: Booking;
+    quotations: Quotation;
+    payments: Payment;
+    'availability-blocks': AvailabilityBlock;
+    'booking-events': BookingEvent;
+    notifications: Notification;
+    'service-tiers': ServiceTier;
+    'travel-fees': TravelFee;
+    'add-ons': AddOn;
+    'promo-codes': PromoCode;
     media: Media;
     'rate-limits': RateLimit;
     pages: Page;
@@ -89,7 +99,14 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    bookings: {
+      quotations: 'quotations';
+      payments: 'payments';
+      events: 'booking-events';
+      notifications: 'notifications';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     personas: PersonasSelect<false> | PersonasSelect<true>;
@@ -99,6 +116,16 @@ export interface Config {
     'creator-listings': CreatorListingsSelect<false> | CreatorListingsSelect<true>;
     'option-sets': OptionSetsSelect<false> | OptionSetsSelect<true>;
     briefs: BriefsSelect<false> | BriefsSelect<true>;
+    bookings: BookingsSelect<false> | BookingsSelect<true>;
+    quotations: QuotationsSelect<false> | QuotationsSelect<true>;
+    payments: PaymentsSelect<false> | PaymentsSelect<true>;
+    'availability-blocks': AvailabilityBlocksSelect<false> | AvailabilityBlocksSelect<true>;
+    'booking-events': BookingEventsSelect<false> | BookingEventsSelect<true>;
+    notifications: NotificationsSelect<false> | NotificationsSelect<true>;
+    'service-tiers': ServiceTiersSelect<false> | ServiceTiersSelect<true>;
+    'travel-fees': TravelFeesSelect<false> | TravelFeesSelect<true>;
+    'add-ons': AddOnsSelect<false> | AddOnsSelect<true>;
+    'promo-codes': PromoCodesSelect<false> | PromoCodesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'rate-limits': RateLimitsSelect<false> | RateLimitsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
@@ -397,6 +424,10 @@ export interface CreatorListing {
    * Shown to the provider in their status banner.
    */
   reviewNote?: string | null;
+  /**
+   * Quick Match: option values this creator satisfies for brief slots that filter creators (e.g. woman).
+   */
+  matchValues?: string[] | null;
   submittedAt?: string | null;
   verifiedAt?: string | null;
   updatedAt: string;
@@ -429,6 +460,14 @@ export interface OptionSet {
          * Empty = every persona.
          */
         personas?: (number | Persona)[] | null;
+        /**
+         * Quick Match: this option means "no preference" (e.g. "anyone").
+         */
+        matchesAny?: boolean | null;
+        /**
+         * Quick Match: creators with this specialty are listed first.
+         */
+        category?: (number | null) | Category;
         id?: string | null;
       }[]
     | null;
@@ -466,7 +505,381 @@ export interface Brief {
   creator?: (number | null) | CreatorProfile;
   sourcePath?: string | null;
   fingerprint?: string | null;
+  accessSalt?: string | null;
   website?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Every quotation request and where it stands. Amounts are in fils (AED × 100).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookings".
+ */
+export interface Booking {
+  id: number;
+  reference: string;
+  state:
+    | 'quoted'
+    | 'accepted'
+    | 'confirmed'
+    | 'paid'
+    | 'scheduled'
+    | 'delivered'
+    | 'completed'
+    | 'cancelled'
+    | 'expired'
+    | 'on-hold';
+  /**
+   * Applied through the booking rules; refused if not allowed from the current state. Record payments in Payments.
+   */
+  adminAction?: ('confirm' | 'schedule' | 'deliver' | 'complete' | 'hold' | 'cancel') | null;
+  revision?: number | null;
+  brief: number | Brief;
+  quotation?: (number | null) | Quotation;
+  member?: (number | null) | User;
+  accessSalt?: string | null;
+  client?: {
+    name?: string | null;
+    whatsapp?: string | null;
+    locale?: ('en' | 'ar') | null;
+  };
+  /**
+   * Shoot day (UAE), YYYY-MM-DD
+   */
+  date?: string | null;
+  location?: string | null;
+  totalFils?: number | null;
+  personas?: (number | Persona)[] | null;
+  /**
+   * One row per professional type. Change the creator to reassign; the confirmation window restarts.
+   */
+  assignments?:
+    | {
+        persona: number | Persona;
+        creator?: (number | null) | CreatorProfile;
+        status?: ('open' | 'pending' | 'confirmed' | 'declined' | 'lapsed') | null;
+        respondBy?: string | null;
+        respondedAt?: string | null;
+        declineReason?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Issues a new quotation version with this adjustment line (negative for a discount).
+   */
+  priceAdjustment?: {
+    /**
+     * AED, ±
+     */
+    amount?: number | null;
+    reason?: string | null;
+  };
+  holdReason?: string | null;
+  adminNote?: string | null;
+  quoteValidUntil?: string | null;
+  acceptedAt?: string | null;
+  confirmedAt?: string | null;
+  paidAt?: string | null;
+  scheduledAt?: string | null;
+  deliveredAt?: string | null;
+  completedAt?: string | null;
+  payoutDueAt?: string | null;
+  onHoldAt?: string | null;
+  cancelledAt?: string | null;
+  expiredAt?: string | null;
+  overdueNotifiedAt?: string | null;
+  quotations?: {
+    docs?: (number | Quotation)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  payments?: {
+    docs?: (number | Payment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  events?: {
+    docs?: (number | BookingEvent)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  notifications?: {
+    docs?: (number | Notification)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Issued by the site; adjust a price from the booking.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quotations".
+ */
+export interface Quotation {
+  id: number;
+  reference: string;
+  booking: number | Booking;
+  brief: number | Brief;
+  version: number;
+  supersededBy?: (number | null) | Quotation;
+  lines?:
+    | {
+        kind: 'tier' | 'travel' | 'addon' | 'discount' | 'adjustment';
+        labelEn: string;
+        labelAr: string;
+        amountFils: number;
+        persona?: (number | null) | Persona;
+        /**
+         * { en: string[], ar: string[] }
+         */
+        deliverables?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  subtotalFils: number;
+  discountFils?: number | null;
+  totalFils: number;
+  promoCode?: string | null;
+  validUntil: string;
+  issuedAt: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Received: the client paid (held until delivery is confirmed). Payout: released to the creator. Refund: returned to the client.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments".
+ */
+export interface Payment {
+  id: number;
+  booking: number | Booking;
+  kind: 'received' | 'payout' | 'refund';
+  /**
+   * AED
+   */
+  amount: number;
+  method: 'bank-transfer' | 'cash' | 'card' | 'other';
+  /**
+   * Receipt or transfer reference.
+   */
+  note?: string | null;
+  recordedBy?: (number | null) | User;
+  recordedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booking-events".
+ */
+export interface BookingEvent {
+  id: number;
+  booking: number | Booking;
+  event: string;
+  from?:
+    | (
+        | 'quoted'
+        | 'accepted'
+        | 'confirmed'
+        | 'paid'
+        | 'scheduled'
+        | 'delivered'
+        | 'completed'
+        | 'cancelled'
+        | 'expired'
+        | 'on-hold'
+        | 'assignment'
+      )
+    | null;
+  to?:
+    | (
+        | 'quoted'
+        | 'accepted'
+        | 'confirmed'
+        | 'paid'
+        | 'scheduled'
+        | 'delivered'
+        | 'completed'
+        | 'cancelled'
+        | 'expired'
+        | 'on-hold'
+        | 'assignment'
+      )
+    | null;
+  actorRole: 'client' | 'creator' | 'admin' | 'system';
+  actor?: (number | null) | User;
+  note?: string | null;
+  at: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * What each person should be told. Open a WhatsApp link to send it.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications".
+ */
+export interface Notification {
+  id: number;
+  booking: number | Booking;
+  event:
+    | 'quoted'
+    | 'accepted'
+    | 'confirmed'
+    | 'declined'
+    | 'lapsed'
+    | 'reassigned'
+    | 'adjusted'
+    | 'paid'
+    | 'scheduled'
+    | 'delivered'
+    | 'completed'
+    | 'on-hold'
+    | 'cancelled'
+    | 'expired'
+    | 'delivery-overdue';
+  audience: 'client' | 'creator' | 'admin';
+  channel: 'whatsapp' | 'email' | 'in-app';
+  locale?: ('en' | 'ar') | null;
+  user?: (number | null) | User;
+  text: string;
+  link?: string | null;
+  dedupeKey: string;
+  readAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Creators are free unless a date is listed here. Booked dates are added when a creator confirms.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "availability-blocks".
+ */
+export interface AvailabilityBlock {
+  id: number;
+  creator: number | CreatorProfile;
+  user: number | User;
+  /**
+   * YYYY-MM-DD (UAE)
+   */
+  date: string;
+  kind: 'blocked' | 'booking';
+  booking?: (number | null) | Booking;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * One row per professional type and duration. Prices in AED, VAT included. Quotations already issued keep their price.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-tiers".
+ */
+export interface ServiceTier {
+  id: number;
+  /**
+   * Shown on the quotation, e.g. "2-hour photo shoot".
+   */
+  title: string;
+  persona: number | Persona;
+  /**
+   * A value from the Durations option set, e.g. 2h.
+   */
+  duration: string;
+  /**
+   * AED
+   */
+  price: number;
+  deliverables?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  active?: boolean | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Charged once per professional. A location without a fee is priced on WhatsApp instead of a quotation.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "travel-fees".
+ */
+export interface TravelFee {
+  id: number;
+  /**
+   * A value from the Locations option set, e.g. dubai.
+   */
+  location: string;
+  /**
+   * AED. 0 = no travel fee.
+   */
+  fee: number;
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Optional extras the client can add in step 3. Charged once per booking.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "add-ons".
+ */
+export interface AddOn {
+  id: number;
+  title: string;
+  description?: string | null;
+  /**
+   * AED
+   */
+  price: number;
+  /**
+   * Empty: offered with every professional type.
+   */
+  personas?: (number | Persona)[] | null;
+  active?: boolean | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * A code counts as used when a quotation with it is accepted.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "promo-codes".
+ */
+export interface PromoCode {
+  id: number;
+  /**
+   * 3–20 letters or digits; stored in capitals.
+   */
+  code: string;
+  kind: 'percent' | 'fixed';
+  /**
+   * Percent (1–100) or AED.
+   */
+  value: number;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  /**
+   * Empty: unlimited.
+   */
+  usageLimit?: number | null;
+  usedCount?: number | null;
+  active?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1128,6 +1541,46 @@ export interface PayloadLockedDocument {
         value: number | Brief;
       } | null)
     | ({
+        relationTo: 'bookings';
+        value: number | Booking;
+      } | null)
+    | ({
+        relationTo: 'quotations';
+        value: number | Quotation;
+      } | null)
+    | ({
+        relationTo: 'payments';
+        value: number | Payment;
+      } | null)
+    | ({
+        relationTo: 'availability-blocks';
+        value: number | AvailabilityBlock;
+      } | null)
+    | ({
+        relationTo: 'booking-events';
+        value: number | BookingEvent;
+      } | null)
+    | ({
+        relationTo: 'notifications';
+        value: number | Notification;
+      } | null)
+    | ({
+        relationTo: 'service-tiers';
+        value: number | ServiceTier;
+      } | null)
+    | ({
+        relationTo: 'travel-fees';
+        value: number | TravelFee;
+      } | null)
+    | ({
+        relationTo: 'add-ons';
+        value: number | AddOn;
+      } | null)
+    | ({
+        relationTo: 'promo-codes';
+        value: number | PromoCode;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
       } | null)
@@ -1339,6 +1792,7 @@ export interface CreatorListingsSelect<T extends boolean = true> {
   featured?: T;
   suspended?: T;
   reviewNote?: T;
+  matchValues?: T;
   submittedAt?: T;
   verifiedAt?: T;
   updatedAt?: T;
@@ -1360,6 +1814,8 @@ export interface OptionSetsSelect<T extends boolean = true> {
         order?: T;
         active?: T;
         personas?: T;
+        matchesAny?: T;
+        category?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -1395,7 +1851,223 @@ export interface BriefsSelect<T extends boolean = true> {
   creator?: T;
   sourcePath?: T;
   fingerprint?: T;
+  accessSalt?: T;
   website?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookings_select".
+ */
+export interface BookingsSelect<T extends boolean = true> {
+  reference?: T;
+  state?: T;
+  adminAction?: T;
+  revision?: T;
+  brief?: T;
+  quotation?: T;
+  member?: T;
+  accessSalt?: T;
+  client?:
+    | T
+    | {
+        name?: T;
+        whatsapp?: T;
+        locale?: T;
+      };
+  date?: T;
+  location?: T;
+  totalFils?: T;
+  personas?: T;
+  assignments?:
+    | T
+    | {
+        persona?: T;
+        creator?: T;
+        status?: T;
+        respondBy?: T;
+        respondedAt?: T;
+        declineReason?: T;
+        id?: T;
+      };
+  priceAdjustment?:
+    | T
+    | {
+        amount?: T;
+        reason?: T;
+      };
+  holdReason?: T;
+  adminNote?: T;
+  quoteValidUntil?: T;
+  acceptedAt?: T;
+  confirmedAt?: T;
+  paidAt?: T;
+  scheduledAt?: T;
+  deliveredAt?: T;
+  completedAt?: T;
+  payoutDueAt?: T;
+  onHoldAt?: T;
+  cancelledAt?: T;
+  expiredAt?: T;
+  overdueNotifiedAt?: T;
+  quotations?: T;
+  payments?: T;
+  events?: T;
+  notifications?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quotations_select".
+ */
+export interface QuotationsSelect<T extends boolean = true> {
+  reference?: T;
+  booking?: T;
+  brief?: T;
+  version?: T;
+  supersededBy?: T;
+  lines?:
+    | T
+    | {
+        kind?: T;
+        labelEn?: T;
+        labelAr?: T;
+        amountFils?: T;
+        persona?: T;
+        deliverables?: T;
+        id?: T;
+      };
+  subtotalFils?: T;
+  discountFils?: T;
+  totalFils?: T;
+  promoCode?: T;
+  validUntil?: T;
+  issuedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments_select".
+ */
+export interface PaymentsSelect<T extends boolean = true> {
+  booking?: T;
+  kind?: T;
+  amount?: T;
+  method?: T;
+  note?: T;
+  recordedBy?: T;
+  recordedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "availability-blocks_select".
+ */
+export interface AvailabilityBlocksSelect<T extends boolean = true> {
+  creator?: T;
+  user?: T;
+  date?: T;
+  kind?: T;
+  booking?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booking-events_select".
+ */
+export interface BookingEventsSelect<T extends boolean = true> {
+  booking?: T;
+  event?: T;
+  from?: T;
+  to?: T;
+  actorRole?: T;
+  actor?: T;
+  note?: T;
+  at?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications_select".
+ */
+export interface NotificationsSelect<T extends boolean = true> {
+  booking?: T;
+  event?: T;
+  audience?: T;
+  channel?: T;
+  locale?: T;
+  user?: T;
+  text?: T;
+  link?: T;
+  dedupeKey?: T;
+  readAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-tiers_select".
+ */
+export interface ServiceTiersSelect<T extends boolean = true> {
+  title?: T;
+  persona?: T;
+  duration?: T;
+  price?: T;
+  deliverables?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  active?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "travel-fees_select".
+ */
+export interface TravelFeesSelect<T extends boolean = true> {
+  location?: T;
+  fee?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "add-ons_select".
+ */
+export interface AddOnsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  price?: T;
+  personas?: T;
+  active?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "promo-codes_select".
+ */
+export interface PromoCodesSelect<T extends boolean = true> {
+  code?: T;
+  kind?: T;
+  value?: T;
+  startsAt?: T;
+  endsAt?: T;
+  usageLimit?: T;
+  usedCount?: T;
+  active?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1924,6 +2596,10 @@ export interface LandingPage {
            * Let visitors pick more than one, e.g. a photographer and a videographer.
            */
           multiple?: boolean | null;
+          /**
+           * Quick Match lists only creators whose match values include the chosen option (options marked "matches any" keep everyone).
+           */
+          filtersCreators?: boolean | null;
           id?: string | null;
         }[]
       | null;
@@ -2057,6 +2733,102 @@ export interface SiteSetting {
    * How many briefs one anonymous visitor may send per hour.
    */
   briefLimitPerHour?: number | null;
+  quickMatch?: {
+    /**
+     * On: after the brief, visitors see who is free and get a quotation. Off: the brief goes to WhatsApp, as before.
+     */
+    enabled?: boolean | null;
+    /**
+     * Quotation valid (days)
+     */
+    quotationValidDays?: number | null;
+    /**
+     * Creator answers within (hours)
+     */
+    confirmHours?: number | null;
+    /**
+     * Client confirms delivery within (days)
+     */
+    deliveryConfirmDays?: number | null;
+    /**
+     * Creator paid within (days)
+     */
+    payoutDays?: number | null;
+    /**
+     * Quotations one visitor may request per hour.
+     */
+    quoteLimitPerHour?: number | null;
+    /**
+     * Shown once the creator confirms: how to pay and to send the receipt on WhatsApp.
+     */
+    paymentInstructions?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Printed at the end of every quotation.
+     */
+    quotationTerms?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Where each person is told about a change. Nothing is sent automatically yet: WhatsApp rows are links to open.
+     */
+    channels?: {
+      client?: ('whatsapp' | 'email' | 'in-app')[] | null;
+      creator?: ('whatsapp' | 'email' | 'in-app')[] | null;
+      admin?: ('whatsapp' | 'email' | 'in-app')[] | null;
+    };
+    /**
+     * Placeholders: {name} {reference} {date} {total} {link}. A missing Arabic text falls back to English.
+     */
+    templates?:
+      | {
+          event:
+            | 'quoted'
+            | 'accepted'
+            | 'confirmed'
+            | 'declined'
+            | 'lapsed'
+            | 'reassigned'
+            | 'adjusted'
+            | 'paid'
+            | 'scheduled'
+            | 'delivered'
+            | 'completed'
+            | 'on-hold'
+            | 'cancelled'
+            | 'expired'
+            | 'delivery-overdue';
+          audience: 'client' | 'creator' | 'admin';
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2112,6 +2884,7 @@ export interface LandingPageSelect<T extends boolean = true> {
               required?: T;
               allowCustom?: T;
               multiple?: T;
+              filtersCreators?: T;
               id?: T;
             };
         submitLabel?: T;
@@ -2198,6 +2971,33 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   autoPublishEdits?: T;
   directoryPageSize?: T;
   briefLimitPerHour?: T;
+  quickMatch?:
+    | T
+    | {
+        enabled?: T;
+        quotationValidDays?: T;
+        confirmHours?: T;
+        deliveryConfirmDays?: T;
+        payoutDays?: T;
+        quoteLimitPerHour?: T;
+        paymentInstructions?: T;
+        quotationTerms?: T;
+        channels?:
+          | T
+          | {
+              client?: T;
+              creator?: T;
+              admin?: T;
+            };
+        templates?:
+          | T
+          | {
+              event?: T;
+              audience?: T;
+              text?: T;
+              id?: T;
+            };
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

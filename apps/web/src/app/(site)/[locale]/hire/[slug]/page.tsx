@@ -79,6 +79,7 @@ export default async function IntentPage(props: Props) {
         faq={result.faq}
         context={context}
         whatsappHref={whatsappHref(settings.whatsappNumber, settings.whatsappDefaultMessage) ?? '#'}
+        quickMatch={settings.quickMatch?.enabled === true}
         sourcePath={path}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
