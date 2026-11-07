@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-07T22:00:00Z",
+  "generatedAt": "2026-11-07T23:30:00Z",
   "title": "Design System: Shoot Project",
   "extensions": {
     "colorMeta": {
@@ -709,6 +709,11 @@
         "name": "studio-sweep",
         "value": "radial-gradient(55% 75% at 24% 0%, var(--sweep-key), transparent 72%), radial-gradient(40% 65% at 84% 38%, var(--sweep-rim), transparent 70%), radial-gradient(130% 55% at 50% 118%, var(--sweep-floor), transparent 72%), linear-gradient(180deg, var(--sweep-top), var(--sweep-bottom)); SVG fractal-noise grain at 22% overlay",
         "purpose": "Empty-studio hero backdrop until the CMS has a photo. Owner-directed, 2026-11-07."
+      },
+      {
+        "name": "print-light",
+        "value": "@media print: @page A4, margin 16mm 14mm; --ground/--panel #ffffff, --ink #000000, --mute #4a4a4a, --hair rgb(0 0 0 / 0.2), --tile and --attention #f2f2f2, --shadow none, color-scheme light; site header, footer and floating WhatsApp hidden; .quote-doc panel without shadow, blur or border; groups break-inside: avoid",
+        "purpose": "The quotation printed (or saved as PDF) on A4, always light whatever the theme. Feature 003."
       }
     ],
     "motion": [
@@ -937,6 +942,30 @@
       "description": "Landing Specialties row linking to /work/{slug}: glyph tile, name, trailing counts line (each part only above zero). A category with no page is a quiet mute row, not a link.",
       "html": "<ul class=\"ds-sl\"><li><a class=\"ds-sl-row\" href=\"#\"><span class=\"ds-sl-tile\">W</span><span>Weddings</span><span class=\"ds-sl-trail\">428 samples · 43 pros</span></a></li><li><div class=\"ds-sl-row ds-sl-plain\"><span class=\"ds-sl-tile\">E</span><span>Events</span></div></li></ul>",
       "css": ".ds-sl { list-style: none; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; } .ds-sl li { padding: 4px 0; } .ds-sl-row { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 44px; padding: 7px 16px; border-radius: 9px; font-size: 16px; line-height: 1.375; color: var(--ink, #1d1d1f); text-decoration: none; transition: background-color 100ms; } a.ds-sl-row:hover { background: rgb(29 29 31 / 0.045); } a.ds-sl-row:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-sl-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; } .ds-sl-trail { font-size: 13px; text-align: end; color: var(--mute, #6b6560); font-variant-numeric: tabular-nums; } .ds-sl-plain { color: var(--mute, #6b6560); }"
+    },
+    {
+      "name": "Creator Pick Row",
+      "kind": "custom",
+      "refersTo": "creator-pick-row",
+      "description": "A Creator Row that chooses: code and forward arrow trailing; chosen = set tint, aria-current, \"chosen\" in selected ink. A submit button inside forms.",
+      "html": "<a class=\"ds-pick\" href=\"#\"><span class=\"ds-pick-photo\" aria-hidden=\"true\">MD</span><span class=\"ds-pick-text\"><span class=\"ds-pick-name\">Maya Demo</span><span class=\"ds-pick-meta\">Photographer · Dubai</span></span><span class=\"ds-pick-end\"><span dir=\"ltr\">SHT-0142</span><svg width=\"14\" height=\"14\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 10h12M11 5l5 5-5 5\"/></svg></span></a><a class=\"ds-pick ds-pick-set\" href=\"#\" aria-current=\"true\"><span class=\"ds-pick-photo\" aria-hidden=\"true\">OK</span><span class=\"ds-pick-text\"><span class=\"ds-pick-name\">Omar Khalil</span><span class=\"ds-pick-meta\">Videographer · Abu Dhabi</span></span><span class=\"ds-pick-end\">chosen<svg width=\"14\" height=\"14\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 10h12M11 5l5 5-5 5\"/></svg></span></a>",
+      "css": ".ds-pick { display: grid; grid-template-columns: 44px minmax(0,1fr) auto; align-items: center; gap: 12px; margin: 0 6px; min-height: 64px; padding: 7px 10px; border-radius: 9px; color: var(--ink, #1d1d1f); text-decoration: none; font: 400 16px/1.375 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; transition: background-color 100ms; } .ds-pick:hover { background: rgb(29 29 31 / 0.045); } .ds-pick:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-pick-photo { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 15px; font-weight: 700; } .ds-pick-text { min-width: 0; } .ds-pick-name { display: block; font-weight: 600; } .ds-pick-meta { display: block; font-size: 13px; color: var(--mute, #6b6560); } .ds-pick-end { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--mute, #6b6560); font-variant-numeric: tabular-nums; } .ds-pick-set { background: var(--selected, rgb(10 96 255 / 0.12)); } .ds-pick-set:hover { background: var(--selected-hover, rgb(10 96 255 / 0.18)); } .ds-pick-set .ds-pick-end { color: var(--selected-ink, #0848c2); } [dir=rtl] .ds-pick-end svg { transform: scaleX(-1); }"
+    },
+    {
+      "name": "Quotation Panel",
+      "kind": "card",
+      "refersTo": "quote-line",
+      "description": "Receipt-style price lines: labels at the start, amounts at the end edge in tabular figures, a hairline above the 17 px total, VAT as a meta line.",
+      "html": "<dl class=\"ds-quote\"><div class=\"ds-quote-line\"><dt>2-hour photographer shoot<span class=\"ds-quote-meta\">60 edited photos</span></dt><dd dir=\"ltr\">AED 800</dd></div><div class=\"ds-quote-line ds-quote-total\"><dt>Total<span class=\"ds-quote-meta\">VAT included</span></dt><dd dir=\"ltr\">AED 800</dd></div></dl>",
+      "css": ".ds-quote { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; color: var(--ink, #1d1d1f); } .ds-quote-line { display: grid; grid-template-columns: minmax(0,1fr) auto; column-gap: 12px; margin: 0 6px; padding: 6px 10px; font-size: 15px; break-inside: avoid; } .ds-quote-line dd { margin: 0; text-align: end; font-variant-numeric: tabular-nums; } .ds-quote-meta { display: block; font-size: 13px; font-weight: 400; color: var(--mute, #6b6560); } .ds-quote-total { margin-top: 4px; padding: 8px 10px 4px; border-top: 1px solid var(--hair, rgb(0 0 0 / 0.08)); font-size: 17px; font-weight: 600; }"
+    },
+    {
+      "name": "Price Group Label",
+      "kind": "custom",
+      "refersTo": "step-meta",
+      "description": "A result group named by what it offers and costs, VAT said once in the label; deliverables as one meta line beneath.",
+      "html": "<div class=\"ds-pgroup\" role=\"group\" aria-labelledby=\"ds-pg-l\"><span id=\"ds-pg-l\" class=\"ds-pgroup-label\">Photographers free on 12 Dec · <span dir=\"ltr\">AED 800</span>, VAT included</span><p class=\"ds-pgroup-meta\">60 edited photos · 2 hours</p></div>",
+      "css": ".ds-pgroup { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; } .ds-pgroup-label { display: block; padding: 10px 16px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute, #6b6560); } :lang(ar) .ds-pgroup-label { letter-spacing: 0; text-transform: none; font-size: 12px; } .ds-pgroup-meta { margin: 0; padding: 0 16px 6px; font-size: 13px; color: var(--mute, #6b6560); }"
     }
   ],
   "narrative": {
@@ -1002,6 +1031,11 @@
         "name": "The One Gradient Rule",
         "body": "On the ground the only gradient is the faint selection-blue radial wash at the top (70% × 420 px at top centre). Owner-directed exceptions (2026-11-07), for the hero stage only: the glass bar's top sheen and the studio sweep's paper, key, rim and floor gradients with their noise grain. No gradients anywhere else.",
         "section": "elevation"
+      },
+      {
+        "name": "The Step Meta Rule",
+        "body": "A step in a flow says where it is in one Meta line (13 px mute) directly under the h1, 4 px below it (\"Step 2 of 3\"), never in a kicker or label above the heading. The quotation does the same with its issued and valid-until dates (tabular) under its title.",
+        "section": "typography"
       }
     ],
     "dos": [
@@ -1024,7 +1058,14 @@
       "Do give icon-only controls a 44 px target, an accessible name, and a polite announcement of what they did.",
       "Do print counts only when they are real and above zero, each part on its own (\"428 samples · 43 pros\"), and omit the line when there is nothing true to say.",
       "Do make every sample picture lead to the person who shot it, with a link named \"caption, by name\".",
-      "Do render a thing with no page as quiet muted text, not a look-alike link."
+      "Do render a thing with no page as quiet muted text, not a look-alike link.",
+      "Do carry a price on the group label it applies to (\"… · AED 800, VAT included\"), once, with VAT stated there and not per row.",
+      "Do mark a chosen creator row with the set tint, `aria-current` and \"chosen\" in the trailing slot; inside a form make the row itself the submit button.",
+      "Do set money as a receipt: amounts at the end edge in tabular figures, a hairline above the total, \"VAT included\" as Meta under it, and labels frozen when the quotation is issued.",
+      "Do give each booking state at most one Top Hit and put PDF, WhatsApp and cancel as ordinary rows at the end of the document.",
+      "Do say a step's position in a Meta line under the h1.",
+      "Do print documents on A4, light, without site chrome, and keep each group on one page.",
+      "Do give account pages 96 px of bottom padding on phones so the floating WhatsApp button never covers the last row."
     ],
     "donts": [
       "Don't load a webfont or a second type family.",
@@ -1040,7 +1081,9 @@
       "Don't add captions, hover zoom, overlays or badges to portfolio images.",
       "Don't letter-space Arabic headings, and don't leave Arabic trailing slots at 13 px.",
       "Don't use a modal, a toast, a progress ring, a completion percentage or a stepper in the editor; the feedback line and the status bar say where the profile stands.",
-      "Don't show a zero, a placeholder or a rounded-up count, and don't show a sample without a way to its creator."
+      "Don't show a zero, a placeholder or a rounded-up count, and don't show a sample without a way to its creator.",
+      "Don't place cancel or any destructive action beside the primary action, and don't make it blue.",
+      "Don't recalculate a quotation's lines on render; show what was issued."
     ],
     "directionHistory": [
       {
@@ -1058,6 +1101,10 @@
       {
         "date": "2026-11-07",
         "note": "The owner asked to enhance the sections below the hero. From 1024 px each titled section became a settings-style pane out to the header's 1080 px (heading in a sticky start column, content in the end column); the strip under the stage set the helper hint against the trust chips; how it works became a timeline of graphite number tiles (step numbers no longer use selection blue); the reasons became a two-column hairline cell grid; the creator invitation runs as one wide bar; FAQ rows gained a hover tint and a chevron tile; the closing heading stepped up a size. The hero stage and the brief bar were not changed."
+      },
+      {
+        "date": "2026-11-07",
+        "note": "Feature 003, Quick Match: The match and details steps (`/match/...`), the quotation (`/q/...`, `/account/bookings/{ref}`) and the account's bookings and availability pages were recorded from the shipped build: Price Group Label, Creator Pick Row, Quotation Panel, Booking Status, Quiet End Actions, Creator Booking Row, Availability Day Row, Update Row and the quotation's print rendering. No new colour, shadow, radius or type step on screen; the one addition is a print rendering of the existing roles."
       }
     ]
   }
