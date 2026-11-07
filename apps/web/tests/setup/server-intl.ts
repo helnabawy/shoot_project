@@ -22,3 +22,12 @@ export async function getTranslations(arg?: { locale?: string; namespace?: strin
   t.raw = (key: string) => lookup(locale, full(key))
   return t
 }
+
+/** Dates and numbers in Server Components tests: plain Intl in the page language. */
+export async function getFormatter(arg?: { locale?: string }) {
+  const locale = arg?.locale === 'ar' ? 'ar' : 'en'
+  return {
+    dateTime: (value: Date, options?: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(locale, options).format(value),
+    number: (value: number, options?: Intl.NumberFormatOptions) => new Intl.NumberFormat(locale, options).format(value),
+  }
+}

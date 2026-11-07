@@ -11,7 +11,19 @@
         "http://localhost:3000/work/portrait",
         "http://localhost:3000/ar/creators",
         "http://localhost:3000/ar/creators/d2222",
-        "http://localhost:3000/ar/work/portrait"
+        "http://localhost:3000/ar/work/portrait",
+        "http://localhost:3000/studios",
+        "http://localhost:3000/ar/studios",
+        "http://localhost:3000/terms",
+        "http://localhost:3000/ar/terms",
+        "http://localhost:3000/privacy",
+        "http://localhost:3000/ar/privacy",
+        "http://localhost:3000/guides",
+        "http://localhost:3000/ar/guides",
+        "http://localhost:3000/guides/demo-guide-27",
+        "http://localhost:3000/ar/guides/demo-guide-27",
+        "http://localhost:3000/hire/proposal-photographer-dubai",
+        "http://localhost:3000/ar/hire/proposal-photographer-dubai"
       ],
       "numberOfRuns": 1,
       "settings": {

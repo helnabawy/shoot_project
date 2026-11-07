@@ -111,8 +111,11 @@
       "emailTaken": "This email already has an account. Log in instead.",
       "invalid": "Email or password is incorrect.",
       "locked": "Too many attempts. Try again in 15 minutes.",
-      "generic": "Something went wrong. Please try again."
-    }
+      "generic": "Something went wrong. Please try again.",
+      "acceptTerms": "Please accept the Terms and the Privacy Policy to create an account."
+    },
+    "acceptTerms": "I accept the <terms>Terms</terms> and the <privacy>Privacy Policy</privacy>.",
+    "acceptTermsWithProfessional": "I accept the <terms>Terms</terms>, the <professional>Professional Terms</professional> and the <privacy>Privacy Policy</privacy>."
   },
   "account": {
     "title": "My account",
@@ -141,11 +144,17 @@
   "notFound": {
     "title": "Page not found",
     "body": "The page you're looking for doesn't exist.",
-    "home": "Back to the start"
+    "home": "Back to the start",
+    "removedTitle": "This page has been removed",
+    "removedBody": "It used to be here, but it is gone. Start from one of these.",
+    "brief": "Start a brief",
+    "guides": "Read the guides",
+    "whatsapp": "Ask us on WhatsApp"
   },
   "footer": {
     "rights": "All rights reserved.",
-    "social": "Follow us"
+    "social": "Follow us",
+    "legal": "Legal"
   },
   "creators": {
     "directory": {
@@ -335,5 +344,48 @@
       "samplesTitle": "Recent work",
       "sampleBy": "{caption}, by {name}"
     }
+  },
+  "legal": {
+    "versionLine": "Version {version} · applies from {date}",
+    "versionPeriod": "Version {version} · applied from {from} until {until}",
+    "stillInForce": "now",
+    "appliesFrom": "Version {version} applies from {date}. Until then this version stays in force.",
+    "arabicUnavailable": "The Arabic text is not available yet. The English text below is the version in force.",
+    "englishGoverns": "If the Arabic and English texts differ, the English text governs.",
+    "previousVersions": "Earlier versions",
+    "allVersions": "All versions",
+    "versionsTitle": "{title}: all versions",
+    "versionLabel": "Version {version}",
+    "period": "From {from} until {until}",
+    "backToCurrent": "Back to the version in force",
+    "professionalNote": "Working through the site means following the"
+  },
+  "guides": {
+    "title": "Guides",
+    "titlePaged": "Guides, page {page}",
+    "intro": "Plain answers for briefing, booking and preparing a shoot.",
+    "categoryTitle": "Guides: {name}",
+    "authorTitle": "Guides by {name}",
+    "categories": "Topics",
+    "all": "All",
+    "empty": "No guides yet.",
+    "pages": "Pages of guides",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {pages}",
+    "feed": "Follow the guides with RSS",
+    "feedTitle": "Guides",
+    "by": "By {name}",
+    "readingTime": "{minutes} min read",
+    "availableInEnglish": "Available in English",
+    "related": "More guides",
+    "ctaTitle": "Ready to brief?",
+    "ctaBody": "Describe the shoot in one line and we reply on WhatsApp.",
+    "ctaBrief": "Start a brief",
+    "ctaWhatsApp": "WhatsApp us"
+  },
+  "intent": {
+    "creators": "{count, plural, one {# professional who can do this} other {# professionals who can do this}}",
+    "faq": "Questions people ask"
   }
 }

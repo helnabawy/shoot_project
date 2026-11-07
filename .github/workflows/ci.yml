@@ -93,7 +93,7 @@ jobs:
       - run: pnpm --filter web build
       - name: Migrate and seed
         working-directory: apps/web
-        env: { SEED_DEMO_CREATORS: '1' }  # the budgets are measured on pages that have creators
+        env: { SEED_DEMO_CREATORS: '1', SEED_DEMO_GUIDES: '1' }  # the budgets are measured on pages that have creators
         run: |
           PAYLOAD_MIGRATING=true pnpm payload migrate
           pnpm seed

@@ -40,7 +40,9 @@ const { exportBriefsCsv } = await import('@/modules/brief/export')
 
 const form = (entries: Record<string, string | string[]>) => {
   const data = new FormData()
-  for (const [key, value] of Object.entries(entries)) {
+  // Registration needs the acceptance checkbox (MP-US2-S2); pass acceptTerms: '' to leave it unticked.
+  for (const [key, value] of Object.entries({ acceptTerms: 'on', ...entries })) {
+    if (key === 'acceptTerms' && value === '') continue
     for (const v of Array.isArray(value) ? value : [value]) data.append(key, v)
   }
   return data

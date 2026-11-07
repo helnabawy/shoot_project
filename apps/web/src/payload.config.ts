@@ -13,10 +13,16 @@ import { OptionSets } from './modules/brief/collections/OptionSets'
 import { RateLimits } from './modules/brief/collections/RateLimits'
 import { CreatorListings } from './modules/creators/collections/CreatorListings'
 import { CreatorProfiles } from './modules/creators/collections/CreatorProfiles'
+import { Articles } from './modules/guides/collections/Articles'
+import { ArticleCategories, Authors } from './modules/guides/collections/Taxonomy'
+import { LegalAcceptances } from './modules/legal/collections/LegalAcceptances'
+import { LegalDocuments } from './modules/legal/collections/LegalDocuments'
 import { Locations } from './modules/creators/collections/Locations'
 import { LandingPage } from './modules/landing/globals/LandingPage'
 import { Media } from './modules/media/collections/Media'
 import { Categories } from './modules/personas/collections/Categories'
+import { Pages } from './modules/pages/collections/Pages'
+import { RemovedPaths } from './modules/pages/collections/RemovedPaths'
 import { Personas } from './modules/personas/collections/Personas'
 import { SiteSettings } from './modules/site-settings/globals/SiteSettings'
 
@@ -30,7 +36,7 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: ' · Shoot Project' },
   },
-  collections: [Users, Personas, Categories, Locations, CreatorProfiles, CreatorListings, OptionSets, Briefs, Media, RateLimits],
+  collections: [Users, Personas, Categories, Locations, CreatorProfiles, CreatorListings, OptionSets, Briefs, Media, RateLimits, Pages, RemovedPaths, LegalDocuments, LegalAcceptances, Articles, ArticleCategories, Authors],
   globals: [LandingPage, SiteSettings],
   localization: {
     locales: [

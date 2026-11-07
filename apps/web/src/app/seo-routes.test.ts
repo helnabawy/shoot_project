@@ -66,3 +66,40 @@ describe('FR-040 robots.txt and sitemap.xml', () => {
     expect((await sitemap())[0]!.url).toBe('http://localhost:3000')
   })
 })
+
+describe('MP-FR-013 sitemap lists editor-built pages with each language’s own address', () => {
+  it('adds visible pages and intent pages, skips hidden ones, and keeps the rest of the list', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://shoot.example')
+    vi.doMock('@/modules/pages', () => ({
+      listPagesForSitemap: async () => [
+        { kind: 'standard', slugs: { en: 'studios', ar: 'استوديوهات' }, hideFromSearch: false },
+        { kind: 'standard', slugs: { en: 'private', ar: 'private' }, hideFromSearch: true },
+        { kind: 'intent', slugs: { en: 'proposal-photographer-dubai', ar: 'proposal-photographer-dubai' }, hideFromSearch: false },
+      ],
+    }))
+    const { default: sitemap } = await import('./sitemap')
+    const entries = await sitemap()
+    expect(entries.map((e) => e.url)).toEqual([
+      'https://shoot.example',
+      'https://shoot.example/login',
+      'https://shoot.example/register',
+      'https://shoot.example/studios',
+      'https://shoot.example/hire/proposal-photographer-dubai',
+    ])
+    expect(entries[3]).toMatchObject({ priority: 0.5, alternates: { languages: { en: 'https://shoot.example/studios', ar: 'https://shoot.example/ar/استوديوهات' } } })
+    expect(entries[4]).toMatchObject({ priority: 0.7 })
+    vi.doUnmock('@/modules/pages')
+  })
+
+  it('survives an unreachable database', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://shoot.example')
+    vi.doMock('@/modules/pages', () => ({
+      listPagesForSitemap: async () => {
+        throw new Error('db down')
+      },
+    }))
+    const { default: sitemap } = await import('./sitemap')
+    expect((await sitemap()).map((e) => e.url)).toEqual(['https://shoot.example', 'https://shoot.example/login', 'https://shoot.example/register'])
+    vi.doUnmock('@/modules/pages')
+  })
+})

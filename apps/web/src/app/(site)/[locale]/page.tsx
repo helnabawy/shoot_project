@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import { setRequestLocale } from 'next-intl/server'
+import { lexicalToText } from '@shoot/domain/content'
+import { faqJsonLd, jsonLdScript } from '@shoot/domain/pages'
 import { getBriefBuilderConfig } from '@/modules/brief/queries'
 import { getSpecialtyCounts } from '@/modules/creators'
 import { Hero } from '@/modules/landing/components/Hero'
@@ -62,9 +64,11 @@ export default async function HomePage({ params }: Props) {
     phoneNumber: settings.phoneNumber,
   }
 
-  const faqs = (landing.sections ?? []).flatMap((s) =>
-    s.blockType === 'faq' ? (s.items ?? []) : [],
-  )
+  const faqs = (landing.sections ?? []).flatMap((s) => (s.blockType === 'faq' ? (s.items ?? []) : []))
+  const faqLd = faqJsonLd({
+    locale,
+    items: faqs.map((f) => ({ question: f.question, answer: lexicalToText(f.answer) })),
+  })
   const jsonLd = [
     {
       '@context': 'https://schema.org',
@@ -72,27 +76,7 @@ export default async function HomePage({ params }: Props) {
       name: settings.siteName,
       url: process.env.NEXT_PUBLIC_SITE_URL,
     },
-    ...(faqs.length
-      ? [
-          {
-            '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            inLanguage: locale,
-            mainEntity: faqs.map((f) => ({
-              '@type': 'Question',
-              name: f.question,
-              acceptedAnswer: {
-                '@type': 'Answer',
-                text:
-                  JSON.stringify(f.answer ?? '')
-                    .match(/"text":"([^"]*)"/g)
-                    ?.map((m) => m.slice(8, -1))
-                    .join(' ') ?? '',
-              },
-            })),
-          },
-        ]
-      : []),
+    ...(faqLd ? [faqLd] : []),
   ]
 
   return (
@@ -112,7 +96,7 @@ export default async function HomePage({ params }: Props) {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
     </>
   )

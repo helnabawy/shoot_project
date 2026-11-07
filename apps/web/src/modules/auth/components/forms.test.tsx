@@ -51,6 +51,39 @@ describe('US4 registration form', () => {
     expect(screen.queryByRole('radio', { name: 'Offer my services' })).toBeNull()
   })
 
+  it('MP-US2-S2 states acceptance with links to the documents in force, and a provider also accepts the professional terms', async () => {
+    const legal = {
+      terms: { label: 'Terms & Conditions', href: '/terms' },
+      privacy: { label: 'Privacy Policy', href: '/privacy' },
+      'professional-terms': { label: 'Professional Terms', href: '/terms/professional' },
+    }
+    renderWithLocale(<RegisterForm locale="en" personas={personas} legal={legal} />)
+    const box = screen.getByRole('checkbox', { name: /I accept the Terms and the Privacy Policy/ })
+    expect(box).toBeRequired()
+    expect(box).not.toBeChecked()
+    expect(screen.getByRole('link', { name: 'Terms' }).getAttribute('href')).toContain('/terms')
+    expect(screen.getByRole('link', { name: 'Privacy Policy' }).getAttribute('href')).toContain('/privacy')
+    expect(screen.queryByRole('link', { name: 'Professional Terms' })).toBeNull()
+    await userEvent.click(screen.getByRole('radio', { name: 'Offer my services' }))
+    expect(screen.getByRole('checkbox', { name: /Professional Terms/ })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Professional Terms' }).getAttribute('href')).toContain('/terms/professional')
+  })
+
+  it('MP-US2-S2 says the same words without a link for a document that is not published yet', () => {
+    renderWithLocale(<RegisterForm locale="en" personas={personas} legal={{ terms: null, privacy: null }} />)
+    expect(screen.getByRole('checkbox', { name: /I accept the Terms and the Privacy Policy/ })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Terms' })).toBeNull()
+  })
+
+  it('MP-US2-S2 shows the refusal beside the checkbox, linked to it', async () => {
+    register.mockResolvedValueOnce({ errors: { acceptTerms: 'auth.errors.acceptTerms' }, values: {} } as never)
+    renderWithLocale(<RegisterForm locale="en" personas={personas} />)
+    await userEvent.click(screen.getByTestId('register-submit'))
+    const message = await screen.findByText('Please accept the Terms and the Privacy Policy to create an account.')
+    expect(screen.getByRole('checkbox', { name: /I accept/ })).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByRole('checkbox', { name: /I accept/ }).getAttribute('aria-describedby')).toBe(message.id)
+  })
+
   it('US4-S3 shows the server error beside the field, in plain words', async () => {
     renderWithLocale(<RegisterForm locale="en" personas={personas} />)
     await userEvent.click(screen.getByTestId('register-submit'))

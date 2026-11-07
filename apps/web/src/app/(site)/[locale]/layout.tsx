@@ -8,6 +8,7 @@ import type { ReactNode } from 'react'
 import { routing } from '@/i18n/routing'
 import { FloatingWhatsApp } from '@/modules/contact/components/FloatingWhatsApp'
 import { getLandingPage } from '@/modules/landing/queries'
+import { getNavigation } from '@/modules/pages'
 import { getSiteSettings } from '@/modules/site-settings/queries'
 import { ExitPreviewBar } from '@/shared/components/ExitPreviewBar'
 import { Footer } from '@/shared/components/Footer'
@@ -52,9 +53,10 @@ export default async function SiteLayout({ children, params }: { children: React
   setRequestLocale(locale)
   const typed = locale as Locale
   const { isEnabled: preview } = await draftMode()
-  const [settings, landing, t] = await Promise.all([
+  const [settings, landing, nav, t] = await Promise.all([
     getSiteSettings(typed),
     getLandingPage({ locale: typed, draft: preview }),
+    getNavigation(typed),
     getTranslations({ locale, namespace: 'a11y' }),
   ])
   const tContact = await getTranslations({ locale, namespace: 'contact' })
@@ -76,7 +78,10 @@ export default async function SiteLayout({ children, params }: { children: React
               siteName={settings.siteName}
               logo={settings.logo}
               logoDark={settings.logoDark}
-              navigation={(landing.navigation ?? []).map((n) => ({ label: n.label, target: n.target }))}
+              navigation={[
+                ...(landing.navigation ?? []).map((n) => ({ label: n.label, target: n.target })),
+                ...nav.header.map((n) => ({ label: n.label, target: n.href })),
+              ]}
             />
             <main id="content">{children}</main>
             <Footer
@@ -85,6 +90,8 @@ export default async function SiteLayout({ children, params }: { children: React
               social={(settings.social ?? []).map((s) => ({ platform: s.platform, url: s.url }))}
               contactEmail={settings.contactEmail}
               phoneNumber={settings.phoneNumber}
+              groups={nav.footerGroups}
+              legal={nav.legal}
             />
             <FloatingWhatsApp number={settings.whatsappNumber} message={settings.whatsappDefaultMessage} label={tContact('whatsappFloating')} />
           </ThemeProvider>

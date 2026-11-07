@@ -11,6 +11,7 @@
     "./content": "./src/content/index.ts",
     "./brief": "./src/brief/index.ts",
     "./creators": "./src/creators/index.ts",
+    "./pages": "./src/pages/index.ts",
     "./brief/validate": "./src/brief/validate.ts",
     "./brief/sentence": "./src/brief/sentence.ts",
     "./brief/options": "./src/brief/options.ts",

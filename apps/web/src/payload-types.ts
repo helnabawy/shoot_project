@@ -77,6 +77,13 @@ export interface Config {
     briefs: Brief;
     media: Media;
     'rate-limits': RateLimit;
+    pages: Page;
+    'removed-paths': RemovedPath;
+    'legal-documents': LegalDocument;
+    'legal-acceptances': LegalAcceptance;
+    articles: Article;
+    'article-categories': ArticleCategory;
+    authors: Author;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -94,6 +101,13 @@ export interface Config {
     briefs: BriefsSelect<false> | BriefsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'rate-limits': RateLimitsSelect<false> | RateLimitsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    'removed-paths': RemovedPathsSelect<false> | RemovedPathsSelect<true>;
+    'legal-documents': LegalDocumentsSelect<false> | LegalDocumentsSelect<true>;
+    'legal-acceptances': LegalAcceptancesSelect<false> | LegalAcceptancesSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    'article-categories': ArticleCategoriesSelect<false> | ArticleCategoriesSelect<true>;
+    authors: AuthorsSelect<false> | AuthorsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -469,6 +483,595 @@ export interface RateLimit {
   createdAt: string;
 }
 /**
+ * Studios, About and any other page, built from the same sections as the home page. Intent pages open the brief for one kind of job.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  /**
+   * The page heading.
+   */
+  title: string;
+  /**
+   * The address, e.g. "studios" for /studios. One per language; Arabic may stay empty to reuse the English one. If you change it, the old address keeps working.
+   */
+  slug?: string | null;
+  /**
+   * Cannot be changed once the page has been published.
+   */
+  kind: 'standard' | 'intent';
+  sections?:
+    | (
+        | HowItWorksBlock
+        | FeaturesBlock
+        | CategoriesGridBlock
+        | CreatorNetworkBlock
+        | PersonaBandBlock
+        | FaqBlock
+        | LogoCloudBlock
+        | RichTextBlock
+        | CallToActionBlock
+      )[]
+    | null;
+  /**
+   * What this page is about. The brief on the page starts with these answers; visitors can change them.
+   */
+  intent?: {
+    /**
+     * Which kind of professional. It must be one the site offers.
+     */
+    persona?: (number | null) | Persona;
+    /**
+     * The kind of job, e.g. a proposal.
+     */
+    specialty?: (number | null) | Category;
+    /**
+     * An emirate or a city.
+     */
+    location?: (number | null) | Location;
+    /**
+     * Answers for other steps of the brief: the step (token) and the value of one of its options.
+     */
+    presets?:
+      | {
+          token: string;
+          value: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * One short paragraph above the brief. Write it for this page: do not repeat another intent page.
+     */
+    intro?: string | null;
+    /**
+     * For search results. The page title is used when empty.
+     */
+    serviceName?: string | null;
+    /**
+     * For search results, e.g. "Dubai". The location name is used when empty.
+     */
+    areaServed?: string | null;
+    /**
+     * Real questions with real answers. They appear on the page and in search results.
+     */
+    faq?:
+      | {
+          question: string;
+          answer: {
+            root: {
+              type: string;
+              children: {
+                type: any;
+                version: number;
+                [k: string]: unknown;
+              }[];
+              direction: ('ltr' | 'rtl') | null;
+              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+              indent: number;
+              version: number;
+            };
+            [k: string]: unknown;
+          };
+          id?: string | null;
+        }[]
+      | null;
+  };
+  placement?: {
+    /**
+     * Show in the header (up to 3 pages).
+     */
+    inHeader?: boolean | null;
+    /**
+     * The key of a footer group from Site settings → Footer (for example "company"). Leave empty to keep it out of the footer.
+     */
+    footerGroup?: string | null;
+    /**
+     * Shorter text for the link. The title is used when empty.
+     */
+    navLabel?: string | null;
+    /**
+     * Lower numbers come first.
+     */
+    order?: number | null;
+  };
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    ogImage?: (number | null) | Media;
+    /**
+     * Keep this page out of search engines and the sitemap.
+     */
+    hideFromSearch?: boolean | null;
+  };
+  /**
+   * Earlier addresses; they redirect here. Kept automatically.
+   */
+  previousSlugs?:
+    | {
+        locale: 'en' | 'ar';
+        slug: string;
+        id?: string | null;
+      }[]
+    | null;
+  publishedAt?: string | null;
+  publishedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HowItWorksBlock".
+ */
+export interface HowItWorksBlock {
+  /**
+   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
+   */
+  anchor: string;
+  heading: string;
+  subheading?: string | null;
+  steps?:
+    | {
+        title: string;
+        body?: string | null;
+        /**
+         * A small drawing of the product at this step, shown above the step.
+         */
+        visual?: ('none' | 'brief' | 'match' | 'work') | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Leave the label empty to hide this action.
+   */
+  cta?: {
+    label?: string | null;
+    kind?: ('whatsapp' | 'link' | 'call') | null;
+    /**
+     * A path ("/register") or an in-page anchor ("#how-it-works").
+     */
+    href?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'howItWorks';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturesBlock".
+ */
+export interface FeaturesBlock {
+  /**
+   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
+   */
+  anchor: string;
+  heading: string;
+  subheading?: string | null;
+  items?:
+    | {
+        title: string;
+        body?: string | null;
+        /**
+         * Up to 3 characters shown in the small tile at the start of the row, e.g. "W" or "DXB".
+         */
+        glyph?: string | null;
+        /**
+         * Which part of the drawing of the brief this reason points at. Each part takes one reason; the rest list under the drawing.
+         */
+        pointsAt?: ('none' | 'sentence' | 'language' | 'send' | 'whatsapp') | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'features';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CategoriesGridBlock".
+ */
+export interface CategoriesGridBlock {
+  /**
+   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
+   */
+  anchor: string;
+  heading: string;
+  subheading?: string | null;
+  source?: ('active' | 'manual') | null;
+  categories?: (number | Category)[] | null;
+  /**
+   * Leave the label empty to hide this action.
+   */
+  cta?: {
+    label?: string | null;
+    kind?: ('whatsapp' | 'link' | 'call') | null;
+    /**
+     * A path ("/register") or an in-page anchor ("#how-it-works").
+     */
+    href?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'categoriesGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CreatorNetworkBlock".
+ */
+export interface CreatorNetworkBlock {
+  /**
+   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
+   */
+  anchor: string;
+  heading: string;
+  subheading?: string | null;
+  rule?: ('featuredThenNewest' | 'newest' | 'featuredOnly') | null;
+  count: number;
+  /**
+   * Leave the label empty to hide this action. Link to the creator directory: /creators.
+   */
+  cta?: {
+    label?: string | null;
+    kind?: ('whatsapp' | 'link' | 'call') | null;
+    /**
+     * A path ("/register") or an in-page anchor ("#how-it-works").
+     */
+    href?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'creatorNetwork';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PersonaBandBlock".
+ */
+export interface PersonaBandBlock {
+  /**
+   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
+   */
+  anchor: string;
+  /**
+   * You can use {persona.singular} and {personas.list}.
+   */
+  heading: string;
+  body?: string | null;
+  layout?: ('combined' | 'perPersona') | null;
+  /**
+   * Leave the label empty to hide this action.
+   */
+  cta?: {
+    label?: string | null;
+    kind?: ('whatsapp' | 'link' | 'call') | null;
+    /**
+     * A path ("/register") or an in-page anchor ("#how-it-works").
+     */
+    href?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'personaBand';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqBlock".
+ */
+export interface FaqBlock {
+  /**
+   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
+   */
+  anchor: string;
+  heading: string;
+  items?:
+    | {
+        question: string;
+        answer?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LogoCloudBlock".
+ */
+export interface LogoCloudBlock {
+  /**
+   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
+   */
+  anchor: string;
+  heading: string;
+  /**
+   * Only real clients who agreed to be shown.
+   */
+  logos?:
+    | {
+        name: string;
+        image: number | Media;
+        imageDark?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'logoCloud';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBlock".
+ */
+export interface RichTextBlock {
+  /**
+   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
+   */
+  anchor?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'richText';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CallToActionBlock".
+ */
+export interface CallToActionBlock {
+  /**
+   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
+   */
+  anchor?: string | null;
+  heading: string;
+  body?: string | null;
+  primary?: {
+    label?: string | null;
+    kind?: ('whatsapp' | 'link' | 'call') | null;
+    /**
+     * A path ("/register") or an in-page anchor ("#how-it-works").
+     */
+    href?: string | null;
+  };
+  /**
+   * Leave the label empty to hide this action.
+   */
+  secondary?: {
+    label?: string | null;
+    kind?: ('whatsapp' | 'link' | 'call') | null;
+    /**
+     * A path ("/register") or an in-page anchor ("#how-it-works").
+     */
+    href?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'callToAction';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "removed-paths".
+ */
+export interface RemovedPath {
+  id: number;
+  kind: 'page' | 'article';
+  locale: 'en' | 'ar';
+  /**
+   * Without the language prefix, e.g. /studios.
+   */
+  path: string;
+  removedAt: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Terms, Professional Terms and Privacy Policy. Add a new version instead of editing a published one: earlier versions stay readable for the record.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-documents".
+ */
+export interface LegalDocument {
+  id: number;
+  /**
+   * Fixed once created.
+   */
+  kind: 'terms' | 'professional-terms' | 'privacy';
+  title: string;
+  /**
+   * Add a version, write it, then set it to Published. A published version cannot be edited or removed; add a newer one instead. It applies from its effective date.
+   */
+  versions?:
+    | {
+        /**
+         * Assigned automatically.
+         */
+        version?: number | null;
+        /**
+         * Applies from this moment. Empty means the moment it is published.
+         */
+        effectiveFrom?: string | null;
+        state: 'draft' | 'published';
+        /**
+         * Tick while the text is a stand-in. A placeholder cannot be published.
+         */
+        placeholder?: boolean | null;
+        /**
+         * What changed, in a sentence. Shown in the list of versions.
+         */
+        changeSummary?: string | null;
+        body?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        publishedAt?: string | null;
+        publishedBy?: (number | null) | User;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-acceptances".
+ */
+export interface LegalAcceptance {
+  id: number;
+  user: number | User;
+  kind: 'terms' | 'professional-terms' | 'privacy';
+  version: number;
+  acceptedAt: string;
+  locale: 'en' | 'ar';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Guides for clients. Set a publication time in the future to schedule one: it appears by itself.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  title: string;
+  /**
+   * Shown in the list, the feed and search results.
+   */
+  summary: string;
+  /**
+   * The cover image. Its description is read out to people who cannot see it.
+   */
+  cover: number | Media;
+  body: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    ogImage?: (number | null) | Media;
+    hideFromSearch?: boolean | null;
+  };
+  /**
+   * Stable identifier used by the site and seeds. It cannot be changed after saving.
+   */
+  slug: string;
+  author: number | Author;
+  categories: (number | ArticleCategory)[];
+  /**
+   * In the future means scheduled. Empty means now.
+   */
+  publishedAt: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * The people guides are written by. Not necessarily accounts on the site.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: number;
+  /**
+   * Stable identifier used by the site and seeds. It cannot be changed after saving.
+   */
+  slug: string;
+  name: string;
+  bio?: string | null;
+  photo?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Topics that group the guides. A category with no live guide is not shown on the site.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-categories".
+ */
+export interface ArticleCategory {
+  id: number;
+  /**
+   * Stable identifier used by the site and seeds. It cannot be changed after saving.
+   */
+  slug: string;
+  name: string;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -531,6 +1134,34 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'rate-limits';
         value: number | RateLimit;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'removed-paths';
+        value: number | RemovedPath;
+      } | null)
+    | ({
+        relationTo: 'legal-documents';
+        value: number | LegalDocument;
+      } | null)
+    | ({
+        relationTo: 'legal-acceptances';
+        value: number | LegalAcceptance;
+      } | null)
+    | ({
+        relationTo: 'articles';
+        value: number | Article;
+      } | null)
+    | ({
+        relationTo: 'article-categories';
+        value: number | ArticleCategory;
+      } | null)
+    | ({
+        relationTo: 'authors';
+        value: number | Author;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -834,591 +1465,12 @@ export interface RateLimitsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-kv_select".
+ * via the `definition` "pages_select".
  */
-export interface PayloadKvSelect<T extends boolean = true> {
-  key?: T;
-  data?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-locked-documents_select".
- */
-export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
-  document?: T;
-  globalSlug?: T;
-  user?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-preferences_select".
- */
-export interface PayloadPreferencesSelect<T extends boolean = true> {
-  user?: T;
-  key?: T;
-  value?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-migrations_select".
- */
-export interface PayloadMigrationsSelect<T extends boolean = true> {
-  name?: T;
-  batch?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * Everything on the home page, in English and Arabic.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "landing-page".
- */
-export interface LandingPage {
-  id: number;
-  hero: {
-    eyebrow?: string | null;
-    /**
-     * Keep it short: 80 characters at most.
-     */
-    headline: string;
-    subheadline?: string | null;
-    trustChips?:
-      | {
-          text: string;
-          id?: string | null;
-        }[]
-      | null;
-    layout?: ('briefBuilder' | 'ctas') | null;
-    primaryCta?: {
-      label?: string | null;
-      kind?: ('whatsapp' | 'link' | 'call') | null;
-      /**
-       * A path ("/register") or an in-page anchor ("#how-it-works").
-       */
-      href?: string | null;
-    };
-    secondaryCta?: {
-      label?: string | null;
-      kind?: ('whatsapp' | 'link' | 'call') | null;
-      /**
-       * A path ("/register") or an in-page anchor ("#how-it-works").
-       */
-      href?: string | null;
-    };
-    image?: (number | null) | Media;
-    imageMobile?: (number | null) | Media;
-  };
-  briefBuilder?: {
-    enabled?: boolean | null;
-    /**
-     * Each {word} in braces is a part the visitor picks. Every {word} needs a slot below with the same token, and every slot must appear here.
-     */
-    sentence?: string | null;
-    slots?:
-      | {
-          /**
-           * Matches {token} in the sentence.
-           */
-          token: string;
-          kind: 'persona' | 'options' | 'date' | 'number';
-          optionSet?: (number | null) | OptionSet;
-          /**
-           * Heading above the options, e.g. "Occasion".
-           */
-          groupLabel?: string | null;
-          /**
-           * The question in the field while this step is asked, e.g. "what occasion"; also the skip row of an optional step, e.g. "any date".
-           */
-          placeholder?: string | null;
-          /**
-           * Option value or persona slug listed first in its step (nothing is pre-selected).
-           */
-          defaultValue?: string | null;
-          required?: boolean | null;
-          /**
-           * Let visitors type their own words.
-           */
-          allowCustom?: boolean | null;
-          /**
-           * Let visitors pick more than one, e.g. a photographer and a videographer.
-           */
-          multiple?: boolean | null;
-          id?: string | null;
-        }[]
-      | null;
-    submitLabel?: string | null;
-    helperText?: string | null;
-    /**
-     * The WhatsApp message sent with the brief. Uses the same {words} as the sentence; the brief ID is added on its own line, or where you put {reference}.
-     */
-    whatsappTemplate?: string | null;
-    successMessage?: string | null;
-    /**
-     * Optional outline of what happens after the brief (only step 1 is interactive).
-     */
-    steps?:
-      | {
-          title: string;
-          description?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  /**
-   * Links in the header. Use "#anchor" for sections or a path like "/register".
-   */
-  navigation?:
-    | {
-        label: string;
-        target: string;
-        id?: string | null;
-      }[]
-    | null;
-  sections?:
-    | (
-        | HowItWorksBlock
-        | FeaturesBlock
-        | CategoriesGridBlock
-        | CreatorNetworkBlock
-        | PersonaBandBlock
-        | FaqBlock
-        | LogoCloudBlock
-        | RichTextBlock
-        | CallToActionBlock
-      )[]
-    | null;
-  seo?: {
-    title?: string | null;
-    description?: string | null;
-    ogImage?: (number | null) | Media;
-  };
-  publishedAt?: string | null;
-  publishedBy?: (number | null) | User;
-  _status?: ('draft' | 'published') | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "HowItWorksBlock".
- */
-export interface HowItWorksBlock {
-  /**
-   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
-   */
-  anchor: string;
-  heading: string;
-  subheading?: string | null;
-  steps?:
-    | {
-        title: string;
-        body?: string | null;
-        /**
-         * A small drawing of the product at this step, shown above the step.
-         */
-        visual?: ('none' | 'brief' | 'match' | 'work') | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Leave the label empty to hide this action.
-   */
-  cta?: {
-    label?: string | null;
-    kind?: ('whatsapp' | 'link' | 'call') | null;
-    /**
-     * A path ("/register") or an in-page anchor ("#how-it-works").
-     */
-    href?: string | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'howItWorks';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FeaturesBlock".
- */
-export interface FeaturesBlock {
-  /**
-   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
-   */
-  anchor: string;
-  heading: string;
-  subheading?: string | null;
-  items?:
-    | {
-        title: string;
-        body?: string | null;
-        /**
-         * Up to 3 characters shown in the small tile at the start of the row, e.g. "W" or "DXB".
-         */
-        glyph?: string | null;
-        /**
-         * Which part of the drawing of the brief this reason points at. Each part takes one reason; the rest list under the drawing.
-         */
-        pointsAt?: ('none' | 'sentence' | 'language' | 'send' | 'whatsapp') | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'features';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CategoriesGridBlock".
- */
-export interface CategoriesGridBlock {
-  /**
-   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
-   */
-  anchor: string;
-  heading: string;
-  subheading?: string | null;
-  source?: ('active' | 'manual') | null;
-  categories?: (number | Category)[] | null;
-  /**
-   * Leave the label empty to hide this action.
-   */
-  cta?: {
-    label?: string | null;
-    kind?: ('whatsapp' | 'link' | 'call') | null;
-    /**
-     * A path ("/register") or an in-page anchor ("#how-it-works").
-     */
-    href?: string | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'categoriesGrid';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CreatorNetworkBlock".
- */
-export interface CreatorNetworkBlock {
-  /**
-   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
-   */
-  anchor: string;
-  heading: string;
-  subheading?: string | null;
-  rule?: ('featuredThenNewest' | 'newest' | 'featuredOnly') | null;
-  count: number;
-  /**
-   * Leave the label empty to hide this action. Link to the creator directory: /creators.
-   */
-  cta?: {
-    label?: string | null;
-    kind?: ('whatsapp' | 'link' | 'call') | null;
-    /**
-     * A path ("/register") or an in-page anchor ("#how-it-works").
-     */
-    href?: string | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'creatorNetwork';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PersonaBandBlock".
- */
-export interface PersonaBandBlock {
-  /**
-   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
-   */
-  anchor: string;
-  /**
-   * You can use {persona.singular} and {personas.list}.
-   */
-  heading: string;
-  body?: string | null;
-  layout?: ('combined' | 'perPersona') | null;
-  /**
-   * Leave the label empty to hide this action.
-   */
-  cta?: {
-    label?: string | null;
-    kind?: ('whatsapp' | 'link' | 'call') | null;
-    /**
-     * A path ("/register") or an in-page anchor ("#how-it-works").
-     */
-    href?: string | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'personaBand';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FaqBlock".
- */
-export interface FaqBlock {
-  /**
-   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
-   */
-  anchor: string;
-  heading: string;
-  items?:
-    | {
-        question: string;
-        answer?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'faq';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "LogoCloudBlock".
- */
-export interface LogoCloudBlock {
-  /**
-   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
-   */
-  anchor: string;
-  heading: string;
-  /**
-   * Only real clients who agreed to be shown.
-   */
-  logos?:
-    | {
-        name: string;
-        image: number | Media;
-        imageDark?: (number | null) | Media;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'logoCloud';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RichTextBlock".
- */
-export interface RichTextBlock {
-  /**
-   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
-   */
-  anchor?: string | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'richText';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToActionBlock".
- */
-export interface CallToActionBlock {
-  /**
-   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
-   */
-  anchor?: string | null;
-  heading: string;
-  body?: string | null;
-  primary?: {
-    label?: string | null;
-    kind?: ('whatsapp' | 'link' | 'call') | null;
-    /**
-     * A path ("/register") or an in-page anchor ("#how-it-works").
-     */
-    href?: string | null;
-  };
-  /**
-   * Leave the label empty to hide this action.
-   */
-  secondary?: {
-    label?: string | null;
-    kind?: ('whatsapp' | 'link' | 'call') | null;
-    /**
-     * A path ("/register") or an in-page anchor ("#how-it-works").
-     */
-    href?: string | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'callToAction';
-}
-/**
- * Contact details, the active audience and site-wide labels.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-settings".
- */
-export interface SiteSetting {
-  id: number;
-  siteName: string;
-  /**
-   * Optional. Without a logo the site name is shown.
-   */
-  logo?: (number | null) | Media;
-  /**
-   * Optional version for dark backgrounds.
-   */
-  logoDark?: (number | null) | Media;
-  /**
-   * International format with country code. Used by every WhatsApp button on the site.
-   */
-  whatsappNumber: string;
-  /**
-   * The message pre-filled when a visitor taps a WhatsApp button.
-   */
-  whatsappDefaultMessage?: string | null;
-  /**
-   * Shown after a brief is sent, e.g. "within 15 minutes".
-   */
-  expectedReplyTime?: string | null;
-  phoneNumber?: string | null;
-  contactEmail?: string | null;
-  social?:
-    | {
-        platform: 'instagram' | 'linkedin' | 'youtube' | 'tiktok' | 'x';
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Which kinds of professional the site offers, in display order. Drag to reorder. Empty hides every audience-dependent part of the site.
-   */
-  activePersonas?: (number | Persona)[] | null;
-  /**
-   * You can use {persona.singular}, {persona.plural} and {personas.list}.
-   */
-  labels?: {
-    seekerLabel?: string | null;
-    providerLabel?: string | null;
-  };
-  /**
-   * Shown in front of every creator code (CR-7K4Q2). Decided with the brand name. Changing it changes how every code is shown, and old spellings still work.
-   */
-  creatorCodePrefix?: string | null;
-  /**
-   * When on, a verified creator’s edits go live at once instead of waiting for approval.
-   */
-  autoPublishEdits?: boolean | null;
-  /**
-   * Creators per page in the directory.
-   */
-  directoryPageSize?: number | null;
-  /**
-   * How many briefs one anonymous visitor may send per hour.
-   */
-  briefLimitPerHour?: number | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "landing-page_select".
- */
-export interface LandingPageSelect<T extends boolean = true> {
-  hero?:
-    | T
-    | {
-        eyebrow?: T;
-        headline?: T;
-        subheadline?: T;
-        trustChips?:
-          | T
-          | {
-              text?: T;
-              id?: T;
-            };
-        layout?: T;
-        primaryCta?:
-          | T
-          | {
-              label?: T;
-              kind?: T;
-              href?: T;
-            };
-        secondaryCta?:
-          | T
-          | {
-              label?: T;
-              kind?: T;
-              href?: T;
-            };
-        image?: T;
-        imageMobile?: T;
-      };
-  briefBuilder?:
-    | T
-    | {
-        enabled?: T;
-        sentence?: T;
-        slots?:
-          | T
-          | {
-              token?: T;
-              kind?: T;
-              optionSet?: T;
-              groupLabel?: T;
-              placeholder?: T;
-              defaultValue?: T;
-              required?: T;
-              allowCustom?: T;
-              multiple?: T;
-              id?: T;
-            };
-        submitLabel?: T;
-        helperText?: T;
-        whatsappTemplate?: T;
-        successMessage?: T;
-        steps?:
-          | T
-          | {
-              title?: T;
-              description?: T;
-              id?: T;
-            };
-      };
-  navigation?:
-    | T
-    | {
-        label?: T;
-        target?: T;
-        id?: T;
-      };
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  kind?: T;
   sections?:
     | T
     | {
@@ -1432,19 +1484,58 @@ export interface LandingPageSelect<T extends boolean = true> {
         richText?: T | RichTextBlockSelect<T>;
         callToAction?: T | CallToActionBlockSelect<T>;
       };
+  intent?:
+    | T
+    | {
+        persona?: T;
+        specialty?: T;
+        location?: T;
+        presets?:
+          | T
+          | {
+              token?: T;
+              value?: T;
+              id?: T;
+            };
+        intro?: T;
+        serviceName?: T;
+        areaServed?: T;
+        faq?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+      };
+  placement?:
+    | T
+    | {
+        inHeader?: T;
+        footerGroup?: T;
+        navLabel?: T;
+        order?: T;
+      };
   seo?:
     | T
     | {
         title?: T;
         description?: T;
         ogImage?: T;
+        hideFromSearch?: T;
+      };
+  previousSlugs?:
+    | T
+    | {
+        locale?: T;
+        slug?: T;
+        id?: T;
       };
   publishedAt?: T;
   publishedBy?: T;
-  _status?: T;
   updatedAt?: T;
   createdAt?: T;
-  globalType?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1623,6 +1714,454 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "removed-paths_select".
+ */
+export interface RemovedPathsSelect<T extends boolean = true> {
+  kind?: T;
+  locale?: T;
+  path?: T;
+  removedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-documents_select".
+ */
+export interface LegalDocumentsSelect<T extends boolean = true> {
+  kind?: T;
+  title?: T;
+  versions?:
+    | T
+    | {
+        version?: T;
+        effectiveFrom?: T;
+        state?: T;
+        placeholder?: T;
+        changeSummary?: T;
+        body?: T;
+        publishedAt?: T;
+        publishedBy?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-acceptances_select".
+ */
+export interface LegalAcceptancesSelect<T extends boolean = true> {
+  user?: T;
+  kind?: T;
+  version?: T;
+  acceptedAt?: T;
+  locale?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  title?: T;
+  summary?: T;
+  cover?: T;
+  body?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogImage?: T;
+        hideFromSearch?: T;
+      };
+  slug?: T;
+  author?: T;
+  categories?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-categories_select".
+ */
+export interface ArticleCategoriesSelect<T extends boolean = true> {
+  slug?: T;
+  name?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  slug?: T;
+  name?: T;
+  bio?: T;
+  photo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv_select".
+ */
+export interface PayloadKvSelect<T extends boolean = true> {
+  key?: T;
+  data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-locked-documents_select".
+ */
+export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
+  document?: T;
+  globalSlug?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-preferences_select".
+ */
+export interface PayloadPreferencesSelect<T extends boolean = true> {
+  user?: T;
+  key?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-migrations_select".
+ */
+export interface PayloadMigrationsSelect<T extends boolean = true> {
+  name?: T;
+  batch?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * Everything on the home page, in English and Arabic.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "landing-page".
+ */
+export interface LandingPage {
+  id: number;
+  hero: {
+    eyebrow?: string | null;
+    /**
+     * Keep it short: 80 characters at most.
+     */
+    headline: string;
+    subheadline?: string | null;
+    trustChips?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    layout?: ('briefBuilder' | 'ctas') | null;
+    primaryCta?: {
+      label?: string | null;
+      kind?: ('whatsapp' | 'link' | 'call') | null;
+      /**
+       * A path ("/register") or an in-page anchor ("#how-it-works").
+       */
+      href?: string | null;
+    };
+    secondaryCta?: {
+      label?: string | null;
+      kind?: ('whatsapp' | 'link' | 'call') | null;
+      /**
+       * A path ("/register") or an in-page anchor ("#how-it-works").
+       */
+      href?: string | null;
+    };
+    image?: (number | null) | Media;
+    imageMobile?: (number | null) | Media;
+  };
+  briefBuilder?: {
+    enabled?: boolean | null;
+    /**
+     * Each {word} in braces is a part the visitor picks. Every {word} needs a slot below with the same token, and every slot must appear here.
+     */
+    sentence?: string | null;
+    slots?:
+      | {
+          /**
+           * Matches {token} in the sentence.
+           */
+          token: string;
+          kind: 'persona' | 'options' | 'date' | 'number';
+          optionSet?: (number | null) | OptionSet;
+          /**
+           * Heading above the options, e.g. "Occasion".
+           */
+          groupLabel?: string | null;
+          /**
+           * The question in the field while this step is asked, e.g. "what occasion"; also the skip row of an optional step, e.g. "any date".
+           */
+          placeholder?: string | null;
+          /**
+           * Option value or persona slug listed first in its step (nothing is pre-selected).
+           */
+          defaultValue?: string | null;
+          required?: boolean | null;
+          /**
+           * Let visitors type their own words.
+           */
+          allowCustom?: boolean | null;
+          /**
+           * Let visitors pick more than one, e.g. a photographer and a videographer.
+           */
+          multiple?: boolean | null;
+          id?: string | null;
+        }[]
+      | null;
+    submitLabel?: string | null;
+    helperText?: string | null;
+    /**
+     * The WhatsApp message sent with the brief. Uses the same {words} as the sentence; the brief ID is added on its own line, or where you put {reference}.
+     */
+    whatsappTemplate?: string | null;
+    successMessage?: string | null;
+    /**
+     * Optional outline of what happens after the brief (only step 1 is interactive).
+     */
+    steps?:
+      | {
+          title: string;
+          description?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Links in the header. Use "#anchor" for sections or a path like "/register".
+   */
+  navigation?:
+    | {
+        label: string;
+        target: string;
+        id?: string | null;
+      }[]
+    | null;
+  sections?:
+    | (
+        | HowItWorksBlock
+        | FeaturesBlock
+        | CategoriesGridBlock
+        | CreatorNetworkBlock
+        | PersonaBandBlock
+        | FaqBlock
+        | LogoCloudBlock
+        | RichTextBlock
+        | CallToActionBlock
+      )[]
+    | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  publishedAt?: string | null;
+  publishedBy?: (number | null) | User;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Contact details, the active audience and site-wide labels.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  siteName: string;
+  /**
+   * Optional. Without a logo the site name is shown.
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Optional version for dark backgrounds.
+   */
+  logoDark?: (number | null) | Media;
+  /**
+   * International format with country code. Used by every WhatsApp button on the site.
+   */
+  whatsappNumber: string;
+  /**
+   * The message pre-filled when a visitor taps a WhatsApp button.
+   */
+  whatsappDefaultMessage?: string | null;
+  /**
+   * Shown after a brief is sent, e.g. "within 15 minutes".
+   */
+  expectedReplyTime?: string | null;
+  phoneNumber?: string | null;
+  contactEmail?: string | null;
+  social?:
+    | {
+        platform: 'instagram' | 'linkedin' | 'youtube' | 'tiktok' | 'x';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Which kinds of professional the site offers, in display order. Drag to reorder. Empty hides every audience-dependent part of the site.
+   */
+  activePersonas?: (number | Persona)[] | null;
+  /**
+   * You can use {persona.singular}, {persona.plural} and {personas.list}.
+   */
+  labels?: {
+    seekerLabel?: string | null;
+    providerLabel?: string | null;
+  };
+  /**
+   * Up to four headings in the footer. A page joins a group in its own Navigation settings. The legal links (Terms, Privacy) are always shown.
+   */
+  footerGroups?:
+    | {
+        /**
+         * Identifier pages refer to, e.g. "company". Renaming it takes its pages out of the footer until they are placed again.
+         */
+        key: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Shown in front of every creator code (CR-7K4Q2). Decided with the brand name. Changing it changes how every code is shown, and old spellings still work.
+   */
+  creatorCodePrefix?: string | null;
+  /**
+   * When on, a verified creator’s edits go live at once instead of waiting for approval.
+   */
+  autoPublishEdits?: boolean | null;
+  /**
+   * Creators per page in the directory.
+   */
+  directoryPageSize?: number | null;
+  /**
+   * How many briefs one anonymous visitor may send per hour.
+   */
+  briefLimitPerHour?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "landing-page_select".
+ */
+export interface LandingPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        headline?: T;
+        subheadline?: T;
+        trustChips?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        layout?: T;
+        primaryCta?:
+          | T
+          | {
+              label?: T;
+              kind?: T;
+              href?: T;
+            };
+        secondaryCta?:
+          | T
+          | {
+              label?: T;
+              kind?: T;
+              href?: T;
+            };
+        image?: T;
+        imageMobile?: T;
+      };
+  briefBuilder?:
+    | T
+    | {
+        enabled?: T;
+        sentence?: T;
+        slots?:
+          | T
+          | {
+              token?: T;
+              kind?: T;
+              optionSet?: T;
+              groupLabel?: T;
+              placeholder?: T;
+              defaultValue?: T;
+              required?: T;
+              allowCustom?: T;
+              multiple?: T;
+              id?: T;
+            };
+        submitLabel?: T;
+        helperText?: T;
+        whatsappTemplate?: T;
+        successMessage?: T;
+        steps?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  navigation?:
+    | T
+    | {
+        label?: T;
+        target?: T;
+        id?: T;
+      };
+  sections?:
+    | T
+    | {
+        howItWorks?: T | HowItWorksBlockSelect<T>;
+        features?: T | FeaturesBlockSelect<T>;
+        categoriesGrid?: T | CategoriesGridBlockSelect<T>;
+        creatorNetwork?: T | CreatorNetworkBlockSelect<T>;
+        personaBand?: T | PersonaBandBlockSelect<T>;
+        faq?: T | FaqBlockSelect<T>;
+        logoCloud?: T | LogoCloudBlockSelect<T>;
+        richText?: T | RichTextBlockSelect<T>;
+        callToAction?: T | CallToActionBlockSelect<T>;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogImage?: T;
+      };
+  publishedAt?: T;
+  publishedBy?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -1647,6 +2186,13 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         seekerLabel?: T;
         providerLabel?: T;
+      };
+  footerGroups?:
+    | T
+    | {
+        key?: T;
+        label?: T;
+        id?: T;
       };
   creatorCodePrefix?: T;
   autoPublishEdits?: T;

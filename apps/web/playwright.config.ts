@@ -17,7 +17,7 @@ export default defineConfig({
         // Requires `pnpm --filter web build` first; e2e runs against a production build.
         command: 'pnpm payload migrate && pnpm seed && pnpm start',
         // The creator specs need the demo creators (D2222…D8888); the seed refuses them on a non-local host.
-        env: { SEED_DEMO_CREATORS: '1' },
+        env: { SEED_DEMO_CREATORS: '1', SEED_DEMO_GUIDES: '1' },
         url: baseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 240_000,

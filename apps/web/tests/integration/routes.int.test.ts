@@ -267,9 +267,9 @@ describe('Next.js routes and pages', () => {
       expect(meta.metadataBase).toBeInstanceOf(URL)
     })
 
-    it('the 404 page links home in the page language', async () => {
-      const tree = elements(await notFoundPage.default())
-      expect(tree.find((el) => el.type === 'h1')).toBeTruthy()
+    it('MP-US5-S1 the 404 page is the designed not-found view in the page language, "can\'t find" unless the address was removed', async () => {
+      const view = (await notFoundPage.default()) as ReactElement<{ variant: string; locale: string }>
+      expect(view.props).toMatchObject({ variant: 'notFound', locale: 'en' })
     })
   })
 

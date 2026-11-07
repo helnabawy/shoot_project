@@ -53,6 +53,11 @@ export interface BriefBuilderProps {
   creator?: CreatorBooking
   /** A step answered for the visitor and not asked again, e.g. the professional of a single-type creator. */
   locked?: { token: string; value: string } | null
+  /**
+   * Answers the page starts with (an intent page, feature 005): shown as set steps, posted with the brief
+   * and changeable by the visitor, unlike `locked`.
+   */
+  preset?: Record<string, string>
 }
 
 /** Slots in the order the sentence asks them; slots missing from the sentence come last. */
@@ -99,6 +104,7 @@ export function BriefBuilder({
   tone = 'default',
   creator,
   locked = null,
+  preset,
 }: BriefBuilderProps) {
   const errorText = (key: string) => labels.errors[key] ?? labels.errors['brief.errors.generic'] ?? key
   const uid = useId()
@@ -108,10 +114,13 @@ export function BriefBuilder({
   // Nothing is pre-filled for the visitor (FR-067); only a step the creator fixes starts answered and locked.
   const lockedValues = useMemo<Record<string, string>>(() => (locked ? { [locked.token]: locked.value } : {}), [locked])
   const isLocked = (slot: BuilderSlot) => locked?.token === slot.token
-  const [values, setValues] = useState<Record<string, string>>(lockedValues)
+  // Preset answers are real answers: a step that waits for "Continue" counts as continued.
+  const initialValues = useMemo<Record<string, string>>(() => ({ ...(preset ?? {}), ...lockedValues }), [preset, lockedValues])
+  const initialConfirmed = useMemo<Record<string, boolean>>(() => Object.fromEntries(Object.keys(initialValues).map((token) => [token, true])), [initialValues])
+  const [values, setValues] = useState<Record<string, string>>(initialValues)
   const [custom, setCustom] = useState<Record<string, string>>({})
   const [skipped, setSkipped] = useState<Record<string, boolean>>({})
-  const [confirmed, setConfirmed] = useState<Record<string, boolean>>({})
+  const [confirmed, setConfirmed] = useState<Record<string, boolean>>(initialConfirmed)
   /** A step the visitor reopened by tapping its word, or an error sent them back to. */
   const [editing, setEditing] = useState<string | null>(null)
   const [query, setQuery] = useState('')
@@ -284,10 +293,10 @@ export function BriefBuilder({
   }
 
   function reset() {
-    setValues(lockedValues)
+    setValues(initialValues)
     setCustom({})
     setSkipped({})
-    setConfirmed({})
+    setConfirmed(initialConfirmed)
     setEditing(null)
     setQuery('')
   }

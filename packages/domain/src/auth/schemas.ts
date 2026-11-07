@@ -18,6 +18,8 @@ export const registerSchema = z
     accountType: z.enum(ACCOUNT_TYPES, { message: 'auth.errors.accountType' }),
     persona: z.string().trim().optional().transform((v) => (v ? v : undefined)),
     categories: z.array(z.string()).optional(),
+    // The checkbox of the registration form: stating acceptance of the Terms and Privacy Policy (spec US2).
+    acceptTerms: z.literal('on', { message: 'auth.errors.acceptTerms' }),
   })
   .superRefine((data, ctx) => {
     if (data.accountType === 'provider' && !data.persona) {

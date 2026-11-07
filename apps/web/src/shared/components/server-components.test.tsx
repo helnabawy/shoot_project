@@ -24,6 +24,19 @@ describe('Header', () => {
     expect(screen.getByRole('link', { name: 'Shoot Project' })).toHaveAttribute('href', '/ar')
   })
 
+  it('MP-US1-S4 lists page links after the section links, in the visitor’s language', async () => {
+    render(
+      await Header({
+        siteName: 'S',
+        navigation: [{ label: 'How it works', target: '#how-it-works' }, { label: 'Studios', target: '/studios' }],
+        locale: 'ar',
+      }),
+    )
+    const nav = screen.getAllByRole('navigation', { name: 'الرئيسية' })[0]!
+    const links = within(nav).getAllByRole('link')
+    expect(links.map((l) => l.getAttribute('href'))).toEqual(['#how-it-works', '/ar/studios'])
+  })
+
   it('shows the account link to a signed-in member and the CMS logo when set', async () => {
     render(await Header({ siteName: 'Shoot Project', logo: media(), navigation: [], accountHref: '/account', locale: 'en' }))
     expect(screen.getAllByRole('link', { name: /account/i })[0]).toHaveAttribute('href', '/account')
@@ -45,6 +58,29 @@ describe('Footer', () => {
     expect(screen.getByText('+971500000000').closest('bdi')).toHaveAttribute('dir', 'ltr')
     expect(screen.getByRole('link', { name: 'hello@example.test' })).toHaveAttribute('href', 'mailto:hello@example.test')
     expect(screen.getByRole('link', { name: 'instagram' })).toHaveAttribute('rel', 'noopener noreferrer')
+  })
+
+  it('MP-US1-S4 lists the editor’s footer groups and the legal links in the visitor’s language', async () => {
+    render(
+      await Footer({
+        siteName: 'S',
+        social: [],
+        locale: 'ar',
+        groups: [{ key: 'company', label: 'الشركة', links: [{ label: 'الاستوديوهات', href: '/studios' }] }],
+        legal: [{ label: 'الشروط', href: '/terms' }, { label: 'الخصوصية', href: '/privacy' }],
+      }),
+    )
+    const group = screen.getByRole('navigation', { name: 'الشركة' })
+    expect(within(group).getByRole('link', { name: 'الاستوديوهات' })).toHaveAttribute('href', '/ar/studios')
+    const legal = screen.getByRole('navigation', { name: 'قانوني' })
+    expect(within(legal).getByRole('link', { name: 'الشروط' })).toHaveAttribute('href', '/ar/terms')
+    expect(within(legal).getByRole('link', { name: 'الخصوصية' })).toHaveAttribute('href', '/ar/privacy')
+  })
+
+  it('MP-US1-S4 renders no group or legal navigation when there is nothing to show', async () => {
+    render(await Footer({ siteName: 'S', social: [], locale: 'en', groups: [], legal: [] }))
+    expect(screen.queryByTestId('footer-groups')).toBeNull()
+    expect(screen.queryByTestId('footer-legal')).toBeNull()
   })
 
   it('omits contact details that are not set', async () => {

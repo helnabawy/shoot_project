@@ -14,6 +14,7 @@ test.describe('US4 accounts', () => {
     await page.getByLabel('Full name').fill('E2E Seeker')
     await page.getByLabel('Email').fill(email)
     await page.getByLabel('Password').fill(PASSWORD)
+    await page.getByTestId('accept-terms').getByRole('checkbox').check()
     await page.getByTestId('register-submit').click()
     await expect(page).toHaveURL(/\/account$/)
     await expect(page.getByTestId('account-summary')).toContainText(email)
@@ -35,6 +36,7 @@ test.describe('US4 accounts', () => {
     await page.getByLabel('Email').fill(uniqueEmail('provider'))
     await page.getByLabel('Password').fill(PASSWORD)
     await page.getByLabel('I am a').selectOption('videographer')
+    await page.getByTestId('accept-terms').getByRole('checkbox').check()
     await page.getByTestId('register-submit').click()
     // A new professional starts on their profile, and the account page links back to it.
     await expect(page).toHaveURL(/\/account\/profile$/)
@@ -52,7 +54,8 @@ test.describe('US4 accounts', () => {
       await page.getByLabel('Full name').fill('Twice')
       await page.getByLabel('Email').fill(email)
       await page.getByLabel('Password').fill(PASSWORD)
-      await page.getByTestId('register-submit').click()
+      await page.getByTestId('accept-terms').getByRole('checkbox').check()
+    await page.getByTestId('register-submit').click()
       if (i === 0) await expect(page).toHaveURL(/\/account$/)
     }
     await expect(page.getByText('This email already has an account. Log in instead.')).toBeVisible()

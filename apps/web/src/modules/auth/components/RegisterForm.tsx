@@ -1,11 +1,11 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { useActionState, useId, useState } from 'react'
+import { useActionState, useId, useState, type ReactNode } from 'react'
 import { Link } from '@/i18n/navigation'
 import { CheckIcon, SearchIcon, UserIcon } from '@/shared/ui/icons'
 import { BriefBar, ResultGroup, rowClass, RowContent, TopHit } from '@/shared/ui/bar'
-import { Field, FormError } from '@/shared/ui/Field'
+import { Field, FieldError, FormError } from '@/shared/ui/Field'
 import { PersonaSelect, type PersonaOption } from '../../personas/components/PersonaSelect'
 import { register, type AuthState } from '../actions'
 
@@ -16,12 +16,15 @@ export function RegisterForm({
   personas,
   initialType = 'seeker',
   initialPersona,
+  legal,
 }: {
   locale: string
   next?: string
   personas: PersonaOption[]
   initialType?: 'seeker' | 'provider'
   initialPersona?: string
+  /** Links to the documents in force, per kind; null where none is published yet. */
+  legal?: Partial<Record<'terms' | 'professional-terms' | 'privacy', { label: string; href: string } | null>>
 }) {
   const t = useTranslations()
   const id = useId()
@@ -67,6 +70,26 @@ export function RegisterForm({
             />
           </div>
         ) : null}
+        <div className="border-t border-hair px-4 py-3" data-testid="accept-terms">
+          <label className="flex min-h-11 items-start gap-3 text-[14px] text-ink">
+            <input
+              type="checkbox"
+              name="acceptTerms"
+              required
+              aria-invalid={err('acceptTerms') ? true : undefined}
+              aria-describedby={err('acceptTerms') ? `${id}-accept-error` : undefined}
+              className="mt-1 size-5 shrink-0 accent-[var(--color-ink)]"
+            />
+            <span>
+              {t.rich(type === 'provider' ? 'auth.acceptTermsWithProfessional' : 'auth.acceptTerms', {
+                terms: (chunks) => <LegalLink doc={legal?.terms}>{chunks}</LegalLink>,
+                privacy: (chunks) => <LegalLink doc={legal?.privacy}>{chunks}</LegalLink>,
+                professional: (chunks) => <LegalLink doc={legal?.['professional-terms']}>{chunks}</LegalLink>,
+              })}
+            </span>
+          </label>
+          {err('acceptTerms') ? <FieldError id={`${id}-accept-error`}>{err('acceptTerms')}</FieldError> : null}
+        </div>
         {state?.formError ? <FormError>{t(state.formError)}</FormError> : null}
         <div className="border-t border-hair py-2">
           <TopHit label={pending ? t('auth.pending') : t('auth.submitRegister')} pending={pending} testId="register-submit" />
@@ -79,5 +102,15 @@ export function RegisterForm({
         </p>
       </form>
     </BriefBar>
+  )
+}
+
+/** A link to a legal document, or the plain words when it is not published yet. */
+function LegalLink({ doc, children }: { doc: { href: string } | null | undefined; children: ReactNode }) {
+  if (!doc) return <>{children}</>
+  return (
+    <Link href={doc.href} target="_blank" className="font-medium underline">
+      {children}
+    </Link>
   )
 }
