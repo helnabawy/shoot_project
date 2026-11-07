@@ -155,6 +155,13 @@ describe('CP-US3-S1 submitting for review', () => {
     expect(missingForReview({ ...complete, gender: 'woman' })).toEqual([])
   })
 
+  it('CP-FR-013 an Emirates ID and a trade license are required before review once the form asks for them', () => {
+    expect(missingForReview({ ...complete, documents: { emiratesId: false, tradeLicense: false } })).toEqual(['emiratesId', 'tradeLicense'])
+    expect(missingForReview({ ...complete, documents: { emiratesId: true, tradeLicense: false } })).toEqual(['tradeLicense'])
+    expect(missingForReview({ ...complete, gender: null, documents: { emiratesId: false, tradeLicense: true } })).toEqual(['gender', 'emiratesId'])
+    expect(missingForReview({ ...complete, documents: { emiratesId: true, tradeLicense: true } })).toEqual([])
+  })
+
   it('samples are not required to send for review (only to be featured)', () => {
     expect(missingForReview(complete)).not.toContain('samples')
   })

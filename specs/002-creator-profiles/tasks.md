@@ -215,6 +215,16 @@ description: "Task list for feature 002 — creator profiles, directory, special
 
 ---
 
+## Phase 8: Amendment 2026-11-08 — emirates, identity, calendar, steps (FR-012…FR-015)
+
+- [x] T108 [P] Domain: `identity.ts` (kinds, states, limits, `identityStanding`, `identityProvided`) and `missingForReview` asks for both documents; tests `identity.test.ts`, `schemas.test.ts` (CP-FR-013)
+- [x] T109 Collection `identity-documents` (owner/editor read, editor-only status, provider uploads forced to pending, S3 under a private prefix), admin sidebar status on the profile (CP-FR-013)
+- [x] T110 Profile `cities` limited to emirates (`filterOptions`), `prepareProfile` stores a city as its emirate (CP-FR-012)
+- [x] T111 Migration `20261107_230004_creator_identity_documents_emirates` (new table; profile cities and versions converted to emirates)
+- [x] T112 Actions: `uploadIdentityDocument`, `submitForReview` gated on the documents; `toggleBlockedDate` accepts `from=profile` (CP-FR-013, CP-FR-014)
+- [x] T113 UI: `ProfileSteps`, `SectionHeading`, `ProfileCalendar` (month grid, `calendarMonths`), `IdentitySection`, emirates-only list; messages en/ar (CP-FR-012…015)
+- [x] T114 Tests: `ProfileSteps.test.tsx`, `calendar.test.ts`, `ProfileForm.test.tsx`, `creators-actions.int.test.ts` (identity, emirates, calendar), e2e `cp-us3-provider.spec.ts` uploads both documents before sending
+
 ## Dependencies & Execution Order
 
 - **Phase 1** → **Phase 2** (blocks everything). Inside Phase 2: tests (T005–T011, T082, T083) → domain (T012–T014) and collections (T015, T016, T084, T017; T085 → T018; T019–T022; T086 after T016, T084 and T018 because it edits `Media.ts` too) → migration (T023) → shared reads and seed (T024–T026, T088); T087 (body limit) any time after T018 and before US3's T053. T007 gates the drafts-based design: write it first, run it as soon as T016/T084/T017 exist, and start T018 only when it passes.

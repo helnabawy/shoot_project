@@ -1,7 +1,7 @@
 'use client'
 
 import { joinList } from '@shoot/domain/personas'
-import { PROFILE_LIMITS, SOCIAL_PLATFORMS } from '@shoot/domain/creators'
+import { PROFILE_LIMITS, type ReviewField, SOCIAL_PLATFORMS } from '@shoot/domain/creators'
 import { useTranslations } from 'next-intl'
 import { useActionState, useEffect, useState, type ReactNode } from 'react'
 import { BriefBar, cx, ResultGroup, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
@@ -13,12 +13,13 @@ import type { MyProfile, SelectableOptions } from '../my-profile'
 import { FieldErrorsContext } from './ActionForm'
 import { CheckRow } from './CheckRow'
 import { LocalizedPair } from './LocalizedPair'
+import { STEP_NUMBER } from './ProfileSteps'
+import { SectionHeading } from './SectionHeading'
 
 const FORM_ID = 'profile-form'
 const idle: ProfileState = { status: 'idle' }
 const SOCIAL_SLOTS = 4
 
-const sectionTitle = 'px-1 text-[26px] font-bold leading-tight tracking-[-0.025em] text-ink text-balance sm:text-[30px]'
 const block = '-mx-3 mt-4 divide-y divide-hair border-y border-hair'
 
 /**
@@ -33,6 +34,8 @@ export function ProfileForm({
   options,
   defaults,
   samples,
+  after,
+  missing,
 }: {
   locale: string
   profile: MyProfile | null
@@ -40,6 +43,10 @@ export function ProfileForm({
   /** Used before the first save: the name and the choices made at registration. */
   defaults: { name: string; personas: number[]; specialties: number[] }
   samples: ReactNode
+  /** Sections that save on their own (calendar, identity), placed before the closing bar. */
+  after?: ReactNode
+  /** What the profile still needs before review (the page computes it, before the first save too). */
+  missing: ReviewField[]
 }) {
   const t = useTranslations('creators.form')
   const te = useTranslations('creators.err')
@@ -60,11 +67,11 @@ export function ProfileForm({
   const picked = new Set((profile?.specialties ?? defaults.specialties).map(Number))
   const visible = (personas: number[]) => chosen.size === 0 || personas.some((p) => chosen.has(String(p)))
 
-  const complete = (profile?.missing.length ?? 6) === 0
+  const complete = Boolean(profile) && missing.length === 0
   const auto = Boolean(profile?.autoPublish && profile.isPublished)
   const needsReview = !auto && complete && (profile?.status === 'draft' || profile?.status === 'live-with-changes')
   const primary = auto ? { intent: 'save', label: t('publish') } : needsReview ? { intent: 'send', label: t('send') } : { intent: 'save', label: t('save') }
-  const missingText = (profile?.missing ?? ['displayName', 'personas', 'specialties', 'cities', 'languages', 'gender']).map((f) => t(`incompleteMissing.${f}` as never))
+  const missingText = missing.map((f) => t(`incompleteMissing.${f}` as never))
 
   const feedback =
     state.status === 'saved'
@@ -89,7 +96,7 @@ export function ProfileForm({
       {state.status === 'error' && state.formError && !Object.keys(errors).length ? <FormError>{te(errorMessageKey(state.formError) as never)}</FormError> : null}
 
       <section className="mt-10" aria-labelledby="sec-basics" data-testid="section-basics">
-        <h2 id="sec-basics" className={sectionTitle}>{t('basics')}</h2>
+        <SectionHeading id="sec-basics" step={STEP_NUMBER.basics}>{t('basics')}</SectionHeading>
         <div className={block}>
           <LocalizedPair id="displayName" label={t('name')} form={FORM_ID} locale={locale} showArabicHelp values={profile?.displayName ?? { en: defaults.name, ar: '' }} errors={{ en: err('displayName_en'), ar: err('displayName_ar') }} labels={labels} maxLength={PROFILE_LIMITS.name.max} />
           <LocalizedPair id="bio" label={t('bio')} help={t('bioHelp')} form={FORM_ID} locale={locale} showArabicHelp multiline values={profile?.bio ?? { en: '', ar: '' }} errors={{ en: err('bio_en'), ar: err('bio_ar') }} labels={labels} maxLength={PROFILE_LIMITS.bio} />
@@ -103,7 +110,7 @@ export function ProfileForm({
       </section>
 
       <section className="mt-12" aria-labelledby="sec-about" data-testid="section-about">
-        <h2 id="sec-about" className={sectionTitle}>{t('about')}</h2>
+        <SectionHeading id="sec-about" step={STEP_NUMBER.about}>{t('about')}</SectionHeading>
         <div className={block}>
           <fieldset className="py-1" data-testid="field-gender" aria-describedby="gender-help">
             <legend className="px-4 pt-2 pb-1 text-[13px] font-medium text-mute">{t('gender')}</legend>
@@ -132,7 +139,7 @@ export function ProfileForm({
       </section>
 
       <section className="mt-12" aria-labelledby="sec-places" data-testid="section-places">
-        <h2 id="sec-places" className={sectionTitle}>{t('places')}</h2>
+        <SectionHeading id="sec-places" step={STEP_NUMBER.places}>{t('places')}</SectionHeading>
         <div className={block}>
           <fieldset className="py-1" data-testid="field-personas">
             <legend className="px-4 pt-2 pb-1 text-[13px] font-medium text-mute">{t('personas')}</legend>
@@ -149,16 +156,15 @@ export function ProfileForm({
             ))}
             {err('specialties') ? <div className="px-4 pb-2"><FieldError id="specialties-error">{err('specialties')}</FieldError></div> : null}
           </fieldset>
-          <fieldset className="py-1" data-testid="field-cities">
+          <fieldset className="py-1" data-testid="field-cities" aria-describedby="cities-help">
             <legend className="px-4 pt-2 pb-1 text-[13px] font-medium text-mute">{t('cities')}</legend>
-            {options.emirates.map((e) => (
-              <div key={e.id}>
-                <CheckRow name="cities" value={String(e.id)} label={e.name} form={FORM_ID} defaultChecked={profile?.cities.includes(e.id)} testId={`city-${e.id}`} />
-                {e.cities.map((c) => (
-                  <CheckRow key={c.id} name="cities" value={String(c.id)} label={c.name} form={FORM_ID} defaultChecked={profile?.cities.includes(c.id)} indent testId={`city-${c.id}`} />
-                ))}
-              </div>
-            ))}
+            <p id="cities-help" className="px-4 pb-1 text-[13px] text-mute">{t('citiesHelp')}</p>
+            {/* CP-FR-012: emirates only, two to a row from 640 px; the cities inside them are not asked. */}
+            <div className="grid sm:grid-cols-2">
+              {options.emirates.map((e) => (
+                <CheckRow key={e.id} name="cities" value={String(e.id)} label={e.name} form={FORM_ID} defaultChecked={profile?.cities.includes(e.id)} testId={`city-${e.id}`} />
+              ))}
+            </div>
             {err('cities') ? <div className="px-4 pb-2"><FieldError id="cities-error">{err('cities')}</FieldError></div> : null}
           </fieldset>
           <fieldset className="py-1" data-testid="field-languages">
@@ -174,7 +180,7 @@ export function ProfileForm({
       </section>
 
       <section className="mt-12" aria-labelledby="sec-links" data-testid="section-links">
-        <h2 id="sec-links" className={sectionTitle}>{t('links')}</h2>
+        <SectionHeading id="sec-links" step={STEP_NUMBER.links}>{t('links')}</SectionHeading>
         <p className="mt-1 px-1 text-[15px] text-mute">{t('linksHelp')}</p>
         <div className={block}>
           {Array.from({ length: socialRows }, (_, i) => {
@@ -202,6 +208,8 @@ export function ProfileForm({
       </section>
 
       <FieldErrorsContext.Provider value={errors}>{samples}</FieldErrorsContext.Provider>
+
+      {after}
 
       <BriefBar size="sm" className="mt-12" data-testid="profile-actions">
         <p aria-live="polite" data-testid="profile-feedback" className={cx('px-4 pt-3 pb-1 text-[14px]', state.status === 'error' ? 'text-on-attention' : 'text-mute')}>

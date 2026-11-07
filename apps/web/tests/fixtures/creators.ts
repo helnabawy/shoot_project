@@ -68,7 +68,7 @@ export function profileView(over: Partial<ProfileView> = {}): ProfileView {
   }
 }
 
-import type { MyProfile, MySample, SelectableOptions } from '../../src/modules/creators/my-profile'
+import type { MyIdentity, MyProfile, MySample, SelectableOptions } from '../../src/modules/creators/my-profile'
 
 export const selectableOptions: SelectableOptions = {
   personas: [{ id: 1, name: 'Photographer' }, { id: 2, name: 'Videographer' }],
@@ -78,8 +78,8 @@ export const selectableOptions: SelectableOptions = {
     { id: 12, name: 'Drone work', personaIds: [2] },
   ],
   emirates: [
-    { id: 100, name: 'Dubai', cities: [{ id: 101, name: 'Dubai Marina' }] },
-    { id: 200, name: 'Abu Dhabi', cities: [] },
+    { id: 100, name: 'Dubai' },
+    { id: 200, name: 'Abu Dhabi' },
   ],
   languages: [{ code: 'en', name: 'English' }, { code: 'ar', name: 'Arabic' }, { code: 'ur', name: 'Urdu' }],
   countries: [{ code: 'AE', name: 'United Arab Emirates' }, { code: 'IR', name: 'Iran' }],
@@ -95,6 +95,12 @@ export const mySample = (n: number, over: Partial<MySample> = {}): MySample => (
   ...over,
 })
 
+/** Identity documents in the given states (CP-FR-013). */
+export const myIdentity = (emiratesId: MyIdentity['emirates-id']['state'], tradeLicense: MyIdentity['trade-license']['state']): MyIdentity => ({
+  'emirates-id': { state: emiratesId, uploadedAt: emiratesId === 'missing' ? null : '2026-11-02T08:00:00.000Z', note: '', filename: '' },
+  'trade-license': { state: tradeLicense, uploadedAt: tradeLicense === 'missing' ? null : '2026-11-02T08:00:00.000Z', note: '', filename: '' },
+})
+
 /** A complete, live profile; override what a test cares about. */
 export function myProfile(over: Partial<MyProfile> = {}): MyProfile {
   return {
@@ -105,7 +111,7 @@ export function myProfile(over: Partial<MyProfile> = {}): MyProfile {
     bio: { en: 'Weddings and portraits.', ar: '' },
     personas: [1],
     specialties: [10, 11],
-    cities: [101],
+    cities: [100],
     languages: ['en', 'ar'],
     gender: 'woman',
     nationality: 'AE',
@@ -121,6 +127,7 @@ export function myProfile(over: Partial<MyProfile> = {}): MyProfile {
     paused: false,
     missing: [],
     autoPublish: false,
+    identity: myIdentity('verified', 'verified'),
     ...over,
   }
 }

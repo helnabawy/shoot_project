@@ -78,6 +78,11 @@ export const CreatorProfiles: CollectionConfig = {
       admin: { position: 'sidebar', components: { Field: '/modules/admin/components/CreatorLinks#ProfileListingLink' } },
     },
     {
+      name: 'identityDocuments',
+      type: 'ui',
+      admin: { position: 'sidebar', components: { Field: '/modules/admin/components/CreatorLinks#ProfileIdentityDocuments' } },
+    },
+    {
       name: 'user',
       type: 'relationship',
       relationTo: 'users',
@@ -112,7 +117,17 @@ export const CreatorProfiles: CollectionConfig = {
       admin: { description: 'The first is the primary professional type.' },
     },
     { name: 'specialties', type: 'relationship', relationTo: 'categories', hasMany: true, maxRows: 12 },
-    { name: 'cities', type: 'relationship', relationTo: 'locations', hasMany: true, maxRows: 12 },
+    {
+      // CP-FR-012: creators choose emirates only. A city written by an older client is stored as its emirate (prepareProfile).
+      name: 'cities',
+      label: 'Emirates',
+      type: 'relationship',
+      relationTo: 'locations',
+      hasMany: true,
+      maxRows: 12,
+      filterOptions: { parent: { exists: false } },
+      admin: { description: 'The emirates this creator works in.' },
+    },
     {
       name: 'languages',
       type: 'select',

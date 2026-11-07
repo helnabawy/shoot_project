@@ -1,5 +1,18 @@
 import 'server-only'
-import { COUNTRIES, type ListingState, missingForReview, profileStatus, type ProfileStatus, type ReviewField, SPOKEN_LANGUAGES } from '@shoot/domain/creators'
+import {
+  COUNTRIES,
+  IDENTITY_DOCUMENTS,
+  identityProvided,
+  identityStanding,
+  type IdentityDocumentKind,
+  type IdentityState,
+  type ListingState,
+  missingForReview,
+  profileStatus,
+  type ProfileStatus,
+  type ReviewField,
+  SPOKEN_LANGUAGES,
+} from '@shoot/domain/creators'
 import type { Media, User } from '@/payload-types'
 import { getActivePersonas, getCategoriesForAudience } from '@/modules/personas/queries'
 import type { Locale } from '@/shared/lib/locale'
@@ -55,7 +68,43 @@ export interface MyProfile {
   missing: ReviewField[]
   /** Site setting: a verified creator's edits go live at once. */
   autoPublish: boolean
+  /** CP-FR-013: the Emirates ID and trade license, newest upload of each. */
+  identity: MyIdentity
 }
+
+/** One identity document as its owner sees it: never the file itself, only its state. */
+export interface MyIdentityDocument {
+  state: IdentityState
+  uploadedAt: string | null
+  /** The team's note when the document was not accepted. */
+  note: string
+  filename: string
+}
+export type MyIdentity = Record<IdentityDocumentKind, MyIdentityDocument>
+
+/** The signed-in user's identity documents (owner access applies). Works before the profile exists. */
+export async function getMyIdentity(user: User): Promise<MyIdentity> {
+  const payload = await getPayloadClient()
+  const { docs } = await payload.find({
+    collection: 'identity-documents',
+    where: { user: { equals: user.id } },
+    sort: '-createdAt',
+    limit: 20,
+    depth: 0,
+    user,
+    overrideAccess: false,
+  })
+  const standing = identityStanding(docs.map((d) => ({ kind: d.kind, status: d.status, createdAt: d.createdAt })))
+  return Object.fromEntries(
+    IDENTITY_DOCUMENTS.map((kind) => {
+      const newest = docs.find((d) => d.kind === kind)
+      return [kind, { state: standing[kind], uploadedAt: newest?.createdAt ?? null, note: newest?.status === 'rejected' ? (newest.note ?? '') : '', filename: newest?.filename ?? '' }]
+    }),
+  ) as MyIdentity
+}
+
+const identityStateOf = (identity: MyIdentity) =>
+  Object.fromEntries(IDENTITY_DOCUMENTS.map((kind) => [kind, identity[kind].state])) as Record<IdentityDocumentKind, IdentityState>
 
 type AllLocales = { en?: string | null; ar?: string | null } | string | null | undefined
 const pair = (value: AllLocales): LocalizedText =>
@@ -67,17 +116,18 @@ const imageOf = (media: Media | undefined): MyImage | null =>
   media ? { id: media.id, url: media.sizes?.thumbnail?.url ?? media.url ?? '', alt: media.alt ?? '' } : null
 
 /** The signed-in provider's profile and standing, or null before their first save. Never cached. */
-export async function getMyProfile(user: User): Promise<MyProfile | null> {
+export async function getMyProfile(user: User, known?: MyIdentity): Promise<MyProfile | null> {
   const payload = await getPayloadClient()
   const latest = (
     await payload.find({ collection: 'creator-profiles', where: { user: { equals: user.id } }, draft: true, locale: 'all', limit: 1, depth: 0, overrideAccess: true })
   ).docs[0]
   if (!latest) return null
 
-  const [published, listingResult, settings] = await Promise.all([
+  const [published, listingResult, settings, identity] = await Promise.all([
     payload.find({ collection: 'creator-profiles', where: { id: { equals: latest.id } }, limit: 1, depth: 0, select: { _status: true }, overrideAccess: true }),
     payload.find({ collection: 'creator-listings', where: { profile: { equals: latest.id } }, limit: 1, depth: 0, overrideAccess: true }),
     payload.findGlobal({ slug: 'site-settings', depth: 0 }),
+    known ?? getMyIdentity(user),
   ])
   const listing = listingResult.docs[0]
   const isPublished = published.docs[0]?._status === 'published'
@@ -138,8 +188,9 @@ export async function getMyProfile(user: User): Promise<MyProfile | null> {
     hasNewerDraft,
     isPublished,
     paused: !listingState.active,
-    missing: missingForReview({ ...profile, displayName: displayName.en }),
+    missing: missingForReview({ ...profile, displayName: displayName.en, documents: identityProvided(identityStateOf(identity)) }),
     autoPublish: Boolean(settings.autoPublishEdits),
+    identity,
   }
 }
 
@@ -147,7 +198,8 @@ export interface SelectableOptions {
   personas: { id: number; name: string }[]
   /** Specialties of the audience with the professional types they belong to. */
   specialties: { id: number; name: string; personaIds: number[] }[]
-  emirates: { id: number; name: string; cities: { id: number; name: string }[] }[]
+  /** CP-FR-012: creators choose emirates, never the cities inside them. */
+  emirates: { id: number; name: string }[]
   languages: { code: string; name: string }[]
   /** Nationalities, named in the page language and sorted by name. */
   countries: { code: string; name: string }[]
@@ -156,15 +208,10 @@ export interface SelectableOptions {
 /** What a provider can choose from, all data (Principle IV), named in the page language. */
 export async function getSelectableOptions(locale: Locale): Promise<SelectableOptions> {
   const [personas, categories, locations] = await Promise.all([getActivePersonas(locale), getCategoriesForAudience(locale), getLocations(locale)])
-  const emirates = locations.filter((l) => !l.parentId)
   return {
     personas: personas.map((p) => ({ id: Number(p.id), name: p.singular })),
     specialties: categories.map((c) => ({ id: Number(c.id), name: c.name, personaIds: c.personas.map(Number) })),
-    emirates: emirates.map((e) => ({
-      id: Number(e.id),
-      name: e.name,
-      cities: locations.filter((l) => l.parentId === e.id).map((c) => ({ id: Number(c.id), name: c.name })),
-    })),
+    emirates: locations.filter((l) => !l.parentId).map((e) => ({ id: Number(e.id), name: e.name })),
     languages: SPOKEN_LANGUAGES.map((code) => ({ code, name: languageName(code, locale) })),
     countries: COUNTRIES.map((code) => ({ code, name: countryName(code, locale) })).sort((a, b) => a.name.localeCompare(b.name, locale)),
   }
@@ -172,15 +219,22 @@ export async function getSelectableOptions(locale: Locale): Promise<SelectableOp
 
 /** Everything the "My profile" page needs in one read: the profile, the choices, and the registration defaults. */
 export async function getMyProfileView(user: User, locale: Locale) {
-  const [profile, options] = await Promise.all([getMyProfile(user), getSelectableOptions(locale)])
+  const identity = await getMyIdentity(user)
+  const [profile, options] = await Promise.all([getMyProfile(user, identity), getSelectableOptions(locale)])
   const registered = user.persona ? Number(relId(user.persona)) : null
+  const defaults = {
+    name: user.name,
+    personas: registered !== null && Number.isFinite(registered) ? [registered] : [],
+    specialties: (user.categories ?? []).map((c) => Number(relId(c))).filter((n) => Number.isFinite(n)),
+  }
   return {
     profile,
+    identity,
     options,
-    defaults: {
-      name: user.name,
-      personas: registered !== null && Number.isFinite(registered) ? [registered] : [],
-      specialties: (user.categories ?? []).map((c) => Number(relId(c))).filter((n) => Number.isFinite(n)),
-    },
+    defaults,
+    // Before the first save, what is still missing counts the registration choices the form starts with.
+    missing:
+      profile?.missing ??
+      missingForReview({ displayName: defaults.name ?? '', personas: defaults.personas, specialties: defaults.specialties, cities: [], languages: [], gender: null, documents: identityProvided(identityStateOf(identity)) }),
   }
 }

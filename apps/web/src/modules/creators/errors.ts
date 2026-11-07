@@ -35,6 +35,11 @@ export const ERROR_MESSAGES = {
   'media.upload.size': 'uploadSize',
   'media.upload.quota': 'uploadQuota',
   'media.upload.tooMany': 'uploadTooMany',
+  'creators.identity.kind': 'identityKind',
+  'creators.identity.file': 'identityFile',
+  'creators.identity.type': 'identityType',
+  'creators.identity.size': 'identitySize',
+  'creators.identity.tooMany': 'identityTooMany',
   // Collection-level validators raise these names for the same problems as the form checks.
   'creators.languages.invalid': 'languageInvalid',
   'creators.social.invalid': 'socialInvalid',

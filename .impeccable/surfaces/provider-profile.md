@@ -23,6 +23,8 @@ The page shows the provider's own data and the admin's review note, nothing else
 
 2026-11-07 (T004 shaping): one page in sections, not a wizard, as research §15 decided (the brief builder's step-by-step suits a one-sentence brief, not a profile edited over weeks). No owner choice was needed beyond the two directory and profile decisions.
 
+2026-11-08 (owner amendment): the owner asked for the missing parts to be shown as steps, a plainer incomplete warning, a calendar for unavailable days, identity verification (Emirates ID and trade license, both required before review) and emirates-only places. Kept in the world: the steps are numbered result rows on the bare ground (ink number tiles, a set tick when done, the trailing slot saying what is missing as a peach chip), each a link to its section, whose heading carries the same number; no percentage, ring or wizard, and the page stays one page. The warning is one peach block above the steps. The calendar is a month grid of 44 px day buttons (peach = unavailable, selection tint = booked), one month at a time with JavaScript and all months stacked without it. Identity is two document rows with a confidentiality row (lock tile) and a per-row upload; files are never shown back.
+
 ## Direction contract
 
 THESIS: The profile editor is the account page continued: a quiet stack of field rows on the ground, bracketed by two small bars, a status bar at the top that says what the public sees and a closing bar at the end that holds the one action. It refuses the dashboard default (progress rings, completion percentages, tabs, a sidebar of steps) and the long form with a button at every section.
@@ -50,7 +52,7 @@ FINISH: unreviewed and undocumented is unfinished; this surface ends with the im
 
 ## Deliberately absent
 
-Completion percentages, progress rings, gamified prompts, tabs or a stepper, toasts, modals for confirmation, autosave, a live preview pane beside the form (the "View my public profile" row opens the real page), approval time promises.
+Completion percentages, progress rings, gamified prompts, tabs, a wizard stepper (the numbered step rows above are not one: they are links into the one page), toasts, modals for confirmation, autosave, a live preview pane beside the form (the "View my public profile" row opens the real page), approval time promises.
 
 ## RTL and dark
 

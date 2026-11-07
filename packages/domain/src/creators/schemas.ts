@@ -150,7 +150,7 @@ export function parseSampleForm(raw: unknown): { ok: true; data: SampleInput } |
   }
 }
 
-export type ReviewField = 'displayName' | 'personas' | 'specialties' | 'cities' | 'languages' | 'gender'
+export type ReviewField = 'displayName' | 'personas' | 'specialties' | 'cities' | 'languages' | 'gender' | 'emiratesId' | 'tradeLicense'
 
 /**
  * What a profile still needs before it can be sent for review, in form order. Samples are not required:
@@ -164,6 +164,8 @@ export function missingForReview(profile: {
   languages: readonly unknown[]
   /** Absent means "not asked" (older callers); null or empty means missing. */
   gender?: string | null
+  /** CP-FR-013: whether each identity document is in hand (`identityProvided`). Absent means "not asked". */
+  documents?: { emiratesId: boolean; tradeLicense: boolean }
 }): ReviewField[] {
   const missing: ReviewField[] = []
   if (!profile.displayName.trim()) missing.push('displayName')
@@ -172,6 +174,8 @@ export function missingForReview(profile: {
   if (profile.cities.length === 0) missing.push('cities')
   if (profile.languages.length === 0) missing.push('languages')
   if (profile.gender !== undefined && !profile.gender) missing.push('gender')
+  if (profile.documents && !profile.documents.emiratesId) missing.push('emiratesId')
+  if (profile.documents && !profile.documents.tradeLicense) missing.push('tradeLicense')
   return missing
 }
 

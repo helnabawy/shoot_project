@@ -12,9 +12,10 @@ import type { MySample } from '../my-profile'
 import { ActionForm, AnnounceContext, FieldErrorsContext } from './ActionForm'
 import { LocalizedPair } from './LocalizedPair'
 import { PhotoTile } from './PhotoTile'
+import { STEP_NUMBER } from './ProfileSteps'
+import { SectionHeading } from './SectionHeading'
 
 const idle: ProfileState = { status: 'idle' }
-const sectionTitle = 'px-1 text-[26px] font-bold leading-tight tracking-[-0.025em] text-ink text-balance sm:text-[30px]'
 const iconButton =
   'grid size-11 place-items-center rounded-[var(--radius-row)] text-ink transition-colors duration-100 hover:bg-ink/[0.06] focus-visible:outline-2 focus-visible:outline-[var(--focus)] disabled:opacity-40'
 const FORM_ID = 'profile-form'
@@ -151,7 +152,7 @@ export function SampleManager({ locale, samples, specialties, hasProfile }: { lo
     <AnnounceContext.Provider value={setAnnouncement}>
     <section className="mt-12" aria-labelledby="sec-samples" data-testid="section-samples">
       <p role="status" aria-live="polite" className="sr-only" data-testid="sample-announce">{announcement}</p>
-      <h2 id="sec-samples" className={sectionTitle}>{t('title')}</h2>
+      <SectionHeading id="sec-samples" step={STEP_NUMBER.samples}>{t('title')}</SectionHeading>
       <p className="mt-1 px-1 text-[15px] text-mute">{tf('sampleOrderHint')}</p>
       <p className="mt-1 px-1 text-[13px] text-mute tabular-nums" data-testid="sample-count">{t('count', { count: samples.length, max: MAX_SAMPLES })}</p>
       {samples.length ? (

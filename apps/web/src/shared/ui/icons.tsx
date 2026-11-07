@@ -204,3 +204,10 @@ export const ClockIcon = (p: IconProps) => (
     <path d="M10 6.25V10l2.5 1.75" />
   </Svg>
 )
+/** A padlock: marks something only the owner and the team can see (identity documents). */
+export const LockIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <rect x="4.5" y="9" width="11" height="8" rx="1.75" />
+    <path d="M7 9V6.5a3 3 0 0 1 6 0V9M10 12.25v1.5" />
+  </Svg>
+)

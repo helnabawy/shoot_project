@@ -74,6 +74,16 @@ export const prepareProfile: CollectionBeforeValidateHook = async ({ data, origi
     }
   }
 
+  // CP-FR-012: a profile names emirates only; a city (from an older client or the REST API) becomes its emirate.
+  if (next.cities !== undefined) {
+    const chosen = ids(next.cities)
+    if (chosen.length) {
+      const found = await req.payload.find({ collection: 'locations', where: { id: { in: chosen } }, depth: 0, pagination: false, req, overrideAccess: true })
+      const emirateOf = new Map(found.docs.map((l) => [String(l.id), relId(l.parent) ?? String(l.id)]))
+      next.cities = [...new Set(chosen.map((id) => emirateOf.get(id) ?? id))].map(Number)
+    }
+  }
+
   // Specialties must belong to one of the chosen personas; sample categories must be among the specialties.
   const specialtyIds = ids(merged.specialties)
   if ((next.specialties !== undefined || next.personas !== undefined) && specialtyIds.length) {

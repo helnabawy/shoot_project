@@ -6,6 +6,7 @@ import * as migration_20261107_115156_landing_infographics from './20261107_1151
 import * as migration_20261107_133522_marketing_pages from './20261107_133522_marketing_pages';
 import * as migration_20261107_150007_quick_match from './20261107_150007_quick_match';
 import * as migration_20261107_211232_creator_gender_nationality_experience from './20261107_211232_creator_gender_nationality_experience';
+import * as migration_20261107_230004_creator_identity_documents_emirates from './20261107_230004_creator_identity_documents_emirates';
 
 export const migrations = [
   {
@@ -46,6 +47,11 @@ export const migrations = [
   {
     up: migration_20261107_211232_creator_gender_nationality_experience.up,
     down: migration_20261107_211232_creator_gender_nationality_experience.down,
-    name: '20261107_211232_creator_gender_nationality_experience'
+    name: '20261107_211232_creator_gender_nationality_experience',
+  },
+  {
+    up: migration_20261107_230004_creator_identity_documents_emirates.up,
+    down: migration_20261107_230004_creator_identity_documents_emirates.down,
+    name: '20261107_230004_creator_identity_documents_emirates'
   },
 ];

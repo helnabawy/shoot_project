@@ -73,6 +73,7 @@ export interface Config {
     locations: Location;
     'creator-profiles': CreatorProfile;
     'creator-listings': CreatorListing;
+    'identity-documents': IdentityDocument;
     'option-sets': OptionSet;
     briefs: Brief;
     bookings: Booking;
@@ -114,6 +115,7 @@ export interface Config {
     locations: LocationsSelect<false> | LocationsSelect<true>;
     'creator-profiles': CreatorProfilesSelect<false> | CreatorProfilesSelect<true>;
     'creator-listings': CreatorListingsSelect<false> | CreatorListingsSelect<true>;
+    'identity-documents': IdentityDocumentsSelect<false> | IdentityDocumentsSelect<true>;
     'option-sets': OptionSetsSelect<false> | OptionSetsSelect<true>;
     briefs: BriefsSelect<false> | BriefsSelect<true>;
     bookings: BookingsSelect<false> | BookingsSelect<true>;
@@ -372,6 +374,9 @@ export interface CreatorProfile {
    */
   personas: (number | Persona)[];
   specialties?: (number | Category)[] | null;
+  /**
+   * The emirates this creator works in.
+   */
   cities?: (number | Location)[] | null;
   languages?:
     | ('en' | 'ar' | 'hi' | 'ur' | 'fr' | 'ru' | 'tl' | 'fa' | 'es' | 'de' | 'zh' | 'bn' | 'ml' | 'ta')[]
@@ -444,6 +449,35 @@ export interface CreatorListing {
   verifiedAt?: string | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Emirates IDs and trade licenses sent by creators. Confidential: never shown on the site. Mark each one Verified or Not accepted (with a note the creator will read); a profile can be sent for review only when both are uploaded and not rejected.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "identity-documents".
+ */
+export interface IdentityDocument {
+  id: number;
+  kind: 'emirates-id' | 'trade-license';
+  status: 'pending' | 'verified' | 'rejected';
+  /**
+   * Shown to the creator when a document is not accepted: say what to send instead.
+   */
+  note?: string | null;
+  reviewedAt?: string | null;
+  user: number | User;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {};
 }
 /**
  * The words visitors pick in the brief sentence (occasions, durations, emirates…). Leave "Personas" empty for options that apply to everyone.
@@ -1545,6 +1579,10 @@ export interface PayloadLockedDocument {
         value: number | CreatorListing;
       } | null)
     | ({
+        relationTo: 'identity-documents';
+        value: number | IdentityDocument;
+      } | null)
+    | ({
         relationTo: 'option-sets';
         value: number | OptionSet;
       } | null)
@@ -1812,6 +1850,29 @@ export interface CreatorListingsSelect<T extends boolean = true> {
   verifiedAt?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "identity-documents_select".
+ */
+export interface IdentityDocumentsSelect<T extends boolean = true> {
+  kind?: T;
+  status?: T;
+  note?: T;
+  reviewedAt?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?: T | {};
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

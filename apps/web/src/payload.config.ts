@@ -12,6 +12,7 @@ import { Briefs } from './modules/brief/collections/Briefs'
 import { OptionSets } from './modules/brief/collections/OptionSets'
 import { RateLimits } from './modules/brief/collections/RateLimits'
 import { CreatorListings } from './modules/creators/collections/CreatorListings'
+import { IdentityDocuments } from './modules/creators/collections/IdentityDocuments'
 import { CreatorProfiles } from './modules/creators/collections/CreatorProfiles'
 import { Articles } from './modules/guides/collections/Articles'
 import { ArticleCategories, Authors } from './modules/guides/collections/Taxonomy'
@@ -53,6 +54,7 @@ export default buildConfig({
     Locations,
     CreatorProfiles,
     CreatorListings,
+    IdentityDocuments,
     OptionSets,
     Briefs,
     Bookings,
@@ -98,7 +100,8 @@ export default buildConfig({
   plugins: useS3
     ? [
         s3Storage({
-          collections: { media: true },
+          // Identity documents sit under their own prefix and are always served through Payload's access control.
+          collections: { media: true, 'identity-documents': { prefix: 'private/identity-documents' } },
           bucket: process.env.S3_BUCKET as string,
           config: {
             region: process.env.S3_REGION,

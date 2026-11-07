@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto'
+import { addDays, dubaiToday } from '@shoot/domain/booking'
 import sharp from 'sharp'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createUser, getTestPayload, quiet } from './setup/payload'
@@ -27,7 +28,9 @@ vi.mock('@/i18n/navigation', () => ({
 }))
 
 const actions = await import('@/modules/creators/actions')
-const { getMyProfile } = await import('@/modules/creators/my-profile')
+const { getMyProfile, getMyIdentity } = await import('@/modules/creators/my-profile')
+const { toggleBlockedDate } = await import('@/modules/booking/actions')
+const getMyIdentityOf = (user: CreatorUser) => getMyIdentity(user as never)
 
 const idle = { status: 'idle' } as const
 
@@ -62,6 +65,7 @@ describe('CP-US3-S1 provider actions', () => {
       specialties: [String(world.category), String(world.otherCategory)],
       cities: [String(world.dubai)],
       languages: ['en', 'ar'],
+      gender: 'woman',
       'social.0.platform': 'instagram',
       'social.0.url': 'https://instagram.com/sara',
       ...over,
@@ -289,6 +293,13 @@ describe('CP-US3-S1 provider actions', () => {
       expect(incomplete).toMatchObject({ status: 'error', formError: 'creators.submit.incomplete', errors: { cities: expect.any(String), languages: expect.any(String) } })
       expect((await listingOf(world, (await mine(provider))!.id))!.submittedAt ?? null).toBeNull()
 
+      // CP-FR-013: the Emirates ID and trade license are needed too.
+      const noDocuments = await actions.submitForReview(idle, profileForm())
+      expect(noDocuments).toMatchObject({ status: 'error', formError: 'creators.submit.incomplete', errors: { emiratesId: expect.any(String), tradeLicense: expect.any(String) } })
+      for (const kind of ['emirates-id', 'trade-license']) {
+        expect(await actions.uploadIdentityDocument(idle, form({ locale: 'en', kind, document: file(png, `${kind}.png`, 'image/png') }))).toMatchObject({ status: 'saved' })
+      }
+
       const done = await actions.submitForReview(idle, profileForm())
       expect(done).toMatchObject({ status: 'saved', submitted: true })
       const profile = (await mine(provider))!
@@ -331,6 +342,80 @@ describe('CP-US3-S1 provider actions', () => {
       await signIn(newcomer)
       expect(await actions.saveMyProfile(idle, profileForm())).toMatchObject({ status: 'saved', published: false })
       await payload.updateGlobal({ slug: 'site-settings', data: { autoPublishEdits: false }, context: quiet })
+    })
+  })
+
+  describe('CP-FR-012 emirates, CP-FR-013 identity documents', () => {
+    const upload = (kind: string, data: Buffer = png, name = `${kind}.png`, type = 'image/png') =>
+      actions.uploadIdentityDocument(idle, form({ locale: 'en', kind, document: file(data, name, type) }))
+    const docsOf = async (userId: number) =>
+      (await world.payload.find({ collection: 'identity-documents', where: { user: { equals: userId } }, depth: 0, overrideAccess: true })).docs
+
+    it('a city chosen for a profile is stored as its emirate, once', async () => {
+      const provider = await makeProvider(world)
+      await signIn(provider)
+      await actions.saveMyProfile(idle, profileForm({ cities: [String(world.city), String(world.abuDhabi), String(world.dubai)] }))
+      expect((await mine(provider))!.cities.sort()).toEqual([world.abuDhabi, world.dubai].sort())
+    })
+
+    it('an upload is the provider\'s own and waits for the check; a new one replaces the old', async () => {
+      const provider = await makeProvider(world)
+      await signIn(provider)
+      expect(await upload('emirates-id')).toMatchObject({ status: 'saved' })
+      expect(await upload('emirates-id', png, 'again.png')).toMatchObject({ status: 'saved' })
+      const docs = await docsOf(provider.id)
+      expect(docs).toHaveLength(1)
+      expect(docs[0]).toMatchObject({ kind: 'emirates-id', status: 'pending', user: provider.id })
+      expect((await getMyIdentityOf(provider))['emirates-id'].state).toBe('pending')
+    })
+
+    it('refuses the wrong kind, type or size before anything is stored', async () => {
+      const provider = await makeProvider(world)
+      await signIn(provider)
+      expect(await upload('passport')).toMatchObject({ status: 'error', formError: 'creators.identity.kind' })
+      expect(await upload('trade-license', Buffer.from('hello'), 'note.txt', 'text/plain')).toMatchObject({ status: 'error', formError: 'creators.identity.type' })
+      expect(await upload('trade-license', Buffer.alloc(5 * 1024 * 1024 + 1), 'big.pdf', 'application/pdf')).toMatchObject({ status: 'error', formError: 'creators.identity.size' })
+      expect(await docsOf(provider.id)).toHaveLength(0)
+    })
+
+    it('is confidential: another provider and visitors cannot read it, and its owner cannot verify it', async () => {
+      const owner = await makeProvider(world)
+      const other = await makeProvider(world)
+      await signIn(owner)
+      await upload('trade-license')
+      const [doc] = await docsOf(owner.id)
+      const asOther = await world.payload.find({ collection: 'identity-documents', where: { id: { equals: doc!.id } }, user: other as never, overrideAccess: false })
+      expect(asOther.totalDocs).toBe(0)
+      await expect(world.payload.find({ collection: 'identity-documents', overrideAccess: false })).rejects.toThrow()
+      await expect(world.payload.update({ collection: 'identity-documents', id: doc!.id, data: { status: 'verified' }, user: owner as never, overrideAccess: false })).rejects.toThrow()
+      await expect(world.payload.delete({ collection: 'identity-documents', id: doc!.id, user: owner as never, overrideAccess: false })).rejects.toThrow()
+    })
+
+    it('a rejected document no longer counts for review; the team\'s note reaches the owner', async () => {
+      const provider = await makeProvider(world)
+      await signIn(provider)
+      await upload('emirates-id')
+      await upload('trade-license')
+      const [license] = (await docsOf(provider.id)).filter((d) => d.kind === 'trade-license')
+      await world.payload.update({ collection: 'identity-documents', id: license!.id, data: { status: 'rejected', note: 'The license has expired.' }, user: world.admin as never, overrideAccess: false })
+      const identity = await getMyIdentityOf(provider)
+      expect(identity['trade-license']).toMatchObject({ state: 'rejected', note: 'The license has expired.' })
+      const state = await actions.submitForReview(idle, profileForm())
+      expect(state).toMatchObject({ status: 'error', errors: { tradeLicense: expect.any(String) } })
+      expect((await world.payload.findByID({ collection: 'identity-documents', id: license!.id, overrideAccess: true })).reviewedAt).toBeTruthy()
+    })
+
+    it('CP-FR-014 the profile calendar blocks and frees a day and stays on the profile page', async () => {
+      const provider = await makeProvider(world)
+      await signIn(provider)
+      await actions.saveMyProfile(idle, profileForm())
+      const day = addDays(dubaiToday(new Date()), 3)
+      await toggleBlockedDate(form({ locale: 'en', from: 'profile', toggle: `block:${day}` }))
+      const blocks = async () => (await world.payload.find({ collection: 'availability-blocks', where: { user: { equals: provider.id } }, depth: 0, overrideAccess: true })).docs.map((b) => b.date)
+      expect(await blocks()).toEqual([day])
+      await toggleBlockedDate(form({ locale: 'en', from: 'profile', toggle: `free:${day}` }))
+      expect(await blocks()).toEqual([])
+      await expect(toggleBlockedDate(form({ locale: 'en', from: 'profile', toggle: 'block:2020-01-01' }))).rejects.toThrow('NEXT_REDIRECT /account/profile?error=availability.errors.past#sec-calendar')
     })
   })
 })

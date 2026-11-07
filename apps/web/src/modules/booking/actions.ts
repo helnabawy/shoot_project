@@ -16,6 +16,7 @@ import {
 } from '@shoot/domain/booking'
 import { quotePrice } from '@shoot/domain/pricing'
 import { cookies } from 'next/headers'
+import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createLocalReq } from 'payload'
 import { getCurrentUser } from '@/modules/auth/session'
@@ -365,27 +366,36 @@ export async function markDelivered(form: FormData): Promise<void> {
   finish(path, await applyTransition(payload, booking.id, 'deliver', { actor: 'creator', actorUser: user.id, now: new Date() }))
 }
 
-/** A provider blocks or frees one of their dates (FR-002). */
+/**
+ * A provider blocks or frees one of their dates (FR-002). The profile's calendar (CP-FR-014) sends
+ * `from=profile` and one button per day carrying both as `toggle=block:YYYY-MM-DD`; it stays on the
+ * profile page, which refreshes in place, and an error comes back to the calendar.
+ */
 export async function toggleBlockedDate(form: FormData): Promise<void> {
   const locale = localeOf(form)
-  const path = localizeHref('/account/availability', locale)
+  const fromProfile = str(form, 'from') === 'profile'
+  const path = localizeHref(fromProfile ? '/account/profile' : '/account/availability', locale)
+  const fail = (error: string): never => (fromProfile ? redirect(`${path}?error=${encodeURIComponent(error)}#sec-calendar`) : back(path, error))
   const user = await getCurrentUser()
   if (!user) back(localizeHref('/login', locale))
   const [profileId] = await myProfileIds(user.id)
-  if (!profileId) back(path, 'availability.errors.notYours')
-  const date = str(form, 'date')
+  if (!profileId) fail('availability.errors.notYours')
+  const [verb, day] = str(form, 'toggle').split(':')
+  const block = (day ? verb : str(form, 'action')) === 'block'
+  const date = day ?? str(form, 'date')
   const payload = await getPayloadClient()
   try {
-    if (str(form, 'action') === 'block') {
+    if (block) {
       await payload.create({ collection: 'availability-blocks', data: { creator: profileId, date, kind: 'blocked', user: user.id }, user, overrideAccess: false })
     } else {
       await payload.delete({ collection: 'availability-blocks', where: { and: [{ creator: { equals: profileId } }, { date: { equals: date } }, { kind: { equals: 'blocked' } }] }, user, overrideAccess: false })
     }
   } catch (error) {
     const message = (error as Error).message
-    back(path, message.startsWith('availability.') ? message : 'availability.errors.generic')
+    fail(message.startsWith('availability.') ? message : 'availability.errors.generic')
   }
-  back(path)
+  if (!fromProfile) back(path)
+  revalidatePath(path)
 }
 
 /** Marks one in-app notice as read. */

@@ -1,6 +1,21 @@
 'use server'
 
-import { ACCEPTED_UPLOAD_TYPES, canAddSample, MAX_UPLOAD_BYTES, missingForReview, moveItem, parseProfileForm, parseSampleForm, PROFILE_LIMITS, removeItem } from '@shoot/domain/creators'
+import {
+  ACCEPTED_UPLOAD_TYPES,
+  canAddSample,
+  identityProvided,
+  identityStanding,
+  isIdentityDocumentKind,
+  isIdentityUploadType,
+  MAX_IDENTITY_BYTES,
+  MAX_UPLOAD_BYTES,
+  missingForReview,
+  moveItem,
+  parseProfileForm,
+  parseSampleForm,
+  PROFILE_LIMITS,
+  removeItem,
+} from '@shoot/domain/creators'
 import { revalidatePath } from 'next/cache'
 import type { Payload } from 'payload'
 import type { User } from '@/payload-types'
@@ -243,6 +258,7 @@ export async function submitForReview(_prev: ProfileState, form: FormData): Prom
     cities: doc.cities ?? [],
     languages: doc.languages ?? [],
     gender: doc.gender ?? null,
+    documents: await documentsInHand(payload, user),
   })
   if (missing.length) {
     refresh()
@@ -253,6 +269,47 @@ export async function submitForReview(_prev: ProfileState, form: FormData): Prom
   if (listing) await payload.update({ collection: 'creator-listings', id: listing.id, data: { submittedAt: new Date().toISOString() }, overrideAccess: true })
   refresh()
   return { status: 'saved', published: saved.published, submitted: true }
+}
+
+/** CP-FR-013: whether the Emirates ID and trade license are uploaded and not rejected. */
+async function documentsInHand(payload: Payload, user: User) {
+  const { docs } = await payload.find({ collection: 'identity-documents', where: { user: { equals: user.id } }, depth: 0, pagination: false, select: { kind: true, status: true, createdAt: true }, overrideAccess: true })
+  return identityProvided(identityStanding(docs.map((d) => ({ kind: d.kind, status: d.status, createdAt: d.createdAt }))))
+}
+
+/**
+ * CP-FR-013: uploads an Emirates ID or trade license for the verification team. It waits for their check;
+ * once stored, earlier uploads of the same kind are removed, so only the newest is ever kept.
+ */
+export async function uploadIdentityDocument(_prev: ProfileState, form: FormData): Promise<ProfileState> {
+  const user = await provider()
+  if (!user) return notProvider()
+  const kind = text(form, 'kind')
+  if (!isIdentityDocumentKind(kind)) return fail('creators.identity.kind')
+  const file = form.get('document')
+  if (!hasFile(file)) return fail('creators.identity.file', { [kind]: 'creators.identity.file' })
+  if (!isIdentityUploadType(file.type)) return fail('creators.identity.type', { [kind]: 'creators.identity.type' })
+  if (file.size > MAX_IDENTITY_BYTES) return fail('creators.identity.size', { [kind]: 'creators.identity.size' })
+  const payload = await getPayloadClient()
+  const before = await payload.find({ collection: 'identity-documents', where: { and: [{ user: { equals: user.id } }, { kind: { equals: kind } }] }, depth: 0, pagination: false, select: { kind: true }, overrideAccess: true })
+  try {
+    await payload.create({
+      collection: 'identity-documents',
+      data: { kind, user: user.id, status: 'pending' },
+      file: { data: Buffer.from(await file.arrayBuffer()), mimetype: file.type, name: file.name || `${kind}`, size: file.size },
+      user,
+      overrideAccess: false,
+      depth: 0,
+    })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : ''
+    if (/^creators\.identity\./.test(message)) return fail(message, { [kind]: message })
+    throw error
+  }
+  // The replaced files are the owner's own; the server removes them (providers cannot delete).
+  if (before.docs.length) await payload.delete({ collection: 'identity-documents', where: { id: { in: before.docs.map((d) => d.id) } }, overrideAccess: true })
+  refresh()
+  return { status: 'saved', published: false }
 }
 
 /** The form's one action: the button pressed (`intent`) decides between saving and sending for review. */

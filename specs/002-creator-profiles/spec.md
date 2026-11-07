@@ -123,6 +123,27 @@ grid, with per-language SEO text.
   experience are shown on the public profile and on Quick Match results;
   gender is never shown publicly and is used only to match a brief's
   "shot by" choice (feature 003).
+- **FR-012** (amended 2026-11-08, owner request): a provider MUST choose the
+  **emirates** they work in, never the cities inside an emirate. A city sent
+  by any client is stored as its emirate; existing profiles were converted
+  by migration. Locations keep cities for other uses.
+- **FR-013** (amended 2026-11-08, owner request): every provider MUST upload
+  an **Emirates ID** and a **trade license** before the profile can be sent
+  for review. The files are confidential (owner and editors only, served
+  through access control, never public); each waits for the team's check
+  (waiting, verified, not accepted with a note the provider reads). A newer
+  upload replaces the older one of the same kind; a rejected document no
+  longer counts. Images or PDF, up to 5 MB.
+- **FR-014** (amended 2026-11-08, owner request): the profile editor MUST
+  include a calendar of the next 90 days where the provider marks days they
+  cannot work (the same availability blocks as `/account/availability`,
+  feature 003); booked days show and cannot be changed; each tap saves at once.
+- **FR-015** (amended 2026-11-08, owner request): the profile editor MUST show
+  the profile as numbered steps, each saying what it still needs, what it
+  holds, or that it is done, and linking to its section. While anything
+  required is missing, a message MUST say plainly that the profile is not
+  complete, that clients cannot find or book the provider until it is
+  approved, and how many steps need attention.
 - **FR-002**: Profiles MUST have a verification state managed by admins;
   only verified, active profiles MUST be publicly visible.
 - **FR-003**: The landing page MUST offer a creator-network section with an

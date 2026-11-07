@@ -12,8 +12,15 @@ vi.mock('../actions', () => ({ submitProfileForm: (prev: ProfileState, form: For
 const { ProfileForm } = await import('./ProfileForm')
 
 const defaults = { name: 'Registered Name', personas: [2], specialties: [12] }
-const render = (over: Partial<Parameters<typeof ProfileForm>[0]> = {}, locale: 'en' | 'ar' = 'en') =>
-  renderWithLocale(<ProfileForm locale={locale} profile={myProfile()} options={selectableOptions} defaults={defaults} samples={<div data-testid="samples-slot" />} {...over} />, { locale })
+// Before the first save the page passes what the registration defaults still leave missing.
+const FIRST_VISIT = ['cities', 'languages', 'gender', 'emiratesId', 'tradeLicense'] as const
+const render = (over: Partial<Parameters<typeof ProfileForm>[0]> = {}, locale: 'en' | 'ar' = 'en') => {
+  const profile = over.profile === undefined ? myProfile() : over.profile
+  return renderWithLocale(
+    <ProfileForm locale={locale} profile={profile} options={selectableOptions} defaults={defaults} samples={<div data-testid="samples-slot" />} missing={profile?.missing ?? [...FIRST_VISIT]} {...over} />,
+    { locale },
+  )
+}
 
 describe('CP-US3-S1 provider form', () => {
   beforeEach(() => submitProfileForm.mockClear())
@@ -47,7 +54,7 @@ describe('CP-US3-S1 provider form', () => {
     const checked = (name: string) => [...document.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`)].map((i) => i.value)
     expect(checked('personas')).toEqual(['1'])
     expect(checked('specialties')).toEqual(['10', '11'])
-    expect(checked('cities')).toEqual(['101'])
+    expect(checked('cities')).toEqual(['100'])
     expect(checked('languages')).toEqual(['en', 'ar'])
   })
 
@@ -73,10 +80,10 @@ describe('CP-US3-S1 provider form', () => {
     expect(screen.getByText(/your gender/)).toBeInTheDocument()
   })
 
-  it('lists cities under their emirate and offers each emirate itself', () => {
+  it('CP-FR-012 offers emirates only, never the cities inside them', () => {
     render()
     const cities = within(screen.getByTestId('field-cities'))
-    expect(cities.getAllByRole('checkbox').map((c) => c.getAttribute('value'))).toEqual(['100', '101', '200'])
+    expect(cities.getAllByRole('checkbox').map((c) => c.getAttribute('value'))).toEqual(['100', '200'])
   })
 
   it('before the first save it is filled from registration: the name and the chosen type and specialty', () => {
@@ -122,11 +129,11 @@ describe('CP-US3-S1 provider form', () => {
       expect(primary()).toHaveTextContent('Save')
       expect(primary()).not.toHaveTextContent('review')
       expect(screen.queryByTestId('profile-save-only')).toBeNull()
-      expect(screen.getByTestId('profile-feedback')).toHaveTextContent('Add where you work and a language to send for review.')
+      expect(screen.getByTestId('profile-feedback')).toHaveTextContent('Add an emirate and a language to send for review.')
     })
-    it('before the first save everything is missing', () => {
+    it('before the first save, the line names what the registration choices leave missing', () => {
       render({ profile: null })
-      expect(screen.getByTestId('profile-feedback')).toHaveTextContent('your name, what you do')
+      expect(screen.getByTestId('profile-feedback')).toHaveTextContent('Add an emirate, a language, your gender, your Emirates ID and your trade license to send for review.')
     })
     it('a complete draft: "Save and send for review", with "Save without sending" beneath', () => {
       render({ profile: myProfile({ status: 'draft', isPublished: false }) })

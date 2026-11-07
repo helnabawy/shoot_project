@@ -55,9 +55,9 @@ describe('CP-US1-S3 only listed creators are public (queries)', () => {
     expect(await names({ listedOnly: false })).toEqual(['Chef Creator', 'Lina Verified', 'Omar Verified', 'Sara Verified'])
   })
 
-  it('derives the emirate of a city and the first-publication date', async () => {
+  it('CP-FR-012 a city given for a profile is stored as its emirate; the first-publication date is set', async () => {
     const sara = (await getPublicCreators('en')).find((c) => c.displayName === 'Sara Verified')!
-    expect(sara.locationIds).toEqual([String(world.city)])
+    expect(sara.locationIds).toEqual([String(world.abuDhabi)])
     expect(sara.emirateIds).toEqual([String(world.abuDhabi)])
     expect(sara.publishedAt).toBeTruthy()
   })

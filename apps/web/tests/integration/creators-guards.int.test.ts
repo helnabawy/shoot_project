@@ -47,8 +47,9 @@ describe('CP-FR-009 delete guards and audience rules', () => {
   it('refuses to delete a location a profile lists', async () => {
     const payload = await getTestPayload()
     const provider = await makeProvider(world)
-    await createDraft(world, provider, { cities: [world.city] })
-    await expect(payload.delete({ collection: 'locations', id: world.city })).rejects.toThrow(/creator profile/)
+    // Profiles list emirates only (CP-FR-012); an emirate a profile lists cannot be deleted.
+    await createDraft(world, provider, { cities: [world.abuDhabi] })
+    await expect(payload.delete({ collection: 'locations', id: world.abuDhabi })).rejects.toThrow(/creator profile/)
   })
 
   it('refuses to delete a user who has a profile', async () => {

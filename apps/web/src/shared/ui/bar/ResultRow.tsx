@@ -36,7 +36,8 @@ export function RowContent({
   label: ReactNode
   trailing?: ReactNode
   state?: RowState
-  tile?: 'default' | 'set'
+  /** `ink` for a step number (an order that carries meaning). */
+  tile?: 'default' | 'set' | 'ink'
 }) {
   return (
     <>

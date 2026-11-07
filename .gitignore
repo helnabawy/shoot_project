@@ -24,6 +24,7 @@ test-results/
 
 # payload / uploads (local dev only)
 apps/web/media/
+apps/web/identity-documents/
 apps/web/public/media/
 
 # OS / editor

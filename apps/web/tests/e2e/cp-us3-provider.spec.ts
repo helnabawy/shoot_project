@@ -74,6 +74,7 @@ test.describe('CP-US3 providers manage their own profile', () => {
     await page.getByTestId(`specialty-${ids.category}`).click()
     await page.getByTestId(`city-${ids.city}`).click()
     await page.getByTestId('language-en').click()
+    await page.getByTestId('gender-woman').click()
     await page.getByTestId('profile-save').click()
     await expect(feedback(page)).toContainText('Saved.', { timeout: 30_000 })
     await expect(status(page)).toHaveAttribute('data-status', 'draft')
@@ -87,6 +88,14 @@ test.describe('CP-US3 providers manage their own profile', () => {
     await page.locator('#add-caption-en').fill('Golden hour')
     await page.getByTestId('sample-add-submit').click()
     await expect(page.getByTestId('sample-count')).toContainText('1 of 30', { timeout: 30_000 })
+    // CP-FR-013: the Emirates ID and trade license, each uploaded on its own.
+    await expect(page.getByTestId('profile-incomplete')).toContainText("Your profile isn't complete yet.")
+    for (const kind of ['emirates-id', 'trade-license']) {
+      await page.setInputFiles(`#identity-${kind}`, { name: `${kind}.png`, mimeType: 'image/png', buffer: await png() })
+      await page.getByTestId(`identity-${kind}-upload`).click()
+      await expect(page.getByTestId(`identity-${kind}-status`)).toContainText('Waiting for our check', { timeout: 30_000 })
+    }
+    await expect(page.getByTestId('profile-ready')).toBeVisible()
     // A caption edited on the row is saved by the one closing action, with everything else.
     await page.locator('#caption-0-en').fill('Golden hour, Marina')
     await expect(page.getByTestId('profile-save')).toContainText('Save and send for review')
