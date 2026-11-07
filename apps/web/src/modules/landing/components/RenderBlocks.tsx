@@ -1,4 +1,5 @@
 import type { LandingPage } from '@/payload-types'
+import type { SpecialtyCounts } from '@shoot/domain/creators'
 import type { AudienceCategory, AudiencePersona } from '@/modules/personas/queries'
 import type { ContactDetails } from '@/shared/components/CtaLink'
 import { CallToAction } from './sections/CallToAction'
@@ -16,6 +17,8 @@ export interface BlockContext {
   contact: ContactDetails
   personas: AudiencePersona[]
   categories: AudienceCategory[]
+  /** Real counts per category id from the listed creators; absent means none to show. */
+  specialtyCounts?: Record<string, SpecialtyCounts>
   locale: string
 }
 
@@ -51,6 +54,7 @@ export function RenderBlocks({
                 key={key}
                 block={block}
                 audienceCategories={context.categories}
+                counts={context.specialtyCounts}
                 contact={context.contact}
                 locale={context.locale}
               />

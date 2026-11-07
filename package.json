@@ -12,6 +12,7 @@
     "start": "pnpm --filter web start",
     "typecheck": "pnpm -r --parallel typecheck",
     "lint": "pnpm -r --parallel lint && bash scripts/check-logical-css.sh",
+    "check:scenarios": "node scripts/check-scenario-tests.mjs",
     "format": "prettier --write .",
     "test": "pnpm --filter @shoot/domain test && pnpm --filter web test",
     "test:watch": "pnpm --filter web test:watch",

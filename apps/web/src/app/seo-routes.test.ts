@@ -15,9 +15,14 @@ describe('FR-040 robots.txt and sitemap.xml', () => {
     expect(entries[1]).toMatchObject({ priority: 0.5, alternates: { languages: { ar: 'https://shoot.example/ar/login' } } })
   })
 
-  it('lists the directory and each listed creator in both languages, but only when there are creators (CP-US1-S3)', async () => {
+  it('lists the directory, the specialties that have professionals and each listed creator in both languages, but only when there are creators (CP-US1-S3, CP-US4-S2)', async () => {
     vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://shoot.example')
-    vi.doMock('@/modules/creators', () => ({ getPublicCreators: async () => [{ code: '7K4Q2' }, { code: '3M8TN' }] }))
+    vi.doMock('@/modules/creators', () => ({
+      getPublicCreators: async () => [{ code: '7K4Q2' }, { code: '3M8TN' }],
+      getDirectoryContext: async () => ({ specialties: [{ id: '1', slug: 'portrait' }, { id: '2', slug: 'events' }] }),
+      // Events has nobody listed, so it has no page worth listing.
+      getSpecialtyCounts: async () => ({ '1': { samples: 3, pros: 2 } }),
+    }))
     const { default: sitemap } = await import('./sitemap')
     const entries = await sitemap()
     expect(entries.map((e) => e.url)).toEqual([
@@ -25,6 +30,7 @@ describe('FR-040 robots.txt and sitemap.xml', () => {
       'https://shoot.example/creators',
       'https://shoot.example/login',
       'https://shoot.example/register',
+      'https://shoot.example/work/portrait',
       'https://shoot.example/creators/7k4q2',
       'https://shoot.example/creators/3m8tn',
     ])

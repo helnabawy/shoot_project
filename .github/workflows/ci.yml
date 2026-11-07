@@ -31,6 +31,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm lint
+      # Every scenario in a quickstart mapping table has its tests, named with its id (SC-004).
+      - run: node scripts/check-scenario-tests.mjs
       # Integration tests start their own PostgreSQL with Testcontainers (Docker is available on ubuntu-latest).
       - run: pnpm --filter @shoot/domain test:coverage
       - run: pnpm --filter web test:coverage

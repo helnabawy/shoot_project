@@ -325,6 +325,14 @@
       "uploadSize": "حجم الصورة يتجاوز 5 ميغابايت. اختر صورة أصغر.",
       "uploadQuota": "وصلت إلى الحد الأقصى للصور المرفوعة. احذف الأعمال التي لا تحتاجها؛ تُمسح الصور غير المستخدمة بعد يوم.",
       "uploadTooMany": "رفعت صوراً كثيرة في الساعة الأخيرة. حاول لاحقاً."
+    },
+    "specialty": {
+      "samples": "{count, plural, one {عمل واحد} two {عملان} few {# أعمال} many {# عملاً} other {# عمل}}",
+      "pros": "{count, plural, one {محترف واحد} two {محترفان} few {# محترفين} many {# محترفاً} other {# محترف}}",
+      "titleFallback": "محترفو {name}",
+      "metaFallback": "تعرّف على من يصوّر {name} وأرسل طلبك.",
+      "samplesTitle": "أعمال حديثة",
+      "sampleBy": "{caption}، بعدسة {name}"
     }
   }
 }

@@ -14,18 +14,26 @@ const entry = (path: string, priority: number): Entry => ({
   alternates: { languages: { en: `${base}${path === '/' ? '' : path}`, ar: `${base}/ar${path === '/' ? '' : path}` } },
 })
 
-/** Codes of the creators who are listed; an unreachable database must not take the whole sitemap down. */
-async function listedCreatorCodes(): Promise<string[]> {
+/** The listed creators' codes and the slugs of the specialties that have at least one; an unreachable database must not take the whole sitemap down. */
+async function listedContent(): Promise<{ codes: string[]; specialties: string[] }> {
   try {
-    const { getPublicCreators } = await import('@/modules/creators')
-    return (await getPublicCreators('en')).map((c) => c.code.toLowerCase())
+    const { getPublicCreators, getDirectoryContext, getSpecialtyCounts } = await import('@/modules/creators')
+    const [creators, context, counts] = await Promise.all([getPublicCreators('en'), getDirectoryContext('en'), getSpecialtyCounts('en')])
+    return {
+      codes: creators.map((c) => c.code.toLowerCase()),
+      specialties: context.specialties.filter((s) => (counts[s.id]?.pros ?? 0) > 0).map((s) => s.slug),
+    }
   } catch {
-    return []
+    return { codes: [], specialties: [] }
   }
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const codes = await listedCreatorCodes()
+  const { codes, specialties } = await listedContent()
   const pages = ['/', ...(codes.length ? ['/creators'] : []), '/login', '/register']
-  return [...pages.map((path) => entry(path, path === '/' ? 1 : 0.5)), ...codes.map((code) => entry(`/creators/${code}`, 0.6))]
+  return [
+    ...pages.map((path) => entry(path, path === '/' ? 1 : 0.5)),
+    ...specialties.map((slug) => entry(`/work/${slug}`, 0.6)),
+    ...codes.map((code) => entry(`/creators/${code}`, 0.6)),
+  ]
 }

@@ -64,7 +64,7 @@ Test names start with the id in the first column.
 
 | Id | Layer | Test file |
 |----|-------|-----------|
-| CP-US1-S1 landing block shows ≤ N by rule, link to directory | integration (selection + query), component, e2e | `domain/creators/selection.test.ts`, `creators-landing.int.test.ts`, `CreatorNetwork.test.tsx`, `cp-us1-directory.spec.ts` |
+| CP-US1-S1 landing block shows ≤ N by rule, link to directory | integration (selection + query), component, e2e | `domain/creators/selection.test.ts`, `creators-landing.int.test.ts`, `CreatorNetworkView.test.tsx`, `cp-us1-directory.spec.ts` |
 | CP-US1-S2 filters narrow, featured-then-newest order, counts per filter | unit, component, e2e | `domain/creators/filter.test.ts`, `DirectoryFilters.test.tsx`, `cp-us1-directory.spec.ts` |
 | CP-US1-S3 unverified/deactivated never appear on any page | integration (access + queries + sitemap), e2e | `creators-access.int.test.ts`, `creators-visibility.int.test.ts`, `cp-us1-directory.spec.ts` |
 | CP-US2-S1 gallery: alt text, lazy loading, sized variants | component, e2e (axe, network) | `SampleGallery.test.tsx`, `cp-us2-profile.spec.ts` |

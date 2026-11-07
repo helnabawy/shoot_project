@@ -281,6 +281,15 @@ components:
     rounded: "{rounded.row}"
     padding: "0 16px"
     height: "44px"
+  specialty-header:
+    textColor: "{colors.graphite-ink}"
+    typography: "{typography.headline}"
+  specialty-counts:
+    textColor: "{colors.warm-mute}"
+    typography: "{typography.meta}"
+  specialty-sample-tile:
+    backgroundColor: "{colors.tile-stone}"
+    rounded: "{rounded.tile}"
   review-note:
     backgroundColor: "{colors.attention-peach}"
     textColor: "{colors.on-attention}"
@@ -316,6 +325,8 @@ The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingu
 **2026-11-07 (feature 002, US3).** The provider's profile editor at `/account/profile` was recorded from the shipped build: Status Bar, Localised Field Pair, Check Row, Sample Row and Closing Bar. No new colour, shadow or type step was introduced; every part is the existing row, tile, field and Top Hit grammar.
 
 **2026-11-07 (owner-directed).** The owner asked to enhance the sections below the hero. From 1024 px each titled section became a settings-style pane out to the header's 1080 px (heading in a sticky start column, content in the end column); the strip under the stage set the helper hint against the trust chips; how it works became a timeline of graphite number tiles (step numbers no longer use selection blue); the reasons became a two-column hairline cell grid; the creator invitation runs as one wide bar; FAQ rows gained a hover tint and a chevron tile; the closing heading stepped up a size. The hero stage and the brief bar were not changed.
+
+**2026-11-07 (feature 002, US4).** The specialty page at `/work/{slug}` and the landing Specialties link row were recorded from the shipped build: Specialty Header, Specialty Page, Specialty Samples and Specialties Link Row. No new colour, shadow, radius or type step; the page is the directory panel with one filter fixed, the existing Portfolio Grid grammar and the existing row.
 
 ## Colors
 
@@ -359,8 +370,8 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 
 ### Hierarchy
 - **Display** (700, 38 px, 52 px from 640 px, line-height 1.02, -0.03em, balanced): the landing headline only, the visible title of the hero stage. It is ink with a soft halo of the ground colour (a 28 px text shadow) so it holds over a busy photograph and disappears on the studio sweep. No other-language line or subheadline sits beneath it.
-- **Headline** (700, 34 px, -0.03em): the page title of login, register, account, not-found and the booking page.
-- **Section Title** (700, 26 px, 30 px from 640 px, -0.025em): below-the-fold section headings on the ground, and the creator's name as the profile page's h1 inside the identity panel. The closing call to action takes the **emphasis** step (700, 30 px, 38 px from 640 px, -0.03em), the last word on the page.
+- **Headline** (700, 34 px, -0.03em): the page title of login, register, account, not-found, the booking page and the specialty page.
+- **Section Title** (700, 26 px, 30 px from 640 px, -0.025em): below-the-fold section headings on the ground (including "Recent work" on a specialty page), and the creator's name as the profile page's h1 inside the identity panel. The closing call to action takes the **emphasis** step (700, 30 px, 38 px from 640 px, -0.03em), the last word on the page.
 - **Field** (500, 20 px, 22 px from 640 px, line-height 1.35, -0.01em): the composed sentence in the bar. Set parts in ink, connectives in mute, unset required parts in mute italic.
 - **Top Hit** (600, 17 px): the one primary row.
 - **Row** (400, 16 px; 600 when set): result rows, FAQ questions (500, 600 when open), inputs (16 px also prevents iOS zoom). Step titles in the how-it-works timeline are 17 px semibold.
@@ -388,6 +399,8 @@ From 1024 px each titled section is a pane, as in macOS settings, out to the hea
 Lists on the ground (how it works, why, specialties, FAQ, and the creator network) are real `ul`/`ol` elements bleeding to the column edge with hairlines between rows; specialties may go two columns from 640 px, divided with a logical `border-e`. The landing "Our network" block and the `/creators` list are Creator Rows in that same list, 4 px of block padding per item, with the directory panel above the list on `/creators`.
 
 The profile page (`/creators/{code}`) is the same 680 px column: the identity panel (12 px gutter, 32 px of top padding, 56 px from 640 px), the bio at 60ch on the ground, then a "Work" section holding the portfolio grid. The booking page (`/book/{code}`) is the Headline, one line of intro and the Brief Bar. The floating WhatsApp button steps aside while an element marked `data-floating-hide` is on screen: the hero bar, the profile panel and the booking bar.
+
+The specialty page (`/work/{slug}`) is the same 680 px column: the Specialty Header on the ground (12 px gutter, 32 px of top padding, 56 px from 640 px), the directory panel 20 px under it, the rows (16 px gutter, 40 px under the panel), then "Recent work" 48 px below the rows (16 px gutter, 64 px of bottom padding).
 
 The provider's profile editor (`/account/profile`) is the account's 560 px column with 12 px gutters, the Headline, then the status bar, then sections on the ground (Basics, Specialties and places, Links, Samples; 48 px between sections, 40 px under the status bar) and the closing bar last. A section is a Section Title over a `-mx-3` block bordered top and bottom by hairlines, its fields divided by hairlines; the block bleeds 12 px past the gutter so row tints reach the column edge. Localised pairs sit side by side from 640 px and stack below it; the languages checklist goes two columns from 640 px.
 
@@ -441,6 +454,18 @@ A result row whose lead is the Photo Tile: grid of 44 px tile, flexible text, au
 
 ### Directory Panel
 The Brief Bar used as a filter, with the Top Hit as the best match. The field prints the chosen filters as selection-tinted tokens (the same token as the brief sentence); with none chosen it shows "All professionals" in mute as a placeholder. Under it, a filters group with one row per filter (professional, specialty, emirate): glyph tile with a drawn icon (user, tag, pin), label, and in the trailing slot the current value or "Any" with a chevron that turns over when open. Each row is a native `details`/`summary` disclosure (one open at a time), so it works without JavaScript. Opened, it lists an "Any" row (set, with a drawn check, when nothing is chosen), then the options as link rows with their counts in the trailing slot (tabular); the chosen option is a set row. Options with zero matches are hidden unless chosen. A "Clear filters" row with a close glyph appears only when a filter is active. Below a hairline, the "Top Hit" group holds the best creator, or, when nothing matches, a plain message row and a Top Hit back to the brief. Beneath the panel the remaining creators are Creator Rows on the bare ground.
+
+### Specialty Header
+The top of a specialty page, on the ground with no panel. The h1 is the editor's SEO title for the specialty, or the fallback "{name} professionals", at Headline (34 px, bold, tight, balanced), 4 px inline inset to align with the panel's text. Under it, when the editor wrote one, the introduction in 16 px mute at 60ch (8 px above). Last, the counts line in Meta (13 px mute, tabular), 8 px above, rendered only when there is something true to say.
+
+### Specialty Page
+The Directory Panel with the specialty fixed by the page: only the Professional and Emirate filter rows remain, and the specialty is not a token in the field (the page title already says it). Order: Specialty Header, the panel (Top Hit as best match, or the empty and no-match message rows), the remaining creators as Creator Rows with specialties printed, page links as ordinary rows with chevron tiles and a centred "Page n of m" in Meta, then Specialty Samples. The rows and page links are one shared component with `/creators`, so the two pages cannot drift. A narrowed or paged view is not indexed.
+
+### Specialty Samples
+Section Title "Recent work", then up to 24 samples on the ground in the Portfolio Grid grammar: two columns on phones, three from 640 px, 8 px gaps, a uniform 4:5 crop at the tile radius on the resting tile fill, every picture lazy (the strip sits below the rows). Each tile is a link to the profile of the creator who shot it, named "caption, by name" (the image alt falls back when there is no caption); the picture itself has empty alt. No captions, hover zoom or overlays, and nothing renders without samples.
+
+### Specialties Link Row
+On the landing page each Specialties row whose category the audience offers is an open Result Row linking to `/work/{slug}`, with the glyph tile and name, and a trailing counts line in the trailing slot ("428 samples · 43 pros", tabular). Each part shows only above zero, the whole line is absent when both are zero, and the Arabic text uses the six plural forms. A hand-picked category the audience does not offer has no page: it is a quiet row of tile and mute 16 px name, not a link, with no hover, no chevron and no counts.
 
 ### Profile Identity Panel
 The Brief Bar as a person. A header of the 64 px Photo Tile (`lg`) beside the creator's name, which is the page h1 at Section Title size, with the code under it in Meta (tabular, isolated left-to-right). A hairline, then fact rows: each is a single 44 px row with a glyph tile, the value on the start side and what it is in the trailing slot ("Works in", "Speaks"). Only the Verified row has a second line, a plain Meta sentence of what verified means, never a badge. After a hairline the "Top Hit" group holds the one blue row, which books the creator by full display name (a creator who cannot be booked gets "ask on WhatsApp" as the Top Hit instead). An "Actions" group of ordinary rows follows: the WhatsApp row (when booking is the Top Hit) and one row per social link, each opening a new tab with `rel="noopener nofollow ugc"`. The bio sits under the panel on the ground, 15 px, 60ch.
@@ -523,6 +548,9 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Do** lead a person's row with the 44 px Photo Tile (photo or initials, `aria-hidden`), keep specialties as plain text and the code as isolated left-to-right trailing meta, and hide filter options that match nothing unless chosen.
 - **Do** state a person's facts as single 44 px rows, value first and its name in the trailing slot; give "verified" a plain sentence, not a badge.
 - **Do** show portfolios as a uniform 4:5 grid at the tile radius with 8 px gaps and let the images carry themselves.
+- **Do** print counts only when they are real and above zero, each part on its own ("428 samples · 43 pros"), and omit the line when there is nothing true to say.
+- **Do** make every sample picture lead to the person who shot it, with a link named "caption, by name".
+- **Do** render a thing with no page as quiet muted text, not a look-alike link.
 - **Do** answer a step the creator fixes, lock it, and leave it out of step counts.
 - **Do** keep the bar a working plain form without JavaScript: every list shows at once, and the search input and key hints are hidden.
 - **Do** give a form one closing bar with one Top Hit per state, and make every other action on the page an ordinary row; fields that sit away from their form join it with the HTML `form` attribute rather than nesting forms.
@@ -540,7 +568,8 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Don't** use emoji, Unicode symbols or copied Apple icons as icons.
 - **Don't** add eyebrows or kickers above headlines; group labels exist only as Spotlight's group headers over rows.
 - **Don't** paint the subject onto the page outside the hero stage, and don't costume it anywhere: no serif display, ticket, signage or booking-widget costume.
-- **Don't** add captions, hover zoom, overlays or badges to portfolio images.
+- **Don't** add captions, hover zoom, overlays or badges to portfolio images, on a profile or a specialty page.
+- **Don't** show a zero, a placeholder or a rounded-up count, and don't show a sample without a way to its creator.
 - **Don't** letter-space Arabic headings, and don't leave Arabic trailing slots at 13 px.
 - **Don't** use a modal, a toast, a progress ring, a completion percentage or a stepper in the editor; the feedback line and the status bar say where the profile stands.
 - **Don't** invent proof: no testimonials, logos, counts or ratings that do not exist.

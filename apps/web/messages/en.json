@@ -325,6 +325,14 @@
       "uploadSize": "That image is over 5 MB. Choose a smaller one.",
       "uploadQuota": "You have reached the limit of uploaded images. Remove samples you no longer use; unused images are cleared after a day.",
       "uploadTooMany": "You've uploaded a lot of images in the last hour. Try again later."
+    },
+    "specialty": {
+      "samples": "{count, plural, one {# sample} other {# samples}}",
+      "pros": "{count, plural, one {# pro} other {# pros}}",
+      "titleFallback": "{name} professionals",
+      "metaFallback": "See who shoots {name} and send a brief.",
+      "samplesTitle": "Recent work",
+      "sampleBy": "{caption}, by {name}"
     }
   }
 }

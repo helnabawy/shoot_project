@@ -1,13 +1,12 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import {
   buildDirectory,
-  CreatorList,
   CreatorRow,
   creatorPath,
   describeCreator,
   DirectoryFilters,
+  DirectoryResults,
   getDirectoryContext,
   getPublicCreators,
   type DirectoryParams,
@@ -15,8 +14,6 @@ import {
 import { localizeHref } from '@/shared/i18n/href'
 import type { Locale } from '@/shared/lib/locale'
 import { alternates } from '@/shared/lib/seo'
-import { RowContent, rowClass } from '@/shared/ui/bar'
-import { ChevronIcon } from '@/shared/ui/icons'
 
 type Props = { params: Promise<{ locale: string }>; searchParams: Promise<DirectoryParams> }
 
@@ -66,29 +63,7 @@ export default async function CreatorsPage({ params, searchParams }: Props) {
           briefHref={localizeHref('/', locale)}
         />
       </div>
-      <div className="px-4 pt-10">
-        {view.rows.length ? (
-          <>
-            {top ? <p className="group-label pb-2">{t('everyone')}</p> : null}
-            <CreatorList items={view.rows.map(toItem)} label={t('resultsLabel')} testId="directory-list" showSpecialties />
-          </>
-        ) : null}
-        {view.pages > 1 ? (
-          <nav aria-label={t('resultsLabel')} data-testid="directory-pagination" className="mt-4 -mx-2 grid gap-1">
-            {view.prevHref ? (
-              <Link href={view.prevHref} rel="prev" className={rowClass('open')}>
-                <RowContent glyph={<ChevronIcon width={16} height={16} className="rotate-180" />} label={t('previous')} />
-              </Link>
-            ) : null}
-            <p className="px-4 text-center text-[13px] text-mute tabular-nums">{t('page', { page: view.page, pages: view.pages })}</p>
-            {view.nextHref ? (
-              <Link href={view.nextHref} rel="next" className={rowClass('open')}>
-                <RowContent glyph={<ChevronIcon width={16} height={16} />} label={t('next')} />
-              </Link>
-            ) : null}
-          </nav>
-        ) : null}
-      </div>
+      <DirectoryResults view={view} items={view.rows.map(toItem)} hasTop={Boolean(top)} />
     </div>
   )
 }
