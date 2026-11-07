@@ -77,7 +77,14 @@ contract in `.impeccable/surfaces/apps-web-src-app-site-locale-page-tsx.md`.
   open / set / attention), `TopHit` (the one accent row = primary action,
   the submit button without JS), `GlyphTile`, `KeyHint` (↩, kbd hints,
   hidden on touch). Everything public is assembled from these.
-- **Signature interaction**: typing filters the groups live and the
+- **Signature interaction** (owner-amended 2026-11-07, FR-067): the brief
+  is built one step at a time. The bar opens as one field ("Type what
+  you're looking for") with only the first list; each choice becomes a
+  tinted token in the sentence and the next list takes its place; the Top
+  Hit appears only when every part is answered; a token reopens its step,
+  Backspace takes the last answer back, typing searches every list.
+  Nothing is pre-selected. Without JavaScript every list shows as a form.
+  Also: typing filters the groups live and the
   sentence re-composes as rows are set; arrow keys move the highlight,
   Return fires the Top Hit, Escape clears the filter. A set row is ticked
   and printed into the sentence; an unset row is an invitation ("pick a

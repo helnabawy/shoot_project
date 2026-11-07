@@ -26,12 +26,13 @@ test.describe('US1 landing page', () => {
     ])
   })
 
-  test('@smoke FR-057 the primary action is visible without scrolling on a 360×640 phone', async ({
+  test('@smoke FR-057 the search field and the first list start above the fold on a 360×640 phone', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 360, height: 640 })
     await page.goto('/')
-    await expect(page.getByTestId('brief-submit')).toBeInViewport()
+    await expect(page.getByRole('searchbox')).toBeInViewport()
+    await expect(page.locator('[data-current="true"] label[data-testid^="brief-option-"]').first()).toBeInViewport()
   })
 
   test('US1-S2 in-page navigation scrolls without reloading and updates the URL', async ({

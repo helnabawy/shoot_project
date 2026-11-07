@@ -206,10 +206,10 @@ The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingu
 - Logical CSS only; Arabic is a designed rendering, not a mirrored afterthought.
 - Works as a plain form without JavaScript.
 - On the landing hero the primary bar wears its glass tone over a full-screen photo stage; everywhere else it floats on the ground.
-- With JavaScript the bar's options fold into a drawer under the Top Hit; a toggle, a sentence part, the filter or Cmd/Ctrl+K opens it.
+- With JavaScript the bar is a step-by-step search (FR-067): one field and only the asked step's list; a choice prints into the sentence as a token and the next list appears, and the Top Hit appears only once every part is answered.
 
 ### Direction history
-**2026-11-07 (owner-directed).** The owner asked for three changes explicitly. (1) The landing hero became a full-screen stage: the CMS photograph under a theme scrim, or a CSS studio sweep until a photo exists, with the CMS headline as the only visible title above the bar; the other-language headline line and the subheadline are no longer shown. This retires "no moody photo hero" and "nothing painted on the page" for the hero only. (2) The bar gained a glass tone for that stage, which brings its own sheen, inset highlight, edge and deeper shadow; the One Shadow and One Gradient rules now name these as hero-only exceptions. (3) The brief builder's options fold into a drawer under the Top Hit, open without JavaScript.
+**2026-11-07 (owner-directed).** The owner asked for three changes explicitly. (1) The landing hero became a full-screen stage: the CMS photograph under a theme scrim, or a CSS studio sweep until a photo exists, with the CMS headline as the only visible title above the bar; the other-language headline line and the subheadline are no longer shown. This retires "no moody photo hero" and "nothing painted on the page" for the hero only. (2) The bar gained a glass tone for that stage, which brings its own sheen, inset highlight, edge and deeper shadow; the One Shadow and One Gradient rules now name these as hero-only exceptions. (3) The brief builder's options folded into a drawer under the Top Hit; the same day the owner replaced the drawer with the step-by-step search of FR-067 (nothing pre-filled, one list per step).
 
 ## Colors
 
@@ -307,10 +307,10 @@ Soft, nested macOS corners stepping down with size: panel 14 px, Top Hit and inp
 ## Components
 
 ### Brief Bar (signature)
-The one floating panel. `BriefBar` renders the frosted material with `overflow: hidden`; `size="sm"` drops the panel's text to 15 px for secondary bars (creator invitation, header menu, not-found), and `tone="glass"` dresses the primary bar for the hero stage (see Elevation & Depth). Inside: the field, a hairline, the Top Hit group, then the options drawer holding the result groups, each opened by a hairline, and the Actions group.
+The one floating panel. `BriefBar` renders the frosted material with `overflow: hidden`; `size="sm"` drops the panel's text to 15 px for secondary bars (creator invitation, header menu, not-found), and `tone="glass"` dresses the primary bar for the hero stage (see Elevation & Depth). Inside: the field, a hairline, the Top Hit group (once the brief is complete), the asked step's result group, and the Actions group.
 
 ### Bar Field
-The search magnifier (22 px, 2.25 stroke, ink) beside the composed sentence at Field size. Each sentence part is a link to its group (with JavaScript, a tap opens the options drawer on that group). A set part is a Spotlight-style token: ink text on a rounded selection-blue tint (`--selected`, 6 px corners, 5 px inline padding, cloned across a line break), deepening on hover, so the client sees every choice at a glance (owner request 2026-11-07). Unset required parts are mute italic; an invalid part takes the attention tint instead. Optional parts the visitor has not set are left out of the sentence. With JavaScript a 2 px blue caret blinks at the end, a 15 px filter input sits beneath, indented to the sentence's start, and an options toggle trails the sentence: a 44 px button holding a 30 px resting tile with a drawn chevron that turns half a circle when open. It carries `aria-expanded` and `aria-controls`, is named "Show options" / "Hide options", and on hover-capable devices a Cmd K / Ctrl K key hint sits beside it.
+The search magnifier (22 px, 2.25 stroke, ink) beside the composed sentence at Field size. With JavaScript the field is a composer: the sentence so far, then an inline search input where the next answer goes, with a blinking 2 px blue caret while it is unfocused and empty. A set part is a Spotlight-style token: ink text on a rounded selection-blue tint (`--selected`, 6 px corners, 5 px inline padding, cloned across a line break), deepening on hover. Tapping a token asks that step again and rings it in selection blue; Backspace in the empty field takes back the last answer. Parts not yet answered are left out of the sentence; an invalid part takes the attention tint. On hover-capable devices a Cmd K / Ctrl K key hint trails the field. Without JavaScript each part is a link to its group and the input is replaced by a short hint.
 
 ### Result Rows
 - **Grammar:** three columns, glyph tile (30 px), label (flexible, wraps), trailing slot (auto, end-aligned, 13 px).
@@ -325,7 +325,7 @@ The search magnifier (22 px, 2.25 stroke, ink) beside the composed sentence at F
 A group label (Group Label style, 10 px top, 4 px bottom padding) then rows. When it is a choice it is a `fieldset` whose legend is the label, so screen readers name the radio group. A group-level message sits between label and rows.
 
 ### Options Drawer
-With JavaScript the result groups and the Actions group fold into a drawer beneath the Top Hit, folded by default; without JavaScript it is open and the bar is the plain form. It opens from the toggle, from a tapped sentence part (which scrolls that group to the top under the header, shows all its values and focuses its current choice), from typing in the filter, from ArrowDown in the filter, on a validation error, and on Cmd+K / Ctrl+K anywhere on the page (matched by physical key so it works on an Arabic layout; it focuses the filter). Escape in the filter clears it, then folds; Escape inside the drawer folds it and returns focus to the toggle. Folded rows leave the tab order.
+With JavaScript only the asked step's result group shows under the field (its position, e.g. "2 of 5", sits in the group heading); typing searches every step's options at once, and Return picks the first match. A single choice advances in one tap, a step that takes several choices (or a number) advances with a Continue row, and an optional step offers a skip row such as "any date". Changing the professional type sends the visitor back to any step whose answer it no longer offers. Cmd+K / Ctrl+K anywhere on the page (matched by physical key so it works on an Arabic layout) focuses the field. Escape clears a typed search first, then leaves a reopened step. A validation error reopens the step it concerns. Without JavaScript every group is shown at once and the bar is the plain form.
 
 ### Top Hit
 The one selection-blue row: 50 px minimum, 9 px corners, inset 8 px, 17 px semibold white text, an accent tile (white at 20%) holding a drawn forward arrow, and a Return key hint trailing it. Hover brightens it by 10%; it is a submit button in the brief and a link elsewhere. A "Top Hit" group label precedes it, as in Spotlight.
@@ -346,7 +346,7 @@ One authored set on a 20 px grid, 1.75 stroke, round caps and joins, `currentCol
 A quiet top bar on the ground, not sticky: wordmark at the start, language switch and menu at the end, at most 1080 px wide. The phone menu opens as a small bar. The footer carries the language link and a three-way theme segment (light, dark, system) whose active segment is an ink tile.
 
 ### Motion
-Short and functional: row tint 100 ms, Top Hit brightness 100 ms, FAQ chevron rotation 150 ms, input stroke on focus. The options drawer unfolds in 320 ms and folds in 220 ms on one ease-out curve (cubic-bezier(0.32, 0.72, 0, 1)), its rows fading in over 240 ms after 60 ms and out over 140 ms; the toggle chevron turns in 300 ms. Under reduced motion the drawer and chevron change instantly. The caret blinks (1.1 s, stepped) and the page scrolls smoothly only under `prefers-reduced-motion: no-preference`. Arrow keys move focus between rows without animated highlight travel.
+Short and functional: row tint 100 ms, Top Hit brightness 100 ms, FAQ chevron rotation 150 ms, input stroke on focus. The asked step enters with a 160 ms fade-and-rise on one ease-out curve (cubic-bezier(0.16, 1, 0.3, 1)). The caret blinks (1.1 s, stepped) and the page scrolls smoothly only under `prefers-reduced-motion: no-preference`; under reduced motion the step simply appears. Arrow keys move focus between rows without animated highlight travel.
 
 ### Theme
 Light under `:root`, dark under `.dark` (next-themes, set before paint, so no flash), and the same dark values under `prefers-color-scheme: dark` for `:root:not(.light)` so a visitor without JavaScript follows the device. `color-scheme` is set per theme so native pickers and scrollbars follow.
@@ -359,10 +359,10 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Do** consume colour through role tokens and add any new role to `:root`, `.dark` and the `prefers-color-scheme` block together, with its pair in the contrast test.
 - **Do** keep text pairs at WCAG AA in both themes: muted text is #6B6560 in light, and the dark accent is #2B6BEB, deepened for white text.
 - **Do** use logical properties only and flip direction-bearing icons with `rtl:-scale-x-100`.
-- **Do** gate decorative motion (caret blink, smooth scroll, the drawer's fold and fade, the toggle chevron) behind `prefers-reduced-motion: no-preference`.
+- **Do** gate decorative motion (caret blink, smooth scroll, the step-in) behind `prefers-reduced-motion: no-preference`.
 - **Do** keep every glyph tile's text as localised CMS data, three characters at most, or a drawn icon.
 - **Do** re-run the glass contrast test (over mid grey and the worst photo after the scrim) whenever a glass or scrim value changes.
-- **Do** keep the bar a working plain form without JavaScript: the options drawer stays open, and the toggle and key hints are hidden.
+- **Do** keep the bar a working plain form without JavaScript: every list shows at once, and the search input and key hints are hidden.
 
 ### Don't:
 - **Don't** load a webfont or a second type family.

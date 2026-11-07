@@ -113,7 +113,7 @@ export function BriefBuilder({
   const popup = useRef<Window | null>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const arrowAt = useRef(0)
+  const arrowAt = useRef(Number.NEGATIVE_INFINITY)
 
   const order = useMemo(() => orderSlots(config), [config])
   const allParts = useMemo(() => parseSentence(config.sentence, config.slots.map((s) => s.token)), [config])
@@ -358,7 +358,7 @@ export function BriefBuilder({
   }
 
   const onRowKey = (event: KeyboardEvent<HTMLInputElement>, slot: BuilderSlot, value: string) => {
-    if (event.key.startsWith('Arrow')) arrowAt.current = Date.now()
+    if (event.key.startsWith('Arrow')) arrowAt.current = event.timeStamp
     if (event.key === 'Escape') {
       event.preventDefault()
       setEditing(null)
@@ -376,7 +376,7 @@ export function BriefBuilder({
     }
   }
 
-  const byArrow = () => Date.now() - arrowAt.current < ARROW_WINDOW_MS
+  const byArrow = (event: { timeStamp: number }) => event.timeStamp - arrowAt.current < ARROW_WINDOW_MS
 
   // The field: the sentence so far, with the caret and the search input where the next answer goes.
   const currentToken = showTopHit ? null : (current?.token ?? null)
@@ -471,7 +471,8 @@ export function BriefBuilder({
     Boolean(query) &&
     order.some((s) => (s.kind === 'persona' || s.kind === 'options') && visibleOptions(s, personas).some(matches))
   let shownBefore = 0
-  const groups = order.map((slot, index) => {
+  const groups: ReactNode[] = []
+  for (const [index, slot] of order.entries()) {
     const groupId = `${uid}-group-${slot.token}`
     const error = errors[slot.token]
     const isCurrent = !query && current?.token === slot.token && !showTopHit
@@ -611,13 +612,13 @@ export function BriefBuilder({
               name={slot.token}
               value={option.value}
               checked={isSet}
-              onChange={() => {
+              onChange={(e) => {
                 if (slot.multiple) toggle(slot, option.value)
-                else if (byArrow()) select(slot, option.value, false)
+                else if (byArrow(e)) select(slot, option.value, false)
               }}
-              onClick={() => {
+              onClick={(e) => {
                 // A tap (or Space) chooses and moves on, even on the answer already chosen.
-                if (!slot.multiple && !byArrow()) select(slot, option.value, true)
+                if (!slot.multiple && !byArrow(e)) select(slot, option.value, true)
               }}
               onKeyDown={(e) => onRowKey(e, slot, option.value)}
               className="sr-only"
@@ -686,7 +687,7 @@ export function BriefBuilder({
     // A hairline separates lists from what is above them: the Top Hit, or another list.
     const ruled = !hydrated || shownBefore > 0 || showTopHit
     if (shown) shownBefore += 1
-    return (
+    groups.push(
       <div
         key={slot.token}
         data-group={slot.token}
@@ -696,9 +697,9 @@ export function BriefBuilder({
       >
         {body}
         {continueRow}
-      </div>
+      </div>,
     )
-  })
+  }
 
   return (
     <BriefBar as="div" tone={tone} data-testid="brief-builder">
