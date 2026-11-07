@@ -185,18 +185,18 @@ description: "Task list for feature 002 — creator profiles, directory, special
 
 ### Tests first
 
-- [ ] T065 [P] [US4] Unit tests `packages/domain/src/creators/samples.test.ts` (part, CP-US4-S1): `specialtyCounts(creators)` returns `{ samples, pros }` per specialty id counting only listed creators' sample rows with that category; `pickSpecialtySamples(creators, limit)` returns up to 24 samples, one per creator before a second from the same creator, newest creators first
-- [ ] T066 [P] [US4] Integration `apps/web/tests/integration/creators-specialty.int.test.ts` (CP-US4-S1, CP-US4-S2): `getSpecialtyPage(slug, locale)` returns intro/title/description in the requested locale with English fallback, creators, samples and counts from the seed; unknown or inactive category → not found; unpublished creators do not change the counts
-- [ ] T067 [P] [US4] Component tests (CP-US4-S1, CP-US4-S2) `SpecialtyHeader.test.tsx` and `web/modules/landing/components/sections/CategoriesGrid.test.tsx` for the `CategoriesGrid` change: counts shown as "N samples · M pros" only when above zero, never invented; each category links to `/work/{slug}`
-- [ ] T068 [US4] E2E `apps/web/tests/e2e/cp-us4-specialty.spec.ts` (CP-US4-S1, CP-US4-S2; demo seed): from the landing grid open a specialty; counts match the seed; creators and samples listed; en/ar title and description differ; `ar-mobile`, `dark`, axe
+- [X] T065 [P] [US4] Unit tests `packages/domain/src/creators/samples.test.ts` (part, CP-US4-S1): `specialtyCounts(creators)` returns `{ samples, pros }` per specialty id counting only listed creators' sample rows with that category; `pickSpecialtySamples(creators, limit)` returns up to 24 samples, one per creator before a second from the same creator, newest creators first
+- [X] T066 [P] [US4] Integration `apps/web/tests/integration/creators-specialty.int.test.ts` (CP-US4-S1, CP-US4-S2): `getSpecialtyPage(slug, locale)` returns intro/title/description in the requested locale with English fallback, creators, samples and counts from the seed; unknown or inactive category → not found; unpublished creators do not change the counts
+- [X] T067 [P] [US4] Component tests (CP-US4-S1, CP-US4-S2) `SpecialtyHeader.test.tsx` and `web/modules/landing/components/sections/CategoriesGrid.test.tsx` for the `CategoriesGrid` change: counts shown as "N samples · M pros" only when above zero, never invented; each category links to `/work/{slug}`
+- [ ] T068 [US4] E2E `apps/web/tests/e2e/cp-us4-specialty.spec.ts` (CP-US4-S1, CP-US4-S2; demo seed): from the landing grid open a specialty; counts match the seed; creators and samples listed; en/ar title and description differ; `ar-mobile`, `dark`, axe _(2026-11-07: deferred at the owner's request, e2e tasks skipped for now.)_
 
 ### Implementation
 
-- [ ] T069 [US4] Implement `specialtyCounts` and `pickSpecialtySamples` in `packages/domain/src/creators/samples.ts` per T065
-- [ ] T070 [US4] Implement `getSpecialtyPage(slug, locale)` in `web/modules/creators/queries.ts` (cached per slug and locale, tags `creators`, `categories`, `media`) and `SpecialtyHeader` in `web/modules/creators/components/`; add `creators.specialty.*` messages
-- [ ] T071 [US4] Implement `web/app/(site)/[locale]/work/[specialty]/page.tsx` (404 for unknown/inactive, metadata from `categories.seo` with `alternates`, grid of samples and `CreatorList`); seed `seo` text for each seeded category in English and Arabic; add specialty pages to `web/app/sitemap.ts`
-- [ ] T072 [US4] Edit `web/modules/landing/components/sections/CategoriesGrid.tsx` to link each specialty to `/work/{slug}` and show the real counts from `specialtyCounts` when above zero
-- [ ] T073 [US4] Impeccable gates for the specialty surface (craft floor, detector, finish review `ship`, four widths × en/ar × light/dark)
+- [X] T069 [US4] Implement `specialtyCounts` and `pickSpecialtySamples` in `packages/domain/src/creators/samples.ts` per T065
+- [X] T070 [US4] Implement `getSpecialtyPage(slug, locale)` in `web/modules/creators/queries.ts` (cached per slug and locale, tags `creators`, `categories`, `media`) and `SpecialtyHeader` in `web/modules/creators/components/`; add `creators.specialty.*` messages
+- [X] T071 [US4] Implement `web/app/(site)/[locale]/work/[specialty]/page.tsx` (404 for unknown/inactive, metadata from `categories.seo` with `alternates`, grid of samples and `CreatorList`); seed `seo` text for each seeded category in English and Arabic; add specialty pages to `web/app/sitemap.ts`
+- [X] T072 [US4] Edit `web/modules/landing/components/sections/CategoriesGrid.tsx` to link each specialty to `/work/{slug}` and show the real counts from `specialtyCounts` when above zero
+- [ ] T073 [US4] Impeccable gates for the specialty surface (craft floor, detector, finish review `ship`, four widths × en/ar × light/dark) _(2026-11-07: detector advisories only, captures at 360 and 1440 in en/ar and light/dark, finish review returned "fix first" with 3 small fixes, all applied; DESIGN.md and design.json recorded. A second finish review for `ship` has not been run. Tick after it.)_
 
 **Checkpoint**: all four stories work independently and together.
 

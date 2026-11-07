@@ -1,12 +1,12 @@
 import 'server-only'
-import { formatCreatorCode, isListed, normaliseCode, type CreatorSummary } from '@shoot/domain/creators'
+import { formatCreatorCode, isListed, normaliseCode, orderCreators, pickSpecialtySamples, specialtyCounts, type CreatorSummary, type SpecialtyCounts } from '@shoot/domain/creators'
 import { getActivePersonas, getCategoriesForAudience } from '@/modules/personas/queries'
 import { getSiteSettings } from '@/modules/site-settings/queries'
 import { cachedQuery } from '@/shared/lib/cache'
 import type { Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
 import type { Lookups } from './describe'
-import { buildProfileView, type ProfileView, type RawProfileDoc } from './profile'
+import { buildProfileView, sampleView, type ImageView, type ProfileView, type RawProfileDoc, type RawSample } from './profile'
 import { locationParents, publicSummaries, type RawListing, type RawProfile } from './summary'
 
 const TAGS = ['creators', 'media', 'personas', 'categories', 'locations', 'site-settings']
@@ -28,7 +28,7 @@ function getPublicList(locale: Locale): Promise<CreatorSummary[]> {
         depth: 1,
         pagination: false,
         select: { displayName: true, bio: true, code: true, personas: true, specialties: true, cities: true, languages: true, photo: true, samples: { category: true }, createdAt: true },
-        populate: { media: { alt: true, url: true, width: true, height: true, sizes: true } },
+        populate: { media: { alt: true, url: true, filename: true, width: true, height: true, sizes: true } },
         overrideAccess: true,
       }),
       payload.find({ collection: 'creator-listings', depth: 0, pagination: false, overrideAccess: true }),
@@ -158,5 +158,87 @@ export async function getCreatorProfile(rawCode: string, locale: Locale): Promis
     displayCode: formatCreatorCode(context.prefix, creator.code),
     canBook,
     personaSlugs: personas.filter((p) => creator.personaIds.includes(p.id)).map((p) => p.slug),
+  }
+}
+
+/** The real sample and professional counts per specialty id, from the listed creators (landing grid, specialty pages). */
+export async function getSpecialtyCounts(locale: Locale): Promise<Record<string, SpecialtyCounts>> {
+  return specialtyCounts(await getPublicCreators(locale))
+}
+
+/** One sample on a specialty page: the picture, and who shot it (the tile opens their profile). */
+export interface SpecialtySample {
+  id: string
+  creatorId: string
+  creatorName: string
+  /** Stored code, no prefix. */
+  code: string
+  thumb: ImageView
+  alt: string
+  caption: string
+  kind: 'image' | 'video'
+}
+
+export interface SpecialtyPage {
+  category: { id: string; slug: string; name: string }
+  /** The editor's text for this page; empty when none was written (the page then uses its own wording). */
+  title: string
+  description: string
+  intro: string
+  counts: SpecialtyCounts
+  /** Listed creators who offer the specialty, featured first and then most recently verified. */
+  creators: CreatorSummary[]
+  samples: SpecialtySample[]
+}
+
+/**
+ * `/work/{slug}`: the specialty's text, counts, creators and samples, or null for an unknown or
+ * inactive category and for one the site's audience does not offer. Only listed creators count
+ * and show (research §14); the sample rows are read in code because Payload cannot query array rows (§5).
+ */
+export async function getSpecialtyPage(slug: string, locale: Locale): Promise<SpecialtyPage | null> {
+  const categories = await getCategoriesForAudience(locale)
+  const category = categories.find((c) => c.slug === slug)
+  if (!category) return null
+  const [listed, docs] = await Promise.all([
+    getPublicCreators(locale),
+    cachedQuery(['creators', 'media', 'categories'], ['specialty-samples', locale, category.id], async () => {
+      const payload = await getPayloadClient()
+      const found = await payload.find({
+        collection: 'creator-profiles',
+        where: { _status: { equals: 'published' }, specialties: { equals: Number(category.id) } },
+        locale,
+        fallbackLocale: 'en',
+        depth: 1,
+        pagination: false,
+        select: { samples: true },
+        populate: { media: { alt: true, url: true, filename: true, width: true, height: true, sizes: true } },
+        overrideAccess: true,
+      })
+      return found.docs.map((d) => ({ id: String(d.id), samples: ((d.samples ?? []) as unknown as RawSample[]).filter((s) => s.category && String(typeof s.category === 'object' ? s.category.id : s.category) === category.id) }))
+    }),
+  ])
+  const creators = orderCreators(listed.filter((c) => c.specialtyIds.includes(category.id)))
+  const byId = new Map(creators.map((c) => [c.id, c]))
+  const context = await getDirectoryContext(locale)
+  const entries = docs
+    .filter((d) => byId.has(d.id))
+    .map((d) => ({
+      id: d.id,
+      publishedAt: byId.get(d.id)!.publishedAt,
+      samples: d.samples.map((s, i) => sampleView(s, i, context.lookups)).filter((s) => s !== null),
+    }))
+  const samples: SpecialtySample[] = pickSpecialtySamples(entries).map(({ creatorId, sample }) => {
+    const creator = byId.get(creatorId)!
+    return { id: `${creatorId}-${sample.id}`, creatorId, creatorName: creator.displayName, code: creator.code, thumb: sample.thumb, alt: sample.alt, caption: sample.caption, kind: sample.kind }
+  })
+  return {
+    category: { id: category.id, slug: category.slug, name: category.name },
+    title: category.seo?.title ?? '',
+    description: category.seo?.description ?? '',
+    intro: category.seo?.intro ?? '',
+    counts: specialtyCounts(creators)[category.id] ?? { samples: 0, pros: 0 },
+    creators,
+    samples,
   }
 }

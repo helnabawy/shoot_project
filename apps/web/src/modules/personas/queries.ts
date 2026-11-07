@@ -7,7 +7,12 @@ import { getPayloadClient } from '@/shared/lib/payload'
 import { getSiteSettings } from '../site-settings/queries'
 
 export type AudiencePersona = DomainPersona & { glyph?: string | null; description?: string | null }
-export type AudienceCategory = DomainCategory & { glyph?: string | null; description?: string | null }
+export type AudienceCategory = DomainCategory & {
+  glyph?: string | null
+  description?: string | null
+  /** The specialty page's own text (`/work/{slug}`), in the requested language. */
+  seo?: { title?: string | null; description?: string | null; intro?: string | null }
+}
 
 const toPersona = (p: Persona): AudiencePersona => ({
   id: String(p.id),
@@ -30,6 +35,7 @@ const toCategory = (c: Category): AudienceCategory => ({
   personas: (c.personas ?? []).map((p) => String(typeof p === 'object' ? p.id : p)),
   glyph: c.glyph,
   description: c.description,
+  seo: { title: c.seo?.title, description: c.seo?.description, intro: c.seo?.intro },
 })
 
 export function getAllPersonas(locale: Locale): Promise<AudiencePersona[]> {

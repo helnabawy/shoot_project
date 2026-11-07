@@ -43,6 +43,8 @@ export default defineConfig({
           environment: 'jsdom',
           include: ['src/**/*.test.tsx'],
           setupFiles: ['./tests/setup/component.ts'],
+          // user-event tests are fast alone but share the CPU with the integration suite under coverage.
+          testTimeout: 20_000,
         },
       },
       {

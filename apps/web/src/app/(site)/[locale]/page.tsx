@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import { setRequestLocale } from 'next-intl/server'
 import { getBriefBuilderConfig } from '@/modules/brief/queries'
+import { getSpecialtyCounts } from '@/modules/creators'
 import { Hero } from '@/modules/landing/components/Hero'
 import { RenderBlocks } from '@/modules/landing/components/RenderBlocks'
 import { getLandingPage } from '@/modules/landing/queries'
@@ -46,13 +47,14 @@ export default async function HomePage({ params }: Props) {
   setRequestLocale(raw)
   const locale = raw as Locale
   const { isEnabled: draft } = await draftMode()
-  const [landing, settings, builder, personas, categories, labels] = await Promise.all([
+  const [landing, settings, builder, personas, categories, labels, specialtyCounts] = await Promise.all([
     getLandingPage({ locale, draft }),
     getSiteSettings(locale),
     getBriefBuilderConfig(locale, { draft }),
     getActivePersonas(locale),
     getCategoriesForAudience(locale),
     briefLabels(locale),
+    getSpecialtyCounts(locale),
   ])
   const contact = {
     whatsappNumber: settings.whatsappNumber,
@@ -106,7 +108,7 @@ export default async function HomePage({ params }: Props) {
       />
       <RenderBlocks
         sections={landing.sections}
-        context={{ contact, personas, categories, locale }}
+        context={{ contact, personas, categories, specialtyCounts, locale }}
       />
       <script
         type="application/ld+json"

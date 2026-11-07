@@ -4,7 +4,7 @@ import type { Media } from '@/payload-types'
 import { initialsOf, type Lookups } from './describe'
 import { photoOf, type RawProfile } from './summary'
 
-interface RawSample {
+export interface RawSample {
   id?: string | null
   kind?: 'image' | 'video' | null
   image?: Media | number | null
@@ -89,7 +89,7 @@ const sized = (media: Media, names: ('hero' | 'card' | 'thumbnail')[]): ImageVie
 const names = (ids: readonly Ref[] | null | undefined, map: ReadonlyMap<string, string>) =>
   (ids ?? []).map((id) => map.get(refId(id))).filter((n): n is string => Boolean(n))
 
-function sampleView(raw: RawSample, index: number, lookups: Lookups): SampleView | null {
+export function sampleView(raw: RawSample, index: number, lookups: Lookups): SampleView | null {
   const image = raw.image && typeof raw.image === 'object' ? raw.image : null
   const thumb = image ? sized(image, ['card', 'thumbnail']) : null
   const large = image ? sized(image, ['hero', 'card']) : null
