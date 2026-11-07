@@ -140,8 +140,8 @@ export const LandingPage: GlobalConfig = {
                 ] },
                 { type: 'row', fields: [
                   { name: 'groupLabel', type: 'text', localized: true, admin: { width: '34%', description: 'Heading above the options, e.g. "Occasion".' } },
-                  { name: 'placeholder', type: 'text', localized: true, admin: { width: '33%', description: 'Shown when nothing is picked, e.g. "any date".' } },
-                  { name: 'defaultValue', type: 'text', admin: { width: '33%', description: 'Option value or persona slug picked by default.' } },
+                  { name: 'placeholder', type: 'text', localized: true, admin: { width: '33%', description: 'The question in the field while this step is asked, e.g. "what occasion"; also the skip row of an optional step, e.g. "any date".' } },
+                  { name: 'defaultValue', type: 'text', admin: { width: '33%', description: 'Option value or persona slug listed first in its step (nothing is pre-selected).' } },
                 ] },
                 { type: 'row', fields: [
                   { name: 'required', type: 'checkbox', defaultValue: true },

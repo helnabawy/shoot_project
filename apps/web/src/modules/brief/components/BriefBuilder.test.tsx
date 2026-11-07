@@ -9,8 +9,8 @@ import { BriefBuilder } from './BriefBuilder'
 const submitBrief = vi.fn(async () => ({ status: 'idle' as const }))
 vi.mock('../actions', () => ({ submitBrief: (...args: unknown[]) => submitBrief(...(args as [])) }))
 
-const props = (locale: 'en' | 'ar' = 'en', personas?: string[]) => ({
-  config: briefBuilderFixture(locale, personas),
+const props = (locale: 'en' | 'ar' = 'en', personas?: string[], options: { multiple?: boolean } = {}) => ({
+  config: briefBuilderFixture(locale, personas, options),
   whatsappHref: 'https://wa.me/971500000000',
   providerHref: '/register?type=provider',
   providerLabel: "I'm a photographer",
@@ -18,244 +18,260 @@ const props = (locale: 'en' | 'ar' = 'en', personas?: string[]) => ({
   labels: testBriefLabels(locale),
 })
 
-const sentence = () => screen.getByTestId('brief-sentence').textContent
+type User = ReturnType<typeof userEvent.setup>
 
-describe('US8 brief builder', () => {
+const sentence = () => screen.getByTestId('brief-sentence').textContent ?? ''
+const field = () => screen.getByRole('searchbox')
+const group = (name: string | RegExp) => screen.getByRole('group', { name })
+const noGroup = (name: string | RegExp) => screen.queryByRole('group', { name })
+const topHit = () => screen.queryByRole('button', { name: /See who's free/ })
+const token = (name: string) => within(screen.getByTestId('brief-sentence')).getByRole('link', { name })
+const pick = (user: User, name: RegExp) => user.click(screen.getByRole('radio', { name }))
+
+/** Answers every step of the fixture: photographer, a wedding, any date, 2 hours, Sharjah. */
+async function walk(user: User) {
+  await pick(user, /Photographer/)
+  await pick(user, /a wedding/)
+  await user.click(screen.getByRole('button', { name: /any date/ }))
+  await pick(user, /2 hours/)
+  await pick(user, /Sharjah/)
+}
+
+describe('US8 step-by-step brief (FR-067)', () => {
   beforeEach(() => {
     submitBrief.mockClear()
     window.open = vi.fn(() => null)
   })
 
-  it('US8-S1 renders the sentence with defaults and one labelled group per slot', () => {
+  it('US8-S1 / US8-S11 opens with one search field and only the professional list', () => {
     renderWithLocale(<BriefBuilder {...props()} />)
-    // The optional date is left out until it is set; its row invites the visitor instead.
-    expect(sentence()).toContain('I need a photographer for an event for 2 hours in choose one')
-    expect(screen.getByRole('group', { name: 'Occasion' })).toBeInTheDocument()
-    expect(screen.getByRole('group', { name: 'Professional' })).toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: /an event/ })).toBeChecked()
-    expect(screen.getByRole('button', { name: /See who's free/ })).toBeInTheDocument()
+    expect(field()).toHaveAttribute('placeholder', "Type what you're looking for")
+    expect(group(/Professional/)).toBeInTheDocument()
+    expect(noGroup(/Occasion/)).toBeNull()
+    expect(noGroup(/Emirate/)).toBeNull()
+    expect(topHit()).toBeNull()
+    // Nothing is pre-selected and the sentence has not started.
+    expect(screen.queryAllByRole('radio', { checked: true })).toHaveLength(0)
+    expect(sentence()).not.toContain('I need a')
   })
 
-  it('reprints the sentence when a row is picked', async () => {
+  it('US8-S1 / US8-S13 picking a professional prints it and shows only the next list', async () => {
     const user = userEvent.setup()
     renderWithLocale(<BriefBuilder {...props()} />)
-    await user.click(screen.getByRole('radio', { name: /a wedding/ }))
-    expect(sentence()).toContain('for a wedding for 2 hours')
+    await pick(user, /Photographer/)
+    expect(sentence()).toContain('I need a photographer for')
+    expect(noGroup(/Professional/)).toBeNull()
+    expect(group(/Occasion/)).toBeInTheDocument()
+    expect(field()).toHaveAttribute('placeholder', 'what occasion')
+    expect(token('photographer')).toHaveAttribute('data-state', 'set')
+    expect(token('photographer').className).toContain('bg-selected')
   })
 
-  it('US8-S2 changing the persona re-filters options and clears an invalid choice', async () => {
+  it('US8-S3 walks every step, then shows the one primary action and sends the brief', async () => {
     const user = userEvent.setup()
     renderWithLocale(<BriefBuilder {...props()} />)
-    const occasion = () => screen.getByRole('group', { name: 'Occasion' })
-    expect(within(occasion()).queryByRole('radio', { name: /drone/ })).toBeNull()
-    await user.click(screen.getByRole('radio', { name: /Videographer/ }))
-    await user.type(screen.getByRole('searchbox'), 'drone')
-    await user.click(within(occasion()).getByRole('radio', { name: /drone shots/ }))
-    expect(sentence()).toContain('drone shots')
-    await user.click(screen.getByRole('radio', { name: /Photographer/ }))
-    // "drone shots" is videographer-only, so the occasion falls back to the default.
-    expect(sentence()).toContain('for an event')
-  })
-
-  it('US8-S4 blocks submission and marks the missing slot', async () => {
-    const user = userEvent.setup()
-    renderWithLocale(<BriefBuilder {...props()} />)
-    await user.click(screen.getByRole('button', { name: /See who's free/ }))
-    expect(submitBrief).not.toHaveBeenCalled()
-    const emirate = screen.getByRole('group', { name: 'Emirate' })
-    expect(within(emirate).getByText('Choose this part of the brief.')).toBeInTheDocument()
-  })
-
-  it('submits a complete brief to the server action', async () => {
-    const user = userEvent.setup()
-    renderWithLocale(<BriefBuilder {...props()} />)
-    await user.click(screen.getByRole('radio', { name: /Sharjah/ }))
-    await user.click(screen.getByRole('button', { name: /See who's free/ }))
+    await walk(user)
+    expect(sentence()).toContain('I need a photographer for a wedding for 2 hours in Sharjah.')
+    expect(noGroup(/Emirate/)).toBeNull()
+    expect(field()).toHaveAccessibleName('type to change any part')
+    await user.click(topHit()!)
     expect(submitBrief).toHaveBeenCalledTimes(1)
     const form = (submitBrief.mock.calls[0] as unknown as [unknown, FormData])[1]
-    expect(form.get('location')).toBe('sharjah')
-    expect(form.get('occasion')).toBe('event')
+    expect(Object.fromEntries(['persona', 'occasion', 'date', 'duration', 'location'].map((k) => [k, form.get(k)]))).toEqual({
+      persona: 'photographer',
+      occasion: 'wedding',
+      date: '',
+      duration: '2h',
+      location: 'sharjah',
+    })
   })
 
-  it('filters rows live and offers the typed words where custom text is allowed', async () => {
+  it('shows the step count beside the asked list', async () => {
+    const user = userEvent.setup()
+    const { container } = renderWithLocale(<BriefBuilder {...props()} />)
+    await pick(user, /Photographer/)
+    const shown = [...container.querySelectorAll<HTMLElement>('[data-step-count]')].filter((el) => !el.closest('[hidden]'))
+    expect(shown.map((el) => el.textContent)).toEqual(['2 of 5'])
+  })
+
+  it('US8-S11 / US8-S13 tapping a chosen word reopens its step with focus on the current choice', async () => {
     const user = userEvent.setup()
     renderWithLocale(<BriefBuilder {...props()} />)
-    const search = screen.getByRole('searchbox')
-    await user.type(search, 'graduation')
-    expect(screen.queryByRole('group', { name: 'Emirate' })).toBeNull()
-    await user.click(screen.getByRole('radio', { name: /“graduation”/ }))
-    expect(sentence()).toContain('graduation')
-    await user.type(search, 'xyz{Escape}')
-    expect(search).toHaveValue('')
+    await pick(user, /Photographer/)
+    await pick(user, /a wedding/)
+    await user.click(token('photographer'))
+    expect(group(/Professional/)).toBeInTheDocument()
+    expect(noGroup(/Occasion/)).toBeNull()
+    await waitFor(() => expect(screen.getByRole('radio', { name: /Photographer/ })).toHaveFocus())
+    // Picking the same answer again moves on to the first open step.
+    await pick(user, /Photographer/)
+    expect(group(/When/)).toBeInTheDocument()
   })
 
-  it('US8-S6 renders an unknown sentence token verbatim', () => {
+  it('US8-S13 Backspace in the empty field takes back the last answer', async () => {
+    const user = userEvent.setup()
+    renderWithLocale(<BriefBuilder {...props()} />)
+    await pick(user, /Photographer/)
+    await pick(user, /a wedding/)
+    await user.click(field())
+    await user.keyboard('{Backspace}')
+    expect(sentence()).not.toContain('a wedding')
+    expect(group(/Occasion/)).toBeInTheDocument()
+  })
+
+  it('FR-065 / US8-S12 Cmd/Ctrl+K moves focus to the field; Escape clears the search, then leaves a reopened step', async () => {
+    const user = userEvent.setup()
+    renderWithLocale(<BriefBuilder {...props()} />)
+    await pick(user, /Photographer/)
+    await user.keyboard('{Control>}k{/Control}')
+    expect(field()).toHaveFocus()
+    await user.type(field(), 'wed')
+    await user.keyboard('{Escape}')
+    expect(field()).toHaveValue('')
+    await user.click(token('photographer'))
+    expect(group(/Professional/)).toBeInTheDocument()
+    await user.click(field())
+    await user.keyboard('{Escape}')
+    expect(noGroup(/Professional/)).toBeNull()
+    expect(group(/Occasion/)).toBeInTheDocument()
+  })
+
+  it('typing searches every list at once and a pick lands in its own place in the sentence', async () => {
+    const user = userEvent.setup()
+    renderWithLocale(<BriefBuilder {...props()} />)
+    await pick(user, /Photographer/)
+    await user.type(field(), 'shar')
+    expect(group(/Emirate/)).toBeInTheDocument()
+    expect(noGroup(/Occasion/)).toBeNull()
+    await pick(user, /Sharjah/)
+    expect(sentence()).toContain('in Sharjah')
+    // The occasion is still the step being asked.
+    expect(group(/Occasion/)).toBeInTheDocument()
+    expect(field()).toHaveValue('')
+  })
+
+  it('Return in the field picks the first match', async () => {
+    const user = userEvent.setup()
+    renderWithLocale(<BriefBuilder {...props()} />)
+    await user.type(field(), 'video{Enter}')
+    expect(sentence()).toContain('I need a videographer')
+  })
+
+  it('offers the typed words where custom text is allowed', async () => {
+    const user = userEvent.setup()
+    renderWithLocale(<BriefBuilder {...props()} />)
+    await pick(user, /Photographer/)
+    await user.type(field(), 'graduation')
+    await pick(user, /“graduation”/)
+    expect(sentence()).toContain('for graduation')
+    expect(group(/When/)).toBeInTheDocument()
+  })
+
+  it('US8-S2 changing the professional sends the visitor back to a step it no longer offers', async () => {
+    const user = userEvent.setup()
+    renderWithLocale(<BriefBuilder {...props()} />)
+    await pick(user, /Videographer/)
+    expect(within(group(/Occasion/)).getByRole('radio', { name: /drone shots/ })).toBeInTheDocument()
+    await pick(user, /drone shots/)
+    await user.click(screen.getByRole('button', { name: /any date/ }))
+    await user.click(token('videographer'))
+    await pick(user, /Photographer/)
+    expect(sentence()).not.toContain('drone')
+    expect(within(group(/Occasion/)).queryByRole('radio', { name: /drone/ })).toBeNull()
+  })
+
+  it('FR-056 the date step prints a chosen date and moves on', async () => {
+    const user = userEvent.setup()
+    renderWithLocale(<BriefBuilder {...props()} />)
+    await pick(user, /Photographer/)
+    await pick(user, /a wedding/)
+    await user.type(screen.getByLabelText('When'), '2099-11-21')
+    expect(sentence()).toContain('on Sat 21 Nov')
+    expect(group(/How long/)).toBeInTheDocument()
+  })
+
+  it('US8-S4 Return does not send an unfinished brief', async () => {
+    const user = userEvent.setup()
+    renderWithLocale(<BriefBuilder {...props()} />)
+    await pick(user, /Photographer/)
+    await user.click(field())
+    await user.keyboard('{Enter}')
+    expect(submitBrief).not.toHaveBeenCalled()
+  })
+
+  it('FR-064 a server error reopens the step it concerns', async () => {
+    const user = userEvent.setup()
+    submitBrief.mockResolvedValueOnce({ status: 'error', errors: { location: 'brief.errors.notAnOption' } } as never)
+    renderWithLocale(<BriefBuilder {...props()} />)
+    await walk(user)
+    await user.click(topHit()!)
+    await waitFor(() => expect(group(/Emirate/)).toBeInTheDocument())
+    expect(within(group(/Emirate/)).getByText('Choose one of the options.')).toBeInTheDocument()
+  })
+
+  it('US8-S6 renders an unknown sentence token verbatim', async () => {
+    const user = userEvent.setup()
     const p = props()
     p.config = { ...p.config, sentence: `${p.config.sentence} {subject}` }
     renderWithLocale(<BriefBuilder {...p} />)
+    await pick(user, /Photographer/)
     expect(sentence()).toContain('{subject}')
   })
 
-  it('US5 three active personas all appear as options', () => {
+  it('US5 three active personas all appear in the first list', () => {
     renderWithLocale(<BriefBuilder {...props('en', ['photographer', 'videographer', 'teacher'])} />)
-    const group = screen.getByRole('group', { name: 'Professional' })
-    expect(within(group).getAllByRole('radio')).toHaveLength(3)
+    expect(within(group(/Professional/)).getAllByRole('radio')).toHaveLength(3)
   })
 
-  it('US8-S7 renders Arabic labels inside a right-to-left page', () => {
+  it('US8-S7 the Arabic bar is right-to-left with Arabic prompts and words', async () => {
+    const user = userEvent.setup()
     const { container } = renderWithLocale(<BriefBuilder {...props('ar')} />, { locale: 'ar' })
     expect(container).toHaveAttribute('dir', 'rtl')
-    expect(screen.getByRole('group', { name: 'المناسبة' })).toBeInTheDocument()
+    expect(field()).toHaveAttribute('placeholder', 'اكتب ما تبحث عنه')
+    await user.click(screen.getByRole('radio', { name: /^مصوّر$/ }))
     expect(sentence()).toContain('أحتاج مصوّر')
+    expect(group(/المناسبة/)).toBeInTheDocument()
+    expect(field()).toHaveAttribute('placeholder', 'أي مناسبة')
   })
 
   it('keeps the WhatsApp alternative and the provider action', () => {
     renderWithLocale(<BriefBuilder {...props()} />)
-    expect(screen.getByTestId('whatsapp-secondary')).toHaveAttribute(
-      'href',
-      'https://wa.me/971500000000',
-    )
-    expect(screen.getByRole('link', { name: /I'm a photographer/ })).toHaveAttribute(
-      'href',
-      '/register?type=provider',
-    )
+    expect(screen.getByTestId('whatsapp-secondary')).toHaveAttribute('href', 'https://wa.me/971500000000')
+    expect(screen.getByRole('link', { name: /I'm a photographer/ })).toHaveAttribute('href', '/register?type=provider')
   })
 
-  it('FR-056 the date row invites a choice and prints the chosen date into the sentence', async () => {
-    renderWithLocale(<BriefBuilder {...props()} />)
-    const date = screen.getByLabelText('When')
-    expect(date.closest('label')).toHaveTextContent('pick a date')
-    await userEvent.type(date, '2099-11-21')
-    expect(date.closest('label')).toHaveTextContent('Sat 21 Nov')
-    expect(sentence()).toContain('on Sat 21 Nov for 2 hours')
-  })
-
-  it('US8-S10 a multiple persona slot ticks several types, joins them and filters by either', async () => {
+  it('US8-S10 a step that takes several professionals moves on with Continue', async () => {
     const user = userEvent.setup()
-    const p = props()
-    p.config = briefBuilderFixture('en', ['photographer', 'videographer'], { multiple: true })
-    renderWithLocale(<BriefBuilder {...p} />)
-    // Filtering can hide the group and mount it again, so look it up each time.
-    const group = () => screen.getByRole('group', { name: 'Professional · pick one or more' })
-    expect(within(group()).queryAllByRole('radio')).toHaveLength(0)
-    expect(within(group()).getByRole('checkbox', { name: /Photographer/ })).toBeChecked()
-
-    await user.click(within(group()).getByRole('checkbox', { name: /Videographer/ }))
-    expect(sentence()).toContain('I need a photographer and videographer for an event')
-    await user.type(screen.getByRole('searchbox'), 'drone')
-    await user.click(screen.getByRole('radio', { name: /drone shots/ }))
-    expect(sentence()).toContain('for drone shots')
-
-    // Unticking the videographer drops the videographer-only occasion back to the default.
-    await user.click(within(group()).getByRole('checkbox', { name: /Videographer/ }))
-    expect(sentence()).toContain('I need a photographer for an event')
-
-    await user.click(screen.getByRole('radio', { name: /Sharjah/ }))
-    await user.click(within(group()).getByRole('checkbox', { name: /Videographer/ }))
-    await user.click(screen.getByRole('button', { name: /See who's free/ }))
+    renderWithLocale(<BriefBuilder {...props('en', undefined, { multiple: true })} />)
+    const professional = () => group(/Professional · pick one or more/)
+    expect(screen.queryByRole('button', { name: /Continue/ })).toBeNull()
+    await user.click(within(professional()).getByRole('checkbox', { name: /Photographer/ }))
+    await user.click(within(professional()).getByRole('checkbox', { name: /Videographer/ }))
+    expect(sentence()).toContain('I need a photographer and videographer')
+    await user.click(screen.getByRole('button', { name: /Continue/ }))
+    expect(noGroup(/Professional/)).toBeNull()
+    // Options of either professional are offered.
+    expect(within(group(/Occasion/)).getByRole('radio', { name: /drone shots/ })).toBeInTheDocument()
+    await pick(user, /a wedding/)
+    await user.click(screen.getByRole('button', { name: /any date/ }))
+    await pick(user, /2 hours/)
+    await pick(user, /Sharjah/)
+    await user.click(topHit()!)
     const form = (submitBrief.mock.calls[0] as unknown as [unknown, FormData])[1]
     expect(form.getAll('persona')).toEqual(['photographer', 'videographer'])
   })
 
-  it('US8-S10 unticking every type asks for one before sending', async () => {
+  it('US8-S10 Continue waits for at least one professional', async () => {
     const user = userEvent.setup()
-    const p = props()
-    p.config = briefBuilderFixture('en', ['photographer', 'videographer'], { multiple: true })
-    renderWithLocale(<BriefBuilder {...p} />)
+    renderWithLocale(<BriefBuilder {...props('en', undefined, { multiple: true })} />)
     await user.click(screen.getByRole('checkbox', { name: /Photographer/ }))
-    expect(sentence()).toContain('I need a choose one for')
-    await user.click(screen.getByRole('radio', { name: /Sharjah/ }))
-    await user.click(screen.getByRole('button', { name: /See who's free/ }))
-    expect(submitBrief).not.toHaveBeenCalled()
-    expect(
-      within(screen.getByRole('group', { name: /Professional/ })).getByText(
-        'Choose this part of the brief.',
-      ),
-    ).toBeInTheDocument()
-  })
-})
-
-describe('US8 folded options drawer (FR-064, FR-065)', () => {
-  const drawer = () => screen.getByTestId('brief-builder').querySelector('.bar-drawer')!
-  const toggleButton = () => screen.getByTestId('brief-toggle')
-
-  it('FR-064 / US8-S11 starts folded, with the sentence and the Top Hit still in reach', () => {
-    renderWithLocale(<BriefBuilder {...props()} />)
-    expect(drawer()).toHaveAttribute('data-open', 'false')
-    expect(toggleButton()).toHaveAttribute('aria-expanded', 'false')
-    expect(toggleButton()).toHaveAccessibleName('Show options')
-    expect(toggleButton()).toHaveAttribute('aria-controls', drawer().id)
-    expect(screen.getByRole('button', { name: /See who's free/ })).toBeInTheDocument()
-  })
-
-  it('FR-064 the toggle opens and folds the options', async () => {
-    const user = userEvent.setup()
-    renderWithLocale(<BriefBuilder {...props()} />)
-    await user.click(toggleButton())
-    expect(drawer()).toHaveAttribute('data-open', 'true')
-    expect(toggleButton()).toHaveAccessibleName('Hide options')
-    await user.click(toggleButton())
-    expect(drawer()).toHaveAttribute('data-open', 'false')
-  })
-
-  it('FR-064 / US8-S11 tapping a sentence part opens its group with every value shown and focus on the choice', async () => {
-    const user = userEvent.setup()
-    renderWithLocale(<BriefBuilder {...props()} />)
-    await user.click(
-      within(screen.getByTestId('brief-sentence')).getByRole('link', { name: 'an event' }),
-    )
-    expect(drawer()).toHaveAttribute('data-open', 'true')
-    const occasion = screen.getByRole('group', { name: 'Occasion' })
-    await waitFor(() =>
-      expect(within(occasion).getByRole('radio', { name: /an event/ })).toHaveFocus(),
-    )
-    expect(occasion.scrollIntoView).toHaveBeenCalled()
-    expect(
-      occasion.querySelector<HTMLInputElement>('input[type="checkbox"]')?.checked ?? true,
-    ).toBe(true)
-  })
-
-  it('FR-065 / US8-S12 Cmd/Ctrl+K opens the options into the filter, and Escape folds them again', async () => {
-    const user = userEvent.setup()
-    renderWithLocale(<BriefBuilder {...props()} />)
-    await user.keyboard('{Control>}k{/Control}')
-    expect(drawer()).toHaveAttribute('data-open', 'true')
-    expect(screen.getByRole('searchbox')).toHaveFocus()
-    await user.keyboard('{Escape}')
-    expect(drawer()).toHaveAttribute('data-open', 'false')
-    await user.keyboard('{Meta>}k{/Meta}')
-    expect(drawer()).toHaveAttribute('data-open', 'true')
-    await user.keyboard('{Meta>}k{/Meta}')
-    expect(drawer()).toHaveAttribute('data-open', 'false')
-  })
-
-  it('FR-064 typing in the filter opens the options', async () => {
-    const user = userEvent.setup()
-    renderWithLocale(<BriefBuilder {...props()} />)
-    await user.type(screen.getByRole('searchbox'), 'wed')
-    expect(drawer()).toHaveAttribute('data-open', 'true')
-  })
-
-  it('FR-064 a missing part opens the options on its group', async () => {
-    const user = userEvent.setup()
-    renderWithLocale(<BriefBuilder {...props()} />)
-    await user.click(screen.getByRole('button', { name: /See who's free/ }))
-    expect(drawer()).toHaveAttribute('data-open', 'true')
+    expect(screen.getByRole('button', { name: /Continue/ })).toBeInTheDocument()
+    await user.click(screen.getByRole('checkbox', { name: /Photographer/ }))
+    expect(screen.queryByRole('button', { name: /Continue/ })).toBeNull()
   })
 
   it('FR-066 wears the glass tone when asked', () => {
     renderWithLocale(<BriefBuilder {...props()} tone="glass" />)
     expect(screen.getByTestId('brief-builder').className).toContain('bar-glass')
-  })
-
-  it('chosen words in the sentence are tinted tokens; an unset required word is an invitation', () => {
-    renderWithLocale(<BriefBuilder {...props()} />)
-    const field = within(screen.getByTestId('brief-sentence'))
-    const chosen = field.getByRole('link', { name: 'an event' })
-    expect(chosen).toHaveAttribute('data-state', 'set')
-    expect(chosen.className).toContain('bg-selected')
-    const unset = field.getByRole('link', { name: 'choose one' })
-    expect(unset).toHaveAttribute('data-state', 'open')
-    expect(unset.className).not.toContain('bg-selected')
   })
 })

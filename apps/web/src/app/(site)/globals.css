@@ -282,42 +282,36 @@ html:not(.js) .js-only {
   display: none !important;
 }
 
-/* The options drawer. Folded under the sentence by default with JavaScript; open without it.
-   Rows animate open from 0fr to 1fr; visibility drops the folded rows out of the tab order. */
-html.js .bar-drawer {
-  display: grid;
-  grid-template-rows: 0fr;
-  visibility: hidden;
+/* The step-by-step brief (FR-064). With JavaScript only the asked step shows; without it every
+   list shows at once as a form. The asked group rises in when it appears; a new token fades in. */
+html.js .js-hidden {
+  display: none !important;
 }
-html.js .bar-drawer > * {
-  min-height: 0;
-  overflow: hidden;
-  opacity: 0;
-}
-html.js .bar-drawer[data-open='true'] {
-  grid-template-rows: 1fr;
-  visibility: visible;
-}
-html.js .bar-drawer[data-open='true'] > * {
-  opacity: 1;
+html.js .no-js-only {
+  display: none !important;
 }
 @media (prefers-reduced-motion: no-preference) {
-  html.js .bar-drawer {
-    transition:
-      grid-template-rows 220ms cubic-bezier(0.32, 0.72, 0, 1),
-      visibility 0s linear 220ms;
+  .bar-step {
+    animation: bar-step-in 160ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  html.js .bar-drawer > * {
-    transition: opacity 140ms ease-out;
+  .bar-token {
+    animation: bar-token-in 160ms ease-out;
   }
-  html.js .bar-drawer[data-open='true'] {
-    transition:
-      grid-template-rows 320ms cubic-bezier(0.32, 0.72, 0, 1),
-      visibility 0s;
+}
+@keyframes bar-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
   }
-  html.js .bar-drawer[data-open='true'] > * {
-    transition: opacity 240ms ease-out 60ms;
+}
+@keyframes bar-token-in {
+  from {
+    opacity: 0;
   }
+}
+/* The field's own input grows with what is typed, so the caret sits where the next word goes. */
+.bar-input {
+  field-sizing: content;
 }
 
 /* The hero stage: the bar floats over a CMS photo, or over an empty studio sweep until there is one. */

@@ -182,6 +182,11 @@ intentionally unused.
 - [X] T100 [US8] Wire the builder into `Hero.tsx` under `hero.layout === 'briefBuilder'` (eyebrow, headline, subheadline, builder, helper text, optional step outline from `briefBuilder.steps` with step 1 active), keep the `ctas` layout as the alternative; add `MyBriefs` to `/account` and the "Call" CTA kind to `CtaLink`; the confirmation (FR-059) is the same bar with the sentence fixed: reference, "we'll reply on WhatsApp", expected reply time from site settings, "Start another brief"
 - [X] T101 [US8] Admin experience for briefs: list columns (persona, date, status, created), filters, `admin.components` CSV export button (or `@payloadcms/plugin-import-export` if it stays within Principle VIII — record the choice in research.md), status change permissions; editor description on the sentence field explaining tokens; "Untranslated" panel covers builder fields
 
+### Amendment: step-by-step brief (FR-067)
+
+- [ ] T113 [P] [US8] Tests first for FR-067 (and the amended FR-064/FR-065): `BriefBuilder.test.tsx` (US8-S1 opens with the search prompt and only the professional list; picking advances to the next list and prints the token; US8-S11/S13 tapping a token reopens its step, Backspace takes back the last answer; optional step skip; multiple step Continue; typing searches across steps; Top Hit only once complete; persona change sends back to an invalidated step) and rewrite `us8-brief.spec.ts` to walk the steps on mobile, desktop and `ar-mobile` (no-JS path unchanged: every list at once)
+- [ ] T114 [US8] Implement FR-067 in `BriefBuilder.tsx` (field composer with inline search input, current step derived from answers, skip and Continue rows, token editing, Backspace, Cmd/Ctrl+K focuses the field, the options drawer and its toggle removed), `js-hidden`/`no-js-only` helpers and the step-in motion in `globals.css`, new labels in `messages/{en,ar}.json`; seed placeholders become step prompts; update the surface brief, DESIGN.md and the ui-design skill
+
 ### Amendment: more than one professional type (FR-063)
 
 - [X] T108 [P] [US8] Tests first for FR-063: domain unit tests (`optionsForSlot` with several personas, `checkSlot` for a multiple slot: every value must be allowed, required means at least one, duplicates rejected; `splitMultiValue`/`joinMultiValue`), `config.test.ts` (`multiple` mapped), `submit.test.ts` (several personas read from repeated form fields, labels joined with "and"/"و", options of either persona accepted, `personaSlugs`), `BriefBuilder.test.tsx` (US8-S10: a multiple persona slot renders checkboxes, picking both prints "a photographer and videographer", a videographer-only occasion appears, unticking it clears that occasion), `briefs.int.test.ts` (a brief stores two personas) and `us8-brief.spec.ts` (US8-S10 on mobile and `nojs`) — *2026-11-07: unit, component and integration tests pass; the two Playwright tests are written but not run yet.*
@@ -472,6 +477,7 @@ Task: "T040 section components + RenderBlocks"
 | FR-061 follows The Brief Bar, no banned tells | T007, T102, T040, T104, T105 |
 | FR-062 immediate feedback, route progress, reduced motion | T103, T099 |
 | FR-063 several professional types in one brief | T108, T109 |
-| FR-064 options folded until a word, the toggle or the filter opens them | T110, T111 |
-| FR-065 Cmd/Ctrl+K and Escape fold and open the options | T110, T111 |
+| FR-064 only the asked step shows; a word reopens its step (drawer replaced) | T110, T111, T113, T114 |
+| FR-065 Cmd/Ctrl+K focuses the field; Escape clears, then leaves a step | T110, T111, T113, T114 |
 | FR-066 full-screen hero, headline title, glass bar over photo or studio backdrop | T110, T112 |
+| FR-067 step-by-step brief | T113, T114 |

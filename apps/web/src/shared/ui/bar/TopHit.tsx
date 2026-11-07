@@ -33,6 +33,7 @@ export function TopHit({
   className,
   name,
   value,
+  onClick,
 }: {
   label: ReactNode
   glyph?: ReactNode
@@ -44,6 +45,8 @@ export function TopHit({
   className?: string
   name?: string
   value?: string
+  /** Makes it a plain button that moves the flow on instead of submitting (FR-064). */
+  onClick?: () => void
 }) {
   if (href) {
     return (
@@ -59,7 +62,8 @@ export function TopHit({
   }
   return (
     <button
-      type="submit"
+      type={onClick ? 'button' : 'submit'}
+      onClick={onClick}
       data-testid={testId}
       disabled={pending}
       aria-busy={pending || undefined}

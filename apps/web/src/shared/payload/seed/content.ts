@@ -139,12 +139,12 @@ export const BRIEF_SENTENCE: L = {
 
 /** Slots reference option sets by slug; the seed runner swaps slugs for ids. */
 export const briefSlots = [
-  { token: 'persona', kind: 'persona', defaultValue: 'photographer', required: true, allowCustom: false, multiple: true, groupLabel: { en: 'Professional', ar: 'المحترف' }, placeholder: { en: 'choose one', ar: 'اختر واحداً' } },
-  { token: 'occasion', kind: 'options', optionSet: 'occasions', defaultValue: 'event', required: true, allowCustom: true, groupLabel: { en: 'Occasion', ar: 'المناسبة' }, placeholder: { en: 'choose one', ar: 'اختر واحداً' } },
-  { token: 'date', kind: 'date', required: false, allowCustom: false, groupLabel: { en: 'When', ar: 'متى' }, placeholder: { en: 'any date', ar: 'مفتوح' } },
-  { token: 'duration', kind: 'options', optionSet: 'durations', defaultValue: '2h', required: true, allowCustom: false, groupLabel: { en: 'How long', ar: 'المدة' }, placeholder: { en: 'choose one', ar: 'اختر واحداً' } },
-  { token: 'location', kind: 'options', optionSet: 'locations', defaultValue: 'dubai', required: true, allowCustom: false, groupLabel: { en: 'Emirate', ar: 'الإمارة' }, placeholder: { en: 'choose one', ar: 'اختر واحداً' } },
-  { token: 'shotBy', kind: 'options', optionSet: 'shot-by', defaultValue: 'anyone', required: true, allowCustom: false, groupLabel: { en: 'Shot by', ar: 'المصوّر' }, placeholder: { en: 'choose one', ar: 'اختر واحداً' } },
+  { token: 'persona', kind: 'persona', defaultValue: 'photographer', required: true, allowCustom: false, multiple: true, groupLabel: { en: 'Professional', ar: 'المحترف' }, placeholder: { en: 'which professional', ar: 'أي محترف' } },
+  { token: 'occasion', kind: 'options', optionSet: 'occasions', defaultValue: 'event', required: true, allowCustom: true, groupLabel: { en: 'Occasion', ar: 'المناسبة' }, placeholder: { en: 'what occasion', ar: 'أي مناسبة' } },
+  { token: 'date', kind: 'date', required: false, allowCustom: false, groupLabel: { en: 'When', ar: 'متى' }, placeholder: { en: 'any date', ar: 'أي تاريخ' } },
+  { token: 'duration', kind: 'options', optionSet: 'durations', defaultValue: '2h', required: true, allowCustom: false, groupLabel: { en: 'How long', ar: 'المدة' }, placeholder: { en: 'how long', ar: 'كم من الوقت' } },
+  { token: 'location', kind: 'options', optionSet: 'locations', defaultValue: 'dubai', required: true, allowCustom: false, groupLabel: { en: 'Emirate', ar: 'الإمارة' }, placeholder: { en: 'which emirate', ar: 'أي إمارة' } },
+  { token: 'shotBy', kind: 'options', optionSet: 'shot-by', defaultValue: 'anyone', required: true, allowCustom: false, groupLabel: { en: 'Shot by', ar: 'المصوّر' }, placeholder: { en: 'whom', ar: 'مَن' } },
 ] as const
 
 export const landingPage = {

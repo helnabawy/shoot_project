@@ -71,9 +71,11 @@
       "generic": "Something went wrong sending your brief. Please try again, or WhatsApp us directly."
     },
     "showMore": "Show {count} more",
-    "showOptions": "Show options",
-    "hideOptions": "Hide options",
-    "successNextTitle": "What happens next"
+    "successNextTitle": "What happens next",
+    "searchPrompt": "Type what you're looking for",
+    "typeToChange": "type to change any part",
+    "continue": "Continue",
+    "stepOf": "{step} of {total}"
   },
   "auth": {
     "loginTitle": "Log in",

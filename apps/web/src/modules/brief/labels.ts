@@ -6,6 +6,8 @@ export interface BriefLabels {
   actions: string
   set: string
   pickADate: string
+  /** The skip row of an optional date step. */
+  anyDate: string
   chooseOne: string
   /** Hint on a group that takes several choices (FR-063). */
   pickAny: string
@@ -13,9 +15,16 @@ export interface BriefLabels {
   submitting: string
   /** Contains "{count}". */
   showMore: string
-  /** Toggle for the collapsed bar's options (also Cmd/Ctrl+K). */
-  showOptions: string
-  hideOptions: string
+  /** The field's prompt before anything is chosen (FR-064). */
+  searchPrompt: string
+  /** The field's prompt once the brief is complete. */
+  typeToChange: string
+  /** Moves on from a step that takes several choices. */
+  continueLabel: string
+  /** Contains "{step}" and "{total}". */
+  stepOf: string
+  /** Shown instead of the field without JavaScript. */
+  noJsHint: string
   whatsappInstead: string
   successTitle: string
   successNextTitle: string
@@ -51,13 +60,17 @@ export function briefLabelsFrom(t: Translate, raw: Translate = t): BriefLabels {
     actions: t('brief.actions'),
     set: t('brief.set'),
     pickADate: t('brief.pickADate'),
+    anyDate: t('brief.anyDate'),
     chooseOne: t('brief.chooseOne'),
     pickAny: t('brief.pickAny'),
     orType: t('brief.orType'),
     submitting: t('brief.submitting'),
     showMore: raw('brief.showMore'),
-    showOptions: t('brief.showOptions'),
-    hideOptions: t('brief.hideOptions'),
+    searchPrompt: t('brief.searchPrompt'),
+    typeToChange: t('brief.typeToChange'),
+    continueLabel: t('brief.continue'),
+    stepOf: raw('brief.stepOf'),
+    noJsHint: t('brief.noJsHint'),
     whatsappInstead: t('contact.whatsappInstead'),
     successTitle: t('brief.successTitle'),
     successNextTitle: t('brief.successNextTitle'),

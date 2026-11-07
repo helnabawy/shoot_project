@@ -1,7 +1,7 @@
 {
   // Website at http://localhost:3000, Payload admin at http://localhost:3000/admin.
   // Dev configs start the Postgres container first (tasks.json), then `pnpm dev`
-  // in apps/web and open Chrome once Next.js reports it is ready.
+  // in apps/web and open Brave once Next.js reports it is ready.
   // Node 24 comes from nvm (.nvmrc); the integrated terminal must load nvm.
   "version": "0.2.0",
   "configurations": [
@@ -14,7 +14,7 @@
       "preLaunchTask": "db: up",
       "serverReadyAction": {
         "pattern": "Local:\\s+(https?://\\S+)",
-        "name": "Website (Chrome)",
+        "name": "Website (Brave)",
         "action": "startDebugging"
       }
     },
@@ -27,22 +27,24 @@
       "preLaunchTask": "db: up",
       "serverReadyAction": {
         "pattern": "Local:\\s+(https?://\\S+)",
-        "name": "Admin (Chrome)",
+        "name": "Admin (Brave)",
         "action": "startDebugging"
       }
     },
     {
-      "name": "Website (Chrome)",
+      "name": "Website (Brave)",
       "type": "chrome",
       "request": "launch",
+      "runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}/apps/web",
       "sourceMaps": true
     },
     {
-      "name": "Admin (Chrome)",
+      "name": "Admin (Brave)",
       "type": "chrome",
       "request": "launch",
+      "runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
       "url": "http://localhost:3000/admin",
       "webRoot": "${workspaceFolder}/apps/web",
       "sourceMaps": true
@@ -64,7 +66,7 @@
   "compounds": [
     {
       "name": "Dev: website + admin",
-      "configurations": ["Dev: website", "Admin (Chrome)"],
+      "configurations": ["Dev: website", "Admin (Brave)"],
       "stopAll": true
     }
   ]

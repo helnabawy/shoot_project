@@ -6,7 +6,7 @@
 
 **Status**: Draft
 
-**Amended**: 2026-11-06 — added bilingual English/Arabic (US6, FR-034–FR-041) and light/dark appearance (US7, FR-042–FR-045) for the public site and the content area; added the one-sentence brief builder with CMS-managed options (US8, FR-046–FR-054), modelled on shootix.ae's Quick Match step 1. Later Quick Match steps (creator, details, quotation) are feature 003. 2026-11-07 — added client-flow simplicity and design-quality requirements (FR-055–FR-062, SC-015–SC-017); visual direction chosen through the impeccable workflow: "The Shoot Pass" first, replaced the same day by "Bilingual Wayfinding" at the owner's request (premium, more readable, no ticket gimmick), then replaced again the same day by "The Brief Bar", a Spotlight / Quick Actions direction the owner pinned after a re-roll (warmer, more premium, no costume). 2026-11-07 — the brief builder's professional slot may let the visitor pick more than one professional type, e.g. a photographer and a videographer for the same shoot (FR-063, US8 scenario 10).
+**Amended**: 2026-11-06 — added bilingual English/Arabic (US6, FR-034–FR-041) and light/dark appearance (US7, FR-042–FR-045) for the public site and the content area; added the one-sentence brief builder with CMS-managed options (US8, FR-046–FR-054), modelled on shootix.ae's Quick Match step 1. Later Quick Match steps (creator, details, quotation) are feature 003. 2026-11-07 — added client-flow simplicity and design-quality requirements (FR-055–FR-062, SC-015–SC-017); visual direction chosen through the impeccable workflow: "The Shoot Pass" first, replaced the same day by "Bilingual Wayfinding" at the owner's request (premium, more readable, no ticket gimmick), then replaced again the same day by "The Brief Bar", a Spotlight / Quick Actions direction the owner pinned after a re-roll (warmer, more premium, no costume). 2026-11-07 — the brief builder's professional slot may let the visitor pick more than one professional type, e.g. a photographer and a videographer for the same shoot (FR-063, US8 scenario 10). 2026-11-07 — at the owner's request the brief is built one step at a time instead of pre-filled: the bar opens as one search field with only the professional list, each choice prints into the sentence and reveals the next list, and the primary action appears once every part is answered (FR-067; FR-055, FR-057, FR-064 and FR-065 amended, the folded options drawer is replaced; US8 scenarios 1, 11, 12 and 13).
 
 **Input**: User description: "New website inspired by shootix.ae. Fast, single-page feel, responsive. Hero section 'You brief. We shoot.' Visitors can register and log in. A CMS lets the owner edit the landing page content and the WhatsApp mobile number. The structure must scale. Unit tests cover all use cases. The target audience (today photographers, videographers and other shooters) must be changeable from the backend in future, e.g. to teachers, without code changes."
 
@@ -295,8 +295,10 @@ an occasion in the content area and see it in the list within a minute.
 **Acceptance Scenarios**:
 
 1. **Given** the brief builder is enabled with its option sets, **When** a
-   visitor opens the page, **Then** the sentence renders with each slot
-   showing its default word, and tapping a word opens that slot's options.
+   visitor opens the page, **Then** the bar shows one search field ("Type
+   what you're looking for") and only the first list (the professional
+   types); picking one prints it into the sentence and shows the next list,
+   and so on until every part is answered.
 2. **Given** the visitor changes the professional type, **When** they open
    the occasion slot, **Then** only occasions linked to that type (or to all
    types) are listed, in the configured order.
@@ -330,14 +332,19 @@ an occasion in the content area and see it in the list within a minute.
    options of either type, and the recorded brief and the WhatsApp message
    name both types.
 11. **Given** JavaScript is available, **When** a visitor opens the page,
-   **Then** the builder shows only the sentence, its filter and the primary
-   action, with the options folded away; **When** they tap a word of the
-   sentence, **Then** the options open, that slot's group scrolls into view
-   with all of its values, and focus rests on the current choice (FR-064).
+   **Then** the builder shows only the search field and the first step's
+   list, with no primary action yet; **When** they tap a chosen word of the
+   sentence, **Then** that step's list comes back with focus on its current
+   choice (FR-064, FR-067).
 12. **Given** the builder is on the page, **When** the visitor presses
-   Cmd+K (Ctrl+K off Apple devices), **Then** the options open with focus in
-   the filter; pressing it again, or Escape with an empty filter, folds them
+   Cmd+K (Ctrl+K off Apple devices), **Then** focus moves to the search
+   field; Escape clears what they typed first, then leaves a reopened step
    (FR-065).
+13. **Given** the visitor has picked only a professional type, **When** they
+   look at the bar, **Then** they see the sentence so far ("I need a
+   photographer for …") and only the next list; tapping "photographer"
+   reopens the professional list, and Backspace in the empty field takes
+   that answer back (FR-067).
 
 ---
 
@@ -592,18 +599,32 @@ an occasion in the content area and see it in the list within a minute.
   (FR-048); and the recorded brief MUST reference every chosen type, so
   admins can filter by any of them (FR-052). No type name is hardcoded: the
   setting works for any audience.
+- **FR-067**: With JavaScript the builder MUST work as a step-by-step search:
+  it opens with a search field and only the first slot's list; choosing a
+  value prints it into the sentence as a token and shows the next
+  unanswered slot's list (single choice advances in one tap; a slot that
+  takes several choices advances with a "Continue" action; an optional slot
+  offers a skip such as "any date"); typing searches every slot's options at
+  once; tapping a chosen token reopens that step; Backspace in the empty
+  field takes back the last answer; changing the professional type sends the
+  visitor back to any step whose answer it no longer offers; the primary
+  action appears once every slot is answered. Without JavaScript every list
+  shows at once as a form (FR-053). A slot's default value only lists that
+  option first.
 
 **Client flow simplicity and design quality**
 
-- **FR-055**: The client journey MUST be: land → adjust any words of the
-  brief (all pre-filled with defaults) → one tap to submit → confirmation
+- **FR-055**: The client journey MUST be: land → build the brief one step at
+  a time, one short list per step, nothing pre-filled (FR-067) → one tap to
+  submit → confirmation
   with a reference and a WhatsApp chat already written. No account, login,
   email or phone number MUST be required to submit a brief.
 - **FR-056**: Each screen MUST present exactly one primary action, visually
   dominant; secondary actions (WhatsApp, login) MUST be visibly secondary.
 - **FR-057**: The brief builder MUST be the first thing on the landing page
-  on every viewport, with the primary action visible without scrolling on a
-  360 × 640 phone.
+  on every viewport, with the search field and the current step's list
+  starting above the fold on a 360 × 640 phone, and the primary action
+  appearing right under the field once the brief is complete.
 - **FR-058**: Every label, hint and error MUST be plain language of at most
   one short sentence, say what to do next, and appear next to the thing it
   refers to; no jargon, no codes shown to clients except the brief
@@ -632,21 +653,19 @@ an occasion in the content area and see it in the list within a minute.
 
 **Brief bar refinements** (owner-directed, 2026-11-07)
 
-- **FR-064**: With JavaScript, the builder's option groups and its secondary
-  actions MUST start folded under the sentence, leaving the sentence, the
-  filter and the primary action. Tapping a word of the sentence MUST open
-  them, bring that slot's group into view with all of its values and put
-  focus on its current choice. Typing in the filter, pressing the down arrow
-  from it, and a validation error (FR-050) MUST also open them. A visible
-  toggle at the end of the sentence MUST open and fold them, announce its
-  state (expanded or collapsed) and be named in the page language. Without
-  JavaScript every group MUST stay open so the plain form works (FR-053).
-- **FR-065**: Cmd+K on Apple devices and Ctrl+K elsewhere MUST open and fold
-  the options from anywhere on the page, matched by the physical key so it
-  works on an Arabic keyboard layout; opening MUST put focus in the filter.
-  Escape MUST clear a typed filter first, then fold the options and return
-  focus to the toggle. The shortcut MUST be shown as a key hint on devices
-  with a pointer that can hover, and never on touch-only devices.
+- **FR-064**: (Amended 2026-11-07: the folded options drawer and its toggle
+  are replaced by the step-by-step search of FR-067.) With JavaScript only
+  the asked step's list MUST show under the field. Tapping a chosen word of
+  the sentence MUST bring that step's list back with focus on its current
+  choice, and a validation error (FR-050) MUST reopen the step it concerns.
+  Without JavaScript every group MUST stay open so the plain form works
+  (FR-053).
+- **FR-065**: Cmd+K on Apple devices and Ctrl+K elsewhere MUST move focus to
+  the search field from anywhere on the page, matched by the physical key so
+  it works on an Arabic keyboard layout. Escape MUST clear a typed search
+  first, then leave a reopened step. The shortcut MUST be shown as a key hint
+  on devices with a pointer that can hover, and never on touch-only
+  devices.
 - **FR-066**: The hero MUST fill the screen below the header, edge to edge:
   the headline as its title in the page language (the other language's line
   and the sub-headline are not shown) and the brief bar beneath it, over the

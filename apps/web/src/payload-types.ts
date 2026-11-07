@@ -729,11 +729,11 @@ export interface LandingPage {
            */
           groupLabel?: string | null;
           /**
-           * Shown when nothing is picked, e.g. "any date".
+           * The question in the field while this step is asked, e.g. "what occasion"; also the skip row of an optional step, e.g. "any date".
            */
           placeholder?: string | null;
           /**
-           * Option value or persona slug picked by default.
+           * Option value or persona slug listed first in its step (nothing is pre-selected).
            */
           defaultValue?: string | null;
           required?: boolean | null;

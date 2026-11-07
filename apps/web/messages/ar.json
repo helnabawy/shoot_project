@@ -71,9 +71,11 @@
       "generic": "حدث خطأ أثناء إرسال طلبك. حاول مرة أخرى، أو راسلنا على واتساب مباشرة."
     },
     "showMore": "عرض {count} أخرى",
-    "showOptions": "إظهار الخيارات",
-    "hideOptions": "إخفاء الخيارات",
-    "successNextTitle": "ما الذي يحدث بعد ذلك"
+    "successNextTitle": "ما الذي يحدث بعد ذلك",
+    "searchPrompt": "اكتب ما تبحث عنه",
+    "typeToChange": "اكتب لتغيير أي جزء",
+    "continue": "متابعة",
+    "stepOf": "{step} من {total}"
   },
   "auth": {
     "loginTitle": "تسجيل الدخول",
