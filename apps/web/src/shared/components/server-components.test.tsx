@@ -83,6 +83,21 @@ describe('Footer', () => {
     expect(screen.queryByTestId('footer-legal')).toBeNull()
   })
 
+  it('leaves the language and theme controls to the header and names the site once, in the copyright', async () => {
+    render(await Footer({ siteName: 'Shoot Project', social: [], locale: 'en', legal: [{ label: 'Privacy', href: '/privacy' }] }))
+    const footer = screen.getByRole('contentinfo')
+    expect(within(footer).queryByTestId('theme-toggle')).toBeNull()
+    expect(within(footer).queryByTestId('locale-switcher')).toBeNull()
+    expect(within(footer).getAllByText(/Shoot Project/)).toHaveLength(1)
+    expect(within(footer).getByText(/© \d{4} Shoot Project\./)).toBeInTheDocument()
+  })
+
+  it('groups the contact details under a labelled column', async () => {
+    render(await Footer({ siteName: 'S', social: [], locale: 'en', contactEmail: 'hello@example.test' }))
+    expect(screen.getByRole('heading', { name: 'Contact' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'hello@example.test' })).toHaveAttribute('href', 'mailto:hello@example.test')
+  })
+
   it('omits contact details that are not set', async () => {
     render(await Footer({ siteName: 'S', social: [], locale: 'en' }))
     expect(screen.queryByRole('navigation')).toBeNull()

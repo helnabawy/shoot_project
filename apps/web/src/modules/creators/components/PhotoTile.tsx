@@ -12,6 +12,7 @@ export function PhotoTile({
   tone = 'default',
   size = 'md',
   className,
+  eager = false,
 }: {
   photo: CreatorSummary['photo']
   initials: string
@@ -19,12 +20,14 @@ export function PhotoTile({
   /** `md` 44 px (rows); `lg` 64 px (the profile header). */
   size?: 'md' | 'lg'
   className?: string
+  /** Load straight away rather than on approach: for tiles that move into view (the network strip). */
+  eager?: boolean
 }) {
   const base = cx('shrink-0 overflow-hidden', size === 'lg' ? 'size-16 rounded-xl' : 'size-11 rounded-[10px]')
   if (photo) {
     return (
       <span aria-hidden="true" className={cx(base, tone === 'accent' ? 'bg-white/20' : 'bg-tile', className)}>
-        <Image src={photo.url} alt="" width={size === 'lg' ? 128 : 88} height={size === 'lg' ? 128 : 88} sizes={size === 'lg' ? '64px' : '44px'} className="size-full object-cover" />
+        <Image src={photo.url} alt="" width={size === 'lg' ? 128 : 88} height={size === 'lg' ? 128 : 88} sizes={size === 'lg' ? '64px' : '44px'} loading={eager ? 'eager' : 'lazy'} className="size-full object-cover" />
       </span>
     )
   }

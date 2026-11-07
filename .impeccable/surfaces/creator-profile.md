@@ -21,7 +21,7 @@ The only proof is what the creator uploaded and an admin approved: their samples
 
 ## Build notes (2026-11-07)
 
-- Fact rows are single 44 px rows (value, with what it is in the trailing slot) so the Top Hit stays above the fold on a 360 x 640 phone; only the Verified row keeps a second line. A fifth fact, "Shoots" (specialties), was added to the four above.
+- Fact rows are single 44 px rows (value, with what it is in the trailing slot) so the Top Hit stays above the fold on a 360 x 640 phone; only the Verified row keeps a second line. A fifth fact, "Shoots" (specialties), was added to the four above. 2026-11-07: with experience and nationality added (002 FR-011), only the deciding facts (Verified, Professional, Shoots, Works in) stay before the Top Hit; Speaks, Experience and Nationality follow the actions in an "About" group, because seven rows pushed the Top Hit below the fold at 360 x 640.
 - The site's floating WhatsApp button steps aside while the profile panel or the booking panel is on screen (both carry `data-floating-hide`; both already offer WhatsApp), so it never covers their rows.
 - Gallery images are all lazy: the identity panel sits above them on every viewport.
 

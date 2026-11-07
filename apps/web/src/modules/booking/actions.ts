@@ -39,6 +39,7 @@ import { applyChange, applyTransition, recordEvent, TRANSITION_CONTEXT, type App
 
 export type QuoteState = { status: 'idle' } | { status: 'error'; errors: Record<string, string>; formError?: string }
 
+
 const str = (form: FormData, key: string) => String(form.get(key) ?? '').trim()
 const localeOf = (form: FormData): Locale => {
   const value = str(form, 'locale')

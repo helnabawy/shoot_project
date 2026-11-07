@@ -1,11 +1,28 @@
 import { expect, test, type Page } from '@playwright/test'
 import { expectNoSeriousA11yIssues } from './helpers'
+import { locations } from '../../src/shared/payload/seed/content'
+import { DEMO_CREATORS, LISTED_DEMO_CREATORS } from '../../src/shared/payload/seed/demo-creators.data'
 
-// Demo seed (SEED_DEMO_CREATORS=1): listed with samples D2222 (featured), D3333, D4444, D7777 (photo + video);
-// listed without samples D6666; in review D5555; paused D8888.
-const NETWORK = ['D2222', 'D3333', 'D4444', 'D7777']
-const DIRECTORY = [...NETWORK, 'D6666'].sort()
-const NEVER = ['D5555', 'D8888']
+// Demo seed (SEED_DEMO_CREATORS=1): expectations come from the seed's own data, so adding a demo
+// creator never breaks a count here. D2222 is the one featured creator; D6666 is listed without
+// samples; D5555 is in review and D8888 is paused, so neither is ever shown.
+const LISTED = LISTED_DEMO_CREATORS
+const DIRECTORY = LISTED.map((c) => c.code).sort()
+const WITH_SAMPLES = LISTED.filter((c) => c.samples > 0).map((c) => c.code)
+const NEVER = DEMO_CREATORS.filter((c) => !LISTED.includes(c)).map((c) => c.code)
+const NETWORK_COUNT = 12
+/** The one featured creator, so the directory's Top Hit. */
+const TOP_HIT = DEMO_CREATORS.find((c) => c.code === 'D2222')!
+const emirateOf = (slug: string) => locations.find((e) => e.slug === slug || e.cities.some((c) => c.slug === slug))?.slug
+const where = (f: { type?: string; specialty?: string; place?: string }) =>
+  LISTED.filter(
+    (c) =>
+      (!f.type || c.personas.includes(f.type)) &&
+      (!f.specialty || c.specialties.includes(f.specialty)) &&
+      (!f.place || c.cities.some((city) => emirateOf(city) === f.place)),
+  ).map((c) => c.code)
+/** A facet count as shown, matched as a whole number (so 2 never matches 12). */
+const count = (n: number) => new RegExp(`(^|\\D)${n}(\\D|$)`)
 
 // The scope may itself carry the code (the Top Hit) or contain rows that do (the lists).
 const codes = (page: Page, scope: string) =>
@@ -16,7 +33,8 @@ test.describe('CP-US1 browse verified creators', () => {
     await page.goto('/')
     await expect(page.getByTestId('creator-network')).toBeVisible()
     const shown = await codes(page, '[data-testid="creator-network"]')
-    expect([...shown].sort()).toEqual(NETWORK)
+    expect(shown).toHaveLength(Math.min(NETWORK_COUNT, WITH_SAMPLES.length))
+    for (const code of shown) expect(WITH_SAMPLES).toContain(code)
     for (const hidden of [...NEVER, 'D6666']) expect(shown).not.toContain(hidden)
     // Featured creators lead.
     expect(shown[0]).toBe('D2222')
@@ -44,18 +62,21 @@ test.describe('CP-US1 browse verified creators', () => {
 
     await open('type')
     const videographers = page.getByTestId('filter-type').locator('[data-value="videographer"]')
-    await expect(videographers).toContainText('2') // Omar and Maya
-    await expect(page.getByTestId('filter-type').locator('[data-value="photographer"]')).toContainText('4')
+    const shownNow = async () => [...(await codes(page, '[data-testid="creator-top-hit"]')), ...(await codes(page, '[data-testid="directory-list"]'))].sort()
+    await expect(videographers).toContainText(count(where({ type: 'videographer' }).length))
+    await expect(page.getByTestId('filter-type').locator('[data-value="photographer"]')).toContainText(count(where({ type: 'photographer' }).length))
     await choose('type', 'videographer')
-    expect([...(await codes(page, '[data-testid="creator-top-hit"]')), ...(await codes(page, '[data-testid="directory-list"]'))].sort()).toEqual(['D3333', 'D7777'])
+    expect(await shownNow()).toEqual(where({ type: 'videographer' }).sort())
 
     await open('place')
-    await choose('place', 'abu-dhabi') // Maya works in Dubai and Abu Dhabi, Omar in Al Ain (a city of Abu Dhabi)
-    expect((await codes(page, '[data-testid="creator-top-hit"]')).concat(await codes(page, '[data-testid="directory-list"]')).sort()).toEqual(['D3333', 'D7777'])
+    // A city counts for its emirate: Omar works in Al Ain, a city of Abu Dhabi.
+    await choose('place', 'abu-dhabi')
+    expect(await shownNow()).toEqual(where({ type: 'videographer', place: 'abu-dhabi' }).sort())
+    expect(await shownNow()).toContain('D3333')
 
     await open('specialty')
-    await choose('specialty', 'corporate-branding') // only Omar
-    expect(await codes(page, '[data-testid="creator-top-hit"]')).toEqual(['D3333'])
+    await choose('specialty', 'corporate-branding')
+    expect(await shownNow()).toEqual(where({ type: 'videographer', place: 'abu-dhabi', specialty: 'corporate-branding' }).sort())
 
     await page.getByTestId('filter-clear').click()
     await page.waitForURL((u) => !u.search)
@@ -65,6 +86,8 @@ test.describe('CP-US1 browse verified creators', () => {
   test('CP-US1-S2 an unknown filter value is ignored, and no match offers a way forward', async ({ page }) => {
     await page.goto('/creators?type=teacher&place=mars')
     expect((await codes(page, '[data-testid="creator-top-hit"]')).length).toBe(1)
+    // The seed has no videographer for fashion and beauty in Sharjah.
+    expect(where({ type: 'videographer', specialty: 'fashion-beauty', place: 'sharjah' })).toEqual([])
     await page.goto('/creators?type=videographer&specialty=fashion-beauty&place=sharjah')
     await expect(page.getByTestId('directory-empty')).toBeVisible()
     await expect(page.getByRole('link', { name: /Send a brief instead|أرسل طلبك بدلاً من ذلك/ })).toBeVisible()
@@ -83,7 +106,8 @@ test.describe('CP-US1 browse verified creators', () => {
     await page.getByTestId('creator-top-hit').click()
     interactions += 1
     // The profile route is compiled on first visit on a development server, which can take a few seconds.
-    await expect(page).toHaveURL(/\/creators\/d4444$/, { timeout: 20_000 })
+    await expect(page).toHaveURL(/\/creators\/[a-z0-9]{5}$/, { timeout: 20_000 })
+    expect(where({ place: 'sharjah' }).map((c) => c.toLowerCase())).toContain(page.url().split('/').pop())
     expect(interactions).toBeLessThanOrEqual(5)
   })
 
@@ -104,12 +128,12 @@ test.describe('CP-US1 browse verified creators', () => {
     if (info.project.name === 'ar-mobile') {
       await expect(html).toHaveAttribute('lang', 'ar')
       await expect(html).toHaveAttribute('dir', 'rtl')
-      await expect(page.getByTestId('creator-top-hit')).toContainText('(تجريبي)')
+      await expect(page.getByTestId('creator-top-hit')).toContainText(TOP_HIT.name.ar)
       // The code stays readable left to right inside the right-to-left row.
       await expect(page.getByTestId('creator-top-hit').locator('bdi')).toHaveAttribute('dir', 'ltr')
     } else {
       await expect(html).toHaveAttribute('dir', 'ltr')
-      await expect(page.getByTestId('creator-top-hit')).toContainText('Demo')
+      await expect(page.getByTestId('creator-top-hit')).toContainText(TOP_HIT.name.en)
     }
   })
 })

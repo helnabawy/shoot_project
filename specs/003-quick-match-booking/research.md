@@ -247,6 +247,25 @@ binding and not re-argued here.
 - **Alternatives**: Payload jobs queue (more config and a worker for four
   queries); timers (stateless app, Principle V).
 
+## §13a Matches in the brief bar (US1-S7, FR-014; amended 2026-11-07)
+
+- **Decision**: when the sentence is complete, the builder calls a server
+  action `previewMatches(locale, answers)` that turns the unsaved answers into
+  the same facts as a saved brief and runs `getMatchPage` (cached creators,
+  prices, the day's blocks); it returns up to three rows per professional
+  type, the formatted price and the total count. Nothing is written. Each row
+  is a submit button `name="pick" value="<persona>:<code>"`: `submitBrief`
+  saves the brief and, for a one-type brief, redirects to step 3 with that
+  pick (several types: step 2 with the pick kept). The Top Hit is unchanged.
+  The call is made once per completed answer set (no typing-time requests),
+  and only when Quick Match is on; without JavaScript nothing changes.
+- **Rationale**: the owner wants matches as soon as the brief is filled, the
+  Spotlight pattern of The Brief Bar (results under the field); reusing
+  `getMatchPage` keeps one set of matching rules.
+- **Alternatives**: a public REST route (needs its own validation and rate
+  limit for the same result); saving a brief on completion (writes leads the
+  visitor never sent).
+
 ## §13 Steps 2 and 3 (UX, Principle IX)
 
 - **Decision**: step 2 `/match/{ref}/{key}` is a server page: the brief

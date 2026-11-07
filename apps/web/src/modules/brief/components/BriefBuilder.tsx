@@ -29,6 +29,7 @@ import {
 } from '@/shared/ui/icons'
 import { BarField, BriefBar, cx, GlyphTile, KeyHint, ResultGroup, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
 import { submitBrief } from '../actions'
+import { MatchPreview } from './MatchPreview'
 import type { CreatorBooking } from '../creator'
 import { chosenPersonas, CUSTOM_SUFFIX, CUSTOM_VALUE, readSlotValues, sentenceLabelFor, slotRules } from '../submit'
 import type { BriefBuilderConfig, BriefState, BuilderOption, BuilderSlot } from '../types'
@@ -173,6 +174,18 @@ export function BriefBuilder({
   const complete = firstOpen === null
   const started = order.some((s) => hasValue(s) || skipped[s.token])
   const showTopHit = complete && !editing
+  // 003 US1-S7: the answers as a submit would send them, for the matches shown in the bar once complete.
+  const previewAnswers = useMemo(() => {
+    if (!quickMatch || creator || !complete) return null
+    const answers: { values: Record<string, string>; custom: Record<string, boolean> } = { values: {}, custom: {} }
+    for (const slot of order) {
+      const value = values[slot.token] ?? ''
+      const typed = value === CUSTOM_VALUE
+      answers.values[slot.token] = typed ? (custom[slot.token] ?? '') : skipped[slot.token] ? '' : value
+      answers.custom[slot.token] = typed
+    }
+    return answers
+  }, [quickMatch, creator, complete, order, values, custom, skipped])
 
   // After the server answers: send the pre-opened tab to WhatsApp, or close it on failure.
   useEffect(() => {
@@ -815,6 +828,8 @@ export function BriefBuilder({
             </p>
           ) : null}
         </div>
+
+        {showTopHit && previewAnswers ? <MatchPreview locale={config.locale} answers={previewAnswers} labels={labels.preview} pending={pending} /> : null}
 
         {groups}
 

@@ -201,30 +201,3 @@ export async function seedDemoQuickMatch(payload: Payload, log: (m: string) => v
   await payload.update({ collection: 'bookings', id: booking.id, data: { quotation: quotation.id } as never, overrideAccess: true, context })
   log(`Demo quotation: ${DEMO_QUICK_MATCH.quote} for brief ${DEMO_QUICK_MATCH.brief}`)
 }
-
-/**
- * Demo creators' gender, nationality and years of experience (002 FR-011; local/test hosts only). Gender is what
- * Quick Match's "shot by" step matches (003 research §5), so "a woman" / "a man" briefs find someone.
- * Idempotent: sets the values on every run.
- */
-export const DEMO_CREATOR_FACTS: Readonly<Record<string, { gender: 'woman' | 'man'; nationality: string; yearsExperience: number }>> = {
-  D2222: { gender: 'woman', nationality: 'AE', yearsExperience: 8 },
-  D3333: { gender: 'man', nationality: 'EG', yearsExperience: 12 },
-  D4444: { gender: 'woman', nationality: 'FR', yearsExperience: 5 },
-  D5555: { gender: 'woman', nationality: 'JO', yearsExperience: 3 },
-  D6666: { gender: 'man', nationality: 'IN', yearsExperience: 10 },
-  D7777: { gender: 'woman', nationality: 'LB', yearsExperience: 6 },
-  D8888: { gender: 'man', nationality: 'PK', yearsExperience: 4 },
-}
-
-export async function describeDemoCreators(payload: Payload, log: (m: string) => void): Promise<void> {
-  let described = 0
-  for (const [code, facts] of Object.entries(DEMO_CREATOR_FACTS)) {
-    const profile = (await payload.find({ collection: 'creator-profiles', where: { code: { equals: code } }, limit: 1, depth: 0, draft: true, overrideAccess: true })).docs[0]
-    if (!profile) continue
-    const published = profile._status === 'published'
-    await payload.update({ collection: 'creator-profiles', id: profile.id, data: facts as never, draft: !published, overrideAccess: true, context: { disableRevalidate: false } })
-    described += 1
-  }
-  log(`Demo creator facts: ${described} creators (gender, nationality, experience)`)
-}

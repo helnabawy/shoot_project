@@ -10,7 +10,8 @@ import { isLocale, type Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
 import { errorStatus } from '@/shared/payload/errors'
 import { accessKey, newSalt } from '../booking/keys'
-import { matchPath } from '../booking/paths'
+import { formatPicks, parsePicks } from '@shoot/domain/booking'
+import { detailsPath, matchPath } from '../booking/paths'
 import { getCurrentUser } from '../auth/session'
 import { getCreatorByCode } from '../creators'
 import { getActivePersonas } from '../personas/queries'
@@ -132,7 +133,14 @@ export async function submitBrief(_prev: BriefState, form: FormData): Promise<Br
     const whatsappUrl = buildWhatsAppLink(settings.whatsappNumber, message)
 
     // Quick Match (feature 003): continue to step 2 when it is on; WhatsApp stays the secondary action.
-    const matchUrl = salt && reference ? matchPath(reference, accessKey(salt, 'brief'), locale) : undefined
+    // A creator chosen in the bar (US1-S7): straight to step 3 for a one-type brief, else step 2 with the choice kept.
+    const picks = parsePicks(String(form.get('pick') ?? ''))?.filter((p) => brief.personaSlugs.includes(p.persona)) ?? []
+    const step2 = salt && reference ? matchPath(reference, accessKey(salt, 'brief'), locale) : undefined
+    const matchUrl = step2 && picks.length
+      ? brief.personaSlugs.length === 1
+        ? detailsPath(reference!, accessKey(salt!, 'brief'), locale, formatPicks(picks))
+        : `${step2}?pick=${encodeURIComponent(formatPicks(picks))}`
+      : step2
     if (!hasJs) redirect(matchUrl ?? whatsappUrl)
     return { status: 'ok', reference: reference ?? '', whatsappUrl, sentence, replyTime, ...(matchUrl ? { matchUrl } : {}) }
   } catch (error) {

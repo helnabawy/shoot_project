@@ -47,6 +47,12 @@ us choose").
    without a creator and an admin assigns one before confirmation.
 6. **Given** a creator has blocked the date or already has a confirmed
    booking that day, **Then** that creator is not listed for it.
+7. **Given** the visitor completes the brief sentence (amended 2026-11-07,
+   owner request), **Then** the brief bar itself shows, under its one action,
+   up to three free matching creators per professional type with the one
+   price, without saving anything; choosing one saves the brief and goes
+   straight to the details step with that creator; the bar's action still
+   opens the full list. Without JavaScript the bar is unchanged.
 
 ---
 
@@ -178,6 +184,9 @@ creators, adjust prices, cancel, and export.
 - **FR-012**: Time windows (quotation validity, creator confirmation,
   delivery confirmation, payout due) and payment instructions MUST be
   content-managed settings.
+- **FR-014**: The brief bar MUST preview matching creators as soon as the
+  brief is complete (US1-S7), computed from the unsaved answers with the
+  same rules as step 2; a brief is saved only when the visitor acts.
 - **FR-013**: The quotation page MUST have a print layout so the browser's
   Save as PDF produces the quotation document in the page language.
 

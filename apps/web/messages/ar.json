@@ -77,7 +77,14 @@
     "searchPrompt": "اكتب ما تبحث عنه",
     "typeToChange": "اكتب لتغيير أي جزء",
     "continue": "متابعة",
-    "stepOf": "{step} من {total}"
+    "stepOf": "{step} من {total}",
+    "preview": {
+      "group": "{types} متاحون لهذا · {price}",
+      "groupNoPrice": "{types} متاحون لهذا",
+      "loading": "نبحث عمّن هو متاح…",
+      "none": "لا أحد متاح لهذا بعد. اعرف من المتاح لخيارات أخرى.",
+      "more": "+{count} آخرون في الخطوة التالية"
+    }
   },
   "auth": {
     "loginTitle": "تسجيل الدخول",
@@ -154,6 +161,7 @@
     "whatsapp": "اسألنا على واتساب"
   },
   "footer": {
+    "contact": "تواصل معنا",
     "rights": "جميع الحقوق محفوظة.",
     "social": "تابعنا",
     "legal": "قانوني"
@@ -199,6 +207,7 @@
       "languages": "يتحدث",
       "topHit": "أفضل نتيجة",
       "actions": "إجراءات",
+      "about": "نبذة",
       "book": "احجز مع {name}",
       "ask": "اسأل عبر واتساب",
       "askMessage": "مرحباً! لدي سؤال عن {name} ({code}).",

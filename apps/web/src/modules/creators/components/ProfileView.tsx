@@ -10,9 +10,11 @@ import { SampleGallery } from './SampleGallery'
 import { SampleViewer } from './SampleViewer'
 
 /**
- * A fact as one 44 px row: the value, and what it is in the trailing slot ("Works in"). That keeps the
- * Top Hit above the fold on a 360 × 640 phone. The verified row alone carries a second line, because
- * what "verified" means is the one claim the visitor must be able to read.
+ * A fact as one 44 px row: the value, and what it is in the trailing slot ("Works in"). Only the facts
+ * that decide a booking (verified, types, shoots, places) come before the Top Hit, which keeps it above
+ * the fold on a 360 × 640 phone; languages, experience and nationality follow it under "About". The
+ * verified row alone carries a second line, because what "verified" means is the one claim the visitor
+ * must be able to read.
  */
 function Fact({ icon, value, label, note }: { icon: ReactNode; value: string; label?: string; note?: string }) {
   return (
@@ -34,8 +36,9 @@ function Fact({ icon, value, label, note }: { icon: ReactNode; value: string; la
 }
 
 /**
- * A creator's public profile: one panel that is the creator (photo, name, code, facts, the Top Hit
- * that books them), then the bio and the work on the ground (surface brief creator-profile).
+ * A creator's public profile: one panel that is the creator (photo, name, code, the deciding facts, the
+ * Top Hit that books them, then "About"), then the bio and the work on the ground (surface brief
+ * creator-profile).
  */
 export function ProfileView({
   view,
@@ -52,6 +55,7 @@ export function ProfileView({
 }) {
   const t = useTranslations('creators.profile')
   const images = view.samples.filter((s) => s.kind === 'image')
+  const hasAbout = view.languages.length > 0 || view.yearsExperience != null || Boolean(view.nationality)
   return (
     <div className="mx-auto max-w-[680px]" data-testid="profile">
       <div className="px-3 pt-8 sm:pt-14">
@@ -75,9 +79,6 @@ export function ProfileView({
             {view.types ? <Fact icon={<UserIcon width={16} height={16} />} value={view.types} label={t('types')} /> : null}
             {view.specialties.length ? <Fact icon={<TagIcon width={16} height={16} />} value={view.specialties.join(' · ')} label={t('shoots')} /> : null}
             {view.places.length ? <Fact icon={<PinIcon width={16} height={16} />} value={view.places.join(' · ')} label={t('places')} /> : null}
-            {view.languages.length ? <Fact icon={<GlobeIcon width={16} height={16} />} value={view.languages.join(' · ')} label={t('languages')} /> : null}
-            {view.yearsExperience != null ? <Fact icon={<ClockIcon width={16} height={16} />} value={t('experienceYears', { count: view.yearsExperience })} label={t('experience')} /> : null}
-            {view.nationality ? <Fact icon={<FlagIcon width={16} height={16} />} value={view.nationality} label={t('nationality')} /> : null}
           </div>
 
           <div className="border-t border-hair pt-1 pb-2">
@@ -103,6 +104,17 @@ export function ProfileView({
               </ResultGroup>
             ) : null}
           </div>
+
+          {/* Who they are rather than what they do: after the booking, so the Top Hit holds the fold. */}
+          {hasAbout ? (
+            <div className="border-t border-hair pt-1 pb-2" data-testid="profile-about">
+              <ResultGroup label={t('about')}>
+                {view.languages.length ? <Fact icon={<GlobeIcon width={16} height={16} />} value={view.languages.join(' · ')} label={t('languages')} /> : null}
+                {view.yearsExperience != null ? <Fact icon={<ClockIcon width={16} height={16} />} value={t('experienceYears', { count: view.yearsExperience })} label={t('experience')} /> : null}
+                {view.nationality ? <Fact icon={<FlagIcon width={16} height={16} />} value={view.nationality} label={t('nationality')} /> : null}
+              </ResultGroup>
+            </div>
+          ) : null}
         </BriefBar>
       </div>
 

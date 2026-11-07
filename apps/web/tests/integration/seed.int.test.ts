@@ -1,6 +1,7 @@
 import { NOTIFICATION_EVENTS, NOTIFICATION_PLACEHOLDERS, notificationsFor } from '@shoot/domain/booking'
 import { findUnknownPlaceholders, KNOWN_PLACEHOLDERS } from '@shoot/domain/content'
 import { beforeAll, describe, expect, it } from 'vitest'
+import { DEMO_CREATORS } from '@/shared/payload/seed/demo-creators.data'
 import { seed } from '@/shared/payload/seed/seed'
 import { getTestPayload, resetDatabase } from './setup/payload'
 
@@ -119,9 +120,18 @@ describe('002 seed: no invented proof', () => {
     await seed(payload, options)
     await seed(payload, options)
     const profiles = await payload.find({ collection: 'creator-profiles', draft: true, limit: 50, depth: 0, sort: 'code' })
-    expect(profiles.docs.map((p) => p.code)).toEqual(['D2222', 'D3333', 'D4444', 'D5555', 'D6666', 'D7777', 'D8888'])
+    expect(DEMO_CREATORS.length).toBeGreaterThanOrEqual(20)
+    expect(profiles.docs.map((p) => p.code)).toEqual(DEMO_CREATORS.map((c) => c.code).sort())
     const published = await payload.find({ collection: 'creator-profiles', limit: 50, depth: 0, where: { _status: { equals: 'published' } } })
-    expect(published.docs.map((p) => p.code).sort()).toEqual(['D2222', 'D3333', 'D4444', 'D6666', 'D7777', 'D8888'])
+    expect(published.docs.map((p) => p.code).sort()).toEqual(DEMO_CREATORS.filter((c) => c.state !== 'in-review').map((c) => c.code).sort())
+    // Every demo creator has a portrait, a gender, a nationality and years of experience (002 FR-011).
+    const facts = await payload.find({ collection: 'creator-profiles', draft: true, limit: 50, depth: 0, overrideAccess: true })
+    for (const p of facts.docs) {
+      expect(p.photo, p.code ?? undefined).toBeTruthy()
+      expect(p.gender, p.code ?? undefined).toMatch(/^(woman|man)$/)
+      expect(p.nationality, p.code ?? undefined).toMatch(/^[A-Z]{2}$/)
+      expect(p.yearsExperience, p.code ?? undefined).toBeGreaterThan(0)
+    }
     const ar = await payload.findByID({ collection: 'creator-profiles', id: profiles.docs[0]!.id, locale: 'ar', depth: 0 })
     expect(ar.displayName).toMatch(/[؀-ۿ]/)
     const paused = await payload.find({ collection: 'creator-listings', where: { active: { equals: false } }, depth: 0 })
@@ -131,6 +141,22 @@ describe('002 seed: no invented proof', () => {
     const featured = await payload.find({ collection: 'creator-listings', where: { featured: { equals: true } }, depth: 0 })
     expect(featured.totalDocs).toBe(1)
   }, 120_000)
+
+  it('the demo reset removes every demo creator with their bookings and briefs, then seeds a fresh set', async () => {
+    const payload = await getTestPayload()
+    const options = { log: () => {}, demoCreators: true, siteUrl: 'http://localhost:3000', demoPassword: 'demo-password-1' }
+    await seed(payload, options)
+    const before = await payload.find({ collection: 'creator-profiles', draft: true, limit: 50, depth: 0, sort: 'code' })
+    await seed(payload, { ...options, demoCreators: false, resetDemoCreators: true })
+    expect((await payload.count({ collection: 'creator-profiles' })).totalDocs).toBe(0)
+    expect((await payload.count({ collection: 'users', where: { email: { like: '@demo.test' } } })).totalDocs).toBe(0)
+    expect((await payload.count({ collection: 'bookings' })).totalDocs).toBe(0)
+    expect((await payload.count({ collection: 'media', where: { id: { in: before.docs.map((p) => p.photo as number) } } })).totalDocs).toBe(0)
+    await seed(payload, { ...options, resetDemoCreators: true })
+    const after = await payload.find({ collection: 'creator-profiles', draft: true, limit: 50, depth: 0, sort: 'code' })
+    expect(after.docs.map((p) => p.code)).toEqual(before.docs.map((p) => p.code))
+    expect((await payload.find({ collection: 'bookings', depth: 0, overrideAccess: true })).docs.map((b) => b.reference)).toEqual(['Q-D2222'])
+  }, 240_000)
 })
 
 describe('003 seed: Quick Match wording, no invented prices', () => {

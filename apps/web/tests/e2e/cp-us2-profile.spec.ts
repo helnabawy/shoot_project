@@ -1,9 +1,11 @@
 import { expect, test, type Page } from '@playwright/test'
 import { adminToken, auth, expectNoSeriousA11yIssues } from './helpers'
 import { setQuickMatch } from './helpers'
+import { DEMO_CREATORS } from '../../src/shared/payload/seed/demo-creators.data'
 
 // Demo seed: D2222 Sara (photographer, 4 samples, featured), D7777 Maya (photo + video, 4 samples),
-// D6666 Kareem (no samples), D5555 Noor (in review), D8888 Zane (paused).
+// D6666 Kareem (no samples), D5555 Noor (in review), D8888 Zane (paused). Names come from the seed data.
+const SARA = DEMO_CREATORS.find((c) => c.code === 'D2222')!.name
 const asked = (page: Page) => page.locator('[data-current="true"]')
 
 /** Answers whatever step is asked until the brief is complete (independent of the CMS's options). */
@@ -34,7 +36,7 @@ test.describe('CP-US2 view a creator profile', () => {
   test('@smoke CP-US2-S1 CP-FR-007 the profile renders every section from the data, and the code redirects to one address', async ({ page }, info) => {
     await page.goto('/creators/CR-D2222')
     await expect(page).toHaveURL(/\/creators\/d2222$/)
-    await expect(page.getByRole('heading', { level: 1 })).toContainText(info.project.name === 'ar-mobile' ? '(تجريبي)' : 'Sara Demo')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(info.project.name === 'ar-mobile' ? SARA.ar : SARA.en)
     await expect(page.getByTestId('profile-code')).toContainText('CR-D2222')
     await expect(page.getByTestId('badge-verified')).toBeVisible()
     await expect(page.getByTestId('profile-book')).toBeVisible()
@@ -104,7 +106,7 @@ test.describe('CP-US2 view a creator profile', () => {
       await expect(page.getByTestId('profile-code').locator('bdi')).toHaveAttribute('dir', 'ltr')
     } else {
       await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
-      await expect(page.getByTestId('profile-book')).toContainText('Book with Sara Demo')
+      await expect(page.getByTestId('profile-book')).toContainText(`Book with ${SARA.en}`)
     }
   })
 })
@@ -120,7 +122,7 @@ test.describe('CP-US2-S2 booking a creator', () => {
     await page.getByTestId('profile-book').click()
     await expect(page).toHaveURL(/\/book\/d2222$/)
     const chip = page.getByTestId('brief-creator-chip')
-    await expect(chip).toContainText('Sara Demo')
+    await expect(chip).toContainText(SARA.en)
     await expect(chip).toContainText('CR-D2222')
     // The professional is already answered and locked; the first thing asked is the next step.
     await expect(page.getByTestId('brief-sentence')).toContainText('I need a photographer for')
@@ -134,7 +136,7 @@ test.describe('CP-US2-S2 booking a creator', () => {
     const reference = (await page.getByTestId('brief-reference').textContent())!.match(/B-[0-9A-Z]{5}/)![0]
     const wa = decodeURIComponent((await page.getByTestId('brief-open-whatsapp').getAttribute('href'))!)
     expect(wa).toContain('I need a photographer for')
-    expect(wa).toContain('Creator: Sara Demo (CR-D2222)')
+    expect(wa).toContain(`Creator: ${SARA.en} (CR-D2222)`)
     await (await popup).close()
 
     const token = await adminToken(request)

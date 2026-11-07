@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto'
 import type { CollectionSlug, Payload } from 'payload'
 import sharp from 'sharp'
+import { avatarSvg } from './avatars'
+import { DEMO_CREATORS } from './demo-creators.data'
 
 const context = { disableRevalidate: true }
 
@@ -18,29 +20,6 @@ export function assertDemoHostAllowed(siteUrl: string | undefined): void {
   }
 }
 
-interface Demo {
-  code: string
-  email: string
-  name: { en: string; ar: string }
-  bio: { en: string; ar: string }
-  personas: string[]
-  specialties: string[]
-  cities: string[]
-  languages: string[]
-  samples: number
-  state: 'live' | 'live-featured' | 'in-review' | 'paused'
-}
-
-const DEMOS: Demo[] = [
-  { code: 'D2222', email: 'demo-sara@demo.test', name: { en: 'Sara Demo', ar: 'سارة (تجريبي)' }, bio: { en: 'Demo profile. Portraits and weddings.', ar: 'ملف تجريبي. بورتريه وأعراس.' }, personas: ['photographer'], specialties: ['portrait', 'wedding-engagement'], cities: ['dubai-marina'], languages: ['en', 'ar'], samples: 4, state: 'live-featured' },
-  { code: 'D3333', email: 'demo-omar@demo.test', name: { en: 'Omar Demo', ar: 'عمر (تجريبي)' }, bio: { en: 'Demo profile. Events and corporate video.', ar: 'ملف تجريبي. فعاليات وفيديو للشركات.' }, personas: ['videographer'], specialties: ['events', 'corporate-branding'], cities: ['al-ain'], languages: ['en', 'ar', 'ur'], samples: 4, state: 'live' },
-  { code: 'D4444', email: 'demo-lina@demo.test', name: { en: 'Lina Demo', ar: 'لينا (تجريبي)' }, bio: { en: 'Demo profile. Fashion and beauty.', ar: 'ملف تجريبي. أزياء وجمال.' }, personas: ['photographer'], specialties: ['fashion-beauty', 'portrait'], cities: ['sharjah'], languages: ['en', 'fr'], samples: 4, state: 'live' },
-  { code: 'D5555', email: 'demo-noor@demo.test', name: { en: 'Noor Demo', ar: 'نور (تجريبي)' }, bio: { en: 'Demo profile awaiting review.', ar: 'ملف تجريبي بانتظار المراجعة.' }, personas: ['photographer'], specialties: ['portrait'], cities: ['dubai'], languages: ['en'], samples: 2, state: 'in-review' },
-  { code: 'D6666', email: 'demo-kareem@demo.test', name: { en: 'Kareem Demo', ar: 'كريم (تجريبي)' }, bio: { en: 'Demo profile with no samples yet.', ar: 'ملف تجريبي بلا نماذج بعد.' }, personas: ['photographer'], specialties: ['real-estate-architecture'], cities: ['dubai'], languages: ['en', 'ar'], samples: 0, state: 'live' },
-  { code: 'D7777', email: 'demo-maya@demo.test', name: { en: 'Maya Demo', ar: 'مايا (تجريبي)' }, bio: { en: 'Demo profile. Photo and video.', ar: 'ملف تجريبي. صور وفيديو.' }, personas: ['photographer', 'videographer'], specialties: ['events', 'portrait'], cities: ['dubai', 'abu-dhabi'], languages: ['en', 'ar', 'hi'], samples: 4, state: 'live' },
-  { code: 'D8888', email: 'demo-zane@demo.test', name: { en: 'Zane Demo', ar: 'زين (تجريبي)' }, bio: { en: 'Demo profile, paused by its owner.', ar: 'ملف تجريبي أوقفه صاحبه.' }, personas: ['videographer'], specialties: ['events'], cities: ['sharjah'], languages: ['en'], samples: 3, state: 'paused' },
-]
-
 const PALETTE = ['#B9A58F', '#8FA8B9', '#A8B98F', '#B98F9C', '#9C8FB9', '#B9B08F']
 
 /** A flat colour square with its number: obviously a placeholder, never mistaken for photography. */
@@ -48,6 +27,54 @@ async function placeholderImage(index: number): Promise<Buffer> {
   const colour = PALETTE[index % PALETTE.length]!
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900"><rect width="1200" height="900" fill="${colour}"/><text x="600" y="520" font-family="sans-serif" font-size="260" fill="#1D1D1F" text-anchor="middle">${index + 1}</text></svg>`
   return sharp(Buffer.from(svg)).png().toBuffer()
+}
+
+/** The creator's illustrated portrait as a 512 px WebP. */
+function portraitImage(demo: (typeof DEMO_CREATORS)[number]): Promise<Buffer> {
+  return sharp(Buffer.from(avatarSvg(demo.avatar))).webp({ quality: 86 }).toBuffer()
+}
+
+/**
+ * Removes every demo creator (any profile whose account is on @demo.test) and what hangs off them:
+ * their bookings and those bookings' records, their briefs, availability, photos and samples, and
+ * their accounts. Local and test hosts only; used before re-seeding a fresh demo set.
+ */
+export async function removeDemoCreators(payload: Payload, options: { siteUrl?: string; log: (message: string) => void }): Promise<void> {
+  assertDemoHostAllowed(options.siteUrl)
+  const all = { depth: 0, limit: 0, pagination: false, overrideAccess: true } as const
+  const users = await payload.find({ collection: 'users', where: { email: { like: '@demo.test' } }, ...all })
+  const userIds = users.docs.filter((u) => u.email.endsWith('@demo.test')).map((u) => u.id)
+  if (userIds.length === 0) return options.log('Demo creators: none to remove')
+
+  const profiles = await payload.find({ collection: 'creator-profiles', where: { user: { in: userIds } }, draft: true, ...all })
+  const profileIds = profiles.docs.map((p) => p.id)
+  const mediaIds = new Set<number>()
+  for (const p of profiles.docs) {
+    if (typeof p.photo === 'number') mediaIds.add(p.photo)
+    for (const sample of p.samples ?? []) if (typeof sample.image === 'number') mediaIds.add(sample.image)
+  }
+
+  const bookings = profileIds.length ? await payload.find({ collection: 'bookings', where: { 'assignments.creator': { in: profileIds } }, ...all }) : { docs: [] }
+  const bookingIds = bookings.docs.map((b) => b.id)
+  const briefIds = new Set<number>(bookings.docs.map((b) => (typeof b.brief === 'number' ? b.brief : b.brief.id)))
+  if (profileIds.length) {
+    const briefs = await payload.find({ collection: 'briefs', where: { creator: { in: profileIds } }, ...all })
+    for (const b of briefs.docs) briefIds.add(b.id)
+  }
+
+  const remove = (collection: CollectionSlug, where: Record<string, unknown>) => payload.delete({ collection, where: where as never, overrideAccess: true, context })
+  if (bookingIds.length) {
+    for (const collection of ['payments', 'booking-events', 'notifications', 'quotations', 'availability-blocks'] as const) {
+      await remove(collection, { booking: { in: bookingIds } })
+    }
+    await remove('bookings', { id: { in: bookingIds } })
+  }
+  if (profileIds.length) await remove('availability-blocks', { creator: { in: profileIds } })
+  if (briefIds.size) await remove('briefs', { id: { in: [...briefIds] } })
+  if (profileIds.length) await remove('creator-profiles', { id: { in: profileIds } })
+  if (mediaIds.size) await remove('media', { id: { in: [...mediaIds] } })
+  await remove('users', { id: { in: userIds } })
+  options.log(`Demo creators removed: ${profileIds.length} profiles, ${bookingIds.length} bookings, ${briefIds.size} briefs, ${mediaIds.size} images`)
 }
 
 /** Creates the demo creators. Idempotent by code; throws on a non-local host. */
@@ -63,7 +90,7 @@ export async function seedDemoCreators(
   }
 
   let imageCounter = 0
-  for (const demo of DEMOS) {
+  for (const demo of DEMO_CREATORS) {
     const existing = await payload.find({ collection: 'creator-profiles', where: { code: { equals: demo.code } }, limit: 1, depth: 0, draft: true })
     if (existing.docs[0]) continue
 
@@ -85,7 +112,13 @@ export async function seedDemoCreators(
     }
 
     const specialties = await Promise.all(demo.specialties.map((s) => bySlug('categories', s)))
-    const photo = await uploadPlaceholder('portrait')
+    const portrait = await portraitImage(demo)
+    const photo = await payload.create({
+      collection: 'media',
+      data: { alt: `Illustrated portrait of ${demo.name.en}, a demo creator` },
+      file: { data: portrait, mimetype: 'image/webp', name: `demo-${demo.code.toLowerCase()}-portrait.webp`, size: portrait.length },
+      context,
+    })
     const samples = []
     for (let i = 0; i < demo.samples; i += 1) {
       const image = await uploadPlaceholder(`sample ${i + 1}`)
@@ -99,6 +132,9 @@ export async function seedDemoCreators(
       specialties,
       cities: await Promise.all(demo.cities.map((s) => bySlug('locations', s))),
       languages: demo.languages,
+      gender: demo.gender,
+      nationality: demo.nationality,
+      yearsExperience: demo.yearsExperience,
       photo: photo.id,
       samples,
     }
@@ -129,7 +165,7 @@ export async function seedDemoCreators(
     if (demo.state === 'live-featured') await payload.update({ collection: 'creator-listings', id: listing.id, data: { featured: true }, context })
     if (demo.state === 'paused') await payload.update({ collection: 'creator-listings', id: listing.id, data: { active: false }, context })
   }
-  options.log(`Demo creators: ${DEMOS.map((d) => d.code).join(', ')}`)
+  options.log(`Demo creators: ${DEMO_CREATORS.length} (${DEMO_CREATORS.map((d) => d.code).join(', ')})`)
 }
 
 export const demoPassword = (fromEnv: string | undefined): string => fromEnv || randomUUID()

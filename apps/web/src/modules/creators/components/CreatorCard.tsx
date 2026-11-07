@@ -40,7 +40,7 @@ export function CreatorCard({
       className="creator-card group flex h-full flex-col rounded-[14px] border border-hair bg-panel-solid p-5 text-start"
     >
       <span className="grid grid-cols-[64px_minmax(0,1fr)_20px] items-center gap-4">
-        <PhotoTile photo={creator.photo} initials={view.initials} size="lg" />
+        <PhotoTile photo={creator.photo} initials={view.initials} size="lg" eager />
         <span className="min-w-0">
           <span className="flex items-center gap-1.5">
             <span className="truncate text-[17px] font-semibold leading-snug tracking-[-0.01em] text-ink">

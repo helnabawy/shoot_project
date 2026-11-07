@@ -5,7 +5,7 @@ test.describe('QM-US3 the creator confirms and the booking proceeds', () => {
   test('QM-US3-S1 QM-US3-S4 accept → creator confirms → payment recorded → scheduled → delivered → client confirms', async ({ page, browser, request }, info) => {
     test.skip(info.project.name !== 'desktop', 'one full journey is enough; the screens are covered per project elsewhere')
     await briefToStep2(page)
-    // Sara Demo (D2222) works in Dubai Marina, so she is listed for a Dubai brief.
+    // Sara Al Mansoori (D2222) works in Dubai Marina, so she is listed for a Dubai brief.
     await page.locator('[data-testid="match-creator"][data-code="D2222"]').click()
     await page.getByLabel('Your name').fill('Layla Hassan')
     await page.getByLabel('WhatsApp number').fill('+971501234567')

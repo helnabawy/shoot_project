@@ -77,7 +77,14 @@
     "searchPrompt": "Type what you're looking for",
     "typeToChange": "type to change any part",
     "continue": "Continue",
-    "stepOf": "{step} of {total}"
+    "stepOf": "{step} of {total}",
+    "preview": {
+      "group": "{types} free for this · {price}",
+      "groupNoPrice": "{types} free for this",
+      "loading": "Finding who's free…",
+      "none": "No one is free for this yet. See who's free for other options.",
+      "more": "+{count} more on the next step"
+    }
   },
   "auth": {
     "loginTitle": "Log in",
@@ -154,6 +161,7 @@
     "whatsapp": "Ask us on WhatsApp"
   },
   "footer": {
+    "contact": "Contact",
     "rights": "All rights reserved.",
     "social": "Follow us",
     "legal": "Legal"
@@ -199,6 +207,7 @@
       "languages": "Speaks",
       "topHit": "Top hit",
       "actions": "Actions",
+      "about": "About",
       "book": "Book with {name}",
       "ask": "Ask on WhatsApp",
       "askMessage": "Hi! I have a question about {name} ({code}).",

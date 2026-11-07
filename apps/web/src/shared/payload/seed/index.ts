@@ -10,6 +10,7 @@ try {
     adminPassword: process.env.SEED_ADMIN_PASSWORD,
     // Local/e2e only: refused unless NEXT_PUBLIC_SITE_URL is a local or test host.
     demoCreators: process.env.SEED_DEMO_CREATORS === '1',
+    resetDemoCreators: process.env.SEED_DEMO_RESET === '1',
     demoGuides: process.env.SEED_DEMO_GUIDES === '1',
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
     demoPassword: process.env.SEED_ADMIN_PASSWORD,

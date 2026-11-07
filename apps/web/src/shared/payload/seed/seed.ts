@@ -1,11 +1,11 @@
 import type { CollectionSlug, Payload } from 'payload'
 import { briefSlots, categories, landingPage, locations, optionSets, personas, siteSettings } from './content'
-import { demoPassword, seedDemoCreators } from './demo-creators'
+import { demoPassword, removeDemoCreators, seedDemoCreators } from './demo-creators'
 import { seedDemoGuides } from './demo-guides'
 import { seedLegalDocuments } from './legal'
 import { seedStudiosPage } from './pages'
 import { pickLocale, withRowIds } from './localize'
-import { describeDemoCreators, occasionCategories, quickMatchSettings, seedDemoPrices, seedDemoQuickMatch } from './quick-match'
+import { occasionCategories, quickMatchSettings, seedDemoPrices, seedDemoQuickMatch } from './quick-match'
 
 const context = { disableRevalidate: true }
 type AnyDoc = Record<string, unknown> & { id: string | number }
@@ -29,6 +29,8 @@ export interface SeedOptions {
   log?: (message: string) => void
   /** Local/e2e only: also create demo creators (refused on non-local hosts). */
   demoCreators?: boolean
+  /** Local/e2e only: first remove every demo creator and what hangs off them, for a fresh demo set. */
+  resetDemoCreators?: boolean
   /** Local/e2e only: also create demo guides and an intent page (refused on non-local hosts). */
   demoGuides?: boolean
   siteUrl?: string
@@ -142,9 +144,11 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
   await seedStudiosPage(payload, log)
   await seedLegalDocuments(payload, { siteUrl: options.siteUrl ?? process.env.NEXT_PUBLIC_SITE_URL, log })
 
+  if (options.resetDemoCreators) {
+    await removeDemoCreators(payload, { siteUrl: options.siteUrl, log })
+  }
   if (options.demoCreators) {
     await seedDemoCreators(payload, { siteUrl: options.siteUrl, password: demoPassword(options.demoPassword), log })
-    await describeDemoCreators(payload, log)
     await seedDemoPrices(payload, log)
     await seedDemoQuickMatch(payload, log)
   }

@@ -29,6 +29,16 @@ describe('CP-US2-S1 profile', () => {
     expect(header.textContent).not.toMatch(/female|woman/i)
   })
 
+  it('CP-US2-S1 keeps the Top Hit before the secondary facts, so it stays above the fold on a 360 × 640 phone', () => {
+    render({ view: profileView({ nationality: 'United Arab Emirates', yearsExperience: 8 }) })
+    const book = screen.getByTestId('profile-book')
+    const about = screen.getByTestId('profile-about')
+    // The deciding facts (verified, types, shoots, places) lead; then the booking; then the rest under "About".
+    expect(book.compareDocumentPosition(about) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    for (const text of ['English · Arabic', '8 years', 'United Arab Emirates']) expect(within(about).getByText(text)).toBeInTheDocument()
+    expect(within(about).queryByText('Dubai Marina · Abu Dhabi')).toBeNull()
+  })
+
   it('CP-FR-011 leaves out experience and nationality when not given', () => {
     render()
     expect(screen.queryByText('Experience')).toBeNull()

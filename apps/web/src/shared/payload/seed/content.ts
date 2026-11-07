@@ -201,7 +201,7 @@ export const landingPage = {
       heading: { en: 'Our network', ar: 'شبكتنا' },
       subheading: { en: 'Meet the people behind the shoots.', ar: 'تعرّف على من يقف وراء الجلسات.' },
       rule: 'featuredThenNewest',
-      count: 6,
+      count: 12,
       cta: { label: { en: 'See everyone', ar: 'عرض الجميع' }, kind: 'link', href: '/creators' },
     },
     {
@@ -252,13 +252,6 @@ export const landingPage = {
         { question: { en: 'Which emirates do you cover?', ar: 'ما الإمارات التي تغطّونها؟' }, answer: rt('Pick any emirate in the brief. If we cannot cover it, we will tell you straight away.', 'اختر أي إمارة في الطلب. وإن لم نتمكن من تغطيتها سنخبرك فوراً.') },
         { question: { en: "Can I describe something that isn't in the list?", ar: 'هل يمكنني وصف شيء غير موجود في القائمة؟' }, answer: rt('Yes. Type your own words in the occasion, or choose "something else" and tell us on WhatsApp.', 'نعم. اكتب كلماتك في خانة المناسبة، أو اختر «شيء آخر» وأخبرنا عبر واتساب.') },
       ],
-    },
-    {
-      blockType: 'callToAction',
-      heading: { en: 'Ready when you are', ar: 'نحن جاهزون متى شئت' },
-      body: { en: 'Describe your shoot above, or message us now.', ar: 'صِف التصوير في الأعلى، أو راسلنا الآن.' },
-      primary: { label: { en: 'Start a brief', ar: 'ابدأ طلباً' }, kind: 'link', href: '#brief' },
-      secondary: { label: { en: 'WhatsApp us', ar: 'راسلنا على واتساب' }, kind: 'whatsapp' },
     },
   ],
   seo: {

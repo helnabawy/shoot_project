@@ -139,3 +139,31 @@ export async function getMatchPage(brief: BriefRecord, locale: Locale, now: Date
       : []
   return { brief, facts, sections, total: quotePrice(rules, { ...base, personaIds: sections.map((s) => s.persona.id) }), nearby }
 }
+
+/**
+ * The facts of a brief that is not saved yet (US1-S7, FR-014): the bar's answers as a brief-shaped record, so
+ * the preview in the bar and step 2 run the same rules. Unknown tokens and over-long values are ignored.
+ */
+export async function briefFromAnswers(
+  answers: { values: Record<string, string>; custom: Record<string, boolean> },
+  locale: Locale,
+): Promise<BriefRecord | null> {
+  const [landing, personas] = await Promise.all([getLandingPage({ locale }), getActivePersonas(locale)])
+  const slots = landing.briefBuilder?.slots ?? []
+  const personaSlot = slots.find((s) => s.kind === 'persona')
+  if (!personaSlot) return null
+  const raw = (answers.values[personaSlot.token] ?? '').slice(0, 200)
+  const ids = raw
+    .split(',')
+    .map((slug) => personas.find((p) => p.slug === slug.trim())?.id)
+    .filter((id): id is string => Boolean(id))
+  if (!ids.length) return null
+  const selections = slots.map((slot) => ({
+    token: slot.token,
+    value: String(answers.values[slot.token] ?? '').slice(0, 100),
+    custom: Boolean(answers.custom[slot.token]),
+  }))
+  const dateSlot = slots.find((s) => s.kind === 'date')
+  const date = dateSlot ? answers.values[dateSlot.token] : undefined
+  return { persona: ids.map(Number), selections, date: date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null } as unknown as BriefRecord
+}
