@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-06
 
-**Status**: Draft (spec only — run `/speckit-plan` after feature 001 ships)
+**Status**: Planned (plan, research, data model, contracts, quickstart and tasks written 2026-11-07; merged with a parallel plan, see research §19; next `/speckit-analyze`)
 
 **Input**: Inspired by shootix.ae: "Our network" creator cards, the recommended-creators page, specialty pages with sample and professional counts, "Pick your own pro" / "Find your professional" actions, verified badge.
 
@@ -32,8 +32,9 @@ correctly, and each card opens the creator's profile.
    the editor's rule (featured first, then newest) with a link to the
    directory.
 2. **Given** the directory, **When** the visitor filters by professional
-   type and specialty, **Then** only matching creators are listed, in the
-   configured order, with counts shown per filter.
+   type and specialty, **Then** only matching creators are listed, featured
+   creators first and then the most recently verified, with counts shown per
+   filter (featuring a creator is the editor's way to set the order).
 3. **Given** an unverified or deactivated creator, **When** any public page
    renders, **Then** that creator never appears.
 
@@ -56,7 +57,8 @@ data; the CTA leads to the brief builder with the creator pre-selected.
    loading, within the performance budgets.
 2. **Given** the profile, **When** the visitor taps "Book with this
    creator", **Then** the brief builder opens with the creator fixed and the
-   professional type set to the creator's.
+   professional type set to the creator's; when the creator offers several
+   professional types, the visitor chooses among those types only.
 
 ---
 
@@ -86,14 +88,28 @@ Each category has a public page listing creators and samples for that
 specialty with counts ("428 samples, 43 pros"), reachable from the landing
 grid, with per-language SEO text.
 
+**Acceptance Scenarios**:
+
+1. **Given** listed creators with samples in a specialty, **When** a visitor
+   opens that specialty's page, **Then** it lists those creators and their
+   samples with counts of samples and professionals computed from them;
+   counts are not shown when they are zero.
+2. **Given** the landing page's specialties section, **When** the visitor
+   taps a specialty, **Then** its page opens with a title, description and
+   introduction in the visitor's language (English when no translation
+   exists).
+
 ### Edge Cases
 
 - Creator with no samples: profile shows an "awaiting samples" state and is
   not featured.
-- Creator deactivates their account: profile hidden, existing briefs keep
-  the reference.
-- Persona deactivated: its creators' profiles remain reachable by direct
-  link but are not listed.
+- Creator pauses their profile: it is hidden everywhere at once, direct link
+  included, until they resume; existing briefs keep the reference. An
+  account that has a profile is not deleted; an admin suspends the profile
+  instead, which also hides it at once without publishing any pending edits.
+- Persona deactivated (no longer part of the site's audience): its
+  creators' profiles remain reachable by direct link but are not listed, and
+  providers cannot newly choose it.
 - Very large sample uploads: rejected above the size limit with a message.
 
 ## Requirements *(mandatory)*
