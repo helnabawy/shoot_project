@@ -34,7 +34,11 @@ export const viewport: Viewport = {
   ],
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'meta' })
   return {
@@ -44,10 +48,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-// Adds .js to <html> before first paint so JavaScript-only controls never flash or shift.
-const JS_FLAG = `document.documentElement.classList.add('js')`
-
-export default async function SiteLayout({ children, params }: { children: ReactNode; params: Promise<{ locale: string }> }) {
+export default async function SiteLayout({
+  children,
+  params,
+}: {
+  children: ReactNode
+  params: Promise<{ locale: string }>
+}) {
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) notFound()
   setRequestLocale(locale)
@@ -64,14 +71,17 @@ export default async function SiteLayout({ children, params }: { children: React
   return (
     <html lang={locale} dir={dirFor(locale)} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: JS_FLAG }} />
+        <JsFlag />
       </head>
       <body className="antialiased">
-        <JsFlag />
-        <a href="#content" className="sr-only focus:not-sr-only focus:fixed focus:start-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-ground">
+        <a
+          href="#content"
+          className="sr-only focus:not-sr-only focus:fixed focus:start-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-ground"
+        >
           {t('skipToContent')}
         </a>
         <ThemeProvider>
+          <div className="sticky top-0 z-40">
             {preview ? <ExitPreviewBar /> : null}
             <Header
               locale={typed}
@@ -83,18 +93,23 @@ export default async function SiteLayout({ children, params }: { children: React
                 ...nav.header.map((n) => ({ label: n.label, target: n.href })),
               ]}
             />
-            <main id="content">{children}</main>
-            <Footer
-              locale={typed}
-              siteName={settings.siteName}
-              social={(settings.social ?? []).map((s) => ({ platform: s.platform, url: s.url }))}
-              contactEmail={settings.contactEmail}
-              phoneNumber={settings.phoneNumber}
-              groups={nav.footerGroups}
-              legal={nav.legal}
-            />
-            <FloatingWhatsApp number={settings.whatsappNumber} message={settings.whatsappDefaultMessage} label={tContact('whatsappFloating')} />
-          </ThemeProvider>
+          </div>
+          <main id="content">{children}</main>
+          <Footer
+            locale={typed}
+            siteName={settings.siteName}
+            social={(settings.social ?? []).map((s) => ({ platform: s.platform, url: s.url }))}
+            contactEmail={settings.contactEmail}
+            phoneNumber={settings.phoneNumber}
+            groups={nav.footerGroups}
+            legal={nav.legal}
+          />
+          <FloatingWhatsApp
+            number={settings.whatsappNumber}
+            message={settings.whatsappDefaultMessage}
+            label={tContact('whatsappFloating')}
+          />
+        </ThemeProvider>
       </body>
     </html>
   )

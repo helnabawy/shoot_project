@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { Suspense, type ReactNode } from 'react'
 import { cx } from '@/shared/ui/bar'
 import { stripLocale } from './href'
 
@@ -10,6 +10,8 @@ export interface LocaleSwitcherProps {
   label: string
   ariaLabel: string
   className?: string
+  /** Drawn before the label (decorative). */
+  icon?: ReactNode
 }
 
 /**
@@ -29,7 +31,14 @@ function WithQuery(props: LocaleSwitcherProps) {
   return <Switch {...props} query={useSearchParams().toString()} />
 }
 
-function Switch({ target, label, ariaLabel, className, query }: LocaleSwitcherProps & { query: string }) {
+function Switch({
+  target,
+  label,
+  ariaLabel,
+  className,
+  icon,
+  query,
+}: LocaleSwitcherProps & { query: string }) {
   const router = useRouter()
   const path = stripLocale(usePathname() || '/')
   const suffix = query ? `?${query}` : ''
@@ -41,15 +50,24 @@ function Switch({ target, label, ariaLabel, className, query }: LocaleSwitcherPr
       lang={target}
       aria-label={ariaLabel}
       data-testid="locale-switcher"
-      className={cx('rounded-md px-2 py-1.5 text-[14px] font-medium text-mute hover:text-ink', className)}
+      className={cx(
+        'rounded-md px-2 py-1.5 text-[14px] font-medium text-mute hover:text-ink',
+        className,
+      )}
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
         event.preventDefault()
         document.cookie = `NEXT_LOCALE=${target}; path=/; max-age=31536000; samesite=lax`
-        const visible = target === 'en' ? `${path}${suffix}` : `/${target}${path === '/' ? '' : path}${suffix}`
+        const visible =
+          target === 'en' ? `${path}${suffix}` : `/${target}${path === '/' ? '' : path}${suffix}`
         router.replace(`${visible}${window.location.hash}`, { scroll: false })
       }}
     >
+      {icon ? (
+        <span aria-hidden="true" className="contents">
+          {icon}
+        </span>
+      ) : null}
       {label}
     </a>
   )

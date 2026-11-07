@@ -1,14 +1,21 @@
 'use client'
 
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect, useSyncExternalStore } from 'react'
+
+// Adds .js to <html> before first paint so JavaScript-only controls never flash or shift.
+const SCRIPT = `document.documentElement.classList.add('js')`
+const subscribe = () => () => {}
 
 /**
- * Keeps `.js` on <html> after a client-side locale switch. The inline head script adds it before
- * first paint, but switching language remounts <html> and React never re-runs that script.
+ * Puts `.js` on <html>. The inline script ships in the server HTML (and is kept through hydration)
+ * so the class is there before first paint. A client render — switching language remounts <html> —
+ * never creates it: React cannot run a script it renders and warns about it, and the layout effect
+ * adds the class instead.
  */
 export function JsFlag() {
+  const inServerHtml = useSyncExternalStore(subscribe, () => false, () => true)
   useLayoutEffect(() => {
     document.documentElement.classList.add('js')
   }, [])
-  return null
+  return inServerHtml ? <script dangerouslySetInnerHTML={{ __html: SCRIPT }} /> : null
 }

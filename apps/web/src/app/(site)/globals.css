@@ -215,6 +215,41 @@
 }
 
 @layer components {
+  /* The site header is the window toolbar. At the top of the page it is the bare ground; once the
+     page moves it frosts the ground behind it and draws its hairline, scroll-driven where the browser
+     supports it and always on where it does not. No shadow (The One Shadow Rule). */
+  .toolbar {
+    background: var(--ground);
+    border-block-end: 1px solid var(--hair);
+  }
+  @supports ((backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))) {
+    .toolbar {
+      background: color-mix(in srgb, var(--ground) 80%, transparent);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      backdrop-filter: blur(20px) saturate(1.4);
+    }
+  }
+  @supports (animation-timeline: scroll()) {
+    .toolbar {
+      animation: toolbar-settle linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 48px;
+    }
+  }
+  /* The toolbar's own backdrop-filter is the backdrop root for anything inside it, so the phone
+     menu's panel could only blur the toolbar, not the page: it takes the opaque panel instead. */
+  .toolbar .bar-panel {
+    background: var(--panel-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  @keyframes toolbar-settle {
+    from {
+      background-color: transparent;
+      border-block-end-color: transparent;
+    }
+  }
+
   .bar-panel {
     background: var(--panel-solid);
     border: 1px solid var(--hair);

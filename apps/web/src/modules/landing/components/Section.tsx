@@ -45,7 +45,7 @@ export function Section({
             !wide && 'lg:grid lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-x-16',
           )}
         >
-          <div className={cx(!wide && 'lg:sticky lg:top-8 lg:self-start')}>
+          <div className={cx(!wide && 'lg:sticky lg:top-23 lg:self-start')}>
             {heading ? (
               <h2
                 className={cx(
