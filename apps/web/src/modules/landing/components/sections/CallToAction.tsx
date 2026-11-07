@@ -13,8 +13,8 @@ export function CallToAction({
   locale: string
 }) {
   return (
-    <Section id={block.anchor} heading={block.heading} subheading={block.body}>
-      <div className="-mx-2 grid gap-1">
+    <Section id={block.anchor} heading={block.heading} subheading={block.body} emphasis>
+      <div className="-mx-2 grid gap-1 lg:pt-1">
         <CtaLink cta={block.primary} contact={contact} locale={locale} />
         <CtaLink cta={block.secondary} contact={contact} locale={locale} variant="secondary" />
       </div>

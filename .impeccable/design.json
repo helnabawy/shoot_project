@@ -608,6 +608,10 @@
         "displayName": "Section Title",
         "purpose": "Below-the-fold section headings on the ground."
       },
+      "section-title-emphasis": {
+        "displayName": "Section Title Emphasis",
+        "purpose": "The closing call to action's heading: 30 px, 38 px from 640 px."
+      },
       "field": {
         "displayName": "Field",
         "purpose": "The composed brief sentence in the bar."
@@ -706,7 +710,7 @@
       {
         "name": "disclosure",
         "value": "transform 150ms",
-        "purpose": "FAQ chevron rotates 90deg when open."
+        "purpose": "FAQ chevron (in a 28 px tile) rotates 90deg when open; -90deg in RTL so it points down in Arabic too."
       },
       {
         "name": "caret-blink",
@@ -742,6 +746,10 @@
       {
         "name": "md",
         "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
       }
     ]
   },
@@ -790,9 +798,9 @@
       "name": "Glyph Tile",
       "kind": "chip",
       "refersTo": "glyph-tile",
-      "description": "30 px tile leading every row: up to 3 localised characters or a drawn icon.",
-      "html": "<div style=\"display:flex;gap:8px\"><span class=\"ds-tile\">AUH</span><span class=\"ds-tile\">2h</span><span class=\"ds-tile ds-tile-set\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4.5 10.5 3.5 3.5 7.5-8\"/></svg></span></div>",
-      "css": ".ds-tile { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; line-height: 1; letter-spacing: -0.025em; } .ds-tile-set { background: var(--accent, #0a60ff); color: var(--on-accent, #fff); } .ds-tile-accent { background: rgb(255 255 255 / 0.2); color: #fff; }"
+      "description": "30 px tile leading every row: up to 3 localised characters or a drawn icon. Tones: resting, set (selection blue), accent, ink (graphite, for step numbers).",
+      "html": "<div style=\"display:flex;gap:8px\"><span class=\"ds-tile\">AUH</span><span class=\"ds-tile\">2h</span><span class=\"ds-tile ds-tile-set\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4.5 10.5 3.5 3.5 7.5-8\"/></svg></span><span class=\"ds-tile ds-tile-ink\">1</span></div>",
+      "css": ".ds-tile { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; line-height: 1; letter-spacing: -0.025em; } .ds-tile-set { background: var(--accent, #0a60ff); color: var(--on-accent, #fff); } .ds-tile-accent { background: rgb(255 255 255 / 0.2); color: #fff; } .ds-tile-ink { background: var(--ink, #1d1d1f); color: var(--ground, #efe9e3); }"
     },
     {
       "name": "Text Field",
@@ -817,6 +825,14 @@
       "description": "Trailing control of the bar field: 44 px button holding a 30 px chevron tile that turns when the options drawer opens; aria-expanded / aria-controls.",
       "html": "<button class=\"ds-toggle\" type=\"button\" aria-expanded=\"false\" aria-label=\"Show options\"><span class=\"ds-toggle-tile\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 7.5 5 5 5-5\"/></svg></span></button>",
       "css": ".ds-toggle { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; border-radius: 9px; cursor: pointer; } .ds-toggle-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); transition: color 100ms; } .ds-toggle:hover .ds-toggle-tile { color: var(--ink, #1d1d1f); } .ds-toggle svg { transition: transform 300ms; } .ds-toggle[aria-expanded=\"true\"] svg { transform: rotate(180deg); }"
+    },
+    {
+      "name": "Step Timeline",
+      "kind": "custom",
+      "refersTo": "glyph-tile-ink",
+      "description": "How it works: ink number tiles joined by a hairline; vertical on phones, across from 640 px for four steps or fewer.",
+      "html": "<ol class=\"ds-steps\"><li><span class=\"ds-tile ds-tile-ink\">1</span><h3>Brief</h3><p>Tell us what you need in one line.</p></li><li><span class=\"ds-tile ds-tile-ink\">2</span><h3>Match</h3><p>We find a professional who is free.</p></li><li><span class=\"ds-tile ds-tile-ink\">3</span><h3>Shoot</h3><p>They show up and shoot.</p></li></ol>",
+      "css": ".ds-steps { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 24px; margin: 0; padding: 20px 0; list-style: none; border-bottom: 1px solid var(--hair, rgb(0 0 0 / 0.08)); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; } .ds-steps li { position: relative; display: grid; gap: 14px; align-content: start; } .ds-steps li:not(:last-child)::after { content: ''; position: absolute; inset-inline-start: 42px; inset-inline-end: -12px; top: 14.5px; height: 1px; background: var(--hair, rgb(0 0 0 / 0.08)); } .ds-steps h3 { margin: 0; font-size: 17px; font-weight: 600; color: var(--ink, #1d1d1f); } .ds-steps p { margin: 4px 0 0; max-width: 36ch; font-size: 15px; line-height: 1.625; color: var(--mute, #6b6560); } .ds-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; font-size: 11px; font-weight: 700; } .ds-tile-ink { background: var(--ink, #1d1d1f); color: var(--ground, #efe9e3); }"
     }
   ],
   "narrative": {
@@ -886,7 +902,7 @@
     ],
     "dos": [
       "Do put each task in one Brief Bar with exactly one Top Hit; secondary actions are ordinary rows in an \"Actions\" group.",
-      "Do build every list item as glyph tile, label, trailing slot at 44 px minimum height.",
+      "Do build every list item as glyph tile, label, trailing slot at 44 px minimum height; the step timeline and the feature cells may set the tile above title and body from 640 px.",
       "Do consume colour through role tokens and add any new role to `:root`, `.dark` and the `prefers-color-scheme` block together, with its pair in the contrast test.",
       "Do keep text pairs at WCAG AA in both themes: muted text is #6B6560 in light, and the dark accent is #2B6BEB, deepened for white text.",
       "Do use logical properties only and flip direction-bearing icons with `rtl:-scale-x-100`.",
@@ -911,6 +927,10 @@
       {
         "date": "2026-11-07",
         "note": "The owner asked for three changes explicitly. (1) The landing hero became a full-screen stage: the CMS photograph under a theme scrim, or a CSS studio sweep until a photo exists, with the CMS headline as the only visible title above the bar; the other-language headline line and the subheadline are no longer shown. This retires \"no moody photo hero\" and \"nothing painted on the page\" for the hero only. (2) The bar gained a glass tone for that stage, which brings its own sheen, inset highlight, edge and deeper shadow; the One Shadow and One Gradient rules now name these as hero-only exceptions. (3) The brief builder's options fold into a drawer under the Top Hit, open without JavaScript."
+      },
+      {
+        "date": "2026-11-07",
+        "note": "The owner asked to enhance the sections below the hero. From 1024 px each titled section became a settings-style pane out to the header's 1080 px (heading in a sticky start column, content in the end column); the strip under the stage set the helper hint against the trust chips; how it works became a timeline of graphite number tiles (step numbers no longer use selection blue); the reasons became a two-column hairline cell grid; the creator invitation runs as one wide bar; FAQ rows gained a hover tint and a chevron tile; the closing heading stepped up a size. The hero stage and the brief bar were not changed."
       }
     ]
   }

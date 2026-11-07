@@ -13,16 +13,19 @@ export function Faq({ block }: { block: FaqBlock }) {
         {items.map((item, i) => (
           <li key={item.id ?? i}>
             <details className="group">
-              <summary className="grid min-h-12 cursor-pointer list-none grid-cols-[minmax(0,1fr)_20px] items-center gap-3 px-4 py-3 text-[16px] font-medium text-ink [&::-webkit-details-marker]:hidden">
+              {/* The whole row is the target; hover tints it like a result row, open sets it semibold. */}
+              <summary className="grid min-h-13 cursor-pointer list-none grid-cols-[minmax(0,1fr)_28px] items-center gap-3 px-4 py-3.5 text-[16px] font-medium leading-snug text-ink transition-colors duration-100 hover:bg-ink/[0.035] focus-visible:-outline-offset-2 group-open:font-semibold [&::-webkit-details-marker]:hidden">
                 <span>{item.question}</span>
-                <ChevronIcon
-                  width={16}
-                  height={16}
-                  className="text-mute group-open:rotate-90 motion-safe:transition-transform motion-safe:duration-150"
-                />
+                <span className="grid size-7 place-items-center rounded-[var(--radius-tile)] bg-tile text-tile-ink">
+                  <ChevronIcon
+                    width={14}
+                    height={14}
+                    className="group-open:rotate-90 rtl:group-open:-rotate-90 motion-safe:transition-transform motion-safe:duration-150"
+                  />
+                </span>
               </summary>
               {item.answer ? (
-                <div className="px-4 pb-4 text-[15px] leading-relaxed text-mute [&_p+p]:mt-2">
+                <div className="max-w-[62ch] px-4 pt-0.5 pb-5 text-[15px] leading-relaxed text-pretty text-mute [&_p+p]:mt-2">
                   <RichText data={item.answer} />
                 </div>
               ) : null}

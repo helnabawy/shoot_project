@@ -5,7 +5,10 @@ import { CtaLink, type ContactDetails } from '@/shared/components/CtaLink'
 import { BriefBar, ResultRow } from '@/shared/ui/bar'
 import { Section } from '../Section'
 
-/** The creator invitation: the second (smaller) bar on the page, with its own Top Hit. */
+/**
+ * The creator invitation: the second (smaller) bar on the page, with its own Top Hit. From 1024 px
+ * it runs the full section width with the invitation at the start and its Top Hit at the end.
+ */
 export function PersonaBand({
   block,
   personas,
@@ -20,19 +23,25 @@ export function PersonaBand({
   if (personas.length === 0) return null
   const fill = (text?: string | null) =>
     text ? interpolatePersonaCopy(text, personas, { locale }) : ''
+  const rows = block.layout === 'perPersona'
   return (
     <Section id={block.anchor}>
-      <BriefBar size="sm">
-        <div className="border-b border-hair px-4 pt-4 pb-3">
+      <BriefBar
+        size="sm"
+        className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:items-center"
+      >
+        <div className="border-b border-hair px-4 pt-4 pb-3.5 sm:px-5 sm:pt-5 lg:border-b-0 lg:py-6 lg:ps-7">
           <h2 className="text-[22px] font-bold leading-tight tracking-[-0.02em] text-ink text-balance">
             {fill(block.heading)}
           </h2>
           {block.body ? (
-            <p className="mt-1.5 text-[15px] leading-relaxed text-mute">{fill(block.body)}</p>
+            <p className="mt-1.5 max-w-[52ch] text-[15px] leading-relaxed text-pretty text-mute">
+              {fill(block.body)}
+            </p>
           ) : null}
         </div>
-        {block.layout === 'perPersona' ? (
-          <div className="py-1">
+        {rows ? (
+          <div className="py-1 lg:col-span-2 lg:row-start-2 lg:border-t lg:border-hair lg:py-1.5">
             {personas.map((p) => (
               <ResultRow
                 key={p.id}
@@ -45,7 +54,7 @@ export function PersonaBand({
             ))}
           </div>
         ) : null}
-        <div className="py-2">
+        <div className="py-2 lg:col-start-2 lg:row-start-1 lg:py-0 lg:pe-2">
           <CtaLink cta={block.cta} contact={contact} locale={locale} />
         </div>
       </BriefBar>

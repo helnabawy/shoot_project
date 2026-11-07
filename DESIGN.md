@@ -85,6 +85,12 @@ typography:
     fontWeight: 700
     lineHeight: 1.25
     letterSpacing: "-0.025em"
+  section-title-emphasis:
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif"
+    fontSize: "30px (38px from 640px)"
+    fontWeight: 700
+    lineHeight: 1.25
+    letterSpacing: "-0.03em"
   field:
     fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif"
     fontSize: "20px (22px from 640px)"
@@ -128,8 +134,10 @@ spacing:
   row-gap: "12px"
   top-hit-inset: "8px"
   page-gutter: "12px"
-  section-gap: "64px"
+  section-gap: "64px (96px from 1024px)"
   column: "680px"
+  pane: "1080px"
+  pane-gap: "64px"
   auth-column: "480px"
 components:
   brief-bar:
@@ -167,6 +175,11 @@ components:
     rounded: "{rounded.tile}"
     size: "30px"
   glyph-tile-set:
+    backgroundColor: "{colors.selection-blue}"
+    textColor: "{colors.on-accent}"
+    rounded: "{rounded.tile}"
+    size: "30px"
+  glyph-tile-ink:
     backgroundColor: "{colors.graphite-ink}"
     textColor: "{colors.stone-ground}"
     rounded: "{rounded.tile}"
@@ -211,6 +224,8 @@ The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingu
 ### Direction history
 **2026-11-07 (owner-directed).** The owner asked for three changes explicitly. (1) The landing hero became a full-screen stage: the CMS photograph under a theme scrim, or a CSS studio sweep until a photo exists, with the CMS headline as the only visible title above the bar; the other-language headline line and the subheadline are no longer shown. This retires "no moody photo hero" and "nothing painted on the page" for the hero only. (2) The bar gained a glass tone for that stage, which brings its own sheen, inset highlight, edge and deeper shadow; the One Shadow and One Gradient rules now name these as hero-only exceptions. (3) The brief builder's options folded into a drawer under the Top Hit; the same day the owner replaced the drawer with the step-by-step search of FR-067 (nothing pre-filled, one list per step).
 
+**2026-11-07 (owner-directed).** The owner asked to enhance the sections below the hero. From 1024 px each titled section became a settings-style pane out to the header's 1080 px (heading in a sticky start column, content in the end column); the strip under the stage set the helper hint against the trust chips; how it works became a timeline of graphite number tiles (step numbers no longer use selection blue); the reasons became a two-column hairline cell grid; the creator invitation runs as one wide bar; FAQ rows gained a hover tint and a chevron tile; the closing heading stepped up a size. The hero stage and the brief bar were not changed.
+
 ## Colors
 
 A warm-neutral, near-monochrome palette with exactly one saturated voice, selection blue, and one warning tint, peach. Every value lives once in `apps/web/src/app/(site)/globals.css` as a role (`--ground`, `--ink`, `--mute`, …); components consume roles, never hex.
@@ -254,10 +269,10 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 ### Hierarchy
 - **Display** (700, 38 px, 52 px from 640 px, line-height 1.02, -0.03em, balanced): the landing headline only, the visible title of the hero stage. It is ink with a soft halo of the ground colour (a 28 px text shadow) so it holds over a busy photograph and disappears on the studio sweep. No other-language line or subheadline sits beneath it.
 - **Headline** (700, 34 px, -0.03em): the page title of login, register, account and not-found.
-- **Section Title** (700, 26 px, 30 px from 640 px, -0.025em): below-the-fold section headings on the ground.
+- **Section Title** (700, 26 px, 30 px from 640 px, -0.025em): below-the-fold section headings on the ground. The closing call to action takes the **emphasis** step (700, 30 px, 38 px from 640 px, -0.03em), the last word on the page.
 - **Field** (500, 20 px, 22 px from 640 px, line-height 1.35, -0.01em): the composed sentence in the bar. Set parts in ink, connectives in mute, unset required parts in mute italic.
 - **Top Hit** (600, 17 px): the one primary row.
-- **Row** (400, 16 px; 600 when set): result rows, FAQ questions, inputs (16 px also prevents iOS zoom).
+- **Row** (400, 16 px; 600 when set): result rows, FAQ questions (500, 600 when open), inputs (16 px also prevents iOS zoom). Step titles in the how-it-works timeline are 17 px semibold.
 - **Body** (400, 15 px, relaxed line-height, 52 to 60ch): subheadings, row descriptions, FAQ answers, the filter input, and the whole of a small bar.
 - **Meta** (400, 13 px): trailing state, field labels, hints, footnotes.
 - **Group Label** (600, 11 px, 0.06em, uppercase, mute): result-group headings, Spotlight's section headers. In Arabic: 12 px, no tracking, no case transform.
@@ -271,13 +286,15 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 
 ## Layout
 
-One column, centred where Spotlight sits: 680 px for the landing bar and every section beneath it, 480 px for login and register, 560 px for the account, 1080 px for the header. Phone gutters are 12 px around the bar (16 px for sections); the bar starts right under the headline so the Top Hit sits above the fold on a 360 × 640 phone. Nothing sits beside the bar on desktop; the headline aligns to its edge.
+One column, centred where Spotlight sits: 680 px for the landing bar, and for every section beneath it below 1024 px; 480 px for login and register, 560 px for the account, 1080 px for the header. Phone gutters are 12 px around the bar (16 px for sections); the bar starts right under the headline so the Top Hit sits above the fold on a 360 × 640 phone. Nothing sits beside the bar on desktop; the headline aligns to its edge.
 
-On the landing page the first viewport is a stage. Under the header (not sticky, about 60 px), a backdrop band runs edge to edge at the full remaining viewport height (100svh minus 60 px), holding the hero photograph (cover-cropped, loaded with priority) or the studio sweep. The headline and the bar sit in the 680 px column on it, roughly vertically centred (top padding max(2 rem, 50svh minus 200 px)), the bar 20 px under the headline (24 px from 640 px). The Top Hit stays above the fold on a 360 × 640 phone, and an opened bar runs on past the stage. Helper text and trust chips sit below the stage on the ground.
+On the landing page the first viewport is a stage. Under the header (not sticky, about 60 px), a backdrop band runs edge to edge at the full remaining viewport height (100svh minus 60 px), holding the hero photograph (cover-cropped, loaded with priority) or the studio sweep. The headline and the bar sit in the 680 px column on it, roughly vertically centred (top padding max(2 rem, 50svh minus 200 px)), the bar 20 px under the headline (24 px from 640 px). The Top Hit stays above the fold on a 360 × 640 phone, and an opened bar runs on past the stage. Below the stage, on the ground, one strip opens the page grid: the helper hint at the start and the trust chips at the end, on one baseline-aligned line out to 1080 px from 1024 px. On phones the chips stack (so no line starts with a rule); from 640 px they run on one line divided by logical hairlines (`border-s` with 12 px either side).
 
-Rows use 16 px inline padding, 12 px gap between tile, label and trailing slot, and a 44 px minimum height (the touch target). Sections are separated by 64 px of ground. Breakpoints are Tailwind's `sm` (640 px) for the type and gutter step and `md` (768 px) for hiding mobile-only chrome; verified at 360, 768, 1024 and 1440 px.
+Rows use 16 px inline padding, 12 px gap between tile, label and trailing slot, and a 44 px minimum height (the touch target). Sections are separated by 64 px of ground (96 px from 1024 px); section gutters are 16 px, 24 px from 640 px. Breakpoints are Tailwind's `sm` (640 px) for the type and gutter step, `md` (768 px) for hiding mobile-only chrome, and `lg` (1024 px) for the section panes; verified at 360, 768, 1024 and 1440 px.
 
-Lists on the ground (how it works, why, specialties, FAQ) are real `ul`/`ol` elements bleeding to the column edge with hairlines between rows; specialties may go two columns from 640 px, divided with a logical `border-e`.
+From 1024 px each titled section is a pane, as in macOS settings, out to the header's 1080 px: a hairline above it, then two columns (4fr start, 7fr end, 64 px gap). The heading and subheading (subheading capped at 44ch) hold a sticky start column; the content fills the end column. A section without a heading (the creator invitation) spans the full pane width.
+
+Lists on the ground (how it works, why, specialties, FAQ) are real `ul`/`ol` elements with hairlines between rows, bleeding to the column edge below 1024 px. From 1024 px they sit flush in the pane's end column and drop their own top rule, since the pane's hairline already stands above them. Why and specialties go two columns from 640 px, divided with a logical `border-e`; every cell's bottom rule is clipped at the list's edge so the last row never doubles the list's own rule, and a lone last item spans both columns. How it works is not a row list but a timeline (see Components).
 
 ### Named Rules
 **The Two Panels Rule.** A page shows at most two bar panels: the primary bar and one smaller (`sm`, 15 px) secondary bar such as the creator invitation. The glass tone is the primary bar dressed for the hero stage, not an extra panel. Everything else is rows on the ground.
@@ -331,7 +348,14 @@ With JavaScript only the asked step's result group shows under the field (its po
 The one selection-blue row: 50 px minimum, 9 px corners, inset 8 px, 17 px semibold white text, an accent tile (white at 20%) holding a drawn forward arrow, and a Return key hint trailing it. Hover brightens it by 10%; it is a submit button in the brief and a link elsewhere. A "Top Hit" group label precedes it, as in Spotlight.
 
 ### Glyph Tiles
-30 px, 8 px corners, 11 px bold, centred. Content is either localised CMS text of up to three characters ("W", "AUH", "2h") or a drawn icon from the authored set. Tones: resting (tile stone / tile ink), set (selection blue / white), accent (white at 20% on blue). Tiles are `aria-hidden`; the label carries the meaning.
+30 px, 8 px corners, 11 px bold, centred. Content is either localised CMS text of up to three characters ("W", "AUH", "2h") or a drawn icon from the authored set. Tones: resting (tile stone / tile ink), set (selection blue / white), accent (white at 20% on blue), ink (graphite ink / ground) for an order that carries meaning, the step numbers. Step numbers never use selection blue. Tiles are `aria-hidden`; the label carries the meaning.
+
+### Sections on the Ground
+- **Section:** heading, optional subheading, content; a pane from 1024 px (see Layout). `emphasis` steps the heading up for the closing call to action, whose two actions sit in the end column.
+- **How it works:** a timeline. Ink glyph tiles numbered in order, joined by a 1 px hairline from tile to tile; it runs down the page on phones (tile beside title and body) and across from 640 px when there are four steps or fewer (tile above title and body, equal columns, 24 px gap). More than four steps stay vertical. Body text is capped at 36ch.
+- **Why (features):** a two-column hairline cell grid from 640 px, each cell a resting tile above a 16 px semibold title and 15 px body; on phones a single list of tile-beside-text rows.
+- **Creator invitation:** the second, small bar. From 1024 px it is one wide bar: the invitation at the start, its Top Hit in a 400 px end column; a per-persona row list, when present, runs full width under a hairline.
+- **FAQ:** `details` rows, 52 px minimum, the whole row the target. Hover tints the row with ink at 3.5% (100 ms); an open question goes semibold. The chevron sits in a 28 px resting tile and turns 90 degrees when open, mirrored for RTL so an open item points down in Arabic too. Answers are body text capped at 62ch.
 
 ### Key Hints
 `kbd` chips (12 px medium, 5 px corners, a border at 20% of the current colour, 80% opacity) for Return, Esc and the options shortcut (the authored command glyph and K on Apple, "Ctrl K" elsewhere). Shown only on hover-capable pointers; phones never see them.
@@ -355,7 +379,7 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 
 ### Do:
 - **Do** put each task in one Brief Bar with exactly one Top Hit; secondary actions are ordinary rows in an "Actions" group.
-- **Do** build every list item as glyph tile, label, trailing slot at 44 px minimum height.
+- **Do** build every list item as glyph tile, label, trailing slot at 44 px minimum height; the step timeline and the feature cells may set the tile above title and body from 640 px.
 - **Do** consume colour through role tokens and add any new role to `:root`, `.dark` and the `prefers-color-scheme` block together, with its pair in the contrast test.
 - **Do** keep text pairs at WCAG AA in both themes: muted text is #6B6560 in light, and the dark accent is #2B6BEB, deepened for white text.
 - **Do** use logical properties only and flip direction-bearing icons with `rtl:-scale-x-100`.

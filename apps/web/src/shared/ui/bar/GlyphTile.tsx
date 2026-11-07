@@ -8,7 +8,8 @@ export function GlyphTile({
   className,
 }: {
   children?: ReactNode
-  tone?: 'default' | 'accent' | 'set'
+  /** `ink`: a graphite tile for an order that carries meaning (step numbers); never selection blue. */
+  tone?: 'default' | 'accent' | 'set' | 'ink'
   className?: string
 }) {
   return (
@@ -20,7 +21,9 @@ export function GlyphTile({
           ? 'bg-white/20 text-on-accent'
           : tone === 'set'
             ? 'bg-accent text-on-accent'
-            : 'bg-tile text-tile-ink',
+            : tone === 'ink'
+              ? 'bg-ink text-ground'
+              : 'bg-tile text-tile-ink',
         className,
       )}
     >

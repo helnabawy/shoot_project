@@ -113,19 +113,34 @@ export function Hero({
         </div>
       )}
 
-      <div className="mx-auto max-w-[680px] px-4">
+      {/* Under the stage, the first line of the page grid: the hint at the start, the promises at
+          the end (one line from 1024 px, stacked on phones), each promise set off by a hairline. */}
+      <div
+        className={cx(
+          'mx-auto max-w-[680px] px-4',
+          useBuilder &&
+            'flex flex-col gap-2.5 pt-4 sm:px-6 lg:max-w-[1080px] lg:flex-row lg:items-baseline lg:justify-between lg:gap-10 lg:pt-5',
+        )}
+      >
         {useBuilder && builder?.helperText ? (
-          <p className="brief-helper mt-3 text-[14px] text-mute">{builder.helperText}</p>
+          <p className="brief-helper text-[14px] leading-relaxed text-pretty text-mute">
+            {builder.helperText}
+          </p>
         ) : null}
         {chips.length ? (
-          <p className="mt-1.5 text-[13px] text-mute">
-            {chips.map((chip, i) => (
-              <span key={chip}>
-                {i > 0 ? <span aria-hidden="true"> · </span> : null}
+          <ul
+            className={cx(
+              // Stacked on phones so no line starts with a rule; one line divided by hairlines from 640 px.
+              'flex flex-col gap-1.5 text-[13px] font-medium text-mute sm:flex-row sm:flex-wrap sm:[&>li+li]:ms-3 sm:[&>li+li]:border-s sm:[&>li+li]:border-hair sm:[&>li+li]:ps-3',
+              useBuilder ? 'lg:shrink-0' : 'mt-3',
+            )}
+          >
+            {chips.map((chip) => (
+              <li key={chip} className="leading-none">
                 {chip}
-              </span>
+              </li>
             ))}
-          </p>
+          </ul>
         ) : null}
         {!useBuilder && photo ? (
           <div className="mt-8 overflow-hidden rounded-[var(--radius-panel)]">
