@@ -11,6 +11,9 @@ import { Users } from './modules/auth/collections/Users'
 import { Briefs } from './modules/brief/collections/Briefs'
 import { OptionSets } from './modules/brief/collections/OptionSets'
 import { RateLimits } from './modules/brief/collections/RateLimits'
+import { CreatorListings } from './modules/creators/collections/CreatorListings'
+import { CreatorProfiles } from './modules/creators/collections/CreatorProfiles'
+import { Locations } from './modules/creators/collections/Locations'
 import { LandingPage } from './modules/landing/globals/LandingPage'
 import { Media } from './modules/media/collections/Media'
 import { Categories } from './modules/personas/collections/Categories'
@@ -27,7 +30,7 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: ' · Shoot Project' },
   },
-  collections: [Users, Personas, Categories, OptionSets, Briefs, Media, RateLimits],
+  collections: [Users, Personas, Categories, Locations, CreatorProfiles, CreatorListings, OptionSets, Briefs, Media, RateLimits],
   globals: [LandingPage, SiteSettings],
   localization: {
     locales: [

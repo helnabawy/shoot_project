@@ -3,6 +3,8 @@ import type { AudienceCategory, AudiencePersona } from '@/modules/personas/queri
 import type { ContactDetails } from '@/shared/components/CtaLink'
 import { CallToAction } from './sections/CallToAction'
 import { CategoriesGrid } from './sections/CategoriesGrid'
+import { CreatorNetwork } from './sections/CreatorNetwork'
+import type { Locale } from '@/shared/lib/locale'
 import { Faq } from './sections/Faq'
 import { Features } from './sections/Features'
 import { HowItWorks } from './sections/HowItWorks'
@@ -53,6 +55,8 @@ export function RenderBlocks({
                 locale={context.locale}
               />
             )
+          case 'creatorNetwork':
+            return <CreatorNetwork key={key} block={block} contact={context.contact} locale={context.locale as Locale} />
           case 'personaBand':
             return (
               <PersonaBand

@@ -21,6 +21,7 @@ test.describe('US1 landing page', () => {
       'how-it-works',
       'why-us',
       'specialties',
+      'our-network', // present because the e2e seed includes the demo creators
       'for-professionals',
       'faq',
     ])

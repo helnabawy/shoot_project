@@ -70,14 +70,21 @@ export function RowList({
   children,
   columns = 1,
   as = 'ul',
+  label,
+  testId,
 }: {
   children: ReactNode
   columns?: 1 | 2
   as?: 'ul' | 'ol'
+  /** Accessible name of the list. */
+  label?: string
+  testId?: string
 }) {
   const Tag = as
   return (
     <Tag
+      aria-label={label}
+      data-testid={testId}
       className={cx(
         // From 1024 px the section's own hairline stands above the list, so the list drops its top rule.
         '-mx-4 border-y border-hair lg:mx-0 lg:border-t-0',

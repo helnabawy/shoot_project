@@ -1,6 +1,7 @@
 import * as migration_20261106_225406_initial from './20261106_225406_initial';
 import * as migration_20261107_000048_glyph_localized from './20261107_000048_glyph_localized';
 import * as migration_20261107_005309_brief_multiple_personas from './20261107_005309_brief_multiple_personas';
+import * as migration_20261107_073926_creator_profiles from './20261107_073926_creator_profiles';
 
 export const migrations = [
   {
@@ -16,6 +17,11 @@ export const migrations = [
   {
     up: migration_20261107_005309_brief_multiple_personas.up,
     down: migration_20261107_005309_brief_multiple_personas.down,
-    name: '20261107_005309_brief_multiple_personas'
+    name: '20261107_005309_brief_multiple_personas',
+  },
+  {
+    up: migration_20261107_073926_creator_profiles.up,
+    down: migration_20261107_073926_creator_profiles.down,
+    name: '20261107_073926_creator_profiles'
   },
 ];

@@ -2,6 +2,7 @@ import type { Block, Field } from 'payload'
 import { anchorField } from '@/shared/payload/fields/anchor'
 import { ctaGroup } from '@/shared/payload/fields/cta'
 import { glyphField } from '@/shared/payload/fields/glyph'
+import { CreatorNetwork } from './CreatorNetwork'
 
 const heading = (required = true): Field => ({ name: 'heading', type: 'text', localized: true, required })
 const subheading: Field = { name: 'subheading', type: 'textarea', localized: true }
@@ -154,4 +155,4 @@ export const CallToAction: Block = {
   fields: [anchorField(undefined, false), heading(), { name: 'body', type: 'textarea', localized: true }, ctaGroup('primary'), optionalCta('secondary')],
 }
 
-export const landingBlocks: Block[] = [HowItWorks, Features, CategoriesGrid, PersonaBand, Faq, LogoCloud, RichTextBlock, CallToAction]
+export const landingBlocks: Block[] = [HowItWorks, Features, CategoriesGrid, CreatorNetwork, PersonaBand, Faq, LogoCloud, RichTextBlock, CallToAction]

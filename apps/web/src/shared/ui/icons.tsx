@@ -128,3 +128,28 @@ export const PhoneIcon = (p: IconProps) => (
     <path d="M6.2 3.25H4.5A1.25 1.25 0 0 0 3.25 4.6 13 13 0 0 0 15.4 16.75a1.25 1.25 0 0 0 1.35-1.25v-1.7a1 1 0 0 0-.75-.97l-2.4-.6a1 1 0 0 0-1 .3l-.8.85a10 10 0 0 1-4.45-4.45l.85-.8a1 1 0 0 0 .3-1l-.6-2.4a1 1 0 0 0-.97-.75Z" />
   </Svg>
 )
+export const TagIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M3.25 3.25h6.2l7.3 7.3a1.25 1.25 0 0 1 0 1.77l-4.43 4.43a1.25 1.25 0 0 1-1.77 0l-7.3-7.3Z" />
+    <circle cx="6.75" cy="6.75" r="1" />
+  </Svg>
+)
+export const PinIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M10 17.25s5.5-4.9 5.5-9.1a5.5 5.5 0 0 0-11 0c0 4.2 5.5 9.1 5.5 9.1Z" />
+    <circle cx="10" cy="8" r="1.9" />
+  </Svg>
+)
+export const GlobeIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="10" cy="10" r="7" />
+    <path d="M3 10h14" />
+    <path d="M10 3c2 2 3 4.4 3 7s-1 5-3 7c-2-2-3-4.4-3-7s1-5 3-7Z" />
+  </Svg>
+)
+/** A play mark for video samples: drawn, never a font glyph. */
+export const PlayIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M7 4.75v10.5L15.25 10Z" fill="currentColor" />
+  </Svg>
+)

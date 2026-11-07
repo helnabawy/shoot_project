@@ -4,8 +4,10 @@ import { cx } from './cx'
 import { GlyphTile } from './GlyphTile'
 import { KeyHint } from './KeyHint'
 
-const topHitClass =
-  'mx-2 grid min-h-[50px] w-[calc(100%-16px)] grid-cols-[30px_minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--radius-row)] bg-accent px-3 py-2.5 text-start text-[17px] font-semibold leading-snug text-on-accent transition-[filter,transform] duration-100 hover:brightness-110 motion-safe:active:scale-[0.99] disabled:cursor-progress disabled:opacity-80 focus-visible:outline-offset-2'
+/** The Top Hit's look without its column template, so a creator Top Hit can lead with a photo tile. */
+export const topHitBase =
+  'mx-2 grid min-h-[50px] w-[calc(100%-16px)] items-center gap-3 rounded-[var(--radius-row)] bg-accent px-3 py-2.5 text-start text-[17px] font-semibold leading-snug text-on-accent transition-[filter,transform] duration-100 hover:brightness-110 motion-safe:active:scale-[0.99] disabled:cursor-progress disabled:opacity-80 focus-visible:outline-offset-2'
+const topHitClass = `${topHitBase} grid-cols-[30px_minmax(0,1fr)_auto]`
 
 function Inner({ label, glyph, hint }: { label: ReactNode; glyph?: ReactNode; hint?: ReactNode }) {
   return (
@@ -33,6 +35,7 @@ export function TopHit({
   className,
   name,
   value,
+  form,
   onClick,
 }: {
   label: ReactNode
@@ -45,6 +48,8 @@ export function TopHit({
   className?: string
   name?: string
   value?: string
+  /** The id of the form this button submits, when it sits outside that form's element. */
+  form?: string
   /** Makes it a plain button that moves the flow on instead of submitting (FR-064). */
   onClick?: () => void
 }) {
@@ -69,6 +74,7 @@ export function TopHit({
       aria-busy={pending || undefined}
       name={name}
       value={value}
+      form={form}
       className={cx(topHitClass, className)}
     >
       <Inner label={label} glyph={glyph} hint={hint} />

@@ -18,3 +18,17 @@ export const isAdminOrSelf: Access = ({ req }) => {
   return req.user ? { id: { equals: req.user.id } } : false
 }
 export const isAdminField: FieldAccess = ({ req }) => hasRole(req.user as WithRoles, 'admin')
+
+/** The owner of a document through its `user` relationship (or `field`); editors and admins see all. */
+export const isEditorOrOwner =
+  (field = 'user'): Access =>
+  ({ req }) => {
+    if (hasRole(req.user as WithRoles, 'admin', 'editor')) return true
+    return req.user ? { [field]: { equals: req.user.id } } : false
+  }
+
+export const isEditorField: FieldAccess = ({ req }) => hasRole(req.user as WithRoles, 'admin', 'editor')
+export const noOne: FieldAccess = () => false
+
+/** True for admins and editors (works on any user-shaped value). */
+export const isEditorUser = (user: unknown): boolean => hasRole(user as WithRoles, 'admin', 'editor')

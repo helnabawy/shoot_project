@@ -3,6 +3,7 @@ import { anyone, isAdmin } from '@/shared/payload/access'
 import { glyphField } from '@/shared/payload/fields/glyph'
 import { slugField } from '@/shared/payload/fields/slug'
 import { revalidateTagAfterChange, revalidateTagAfterDelete } from '@/shared/payload/hooks/revalidate'
+import { countProfileReferences } from '@/modules/creators/references'
 import { refuseDeleteWhileReferenced } from './guards'
 
 export const Personas: CollectionConfig = {
@@ -33,6 +34,8 @@ export const Personas: CollectionConfig = {
         // Briefs keep the professional types they were sent with (FR-063).
         const briefs = await req.payload.count({ collection: 'briefs', where: { persona: { in: [id] } }, req })
         if (briefs.totalDocs) found.push(`${briefs.totalDocs} brief(s)`)
+        const profiles = await countProfileReferences(req, { personas: { in: [id] } })
+        if (profiles) found.push(`${profiles} creator profile(s)`)
         const settings = await req.payload.findGlobal({ slug: 'site-settings', depth: 0, req })
         const active = (settings.activePersonas ?? []).map((p) => (typeof p === 'object' ? p.id : p))
         if (active.map(String).includes(String(id))) found.push('Site Settings → Active personas')

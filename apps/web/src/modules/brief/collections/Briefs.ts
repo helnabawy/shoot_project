@@ -16,6 +16,8 @@ const prepareBrief: CollectionBeforeChangeHook = async ({ data, req, operation }
     throw new APIError('Rejected.', 400, undefined, true)
   }
   delete data.website
+  // Only the server action may attach a creator (it resolves the code first); a client value is dropped.
+  if (!req.context?.creatorResolved) delete data.creator
   const isMember = Boolean(req.user && req.user.collection === 'users')
   if (!isMember) {
     const settings = await req.payload.findGlobal({ slug: 'site-settings', depth: 0, req })
@@ -101,6 +103,8 @@ export const Briefs: CollectionConfig = {
         { name: 'whatsapp', type: 'text' },
       ],
     },
+    // The creator this brief was sent to, set by the server action only (feature 002).
+    { name: 'creator', type: 'relationship', relationTo: 'creator-profiles', index: true, admin: { readOnly: true, position: 'sidebar' } },
     { name: 'sourcePath', type: 'text', admin: { readOnly: true } },
     { name: 'fingerprint', type: 'text', index: true, admin: { hidden: true } },
     // Honeypot: real visitors never fill this in; it is not stored.

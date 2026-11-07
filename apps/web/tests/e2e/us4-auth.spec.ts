@@ -36,7 +36,12 @@ test.describe('US4 accounts', () => {
     await page.getByLabel('Password').fill(PASSWORD)
     await page.getByLabel('I am a').selectOption('videographer')
     await page.getByTestId('register-submit').click()
+    // A new professional starts on their profile, and the account page links back to it.
+    await expect(page).toHaveURL(/\/account\/profile$/)
+    await expect(page.getByRole('heading', { level: 1, name: 'My profile' })).toBeVisible()
+    await page.goto('/account')
     await expect(page.getByTestId('account-summary')).toContainText('Videographer')
+    await expect(page.getByTestId('my-profile-link')).toBeVisible()
   })
 
   test('US4-S3 an email that already has an account gets a clear message', async ({ page }) => {

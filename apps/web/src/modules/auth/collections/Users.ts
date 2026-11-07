@@ -1,5 +1,7 @@
 import { normaliseE164 } from '@shoot/domain/contact'
 import type { CollectionConfig } from 'payload'
+import { countProfileReferences } from '@/modules/creators/references'
+import { refuseDeleteWhileReferenced } from '@/modules/personas/collections/guards'
 import { anyone, hasRole, isAdmin, isAdminField, isAdminOrSelf } from '@/shared/payload/access'
 
 export const Users: CollectionConfig = {
@@ -12,6 +14,15 @@ export const Users: CollectionConfig = {
     lockTime: 15 * 60 * 1000,
     verify: false,
     cookies: { sameSite: 'Lax', secure: process.env.NODE_ENV === 'production' },
+  },
+  hooks: {
+    // A creator profile keeps its owner; an admin suspends the profile instead of deleting the account.
+    beforeDelete: [
+      refuseDeleteWhileReferenced(async ({ id, req }) => {
+        const profiles = await countProfileReferences(req, { user: { equals: id } })
+        return profiles ? ['a creator profile'] : []
+      }),
+    ],
   },
   access: {
     // Admins and editors may open /admin (FR-016).

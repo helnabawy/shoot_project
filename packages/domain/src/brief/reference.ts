@@ -1,5 +1,6 @@
 // No 0/O, 1/I/L: references are read aloud and typed on phones.
-const ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ'
+export const REFERENCE_ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ'
+const ALPHABET = REFERENCE_ALPHABET
 const PATTERN = new RegExp(`^B-[${ALPHABET}]{5}$`)
 
 /** A short reference shown to the client, e.g. "B-7K4Q2" (FR-055, FR-059). */

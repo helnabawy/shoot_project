@@ -12,6 +12,15 @@ import { Hero } from './Hero'
 import { RenderBlocks } from './RenderBlocks'
 
 vi.mock('@/modules/brief/actions', () => ({ submitBrief: vi.fn() }))
+// The network section is an async server component that reads the database (covered by the
+// creators-landing integration test); here only RenderBlocks' wiring of the block type is checked.
+vi.mock('./sections/CreatorNetwork', () => ({
+  CreatorNetwork: ({ block, locale }: { block: { heading?: string; count?: number }; locale: string }) => (
+    <div data-testid="creator-network-stub" data-locale={locale}>
+      {block.heading}:{block.count}
+    </div>
+  ),
+}))
 
 const contact = { whatsappNumber: '+971500000000', whatsappMessage: 'Hi' }
 const categories = [
@@ -139,6 +148,18 @@ describe('US1 sections', () => {
     renderSections()
     expect(screen.getByRole('link', { name: /Start a brief/ })).toHaveAttribute('href', '#brief')
     expect(screen.getByRole('link', { name: /WhatsApp us/ })).toHaveAttribute('target', '_blank')
+  })
+
+  it('CP-US1-S1 hands a creatorNetwork block to the network section with its settings and the page language', () => {
+    renderWithLocale(
+      <RenderBlocks
+        sections={[{ id: 'n1', blockType: 'creatorNetwork', anchor: 'our-network', heading: 'Our network', count: 6, rule: 'featuredThenNewest' }]}
+        context={{ contact, personas: [], categories: [], locale: 'ar' }}
+      />,
+      { locale: 'ar' },
+    )
+    expect(screen.getByTestId('creator-network-stub')).toHaveTextContent('Our network:6')
+    expect(screen.getByTestId('creator-network-stub')).toHaveAttribute('data-locale', 'ar')
   })
 
   it('the persona band disappears when no persona is active', () => {
