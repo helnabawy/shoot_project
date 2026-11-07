@@ -106,6 +106,38 @@ export const SiteSettings: GlobalConfig = {
           ],
         },
         {
+          label: 'Creators',
+          fields: [
+            {
+              name: 'creatorCodePrefix',
+              type: 'text',
+              defaultValue: 'CR',
+              minLength: 2,
+              maxLength: 4,
+              validate: (value: unknown) => (typeof value === 'string' && /^[A-Za-z]{2,4}$/.test(value)) || 'Use 2 to 4 letters.',
+              hooks: { beforeValidate: [({ value }) => (typeof value === 'string' ? value.trim().toUpperCase() : value)] },
+              admin: {
+                description:
+                  'Shown in front of every creator code (CR-7K4Q2). Decided with the brand name. Changing it changes how every code is shown, and old spellings still work.',
+              },
+            },
+            {
+              name: 'autoPublishEdits',
+              type: 'checkbox',
+              defaultValue: false,
+              admin: { description: 'When on, a verified creator’s edits go live at once instead of waiting for approval.' },
+            },
+            {
+              name: 'directoryPageSize',
+              type: 'number',
+              defaultValue: 24,
+              min: 6,
+              max: 60,
+              admin: { description: 'Creators per page in the directory.' },
+            },
+          ],
+        },
+        {
           label: 'Brief limits',
           fields: [
             {

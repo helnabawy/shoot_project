@@ -167,7 +167,8 @@ interface CreatorSummary {
   photo: { url: string; alt: string; width?: number; height?: number } | null
   personaIds: string[]; specialtyIds: string[]; locationIds: string[]  // cities and their emirates
   emirateIds: string[]; languages: string[]
-  sampleCategoryIds: string[]            // one entry per sample row
+  sampleCounts: Record<string, number>   // category id → sample rows (counts only: the cached list stays < 1.5 MB at 2 000 creators)
+  sampleCount: number
   featured: boolean; publishedAt: string  // newest-first ordering
 }
 interface DirectoryFilters { personaId?: string; specialtyId?: string; emirateId?: string }

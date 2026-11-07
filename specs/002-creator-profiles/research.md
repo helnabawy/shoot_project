@@ -73,10 +73,11 @@ query. Doing it over a cached list is simple, testable at 100% in the domain
 package, and fast at the planned scale (hundreds of profiles, ≤ 30 sample rows
 each, only ids selected).
 
-**Revisit when**: public creators exceed ~3 000 or the summary payload exceeds
-~1 MB per locale. The hard ceiling is Next's data-cache limit of 2 MB per
+**Revisit when**: public creators exceed ~2 000 or the summary payload exceeds
+~1.2 MB per locale (measured while implementing: a heavy creator — 6 specialties,
+3 cities, 30 samples, a photo — is ~640 bytes, so 2 000 creators ≈ 1.2 MB). The hard ceiling is Next's data-cache limit of 2 MB per
 entry (`unstable_cache` refuses larger items and the read silently stops
-being cached); an integration test builds 3 000 summaries and asserts the
+being cached); a unit test builds 2 000 such summaries and asserts the
 serialised list stays under 1.5 MB (merge, §19). The upgrade path is materialised counts per specialty/city
 written by the profile `afterChange` hook; the domain function signatures stay
 the same.
@@ -460,7 +461,7 @@ Playwright and Lighthouse CI set the flag; the deploy pipeline never does.
 | 4 | Multi-type creators: the professional step lists only their types, not locked (§11) | Booking a photo + video creator for photos only must stay possible |
 | 5 | `canBook` = listed; unlisted reachable profiles show WhatsApp only, `/book` 404 (§12) | The builder cannot offer a persona outside the audience |
 | 6 | Seeded emirate slugs equal the brief's location values (§9) | 003 matches briefs to creators with no mapping table |
-| 7 | Cache entry size test at 3 000 creators (§3) | Next's 2 MB data-cache item limit fails silently |
+| 7 | Cache entry size test at 2 000 creators (§3) | Next's 2 MB data-cache item limit fails silently |
 | 8 | US4 gets numbered acceptance scenarios in the spec | `CP-US4-S1`/`S2` test names must trace to the spec |
 
 Kept from the first plan over the second plan's alternatives: the

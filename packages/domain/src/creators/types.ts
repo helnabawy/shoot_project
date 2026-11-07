@@ -35,8 +35,9 @@ export interface CreatorSummary {
   locationIds: string[]
   emirateIds: string[]
   languages: string[]
-  /** One entry per sample row. */
-  sampleCategoryIds: string[]
+  /** Samples per specialty (category id → rows), and in total; counts only, to keep the cached list small. */
+  sampleCounts: Record<string, number>
+  sampleCount: number
   featured: boolean
   /** ISO date of the first publication; drives newest-first ordering. */
   publishedAt: string

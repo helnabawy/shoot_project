@@ -1,5 +1,6 @@
 import type { CollectionSlug, Payload } from 'payload'
-import { briefSlots, categories, landingPage, optionSets, personas, siteSettings } from './content'
+import { briefSlots, categories, landingPage, locations, optionSets, personas, siteSettings } from './content'
+import { demoPassword, seedDemoCreators } from './demo-creators'
 import { pickLocale, withRowIds } from './localize'
 
 const context = { disableRevalidate: true }
@@ -22,6 +23,10 @@ export interface SeedOptions {
   adminEmail?: string
   adminPassword?: string
   log?: (message: string) => void
+  /** Local/e2e only: also create demo creators (refused on non-local hosts). */
+  demoCreators?: boolean
+  siteUrl?: string
+  demoPassword?: string
 }
 
 /** Idempotent: running it twice leaves the same documents (FR-032). */
@@ -57,6 +62,14 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
     })
   }
   log(`Categories: ${categories.length}`)
+
+  for (const emirate of locations) {
+    const parent = await upsertBySlug(payload, 'locations', emirate.slug, { slug: emirate.slug, name: emirate.name, order: emirate.order * 10, active: true })
+    for (const [index, city] of emirate.cities.entries()) {
+      await upsertBySlug(payload, 'locations', city.slug, { ...city, order: (index + 1) * 10, active: true, parent: parent.id })
+    }
+  }
+  log(`Locations: ${locations.length} emirates`)
 
   const optionSetIds: Record<string, string | number> = {}
   for (const set of optionSets) {
@@ -110,4 +123,8 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
     context,
   })
   log('Landing page published')
+
+  if (options.demoCreators) {
+    await seedDemoCreators(payload, { siteUrl: options.siteUrl, password: demoPassword(options.demoPassword), log })
+  }
 }

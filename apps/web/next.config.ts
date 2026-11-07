@@ -46,6 +46,9 @@ const nextConfig: NextConfig = {
   // packages/domain ships TypeScript source; Next compiles it with the app.
   transpilePackages: ['@shoot/domain'],
   poweredByHeader: false,
+  // addSample uploads a photo (up to 5 MB) through a server action so the form works without JavaScript;
+  // Next's default body limit for server actions is 1 MB (specs/002-creator-profiles/research.md §15).
+  experimental: { serverActions: { bodySizeLimit: '6mb' } },
   images: {
     formats: ['image/avif', 'image/webp'],
     localPatterns: [{ pathname: '/api/media/file/**' }],

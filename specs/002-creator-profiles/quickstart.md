@@ -83,7 +83,7 @@ Test names start with the id in the first column.
 | CP-US2-S2 multi-type creator: step lists only its types; persona outside them rejected; unlisted creator not bookable | component, integration | `BriefBuilder.creator.test.tsx`, `creators-brief.int.test.ts` |
 | CP-FR-008 4 MB upload accepted through the server action (body limit) | integration, e2e | `creators-actions.int.test.ts`, `cp-us3-provider.spec.ts` |
 | Honesty: default seed creates no creators or provider accounts; demo seed refused on non-local hosts | integration | `seed.int.test.ts` |
-| Directory summary list < 1.5 MB at 3 000 creators | integration | `creators-visibility.int.test.ts` |
+| Directory summary list < 1.5 MB at 2 000 creators | unit | `modules/creators/summary.test.ts` |
 | CP-FR-008 sample alt, variants, upload limits | integration, e2e | `creators-uploads.int.test.ts`, `cp-us2-profile.spec.ts` |
 | CP-FR-009 new persona gets profiles with no code change | integration, e2e | `creators-persona.int.test.ts` |
 | CP-FR-010 en/ar, RTL, light/dark, 360–1440 px, budgets | e2e (`ar-mobile`, `dark`), Lighthouse CI | all `cp-*.spec.ts`, `lighthouserc.json` |

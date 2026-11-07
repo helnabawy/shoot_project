@@ -49,7 +49,7 @@ list of lightweight public summaries and derives everything from it.
 
 **Constraints**: public changes visible ≤ 60 s (tag revalidation, immediate in practice); WCAG 2.1 AA; en/ar with English fallback; light/dark; forms and filters work without JavaScript; no profession name in code (persona-extensibility); provider uploads limited to JPEG/PNG/WebP up to 5 MB, 30 samples per profile, 60 files per account, 20 uploads per account and 40 per visitor per hour; server action bodies up to 6 MB (research §15); no creators in the default seed (research §19).
 
-**Scale/Scope**: designed for hundreds of public creators per instance, up to a few thousand before the cached-summary approach is revisited (research §3). Routes: `/creators`, `/creators/[code]`, `/work/[specialty]`, `/book/[code]`, `/account/profile` × 2 locales. 3 new collections (`creator-profiles`, `creator-listings`, `locations`), 1 new landing block, 1 site-settings tab, fields added to categories, media and briefs.
+**Scale/Scope**: designed for hundreds of public creators per instance, up to about 2 000 before the cached-summary approach is revisited (research §3). Routes: `/creators`, `/creators/[code]`, `/work/[specialty]`, `/book/[code]`, `/account/profile` × 2 locales. 3 new collections (`creator-profiles`, `creator-listings`, `locations`), 1 new landing block, 1 site-settings tab, fields added to categories, media and briefs.
 
 ## Constitution Check
 

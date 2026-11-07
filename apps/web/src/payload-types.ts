@@ -70,6 +70,9 @@ export interface Config {
     users: User;
     personas: Persona;
     categories: Category;
+    locations: Location;
+    'creator-profiles': CreatorProfile;
+    'creator-listings': CreatorListing;
     'option-sets': OptionSet;
     briefs: Brief;
     media: Media;
@@ -84,6 +87,9 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     personas: PersonasSelect<false> | PersonasSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    locations: LocationsSelect<false> | LocationsSelect<true>;
+    'creator-profiles': CreatorProfilesSelect<false> | CreatorProfilesSelect<true>;
+    'creator-listings': CreatorListingsSelect<false> | CreatorListingsSelect<true>;
     'option-sets': OptionSetsSelect<false> | OptionSetsSelect<true>;
     briefs: BriefsSelect<false> | BriefsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -210,6 +216,10 @@ export interface Media {
    * Describe the image for people who cannot see it. Use "" only for decoration.
    */
   alt: string;
+  /**
+   * Set automatically.
+   */
+  uploadedBy?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -265,9 +275,116 @@ export interface Category {
    */
   glyph?: string | null;
   image?: (number | null) | Media;
+  /**
+   * Title, description and introduction of this specialty’s public page (/work/…).
+   */
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    intro?: string | null;
+  };
   personas: (number | Persona)[];
   order?: number | null;
   active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Emirates and cities creators work in. A location with a parent is a city; without one it is an emirate.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: number;
+  name: string;
+  /**
+   * Stable identifier used by the site and seeds. It cannot be changed after saving.
+   */
+  slug: string;
+  /**
+   * Leave empty for an emirate. Choose an emirate to make this a city.
+   */
+  parent?: (number | null) | Location;
+  order?: number | null;
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Publish a profile to verify it; unpublish to hide it. Pause, suspend and feature live in Creator listings and take effect at once.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "creator-profiles".
+ */
+export interface CreatorProfile {
+  id: number;
+  user: number | User;
+  /**
+   * Assigned once. Shown with the brand prefix from Site settings.
+   */
+  code?: string | null;
+  displayName: string;
+  bio?: string | null;
+  /**
+   * The first is the primary professional type.
+   */
+  personas: (number | Persona)[];
+  specialties?: (number | Category)[] | null;
+  cities?: (number | Location)[] | null;
+  languages?:
+    | ('en' | 'ar' | 'hi' | 'ur' | 'fr' | 'ru' | 'tl' | 'fa' | 'es' | 'de' | 'zh' | 'bn' | 'ml' | 'ta')[]
+    | null;
+  photo?: (number | null) | Media;
+  samples?:
+    | {
+        kind?: ('image' | 'video') | null;
+        /**
+         * The picture, or the poster shown for a video link.
+         */
+        image?: (number | null) | Media;
+        videoUrl?: string | null;
+        caption?: string | null;
+        category?: (number | null) | Category;
+        id?: string | null;
+      }[]
+    | null;
+  social?:
+    | {
+        platform: 'instagram' | 'linkedin' | 'youtube' | 'tiktok' | 'x' | 'website';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Standing of a creator profile. Suspend and Feature take effect at once and never publish pending edits; to verify a profile, publish it in Creator profiles.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "creator-listings".
+ */
+export interface CreatorListing {
+  id: number;
+  profile: number | CreatorProfile;
+  user: number | User;
+  /**
+   * The provider’s pause switch. Off hides the profile everywhere, direct link included.
+   */
+  active?: boolean | null;
+  featured?: boolean | null;
+  /**
+   * Hides a published profile at once; its content and pending edits are kept.
+   */
+  suspended?: boolean | null;
+  /**
+   * Shown to the provider in their status banner.
+   */
+  reviewNote?: string | null;
+  submittedAt?: string | null;
+  verifiedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -332,6 +449,7 @@ export interface Brief {
     name?: string | null;
     whatsapp?: string | null;
   };
+  creator?: (number | null) | CreatorProfile;
   sourcePath?: string | null;
   fingerprint?: string | null;
   website?: string | null;
@@ -385,6 +503,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories';
         value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'locations';
+        value: number | Location;
+      } | null)
+    | ({
+        relationTo: 'creator-profiles';
+        value: number | CreatorProfile;
+      } | null)
+    | ({
+        relationTo: 'creator-listings';
+        value: number | CreatorListing;
       } | null)
     | ({
         relationTo: 'option-sets';
@@ -506,9 +636,80 @@ export interface CategoriesSelect<T extends boolean = true> {
   description?: T;
   glyph?: T;
   image?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        intro?: T;
+      };
   personas?: T;
   order?: T;
   active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations_select".
+ */
+export interface LocationsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  parent?: T;
+  order?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "creator-profiles_select".
+ */
+export interface CreatorProfilesSelect<T extends boolean = true> {
+  user?: T;
+  code?: T;
+  displayName?: T;
+  bio?: T;
+  personas?: T;
+  specialties?: T;
+  cities?: T;
+  languages?: T;
+  photo?: T;
+  samples?:
+    | T
+    | {
+        kind?: T;
+        image?: T;
+        videoUrl?: T;
+        caption?: T;
+        category?: T;
+        id?: T;
+      };
+  social?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "creator-listings_select".
+ */
+export interface CreatorListingsSelect<T extends boolean = true> {
+  profile?: T;
+  user?: T;
+  active?: T;
+  featured?: T;
+  suspended?: T;
+  reviewNote?: T;
+  submittedAt?: T;
+  verifiedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -560,6 +761,7 @@ export interface BriefsSelect<T extends boolean = true> {
         name?: T;
         whatsapp?: T;
       };
+  creator?: T;
   sourcePath?: T;
   fingerprint?: T;
   website?: T;
@@ -572,6 +774,7 @@ export interface BriefsSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  uploadedBy?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -781,6 +984,7 @@ export interface LandingPage {
         | HowItWorksBlock
         | FeaturesBlock
         | CategoriesGridBlock
+        | CreatorNetworkBlock
         | PersonaBandBlock
         | FaqBlock
         | LogoCloudBlock
@@ -885,6 +1089,34 @@ export interface CategoriesGridBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'categoriesGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CreatorNetworkBlock".
+ */
+export interface CreatorNetworkBlock {
+  /**
+   * Used for links like "#how-it-works". Lowercase letters, numbers and dashes.
+   */
+  anchor: string;
+  heading: string;
+  subheading?: string | null;
+  rule?: ('featuredThenNewest' | 'newest' | 'featuredOnly') | null;
+  count: number;
+  /**
+   * Leave the label empty to hide this action. Link to the creator directory: /creators.
+   */
+  cta?: {
+    label?: string | null;
+    kind?: ('whatsapp' | 'link' | 'call') | null;
+    /**
+     * A path ("/register") or an in-page anchor ("#how-it-works").
+     */
+    href?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'creatorNetwork';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1088,6 +1320,18 @@ export interface SiteSetting {
     providerLabel?: string | null;
   };
   /**
+   * Shown in front of every creator code (CR-7K4Q2). Decided with the brand name. Changing it changes how every code is shown, and old spellings still work.
+   */
+  creatorCodePrefix?: string | null;
+  /**
+   * When on, a verified creator’s edits go live at once instead of waiting for approval.
+   */
+  autoPublishEdits?: boolean | null;
+  /**
+   * Creators per page in the directory.
+   */
+  directoryPageSize?: number | null;
+  /**
    * How many briefs one anonymous visitor may send per hour.
    */
   briefLimitPerHour?: number | null;
@@ -1173,6 +1417,7 @@ export interface LandingPageSelect<T extends boolean = true> {
         howItWorks?: T | HowItWorksBlockSelect<T>;
         features?: T | FeaturesBlockSelect<T>;
         categoriesGrid?: T | CategoriesGridBlockSelect<T>;
+        creatorNetwork?: T | CreatorNetworkBlockSelect<T>;
         personaBand?: T | PersonaBandBlockSelect<T>;
         faq?: T | FaqBlockSelect<T>;
         logoCloud?: T | LogoCloudBlockSelect<T>;
@@ -1247,6 +1492,26 @@ export interface CategoriesGridBlockSelect<T extends boolean = true> {
   subheading?: T;
   source?: T;
   categories?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        kind?: T;
+        href?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CreatorNetworkBlock_select".
+ */
+export interface CreatorNetworkBlockSelect<T extends boolean = true> {
+  anchor?: T;
+  heading?: T;
+  subheading?: T;
+  rule?: T;
+  count?: T;
   cta?:
     | T
     | {
@@ -1373,6 +1638,9 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         seekerLabel?: T;
         providerLabel?: T;
       };
+  creatorCodePrefix?: T;
+  autoPublishEdits?: T;
+  directoryPageSize?: T;
   briefLimitPerHour?: T;
   updatedAt?: T;
   createdAt?: T;

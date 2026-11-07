@@ -8,6 +8,10 @@ try {
   await seed(payload, {
     adminEmail: process.env.SEED_ADMIN_EMAIL,
     adminPassword: process.env.SEED_ADMIN_PASSWORD,
+    // Local/e2e only: refused unless NEXT_PUBLIC_SITE_URL is a local or test host.
+    demoCreators: process.env.SEED_DEMO_CREATORS === '1',
+    siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+    demoPassword: process.env.SEED_ADMIN_PASSWORD,
   })
   process.exit(0)
 } catch (error) {
