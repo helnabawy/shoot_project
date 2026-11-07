@@ -15,7 +15,13 @@ vi.mock('@/modules/brief/actions', () => ({ submitBrief: vi.fn() }))
 // The network section is an async server component that reads the database (covered by the
 // creators-landing integration test); here only RenderBlocks' wiring of the block type is checked.
 vi.mock('./sections/CreatorNetwork', () => ({
-  CreatorNetwork: ({ block, locale }: { block: { heading?: string; count?: number }; locale: string }) => (
+  CreatorNetwork: ({
+    block,
+    locale,
+  }: {
+    block: { heading?: string; count?: number }
+    locale: string
+  }) => (
     <div data-testid="creator-network-stub" data-locale={locale}>
       {block.heading}:{block.count}
     </div>
@@ -60,7 +66,8 @@ describe('US1 hero', () => {
     expect(screen.getByRole('heading', { level: 1 })).not.toHaveClass('sr-only')
     expect(screen.queryByText('One line.')).toBeNull()
     expect(screen.getByTestId('brief-builder')).toBeInTheDocument()
-    expect(screen.getByText('No account needed')).toBeInTheDocument()
+    // The stage holds only the title and the bar: trust chips are not shown (owner, 2026-11-07).
+    expect(screen.queryByText('No account needed')).toBeNull()
     expect(screen.getByRole('link', { name: "I'm a Photographer" })).toHaveAttribute(
       'href',
       '/register?type=provider&persona=photographer',
@@ -153,7 +160,16 @@ describe('US1 sections', () => {
   it('CP-US1-S1 hands a creatorNetwork block to the network section with its settings and the page language', () => {
     renderWithLocale(
       <RenderBlocks
-        sections={[{ id: 'n1', blockType: 'creatorNetwork', anchor: 'our-network', heading: 'Our network', count: 6, rule: 'featuredThenNewest' }]}
+        sections={[
+          {
+            id: 'n1',
+            blockType: 'creatorNetwork',
+            anchor: 'our-network',
+            heading: 'Our network',
+            count: 6,
+            rule: 'featuredThenNewest',
+          },
+        ]}
         context={{ contact, personas: [], categories: [], locale: 'ar' }}
       />,
       { locale: 'ar' },

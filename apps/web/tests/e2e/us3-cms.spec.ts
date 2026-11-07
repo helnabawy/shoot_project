@@ -14,16 +14,18 @@ test.describe('US3 editing without a developer', () => {
     const original = await (
       await request.get('/api/globals/landing-page?depth=0', { headers: auth(token) })
     ).json()
-    // The trust line under the bar is a visible hero field (the subheadline is no longer shown).
-    const chip = `Edited in the CMS ${Date.now()}`
+    // The headline is the hero's visible text (subheadline and trust chips are no longer shown).
+    const headline = `Edited in the CMS ${Date.now()}`
     try {
       const res = await request.post('/api/globals/landing-page?draft=false', {
         headers: auth(token),
-        data: { hero: { ...original.hero, trustChips: [{ text: chip }] }, _status: 'published' },
+        data: { hero: { ...original.hero, headline }, _status: 'published' },
       })
       expect(res.ok()).toBeTruthy()
       await expect
-        .poll(async () => (await page.goto('/'), page.getByText(chip).count()), { timeout: 60_000 })
+        .poll(async () => (await page.goto('/'), page.getByText(headline).count()), {
+          timeout: 60_000,
+        })
         .toBe(1)
     } finally {
       await request.post('/api/globals/landing-page?draft=false', {
@@ -45,7 +47,7 @@ test.describe('US3 editing without a developer', () => {
     const draftLine = `Draft only ${Date.now()}`
     await request.post('/api/globals/landing-page?draft=true', {
       headers: auth(token),
-      data: { hero: { ...original.hero, trustChips: [{ text: draftLine }] } },
+      data: { hero: { ...original.hero, headline: draftLine } },
     })
     try {
       await page.goto('/')

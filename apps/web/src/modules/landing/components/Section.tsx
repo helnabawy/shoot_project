@@ -46,23 +46,7 @@ export function Section({
           )}
         >
           <div className={cx(!wide && 'lg:sticky lg:top-23 lg:self-start')}>
-            {heading ? (
-              <h2
-                className={cx(
-                  'font-bold leading-tight text-ink text-balance',
-                  emphasis
-                    ? 'text-[30px] tracking-[-0.03em] sm:text-[38px]'
-                    : 'text-[26px] tracking-[-0.025em] sm:text-[30px]',
-                )}
-              >
-                {heading}
-              </h2>
-            ) : null}
-            {subheading ? (
-              <p className="mt-2 max-w-[44ch] text-[16px] leading-relaxed text-pretty text-mute">
-                {subheading}
-              </p>
-            ) : null}
+            <SectionTitle heading={heading} subheading={subheading} emphasis={emphasis} />
           </div>
           <div className={cx('mt-6', wide ? 'lg:mt-14' : 'lg:mt-0')}>{children}</div>
         </div>
@@ -70,6 +54,39 @@ export function Section({
         children
       )}
     </section>
+  )
+}
+
+/** A section's heading and its one supporting line. */
+export function SectionTitle({
+  heading,
+  subheading,
+  emphasis = false,
+}: {
+  heading?: ReactNode
+  subheading?: ReactNode
+  emphasis?: boolean
+}) {
+  return (
+    <>
+      {heading ? (
+        <h2
+          className={cx(
+            'font-bold leading-tight text-ink text-balance',
+            emphasis
+              ? 'text-[30px] tracking-[-0.03em] sm:text-[38px]'
+              : 'text-[26px] tracking-[-0.025em] sm:text-[30px]',
+          )}
+        >
+          {heading}
+        </h2>
+      ) : null}
+      {subheading ? (
+        <p className="mt-2 max-w-[44ch] text-[16px] leading-relaxed text-pretty text-mute">
+          {subheading}
+        </p>
+      ) : null}
+    </>
   )
 }
 

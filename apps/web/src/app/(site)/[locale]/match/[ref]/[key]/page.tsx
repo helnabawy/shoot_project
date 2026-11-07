@@ -32,7 +32,18 @@ export default async function MatchPage({ params, searchParams }: Props) {
   const now = new Date()
   const date = query.date && isIsoDay(query.date) ? query.date : brief.date ? String(brief.date).slice(0, 10) : null
   const [page, ctx, settings, t] = await Promise.all([getMatchPage(brief, locale, now, { date }), getDirectoryContext(locale), getSiteSettings(locale), getTranslations({ locale, namespace: 'match' })])
-  const view = matchView(page, { ref: brief.reference ?? ref, key, locale, picks: picksFor(page, query.pick), date, ctx, settings, sentence: brief.sentence ?? '' })
+  const experience = await getTranslations({ locale, namespace: 'creators.profile' })
+  const view = matchView(page, {
+    ref: brief.reference ?? ref,
+    key,
+    locale,
+    picks: picksFor(page, query.pick),
+    date,
+    ctx,
+    settings,
+    sentence: brief.sentence ?? '',
+    experience: (count) => experience('experienceYears', { count }),
+  })
   return (
     <section className="mx-auto max-w-[680px] px-3 pt-8 sm:pt-14">
       <h1 id="match-heading" className="px-1 text-[34px] font-bold leading-tight tracking-[-0.03em] text-ink text-balance">

@@ -20,6 +20,9 @@ Drafts enabled (`versions: { drafts: true, maxPerDoc: 25 }`, no autosave).
 | `specialties` | relationship → categories, hasMany, max 12 | Each category must belong to at least one chosen persona (validate). |
 | `cities` | relationship → locations, hasMany, max 12 | |
 | `languages` | select hasMany (codes, `languages.ts`) | |
+| `gender` | select `woman` \| `man` (labels Female / Male) | FR-011; required before review; field read: owner, editors, admins only (never public); values equal the brief's "shot by" option values |
+| `nationality` | text, ISO 3166-1 alpha-2 (`countries.ts`) | FR-011; optional; name rendered with `Intl.DisplayNames` |
+| `yearsExperience` | number, integer 0–60 | FR-011; optional |
 | `photo` | upload → media | Profile picture; falls back to initials mark. |
 | `samples` | array, maxRows 30 | Row below. |
 | `social` | array, maxRows 6 | `{ platform: instagram \| linkedin \| youtube \| tiktok \| x \| website, url: https URL }` |

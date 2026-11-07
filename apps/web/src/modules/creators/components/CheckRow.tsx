@@ -15,6 +15,7 @@ export function CheckRow({
   onChange,
   indent,
   testId,
+  type = 'checkbox',
 }: {
   name: string
   value: string
@@ -27,6 +28,8 @@ export function CheckRow({
   /** A city under its emirate. */
   indent?: boolean
   testId?: string
+  /** `radio` for one choice in a group (e.g. gender), same look. */
+  type?: 'checkbox' | 'radio'
 }) {
   return (
     <label
@@ -34,7 +37,7 @@ export function CheckRow({
       data-testid={testId}
     >
       <input
-        type="checkbox"
+        type={type}
         name={name}
         value={value}
         form={form}

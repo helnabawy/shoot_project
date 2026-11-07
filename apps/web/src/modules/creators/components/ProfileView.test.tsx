@@ -20,6 +20,21 @@ describe('CP-US2-S1 profile', () => {
     for (const kind of ['Professional', 'Shoots', 'Works in', 'Speaks']) expect(within(header).getByText(kind)).toBeInTheDocument()
   })
 
+  it('CP-FR-011 shows years of experience and nationality, never gender', () => {
+    render({ view: profileView({ nationality: 'United Arab Emirates', yearsExperience: 8 }) })
+    const header = screen.getByTestId('profile-header')
+    expect(within(header).getByText('8 years')).toBeInTheDocument()
+    expect(within(header).getByText('United Arab Emirates')).toBeInTheDocument()
+    expect(within(header).getByText('Experience')).toBeInTheDocument()
+    expect(header.textContent).not.toMatch(/female|woman/i)
+  })
+
+  it('CP-FR-011 leaves out experience and nationality when not given', () => {
+    render()
+    expect(screen.queryByText('Experience')).toBeNull()
+    expect(screen.queryByText('Nationality')).toBeNull()
+  })
+
   it('says what "verified" means in one plain sentence, not as a badge', () => {
     render()
     const verified = screen.getByTestId('badge-verified')

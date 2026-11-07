@@ -24,15 +24,20 @@ const DATE_TIME = (locale: Locale) =>
 export const formatDay = (iso: string, locale: Locale) => formatBriefDate(iso.slice(0, 10), locale)
 export const formatDateTime = (iso: string, locale: Locale) => DATE_TIME(locale).format(new Date(iso))
 
-function rowView(c: MatchPage['sections'][number]['creators'][number], ctx: DirectoryContext, locale: Locale, href: string, chosen: boolean): PickRowView {
+/** "8 years' experience" in the page language (002 FR-011). */
+export type ExperienceLabel = (years: number) => string
+
+function rowView(c: MatchPage['sections'][number]['creators'][number], ctx: DirectoryContext, locale: Locale, href: string, chosen: boolean, experience?: ExperienceLabel): PickRowView {
   const view = describeCreator(c, ctx.lookups, ctx.prefix, locale)
-  return { id: c.id, code: c.code, displayCode: view.displayCode, name: view.name, initials: view.initials, photo: c.photo, meta: view.specialties || view.place, href, chosen }
+  const years = c.yearsExperience != null && experience ? experience(c.yearsExperience) : ''
+  const meta = [view.specialties || view.place, years].filter(Boolean).join(' · ')
+  return { id: c.id, code: c.code, displayCode: view.displayCode, name: view.name, initials: view.initials, photo: c.photo, meta, href, chosen }
 }
 
 /** Step 2's view (QM-US1): chosen picks stay in the URL, so the whole flow works without JavaScript. */
 export function matchView(
   page: MatchPage,
-  options: { ref: string; key: string; locale: Locale; picks: Pick[]; date: string | null; ctx: DirectoryContext; settings: SiteSetting; sentence: string },
+  options: { ref: string; key: string; locale: Locale; picks: Pick[]; date: string | null; ctx: DirectoryContext; settings: SiteSetting; sentence: string; experience?: ExperienceLabel },
 ): MatchResultsProps {
   const { ref, key, locale, ctx } = options
   const base = matchPath(ref, key, locale)
@@ -53,7 +58,7 @@ export function matchView(
       singular: s.persona.singular,
       price: s.price.ok ? formatMoney(s.price.total, locale) : null,
       deliverables: tier?.deliverables?.[locale] ?? [],
-      creators: creators.map((c) => rowView(c, ctx, locale, target(withPick(options.picks, { persona: s.persona.slug, code: c.code })), current?.code === c.code)),
+      creators: creators.map((c) => rowView(c, ctx, locale, target(withPick(options.picks, { persona: s.persona.slug, code: c.code })), current?.code === c.code, options.experience)),
       anyHref: target(withPick(options.picks, { persona: s.persona.slug, code: null })),
       anyChosen: Boolean(current && current.code === null),
     }

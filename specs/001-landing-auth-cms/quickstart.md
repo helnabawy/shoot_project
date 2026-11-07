@@ -94,8 +94,8 @@ and on `/ar`, `/ar/login`, `/ar/register`, in both light and dark emulation.
 2. **US2** Tap the hero's WhatsApp link and the floating button: both open
    `https://wa.me/971500000000?text=...` with the default message.
 3. **US3** Sign in at `/admin` with the seed admin. Site Settings → change
-   WhatsApp number to `+971 58 149 8824` → Save. Landing Page → change a hero
-   trust chip (the line under the bar), drag FAQ above Why us, add an FAQ item → Publish. Reload `/`
+   WhatsApp number to `+971 58 149 8824` → Save. Landing Page → change the hero
+   headline, drag FAQ above Why us, add an FAQ item → Publish. Reload `/`
    within a minute: all four changes visible. Try saving `0581498824` as the
    number: validation error, old number still live. Save a hero change as
    draft only: `/` unchanged; `/next/preview?secret=…&path=/` shows it.

@@ -1,10 +1,10 @@
 import 'server-only'
-import { missingForReview, profileStatus, SPOKEN_LANGUAGES, type ListingState, type ProfileStatus, type ReviewField } from '@shoot/domain/creators'
+import { COUNTRIES, type ListingState, missingForReview, profileStatus, type ProfileStatus, type ReviewField, SPOKEN_LANGUAGES } from '@shoot/domain/creators'
 import type { Media, User } from '@/payload-types'
 import { getActivePersonas, getCategoriesForAudience } from '@/modules/personas/queries'
 import type { Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
-import { languageName } from './profile'
+import { countryName, languageName } from './profile'
 import { getLocations } from './queries'
 import { relId } from './references'
 
@@ -39,6 +39,9 @@ export interface MyProfile {
   specialties: number[]
   cities: number[]
   languages: string[]
+  gender: 'woman' | 'man' | null
+  nationality: string | null
+  yearsExperience: number | null
   social: { platform: string; url: string }[]
   photo: MyImage | null
   samples: MySample[]
@@ -109,6 +112,7 @@ export async function getMyProfile(user: User): Promise<MyProfile | null> {
     specialties: numbers(latest.specialties),
     cities: numbers(latest.cities),
     languages: (latest.languages ?? []) as string[],
+    gender: (latest.gender ?? null) as 'woman' | 'man' | null,
   }
   return {
     id: latest.id,
@@ -116,6 +120,8 @@ export async function getMyProfile(user: User): Promise<MyProfile | null> {
     status: profileStatus({ published: isPublished, hasNewerDraft, personaIds: personas.map(String) }, listingState),
     ...profile,
     bio: pair(latest.bio as unknown as AllLocales),
+    nationality: latest.nationality ?? null,
+    yearsExperience: latest.yearsExperience ?? null,
     social: (latest.social ?? []).map((s) => ({ platform: s.platform, url: s.url })),
     photo: imageOf(byId.get(relId(latest.photo) ?? '')),
     samples: rows.map((row, i) => ({
@@ -143,6 +149,8 @@ export interface SelectableOptions {
   specialties: { id: number; name: string; personaIds: number[] }[]
   emirates: { id: number; name: string; cities: { id: number; name: string }[] }[]
   languages: { code: string; name: string }[]
+  /** Nationalities, named in the page language and sorted by name. */
+  countries: { code: string; name: string }[]
 }
 
 /** What a provider can choose from, all data (Principle IV), named in the page language. */
@@ -158,6 +166,7 @@ export async function getSelectableOptions(locale: Locale): Promise<SelectableOp
       cities: locations.filter((l) => l.parentId === e.id).map((c) => ({ id: Number(c.id), name: c.name })),
     })),
     languages: SPOKEN_LANGUAGES.map((code) => ({ code, name: languageName(code, locale) })),
+    countries: COUNTRIES.map((code) => ({ code, name: countryName(code, locale) })).sort((a, b) => a.name.localeCompare(b.name, locale)),
   }
 }
 

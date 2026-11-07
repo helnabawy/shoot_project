@@ -5,6 +5,7 @@ import * as migration_20261107_073926_creator_profiles from './20261107_073926_c
 import * as migration_20261107_115156_landing_infographics from './20261107_115156_landing_infographics';
 import * as migration_20261107_133522_marketing_pages from './20261107_133522_marketing_pages';
 import * as migration_20261107_150007_quick_match from './20261107_150007_quick_match';
+import * as migration_20261107_211232_creator_gender_nationality_experience from './20261107_211232_creator_gender_nationality_experience';
 
 export const migrations = [
   {
@@ -40,6 +41,11 @@ export const migrations = [
   {
     up: migration_20261107_150007_quick_match.up,
     down: migration_20261107_150007_quick_match.down,
-    name: '20261107_150007_quick_match'
+    name: '20261107_150007_quick_match',
+  },
+  {
+    up: migration_20261107_211232_creator_gender_nationality_experience.up,
+    down: migration_20261107_211232_creator_gender_nationality_experience.down,
+    name: '20261107_211232_creator_gender_nationality_experience'
   },
 ];

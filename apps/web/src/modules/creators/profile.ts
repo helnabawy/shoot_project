@@ -16,6 +16,8 @@ export interface RawSample {
 /** A published profile as Payload returns it at depth 1 (relations populated, text in one locale). */
 export interface RawProfileDoc extends Omit<RawProfile, 'samples'> {
   samples?: RawSample[] | null
+  nationality?: string | null
+  yearsExperience?: number | null
   social?: { id?: string | null; platform: string; url: string }[] | null
 }
 
@@ -52,10 +54,21 @@ export interface ProfileView {
   places: string[]
   specialties: string[]
   languages: string[]
+  /** 002 FR-011: the country name in the page language, or empty. Gender is never part of the public view. */
+  nationality: string
+  yearsExperience: number | null
   samples: SampleView[]
   social: { platform: string; url: string }[]
   /** The image shared with the link: the first sample (the work), else the photo. */
   shareImage: ImageView | null
+}
+
+export function countryName(code: string, locale: string): string {
+  try {
+    return new Intl.DisplayNames([locale === 'ar' ? 'ar' : 'en'], { type: 'region' }).of(code) ?? code
+  } catch {
+    return code
+  }
 }
 
 export function languageName(code: string, locale: string): string {
@@ -124,6 +137,8 @@ export function buildProfileView(doc: RawProfileDoc, lookups: Lookups, locale: s
     places: names(doc.cities, lookups.locations),
     specialties: names(doc.specialties, lookups.specialties),
     languages: (doc.languages ?? []).map((code) => languageName(code, locale)),
+    nationality: doc.nationality ? countryName(doc.nationality, locale) : '',
+    yearsExperience: doc.yearsExperience ?? null,
     samples,
     social: (doc.social ?? []).filter((s) => parseHttpsUrl(s.url)).map((s) => ({ platform: s.platform, url: s.url })),
     shareImage: samples[0]?.large ?? (photo ? sized(photo, ['hero', 'card']) : null),

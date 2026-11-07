@@ -1,4 +1,4 @@
-import { isAllowedSocialUrl, isAllowedVideoUrl, isSpokenLanguage, MAX_SAMPLES, SOCIAL_PLATFORMS, SPOKEN_LANGUAGES, type SocialPlatform } from '@shoot/domain/creators'
+import { COUNTRIES, isAllowedSocialUrl, isAllowedVideoUrl, isCountryCode, isSpokenLanguage, MAX_SAMPLES, MAX_YEARS_EXPERIENCE, SOCIAL_PLATFORMS, SPOKEN_LANGUAGES, type SocialPlatform } from '@shoot/domain/creators'
 import { APIError, type Access, type CollectionConfig, type Where } from 'payload'
 import { isAdmin, isEditorUser, noOne } from '@/shared/payload/access'
 import { relId } from '../references'
@@ -121,6 +121,24 @@ export const CreatorProfiles: CollectionConfig = {
       validate: (value: unknown) =>
         (Array.isArray(value) ? value : []).every((v) => typeof v === 'string' && isSpokenLanguage(v)) || 'creators.languages.invalid',
     },
+    // 002 FR-011: gender drives Quick Match's "shot by" (003) and is never public; nationality and experience are shown.
+    {
+      name: 'gender',
+      type: 'select',
+      options: [
+        { label: 'Female', value: 'woman' },
+        { label: 'Male', value: 'man' },
+      ],
+      access: { read: ({ req, doc }) => isEditorUser(req.user) || (Boolean(req.user) && relId(doc?.user) === String(req.user?.id)) },
+      admin: { description: 'Used only to match a brief\'s "shot by" choice; never shown publicly. Required before review.' },
+    },
+    {
+      name: 'nationality',
+      type: 'text',
+      validate: (value: unknown) => value == null || value === '' || isCountryCode(value) || 'creators.nationality.invalid',
+      admin: { description: `ISO country code, e.g. AE (${COUNTRIES.length} allowed).` },
+    },
+    { name: 'yearsExperience', type: 'number', min: 0, max: MAX_YEARS_EXPERIENCE, admin: { step: 1, description: 'Whole years.' } },
     { name: 'photo', type: 'upload', relationTo: 'media' },
     {
       name: 'samples',

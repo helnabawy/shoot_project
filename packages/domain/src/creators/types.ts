@@ -41,8 +41,10 @@ export interface CreatorSummary {
   featured: boolean
   /** ISO date of the first publication; drives newest-first ordering. */
   publishedAt: string
-  /** Option values the creator satisfies for brief slots that filter creators (feature 003, research §5). */
+  /** Option values the creator satisfies for brief slots that filter creators: their gender plus editor tags (003 research §5). */
   matchValues?: string[]
+  /** 002 FR-011, shown on Quick Match results. */
+  yearsExperience?: number | null
 }
 
 export interface DirectoryFilters {

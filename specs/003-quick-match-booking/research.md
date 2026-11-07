@@ -95,6 +95,12 @@ binding and not re-argued here.
   `matchValues` (text, many). A creator satisfies a filtering slot when the
   chosen option is `matchesAny`, or the value is in `matchValues`. The seed
   marks `shotBy` as filtering and "anyone" as `matchesAny`.
+- **Gender (amended 2026-11-07, owner request)**: creators state their gender
+  in their profile (002 FR-011: female or male, stored as `woman` / `man`,
+  the "shot by" option values). A creator's match values are their gender
+  plus any editor-managed `matchValues`, so "shot by a woman/man" works
+  without an editor tagging anyone. A creator without a gender never matches
+  a gendered brief. Gender stays private (owner, editors, admins).
 - **Occasion → specialty**: options gain an optional `category`
   relationship; it ranks, never filters (an empty list is worse than a less
   specialised creator).

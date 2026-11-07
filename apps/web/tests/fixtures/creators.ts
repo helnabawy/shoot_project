@@ -52,6 +52,8 @@ export function profileView(over: Partial<ProfileView> = {}): ProfileView {
     places: ['Dubai Marina', 'Abu Dhabi'],
     specialties: ['Portrait', 'Wedding & engagement'],
     languages: ['English', 'Arabic'],
+    nationality: '',
+    yearsExperience: null,
     samples: [
       { id: 'a', kind: 'image', thumb: image(1), large: large(1), alt: 'A bride at golden hour', caption: 'Golden hour', specialty: 'Wedding & engagement' },
       { id: 'b', kind: 'video', thumb: image(2), large: large(2), alt: 'Showreel poster', caption: 'Showreel', specialty: '', videoUrl: 'https://www.youtube.com/watch?v=abc', provider: 'YouTube' },
@@ -80,6 +82,7 @@ export const selectableOptions: SelectableOptions = {
     { id: 200, name: 'Abu Dhabi', cities: [] },
   ],
   languages: [{ code: 'en', name: 'English' }, { code: 'ar', name: 'Arabic' }, { code: 'ur', name: 'Urdu' }],
+  countries: [{ code: 'AE', name: 'United Arab Emirates' }, { code: 'IR', name: 'Iran' }],
 }
 
 export const mySample = (n: number, over: Partial<MySample> = {}): MySample => ({
@@ -104,6 +107,9 @@ export function myProfile(over: Partial<MyProfile> = {}): MyProfile {
     specialties: [10, 11],
     cities: [101],
     languages: ['en', 'ar'],
+    gender: 'woman',
+    nationality: 'AE',
+    yearsExperience: 8,
     social: [{ platform: 'instagram', url: 'https://instagram.com/sara' }],
     photo: null,
     samples: [mySample(1), mySample(2)],

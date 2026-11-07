@@ -27,7 +27,7 @@ function getPublicList(locale: Locale): Promise<CreatorSummary[]> {
         fallbackLocale: 'en',
         depth: 1,
         pagination: false,
-        select: { displayName: true, bio: true, code: true, personas: true, specialties: true, cities: true, languages: true, photo: true, samples: { category: true }, createdAt: true },
+        select: { displayName: true, bio: true, code: true, personas: true, specialties: true, cities: true, languages: true, gender: true, yearsExperience: true, photo: true, samples: { category: true }, createdAt: true },
         populate: { media: { alt: true, url: true, filename: true, width: true, height: true, sizes: true } },
         overrideAccess: true,
       }),

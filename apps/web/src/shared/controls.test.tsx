@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { themeLabels } from '../../tests/fixtures/labels'
 import { MobileMenu } from './components/MobileMenu'
+import { SectionNav } from './components/SectionNav'
 import { LocaleSwitcher } from './i18n/LocaleSwitcher'
 import { ThemeToggle } from './theme/ThemeToggle'
 
@@ -69,5 +70,45 @@ describe('US1 mobile menu', () => {
     await user.keyboard('{Escape}')
     expect(toggle).toHaveAttribute('aria-expanded', 'false')
     expect(toggle).toHaveFocus()
+  })
+})
+
+describe('header section links', () => {
+  it('marks the link to the current page and the section in view', async () => {
+    window.history.replaceState(null, '', '/ar/studios')
+    let report: IntersectionObserverCallback = () => {}
+    vi.stubGlobal(
+      'IntersectionObserver',
+      class {
+        constructor(cb: IntersectionObserverCallback) {
+          report = cb
+        }
+        observe() {}
+        disconnect() {}
+      },
+    )
+    render(
+      <>
+        <SectionNav label="Main">
+          <a href="#how">How</a>
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- a plain anchor is what the header renders for CMS targets */}
+          <a href="/ar/studios">Studios</a>
+        </SectionNav>
+        <section id="how" />
+      </>,
+    )
+    expect(screen.getByRole('link', { name: 'Studios' })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('link', { name: 'How' })).not.toHaveAttribute('aria-current')
+    report(
+      [
+        {
+          target: document.getElementById('how')!,
+          isIntersecting: true,
+        } as unknown as IntersectionObserverEntry,
+      ],
+      {} as IntersectionObserver,
+    )
+    expect(screen.getByRole('link', { name: 'How' })).toHaveAttribute('aria-current', 'location')
+    vi.unstubAllGlobals()
   })
 })

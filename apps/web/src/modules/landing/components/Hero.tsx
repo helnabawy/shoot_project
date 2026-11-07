@@ -9,6 +9,7 @@ import { CmsImage } from '@/shared/components/CmsImage'
 import { CtaLink, type ContactDetails } from '@/shared/components/CtaLink'
 import { cx } from '@/shared/ui/bar'
 import type { Locale } from '@/shared/lib/locale'
+import { StudioSet } from './StudioSet'
 
 /**
  * First viewport: a full-screen stage with the CMS headline as its title and the glass brief bar
@@ -41,7 +42,6 @@ export function Hero({
       )
     : undefined
   const useBuilder = hero?.layout !== 'ctas' && builder
-  const chips = (hero?.trustChips ?? []).map((c) => c.text).filter(Boolean)
 
   const builderNode = useBuilder ? (
     <BriefBuilder
@@ -89,7 +89,10 @@ export function Hero({
                 className="size-full object-cover"
               />
             ) : (
-              <div className="studio-sweep absolute inset-0" />
+              <>
+                <div className="studio-sweep absolute inset-0" />
+                <StudioSet />
+              </>
             )}
           </div>
           <div className="mx-auto max-w-[680px] px-3 pt-[max(2rem,calc(50svh-200px))] pb-8 sm:px-4">
@@ -114,8 +117,8 @@ export function Hero({
         </div>
       )}
 
-      {/* Under the stage, the first line of the page grid: the hint at the start, the promises at
-          the end (one line from 1024 px, stacked on phones), each promise set off by a hairline. */}
+      {/* Under the stage: the gap before the page grid. The trust chips are no longer shown here
+          (owner, 2026-11-07); with the two-button layout the hero photo sits here instead. */}
       <div
         className={cx(
           'mx-auto max-w-[680px] px-4',
@@ -123,21 +126,6 @@ export function Hero({
             'flex flex-col gap-2.5 pt-4 sm:px-6 lg:max-w-[1080px] lg:flex-row lg:items-baseline lg:justify-between lg:gap-10 lg:pt-5',
         )}
       >
-        {chips.length ? (
-          <ul
-            className={cx(
-              // Stacked on phones so no line starts with a rule; one line divided by hairlines from 640 px.
-              'flex flex-col gap-1.5 text-[13px] font-medium text-mute sm:flex-row sm:flex-wrap sm:[&>li+li]:ms-3 sm:[&>li+li]:border-s sm:[&>li+li]:border-hair sm:[&>li+li]:ps-3',
-              useBuilder ? 'lg:shrink-0' : 'mt-3',
-            )}
-          >
-            {chips.map((chip) => (
-              <li key={chip} className="leading-none">
-                {chip}
-              </li>
-            ))}
-          </ul>
-        ) : null}
         {!useBuilder && photo ? (
           <div className="mt-8 overflow-hidden rounded-[var(--radius-panel)]">
             <CmsImage

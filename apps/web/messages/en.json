@@ -159,6 +159,10 @@
     "legal": "Legal"
   },
   "creators": {
+    "network": {
+      "pause": "Pause the moving list",
+      "play": "Play the moving list"
+    },
     "directory": {
       "title": "Find your professional",
       "intro": "Choose what you need and where, then open anyone to see their work.",
@@ -217,7 +221,10 @@
       },
       "bookTitle": "Book {name}",
       "bookIntro": "Describe the shoot and send it on WhatsApp.",
-      "change": "Change"
+      "change": "Change",
+      "nationality": "Nationality",
+      "experience": "Experience",
+      "experienceYears": "{count, plural, =0 {Less than a year} one {# year} other {# years}}"
     },
     "form": {
       "title": "My profile",
@@ -254,11 +261,21 @@
         "personas": "what you do",
         "specialties": "what you shoot",
         "cities": "where you work",
-        "languages": "a language"
+        "languages": "a language",
+        "gender": "your gender"
       },
       "pending": "Saving…",
       "fixErrors": "Some parts need another look.",
-      "sampleOrderHint": "Adding, moving and removing a sample save at once. Captions and specialties save with the button at the end."
+      "sampleOrderHint": "Adding, moving and removing a sample save at once. Captions and specialties save with the button at the end.",
+      "about": "About you",
+      "gender": "Gender",
+      "female": "Female",
+      "male": "Male",
+      "genderHelp": "Only used to match clients who ask for a woman or a man to shoot. Never shown on your profile.",
+      "nationality": "Nationality",
+      "nationalityNone": "Not set",
+      "experience": "Years of experience",
+      "experienceHelp": "Whole years of paid work."
     },
     "status": {
       "draft": "Draft",
@@ -336,7 +353,10 @@
       "uploadType": "Use a JPEG, PNG or WebP image.",
       "uploadSize": "That image is over 5 MB. Choose a smaller one.",
       "uploadQuota": "You have reached the limit of uploaded images. Remove samples you no longer use; unused images are cleared after a day.",
-      "uploadTooMany": "You've uploaded a lot of images in the last hour. Try again later."
+      "uploadTooMany": "You've uploaded a lot of images in the last hour. Try again later.",
+      "genderInvalid": "Choose female or male.",
+      "nationalityInvalid": "Choose a country from the list.",
+      "experienceRange": "Enter whole years, from 0 to 60."
     },
     "specialty": {
       "samples": "{count, plural, one {# sample} other {# samples}}",

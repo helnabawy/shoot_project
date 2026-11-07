@@ -57,6 +57,9 @@ function readProfileForm(form: FormData) {
     specialties: form.getAll('specialties').map(String),
     cities: form.getAll('cities').map(String),
     languages: form.getAll('languages').map(String),
+    gender: text(form, 'gender'),
+    nationality: text(form, 'nationality'),
+    yearsExperience: text(form, 'yearsExperience'),
     social,
   }
 }
@@ -183,6 +186,9 @@ async function saveProfile(payload: Payload, user: User, form: FormData): Promis
     specialties: input.specialties.map(Number),
     cities: input.cities.map(Number),
     languages: input.languages,
+    gender: input.gender,
+    nationality: input.nationality,
+    yearsExperience: input.yearsExperience,
     social: input.social,
     ...(photoId !== undefined ? { photo: photoId } : {}),
   }
@@ -236,6 +242,7 @@ export async function submitForReview(_prev: ProfileState, form: FormData): Prom
     specialties: doc.specialties ?? [],
     cities: doc.cities ?? [],
     languages: doc.languages ?? [],
+    gender: doc.gender ?? null,
   })
   if (missing.length) {
     refresh()

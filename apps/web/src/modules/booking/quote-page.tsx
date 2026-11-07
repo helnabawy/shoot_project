@@ -50,6 +50,7 @@ export async function QuotationPage({
       ctx,
       settings,
       sentence: '',
+      experience: (count) => all('creators.profile.experienceYears', { count }),
     })
     replacements = view.sections.map((s) => ({
       personaId: s.personaId,

@@ -116,6 +116,13 @@ grid, with per-language SEO text.
 
 - **FR-001**: Providers MUST be able to create and edit a profile with the
   fields in User Story 3, text fields per language.
+- **FR-011** (amended 2026-11-07, owner request with feature 003): a profile
+  MUST also record the creator's **gender** (female or male only; required
+  before review), **nationality** (one country, optional) and **years of
+  experience** (whole years 0–60, optional). Nationality and years of
+  experience are shown on the public profile and on Quick Match results;
+  gender is never shown publicly and is used only to match a brief's
+  "shot by" choice (feature 003).
 - **FR-002**: Profiles MUST have a verification state managed by admins;
   only verified, active profiles MUST be publicly visible.
 - **FR-003**: The landing page MUST offer a creator-network section with an

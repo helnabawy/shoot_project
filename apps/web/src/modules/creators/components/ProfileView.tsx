@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import { Section } from '@/modules/landing/components/Section'
 import { Bidi } from '@/shared/ui/Bidi'
 import { BriefBar, ResultGroup, ResultRow, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
-import { CheckIcon, ForwardIcon, GlobeIcon, PinIcon, TagIcon, UserIcon, WhatsAppIcon } from '@/shared/ui/icons'
+import { CheckIcon, ClockIcon, FlagIcon, ForwardIcon, GlobeIcon, PinIcon, TagIcon, UserIcon, WhatsAppIcon } from '@/shared/ui/icons'
 import type { ProfileView as Profile } from '../profile'
 import { PhotoTile } from './PhotoTile'
 import { SampleGallery } from './SampleGallery'
@@ -76,6 +76,8 @@ export function ProfileView({
             {view.specialties.length ? <Fact icon={<TagIcon width={16} height={16} />} value={view.specialties.join(' · ')} label={t('shoots')} /> : null}
             {view.places.length ? <Fact icon={<PinIcon width={16} height={16} />} value={view.places.join(' · ')} label={t('places')} /> : null}
             {view.languages.length ? <Fact icon={<GlobeIcon width={16} height={16} />} value={view.languages.join(' · ')} label={t('languages')} /> : null}
+            {view.yearsExperience != null ? <Fact icon={<ClockIcon width={16} height={16} />} value={t('experienceYears', { count: view.yearsExperience })} label={t('experience')} /> : null}
+            {view.nationality ? <Fact icon={<FlagIcon width={16} height={16} />} value={view.nationality} label={t('nationality')} /> : null}
           </div>
 
           <div className="border-t border-hair pt-1 pb-2">

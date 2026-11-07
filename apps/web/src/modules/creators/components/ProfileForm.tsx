@@ -60,11 +60,11 @@ export function ProfileForm({
   const picked = new Set((profile?.specialties ?? defaults.specialties).map(Number))
   const visible = (personas: number[]) => chosen.size === 0 || personas.some((p) => chosen.has(String(p)))
 
-  const complete = (profile?.missing.length ?? 5) === 0
+  const complete = (profile?.missing.length ?? 6) === 0
   const auto = Boolean(profile?.autoPublish && profile.isPublished)
   const needsReview = !auto && complete && (profile?.status === 'draft' || profile?.status === 'live-with-changes')
   const primary = auto ? { intent: 'save', label: t('publish') } : needsReview ? { intent: 'send', label: t('send') } : { intent: 'save', label: t('save') }
-  const missingText = (profile?.missing ?? ['displayName', 'personas', 'specialties', 'cities', 'languages']).map((f) => t(`incompleteMissing.${f}` as never))
+  const missingText = (profile?.missing ?? ['displayName', 'personas', 'specialties', 'cities', 'languages', 'gender']).map((f) => t(`incompleteMissing.${f}` as never))
 
   const feedback =
     state.status === 'saved'
@@ -98,6 +98,35 @@ export function ProfileForm({
             <input id="photo" type="file" name="photo" form={FORM_ID} accept="image/jpeg,image/png,image/webp" aria-describedby="photo-help" className="mt-1 block min-h-11 w-full text-[15px] text-ink file:me-3 file:min-h-11 file:rounded-[var(--radius-row)] file:border-0 file:bg-tile file:px-4 file:text-[15px] file:text-ink" />
             <p id="photo-help" className="mt-1 text-[13px] text-mute">{profile?.photo ? t('photoSet') : t('photoHelp')}</p>
             {err('photo') ? <FieldError id="photo-error">{err('photo')}</FieldError> : null}
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-12" aria-labelledby="sec-about" data-testid="section-about">
+        <h2 id="sec-about" className={sectionTitle}>{t('about')}</h2>
+        <div className={block}>
+          <fieldset className="py-1" data-testid="field-gender" aria-describedby="gender-help">
+            <legend className="px-4 pt-2 pb-1 text-[13px] font-medium text-mute">{t('gender')}</legend>
+            <CheckRow type="radio" name="gender" value="woman" label={t('female')} form={FORM_ID} defaultChecked={profile?.gender === 'woman'} testId="gender-woman" />
+            <CheckRow type="radio" name="gender" value="man" label={t('male')} form={FORM_ID} defaultChecked={profile?.gender === 'man'} testId="gender-man" />
+            <p id="gender-help" className="px-4 pb-2 text-[13px] text-mute">{t('genderHelp')}</p>
+            {err('gender') ? <div className="px-4 pb-2"><FieldError id="gender-error">{err('gender')}</FieldError></div> : null}
+          </fieldset>
+          <div className="px-4 py-2.5">
+            <label htmlFor="nationality" className="block text-[13px] font-medium text-mute">{t('nationality')}</label>
+            <select id="nationality" name="nationality" form={FORM_ID} defaultValue={profile?.nationality ?? ''} aria-invalid={err('nationality') ? true : undefined} aria-describedby={err('nationality') ? 'nationality-error' : undefined} className="mt-1 block min-h-11 w-full rounded-[var(--radius-row)] border border-hair bg-transparent px-3 text-[16px] text-ink">
+              <option value="">{t('nationalityNone')}</option>
+              {options.countries.map((c) => (
+                <option key={c.code} value={c.code}>{c.name}</option>
+              ))}
+            </select>
+            {err('nationality') ? <FieldError id="nationality-error">{err('nationality')}</FieldError> : null}
+          </div>
+          <div className="px-4 py-2.5">
+            <label htmlFor="yearsExperience" className="block text-[13px] font-medium text-mute">{t('experience')}</label>
+            <input id="yearsExperience" name="yearsExperience" type="number" inputMode="numeric" min={0} max={60} step={1} form={FORM_ID} defaultValue={profile?.yearsExperience ?? ''} aria-invalid={err('yearsExperience') ? true : undefined} aria-describedby={err('yearsExperience') ? 'yearsExperience-error' : 'yearsExperience-help'} className="mt-1 block min-h-11 w-32 rounded-[var(--radius-row)] border border-hair bg-transparent px-3 text-[16px] text-ink tabular-nums" />
+            <p id="yearsExperience-help" className="mt-1 text-[13px] text-mute">{t('experienceHelp')}</p>
+            {err('yearsExperience') ? <FieldError id="yearsExperience-error">{err('yearsExperience')}</FieldError> : null}
           </div>
         </div>
       </section>

@@ -111,6 +111,31 @@ describe('CP-US3-S1 sample form', () => {
   })
 })
 
+describe('CP-FR-011 gender, nationality and years of experience', () => {
+  const base = { displayName_en: 'Sara', personas: ['1'] }
+
+  it('stores them when given and null when left empty', () => {
+    const given = parseProfileForm({ ...base, gender: 'woman', nationality: 'AE', yearsExperience: '8' })
+    expect(given).toMatchObject({ ok: true, data: { gender: 'woman', nationality: 'AE', yearsExperience: 8 } })
+    const empty = parseProfileForm({ ...base, gender: '', nationality: '', yearsExperience: '' })
+    expect(empty).toMatchObject({ ok: true, data: { gender: null, nationality: null, yearsExperience: null } })
+    expect(parseProfileForm({ ...base, yearsExperience: '0' })).toMatchObject({ ok: true, data: { yearsExperience: 0 } })
+  })
+
+  it.each([
+    [{ gender: 'other' }, 'gender', 'creators.errors.genderInvalid'],
+    [{ nationality: 'XX' }, 'nationality', 'creators.errors.nationalityInvalid'],
+    [{ yearsExperience: '61' }, 'yearsExperience', 'creators.errors.experienceRange'],
+    [{ yearsExperience: '-1' }, 'yearsExperience', 'creators.errors.experienceRange'],
+    [{ yearsExperience: '2.5' }, 'yearsExperience', 'creators.errors.experienceRange'],
+    [{ yearsExperience: 'ten' }, 'yearsExperience', 'creators.errors.experienceRange'],
+  ])('rejects %j', (over, field, message) => {
+    const result = parseProfileForm({ ...base, ...over })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.errors[field]).toEqual([message])
+  })
+})
+
 describe('CP-US3-S1 submitting for review', () => {
   const complete = { displayName: 'Sara', personas: ['1'], specialties: ['10'], cities: ['100'], languages: ['en'] }
 
@@ -122,6 +147,12 @@ describe('CP-US3-S1 submitting for review', () => {
     expect(missingForReview({ displayName: ' ', personas: [], specialties: [], cities: [], languages: [] })).toEqual(['displayName', 'personas', 'specialties', 'cities', 'languages'])
     expect(missingForReview({ ...complete, cities: [] })).toEqual(['cities'])
     expect(missingForReview({ ...complete, languages: [], specialties: [] })).toEqual(['specialties', 'languages'])
+  })
+
+  it('CP-FR-011 gender is required before review once the form asks for it', () => {
+    expect(missingForReview({ ...complete, gender: null })).toEqual(['gender'])
+    expect(missingForReview({ ...complete, gender: '' })).toEqual(['gender'])
+    expect(missingForReview({ ...complete, gender: 'woman' })).toEqual([])
   })
 
   it('samples are not required to send for review (only to be featured)', () => {

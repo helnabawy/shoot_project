@@ -34,6 +34,17 @@
   --sweep-floor: rgb(92 62 42 / 0.45);
   --sweep-rim: rgb(168 196 236 / 0.6);
   --photo-scrim: rgb(255 255 255 / 0.25);
+  /* The empty set drawn on the sweep (StudioSet): silhouettes in umber, the softbox face lit. */
+  --set-ink: #3a291c;
+  --set-ink-opacity: 0.26;
+  --set-glow: #fff8ee;
+  --set-glow-opacity: 0.62;
+  --set-flash-opacity: 0.55;
+  --set-flash-peak: 1;
+  --set-tally: #e0382d;
+  --set-tally-opacity: 0.8;
+  --set-beam-opacity: 0.3;
+  --set-mote-opacity: 0.9;
   color-scheme: light;
 }
 
@@ -64,6 +75,16 @@
     --sweep-floor: rgb(0 0 0 / 0.5);
     --sweep-rim: rgb(86 124 200 / 0.34);
     --photo-scrim: rgb(0 0 0 / 0.35);
+    --set-ink: #000000;
+    --set-ink-opacity: 0.42;
+    --set-glow: #ffd2a8;
+    --set-glow-opacity: 0.2;
+    --set-flash-opacity: 0.3;
+    --set-flash-peak: 0.55;
+    --set-tally: #ff5a4f;
+    --set-tally-opacity: 0.85;
+    --set-beam-opacity: 0.14;
+    --set-mote-opacity: 0.55;
     color-scheme: dark;
   }
 }
@@ -93,6 +114,16 @@
   --sweep-floor: rgb(0 0 0 / 0.5);
   --sweep-rim: rgb(86 124 200 / 0.34);
   --photo-scrim: rgb(0 0 0 / 0.35);
+  --set-ink: #000000;
+  --set-ink-opacity: 0.42;
+  --set-glow: #ffd2a8;
+  --set-glow-opacity: 0.2;
+  --set-flash-opacity: 0.3;
+  --set-flash-peak: 0.55;
+  --set-tally: #ff5a4f;
+  --set-tally-opacity: 0.85;
+  --set-beam-opacity: 0.14;
+  --set-mote-opacity: 0.55;
   color-scheme: dark;
 }
 
@@ -352,10 +383,199 @@ html.js .no-js-only {
 /* The hero stage: the bar floats over a CMS photo, or over an empty studio sweep until there is one. */
 .studio-sweep {
   background:
-    radial-gradient(55% 75% at 24% 0%, var(--sweep-key), transparent 72%),
-    radial-gradient(40% 65% at 84% 38%, var(--sweep-rim), transparent 70%),
+    radial-gradient(55% 75% at var(--sweep-key-x, 24%) 0%, var(--sweep-key), transparent 72%),
+    radial-gradient(40% 65% at var(--sweep-rim-x, 84%) 38%, var(--sweep-rim), transparent 70%),
     radial-gradient(130% 55% at 50% 118%, var(--sweep-floor), transparent 72%),
     linear-gradient(180deg, var(--sweep-top), var(--sweep-bottom));
+}
+/* The key light sits on the start side with the drawn softbox, so it mirrors in Arabic. */
+[dir='rtl'] .studio-sweep {
+  --sweep-key-x: 76%;
+  --sweep-rim-x: 16%;
+}
+.studio-set {
+  --set-dir: 1;
+}
+[dir='rtl'] .studio-set {
+  --set-dir: -1;
+}
+.studio-set-ink {
+  fill: var(--set-ink);
+  stroke: var(--set-ink);
+  opacity: var(--set-ink-opacity);
+}
+.studio-set-glow {
+  fill: var(--set-glow);
+  opacity: var(--set-glow-opacity);
+}
+.studio-set-beam {
+  opacity: var(--set-beam-opacity);
+}
+.studio-set-mote {
+  fill: var(--set-glow);
+  opacity: calc(var(--set-mote-opacity) * 0.5);
+}
+.studio-set-flash {
+  opacity: 0;
+}
+.studio-set-tally {
+  fill: var(--set-tally);
+  opacity: var(--set-tally-opacity);
+}
+.studio-set-head {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+/* Set Motion. Arrival: the rigs glide in from their own sides (expo out) and the modelling lamp
+   strikes on with a short flicker. Then one 8 s loop: the light and its beam breathe, and at 30 %
+   the flash fires through both (one flash per loop, far under WCAG 2.3.1's three a second). Dust
+   drifts in the beam on its own slow periods; the camera pans a few degrees and back. Opacity and
+   transform only. Nothing moves under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .studio-set-rig {
+    animation: set-rig-in 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .studio-set-rig-light {
+    --set-from: -1;
+    animation-delay: 120ms;
+  }
+  .studio-set-rig-camera {
+    --set-from: 1;
+    animation-delay: 300ms;
+  }
+  .studio-set-glow {
+    animation:
+      set-modelling 8s ease-in-out 1.6s infinite,
+      set-strike 1.3s linear 0.5s backwards;
+  }
+  .studio-set-beam {
+    animation:
+      set-beam 8s ease-in-out 1.6s infinite,
+      set-beam-on 1.6s ease-out 0.9s backwards;
+  }
+  .studio-set-flash {
+    animation: set-flash 8s linear 1.6s infinite;
+  }
+  .studio-set-mote {
+    animation: set-mote var(--mote-t) linear var(--mote-d) infinite;
+  }
+  .studio-set-head {
+    animation: set-pan 18s ease-in-out 1.6s infinite alternate;
+  }
+  .studio-set-tally {
+    animation: set-tally 2.4s ease-in-out infinite;
+  }
+}
+@keyframes set-rig-in {
+  from {
+    opacity: 0;
+    translate: calc(40px * var(--set-from) * var(--set-dir)) 0;
+  }
+}
+@keyframes set-strike {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: calc(var(--set-glow-opacity) * 0.55);
+  }
+  24% {
+    opacity: calc(var(--set-glow-opacity) * 0.12);
+  }
+  34% {
+    opacity: calc(var(--set-glow-opacity) * 0.75);
+  }
+  40% {
+    opacity: calc(var(--set-glow-opacity) * 0.35);
+  }
+  100% {
+    opacity: var(--set-glow-opacity);
+  }
+}
+@keyframes set-modelling {
+  0%,
+  100% {
+    opacity: var(--set-glow-opacity);
+  }
+  29% {
+    opacity: calc(var(--set-glow-opacity) * 0.95);
+  }
+  30% {
+    opacity: var(--set-flash-peak);
+  }
+  38% {
+    opacity: var(--set-glow-opacity);
+  }
+  70% {
+    opacity: calc(var(--set-glow-opacity) * 0.72);
+  }
+}
+@keyframes set-beam-on {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes set-beam {
+  0%,
+  100% {
+    opacity: var(--set-beam-opacity);
+  }
+  29% {
+    opacity: calc(var(--set-beam-opacity) * 0.95);
+  }
+  30% {
+    opacity: calc(var(--set-beam-opacity) * 2.2);
+  }
+  40% {
+    opacity: var(--set-beam-opacity);
+  }
+  70% {
+    opacity: calc(var(--set-beam-opacity) * 0.7);
+  }
+}
+@keyframes set-flash {
+  0%,
+  29.5% {
+    opacity: 0;
+  }
+  30% {
+    opacity: var(--set-flash-opacity);
+  }
+  40%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes set-mote {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: var(--set-mote-opacity);
+  }
+  100% {
+    transform: translate(36px, -64px);
+    opacity: 0;
+  }
+}
+@keyframes set-pan {
+  from {
+    transform: rotate(-1.5deg);
+  }
+  to {
+    transform: rotate(2deg);
+  }
+}
+@keyframes set-tally {
+  0%,
+  100% {
+    opacity: var(--set-tally-opacity);
+  }
+  50% {
+    opacity: calc(var(--set-tally-opacity) * 0.2);
+  }
 }
 .photo-scrim::after {
   content: '';
@@ -432,6 +652,100 @@ html.js .native-picker::-webkit-calendar-picker-indicator {
     opacity: 0;
   }
 }
+/* Our network: creator preview cards in a strip across the full window. With enough creators it runs
+   as a slow loop (two identical halves, the track moves half its width), pausing under the pointer,
+   on keyboard focus and from its pause control; the ends fade into the ground. Under reduced motion,
+   or with too few creators, it holds still and scrolls sideways, snapping to each card, its first card
+   lined up with the page column. No shadow: the cards are panes, not floating panels. */
+.network-strip {
+  --strip-dir: -1;
+  /* The page column's start edge: 680 px column below 1024 px, 1080 px from there. */
+  --strip-inset: max(16px, calc((100% - 680px) / 2 + 16px));
+}
+[dir='rtl'] .network-strip {
+  --strip-dir: 1;
+}
+@media (width >= 40rem) {
+  .network-strip {
+    --strip-inset: max(24px, calc((100% - 680px) / 2 + 24px));
+  }
+}
+@media (width >= 64rem) {
+  .network-strip {
+    --strip-inset: max(24px, calc((100% - 1080px) / 2 + 24px));
+  }
+}
+.network-strip-viewport {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--strip-inset);
+  scrollbar-width: none;
+  /* Room for the focus ring, which the scroller would otherwise clip. */
+  padding-block: 4px;
+}
+.network-strip-viewport::-webkit-scrollbar {
+  display: none;
+}
+.network-strip-track {
+  display: flex;
+  width: max-content;
+  padding-inline: var(--strip-inset);
+}
+.network-strip-cell {
+  flex: none;
+  width: 288px;
+  padding-inline-end: 16px;
+  scroll-snap-align: start;
+}
+@media (width >= 40rem) {
+  .network-strip-cell {
+    width: 336px;
+  }
+}
+.network-strip-copies,
+.network-strip-toggle {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .network-strip[data-runs='true'] .network-strip-viewport {
+    overflow: hidden;
+    scroll-snap-type: none;
+    mask-image: linear-gradient(90deg, transparent, #000 min(9%, 120px), #000 calc(100% - min(9%, 120px)), transparent);
+  }
+  .network-strip[data-runs='true'] .network-strip-track {
+    padding-inline: 0;
+    animation: strip-run var(--strip-duration, 60s) linear infinite;
+  }
+  .network-strip[data-runs='true'] :is(.network-strip-copies, .network-strip-toggle) {
+    display: flex;
+  }
+  .network-strip[data-runs='true'] .network-strip-toggle {
+    display: grid;
+  }
+  .network-strip[data-runs='true']:is([data-paused='true'], :has(.network-strip-viewport:hover), :has(.network-strip-viewport :focus-visible))
+    .network-strip-track {
+    animation-play-state: paused;
+  }
+}
+@keyframes strip-run {
+  to {
+    transform: translateX(calc(var(--strip-dir) * 50%));
+  }
+}
+.creator-card {
+  transition:
+    border-color 0.2s ease-out,
+    background-color 0.2s ease-out;
+}
+.creator-card:hover {
+  border-color: color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.creator-card:focus-visible {
+  border-radius: 14px;
+  outline-offset: -2px;
+}
+
 /*
  * Quotation print layout (feature 003, research §9): "Download PDF" is the browser's Save as PDF.
  * A4, black on white in either theme, only the quotation document; lines never split across pages.

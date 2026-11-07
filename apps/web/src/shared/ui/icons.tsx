@@ -187,3 +187,20 @@ export const HelpIcon = (p: IconProps) => (
     <path d="M8 8a2 2 0 1 1 2.75 1.85c-.45.2-.75.6-.75 1.1v.3M10 13.75h.01" />
   </Svg>
 )
+export const PauseIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M7.25 5v10M12.75 5v10" />
+  </Svg>
+)
+export const FlagIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M5 17.25V3.5" />
+    <path d="M5 4h9.5l-1.75 3.5L14.5 11H5" />
+  </Svg>
+)
+export const ClockIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="10" cy="10" r="7" />
+    <path d="M10 6.25V10l2.5 1.75" />
+  </Svg>
+)

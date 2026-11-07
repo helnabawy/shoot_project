@@ -42,12 +42,32 @@ colors:
   sweep-key: "rgb(255 246 234 / 0.9)"
   sweep-rim: "rgb(168 196 236 / 0.6)"
   sweep-floor: "rgb(92 62 42 / 0.45)"
+  set-ink: "#3a291c"
+  set-ink-opacity: "0.26"
+  set-glow: "#fff8ee"
+  set-glow-opacity: "0.62"
+  set-flash-opacity: "0.55"
+  set-flash-peak: "1"
+  set-tally: "#e0382d"
+  set-tally-opacity: "0.8"
+  set-beam-opacity: "0.3"
+  set-mote-opacity: "0.9"
   night-photo-scrim: "rgb(0 0 0 / 0.35)"
   night-sweep-top: "#4a3a2f"
   night-sweep-bottom: "#1d1612"
   night-sweep-key: "rgb(255 206 160 / 0.42)"
   night-sweep-rim: "rgb(86 124 200 / 0.34)"
   night-sweep-floor: "rgb(0 0 0 / 0.5)"
+  night-set-ink: "#000000"
+  night-set-ink-opacity: "0.42"
+  night-set-glow: "#ffd2a8"
+  night-set-glow-opacity: "0.2"
+  night-set-flash-opacity: "0.3"
+  night-set-flash-peak: "0.55"
+  night-set-tally: "#ff5a4f"
+  night-set-tally-opacity: "0.85"
+  night-set-beam-opacity: "0.14"
+  night-set-mote-opacity: "0.55"
   glass-panel: "rgb(255 255 255 / 0.64)"
   glass-panel-solid: "#f4f1ee"
   glass-ink: "#161618"
@@ -353,7 +373,11 @@ The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingu
 
 **2026-11-07 (feature 002, US4).** The specialty page at `/work/{slug}` and the landing Specialties link row were recorded from the shipped build: Specialty Header, Specialty Page, Specialty Samples and Specialties Link Row. No new colour, shadow, radius or type step; the page is the directory panel with one filter fixed, the existing Portfolio Grid grammar and the existing row.
 
+**2026-11-07 (owner-directed).** The owner asked for a more professional header. It became the window toolbar (see Site Header): sticky, the page scrolling under a frosted ground whose hairline fades in once the page moves; the section links centred and marking the section in view; the wordmark led by an ink glyph tile; the theme control a macOS segmented control (a raised panel chip on a quiet track, replacing the solid ink segment); a hairline-bordered account button. No new colour role, shadow or type step.
+
 **2026-11-07 (feature 003, Quick Match).** The match and details steps (`/match/...`), the quotation (`/q/...`, `/account/bookings/{ref}`) and the account's bookings and availability pages were recorded from the shipped build: Price Group Label, Creator Pick Row, Quotation Panel, Booking Status, Quiet End Actions, Creator Booking Row, Availability Day Row, Update Row and the quotation's print rendering. No new colour, shadow, radius or type step on screen; the one addition is a print rendering of the existing roles.
+
+**2026-11-07 (owner-directed).** The owner asked for "Our network" to sit directly under the hero as a moving strip of creator cards, after a reference with that pattern. It is the first section under the stage (CMS order; the default seed follows). Its creators are Creator Cards in a Network Strip that runs the full width of the window, the one place below the fold where cards replace rows, because the strip is a showcase of people rather than a list to scan. The reference's eyebrow label, serif display headline, navy ground and orange button were not taken: the heading stays the section heading, and the cards use only existing roles (panel solid, hairline, ink, mute, tile ink). No new colour role, shadow, radius or type step.
 
 ## Colors
 
@@ -378,6 +402,8 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 ### Hero Stage
 - **Photo Scrim** (`photo-scrim`; night `night-photo-scrim`): laid over the hero photograph so the headline and the glass bar hold contrast; it lifts the photo in light and darkens it in dark.
 - **Studio Sweep** (`sweep-top` / `sweep-bottom` paper, `sweep-key` warm key light at the top start, `sweep-rim` cool rim light at the end, `sweep-floor` floor shade; night variants): the empty-studio backdrop shown until the CMS has a hero photograph. Decorative and hidden from assistive technology.
+- **Studio Set** (`set-ink` at `set-ink-opacity`, `set-glow` at `set-glow-opacity`; night variants): drawn over the sweep, an empty set in faded silhouette: a softbox with a lit face on the start side (the source of the sweep's key light) and a camera on its tripod on the end side, lens toward the light across the bar. Owner-requested 2026-11-07 so the hero carries the studio identity without inventing photography. Both pieces anchor with logical insets and mirror in Arabic, and the sweep's key and rim lights mirror with them (`--sweep-key-x`, `--sweep-rim-x`). Below 1024 px the softbox sits above the headline and the camera below the bar. A CMS hero photograph replaces both sweep and set. Decorative and hidden from assistive technology.
+  - **Set Motion** (owner-requested 2026-11-07, refined the same day for a more modern, professional feel). CSS only, opacity and transform only, and nothing moves under `prefers-reduced-motion: reduce`. **Arrival:** each rig glides 40 px in from its own side and fades up (1.4 s, expo out, the camera 180 ms after the light; the direction follows the page so Arabic mirrors), and the modelling lamp strikes on with a short flicker before settling. **Loop (8 s):** the light breathes down to 72 % of `set-glow-opacity`; at 30 % of the loop the flash fires: the face jumps to `set-flash-peak`, a radial bloom (`set-flash-opacity`) fades out over 0.8 s and the beam briefly doubles. One flash per loop is far under WCAG 2.3.1. **Air (from 1024 px only):** a soft elliptical beam (`set-beam-opacity`, a radial gradient focused on the face, no hard edges) falls from the softbox across the stage, and eight dust motes (`set-mote-opacity`) drift up and out of it on their own 17–25 s periods. Phones skip the beam and dust so the glass bar is not re-blurred every frame. **Camera:** the head pans between -1.5° and 2° on an 18 s ease, and the tally light (`set-tally`, the only red in the system, hero only) pulses softly every 2.4 s.
 - **Glass** (`glass-panel` with opaque fallback `glass-panel-solid`, `glass-ink`, `glass-mute`, `glass-hairline`, `glass-tile` / `glass-tile-ink`, `glass-edge`, `glass-sheen`; night `night-glass-*`): the bar's glass tone re-scopes the panel roles inside the bar: light glass with dark text in light, smoked glass with white text in dark. Text pairs are checked against the glass over mid grey (a blurred photo's typical average) and over the worst photo after the scrim (black under light glass, white under smoked).
 
 ### Named Rules
@@ -419,7 +445,7 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 
 One column, centred where Spotlight sits: 680 px for the landing bar, and for every section beneath it below 1024 px; 480 px for login and register, 560 px for the account, 1080 px for the header. Phone gutters are 12 px around the bar (16 px for sections); the bar starts right under the headline so the Top Hit sits above the fold on a 360 × 640 phone. Nothing sits beside the bar on desktop; the headline aligns to its edge.
 
-On the landing page the first viewport is a stage. Under the header (not sticky, about 60 px), a backdrop band runs edge to edge at the full remaining viewport height (100svh minus 60 px), holding the hero photograph (cover-cropped, loaded with priority) or the studio sweep. The headline and the bar sit in the 680 px column on it, roughly vertically centred (top padding max(2 rem, 50svh minus 200 px)), the bar 20 px under the headline (24 px from 640 px). The Top Hit stays above the fold on a 360 × 640 phone, and an opened bar runs on past the stage. Below the stage, on the ground, one strip opens the page grid: the helper hint at the start and the trust chips at the end, on one baseline-aligned line out to 1080 px from 1024 px. On phones the chips stack (so no line starts with a rule); from 640 px they run on one line divided by logical hairlines (`border-s` with 12 px either side).
+On the landing page the first viewport is a stage. Under the header (sticky, 60 px), a backdrop band runs edge to edge at the full remaining viewport height (100svh minus 60 px), holding the hero photograph (cover-cropped, loaded with priority) or the studio sweep. The headline and the bar sit in the 680 px column on it, roughly vertically centred (top padding max(2 rem, 50svh minus 200 px)), the bar 20 px under the headline (24 px from 640 px). The Top Hit stays above the fold on a 360 × 640 phone, and an opened bar runs on past the stage. Below the stage, on the ground, one strip opens the page grid: the helper hint at the start and the trust chips at the end, on one baseline-aligned line out to 1080 px from 1024 px. On phones the chips stack (so no line starts with a rule); from 640 px they run on one line divided by logical hairlines (`border-s` with 12 px either side).
 
 Rows use 16 px inline padding, 12 px gap between tile, label and trailing slot, and a 44 px minimum height (the touch target). Sections are separated by 64 px of ground (96 px from 1024 px); section gutters are 16 px, 24 px from 640 px. Breakpoints are Tailwind's `sm` (640 px) for the type and gutter step, `md` (768 px) for hiding mobile-only chrome, and `lg` (1024 px) for the section panes; verified at 360, 768, 1024 and 1440 px.
 
@@ -462,6 +488,9 @@ Soft, nested macOS corners stepping down with size: panel 14 px, Top Hit and inp
 
 ## Components
 
+### Site Header (toolbar)
+A macOS window toolbar, 60 px tall including its hairline, out to 1080 px, sticky at the top with the editor preview bar. At the top of the page it is the bare ground; as the page moves (a scroll-driven animation over the first 48 px) it fills with the ground at 80% under a 20 px blur and draws its `border-block-end` hairline. Without scroll-driven animations it is always frosted with the hairline; without backdrop-filter it is the opaque ground. It never casts a shadow. Its backdrop-filter is the backdrop root for the phone menu, so the menu's panel uses `panel-solid`. From 768 px it is three columns (start and end grow to their content, the links centred): the wordmark (a 28 px ink glyph tile with the name's first letter in ground, 8 px corners, then the name at 15 px semibold; a CMS logo replaces both); the section links (36 px, 9 px corners, 14 px medium mute, hover ink at 4.5%, active 8%, the section in view or the current page `aria-current` at ink 6% with ink text, never blue); then the language link (globe from 640 px), the theme segmented control (track ink 6%, chosen segment `panel-solid` with a hairline ring, 32 px segments), a 20 px hairline divider and the account button (36 px, hairline border on `panel-solid`, 14 px medium ink, user glyph). Below 768 px: the wordmark, the language link and the menu toggle, which opens the `sm` Brief Bar menu under the toolbar. Nothing in the header wraps.
+
 ### Brief Bar (signature)
 The one floating panel. `BriefBar` renders the frosted material with `overflow: hidden`; `size="sm"` drops the panel's text to 15 px for secondary bars (creator invitation, header menu, not-found), and `tone="glass"` dresses the primary bar for the hero stage (see Elevation & Depth). Inside: the field, a hairline, the Top Hit group (once the brief is complete), the asked step's result group, and the Actions group.
 
@@ -482,6 +511,12 @@ The search magnifier (22 px, 2.25 stroke, ink) beside the composed sentence at F
 
 ### Creator Row
 A result row whose lead is the Photo Tile: grid of 44 px tile, flexible text, auto trailing slot, 64 px minimum height, same inset, 9 px corners, 12 px gap and hover tint as any row. Line one is the name (semibold, ink, wraps); line two is professional types and place joined by a middle dot (13 px mute). In the directory a third line prints up to three specialties as plain text (13 px mute), never as chips. The creator's code trails in the slot (13 px, tabular figures), wrapped in an isolated left-to-right run so it reads the same in Arabic. As a Top Hit the row takes the shared Top Hit base (selection blue, 9 px corners, 17 px semibold, inset 8 px), the accent Photo Tile, 64 px minimum height, secondary lines in full white for AA on selection blue, and the Return key hint after the code. A Top Hit and its list rows are the same component in two tones, so the One Blue Row Rule holds.
+
+### Creator Card
+A creator as a Spotlight preview pane, used only in the Network Strip. 288 px wide on phones, 320 px from 640 px (a 16 px gap trails each), 14 px corners, 1 px hairline, panel-solid fill, 20 px inset, no shadow. Top: the `lg` Photo Tile (64 px), then the name (17 px semibold ink, one line, truncated) with a 16 px ink disc carrying a drawn check (accessible name "Verified", the same claim the profile makes for every listed creator), the code under it (13 px mute, tabular, isolated run), and a forward arrow in the end column that darkens and nudges forward on hover. Then up to two lines of the bio excerpt (14 px, ink at 80%, `dir="auto"`, two lines reserved so every card aligns). At the foot, under a hairline, glyph lines in 13 px mute with 16 px tile-ink icons: types (user), place (pin), specialties (tag) as plain text, never chips. Hover darkens the hairline to ink at 18%; the focus ring follows the 14 px corner, inset. The whole card is one link whose accessible name is its visible text in order.
+
+### Network Strip
+The landing "Our network" strip: the section heading in the page column, then the Creator Cards in a row that runs the full width of the window, then a row in the page column with the directory link at the start and a 44 px round hairline pause control at the end. With 4 or more creators it loops slowly (7 s per card, linear), leftward in English and rightward in Arabic, the ends fading into the ground (mask, up to 120 px); short lists repeat inside each half so one copy is wider than the widest screen. Assistive tech reads the list once; the copies are `aria-hidden` and `inert`. Pointer hover, keyboard focus and the pause control (a pressed toggle) stop it. Under reduced motion, or with fewer than 4 creators, it holds still as a sideways scroller that snaps to each card, its first card lined up with the page column, and the pause control is gone.
 
 ### Directory Panel
 The Brief Bar used as a filter, with the Top Hit as the best match. The field prints the chosen filters as selection-tinted tokens (the same token as the brief sentence); with none chosen it shows "All professionals" in mute as a placeholder. Under it, a filters group with one row per filter (professional, specialty, emirate): glyph tile with a drawn icon (user, tag, pin), label, and in the trailing slot the current value or "Any" with a chevron that turns over when open. Each row is a native `details`/`summary` disclosure (one open at a time), so it works without JavaScript. Opened, it lists an "Any" row (set, with a drawn check, when nothing is chosen), then the options as link rows with their counts in the trailing slot (tabular); the chosen option is a set row. Options with zero matches are hidden unless chosen. A "Clear filters" row with a close glyph appears only when a filter is active. Below a hairline, the "Top Hit" group holds the best creator, or, when nothing matches, a plain message row and a Top Hit back to the brief. Beneath the panel the remaining creators are Creator Rows on the bare ground.

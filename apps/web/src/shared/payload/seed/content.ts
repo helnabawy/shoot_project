@@ -196,6 +196,15 @@ export const landingPage = {
   ],
   sections: [
     {
+      blockType: 'creatorNetwork',
+      anchor: 'our-network',
+      heading: { en: 'Our network', ar: 'شبكتنا' },
+      subheading: { en: 'Meet the people behind the shoots.', ar: 'تعرّف على من يقف وراء الجلسات.' },
+      rule: 'featuredThenNewest',
+      count: 6,
+      cta: { label: { en: 'See everyone', ar: 'عرض الجميع' }, kind: 'link', href: '/creators' },
+    },
+    {
       blockType: 'howItWorks',
       anchor: 'how-it-works',
       heading: { en: 'How it works', ar: 'كيف نعمل' },
@@ -224,15 +233,6 @@ export const landingPage = {
       heading: { en: 'Specialties', ar: 'التخصصات' },
       subheading: { en: 'What our professionals shoot.', ar: 'ما يصوّره محترفونا.' },
       source: 'active',
-    },
-    {
-      blockType: 'creatorNetwork',
-      anchor: 'our-network',
-      heading: { en: 'Our network', ar: 'شبكتنا' },
-      subheading: { en: 'Meet the people behind the shoots.', ar: 'تعرّف على من يقف وراء الجلسات.' },
-      rule: 'featuredThenNewest',
-      count: 6,
-      cta: { label: { en: 'See everyone', ar: 'عرض الجميع' }, kind: 'link', href: '/creators' },
     },
     {
       blockType: 'personaBand',

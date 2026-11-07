@@ -376,6 +376,18 @@ export interface CreatorProfile {
   languages?:
     | ('en' | 'ar' | 'hi' | 'ur' | 'fr' | 'ru' | 'tl' | 'fa' | 'es' | 'de' | 'zh' | 'bn' | 'ml' | 'ta')[]
     | null;
+  /**
+   * Used only to match a brief's "shot by" choice; never shown publicly. Required before review.
+   */
+  gender?: ('woman' | 'man') | null;
+  /**
+   * ISO country code, e.g. AE (249 allowed).
+   */
+  nationality?: string | null;
+  /**
+   * Whole years.
+   */
+  yearsExperience?: number | null;
   photo?: (number | null) | Media;
   samples?:
     | {
@@ -1759,6 +1771,9 @@ export interface CreatorProfilesSelect<T extends boolean = true> {
   specialties?: T;
   cities?: T;
   languages?: T;
+  gender?: T;
+  nationality?: T;
+  yearsExperience?: T;
   photo?: T;
   samples?:
     | T

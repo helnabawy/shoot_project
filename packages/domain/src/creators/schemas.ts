@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { GENDERS, isCountryCode, MAX_YEARS_EXPERIENCE, type Gender } from './countries'
 import { isSpokenLanguage } from './languages'
 import { isAllowedSocialUrl, SOCIAL_PLATFORMS, type SocialPlatform } from './links'
 import { isAllowedVideoUrl } from './samples'
@@ -32,6 +33,24 @@ const profileSchema = z.object({
     .refine(distinct, 'creators.errors.duplicate')
     .optional()
     .default([]),
+  // 002 FR-011: gender is required before review (missingForReview), not for saving a draft.
+  gender: z
+    .string()
+    .optional()
+    .transform((v) => v || undefined)
+    .refine((v) => v === undefined || (GENDERS as readonly string[]).includes(v), 'creators.errors.genderInvalid'),
+  nationality: z
+    .string()
+    .trim()
+    .optional()
+    .transform((v) => v || undefined)
+    .refine((v) => v === undefined || isCountryCode(v), 'creators.errors.nationalityInvalid'),
+  yearsExperience: z
+    .string()
+    .trim()
+    .optional()
+    .transform((v) => (v ? Number(v) : undefined))
+    .refine((v) => v === undefined || (Number.isInteger(v) && v >= 0 && v <= MAX_YEARS_EXPERIENCE), 'creators.errors.experienceRange'),
   social: z
     .array(z.object({ platform: z.enum(SOCIAL_PLATFORMS, { message: 'creators.errors.socialPlatform' }), url: z.string().trim() }))
     .max(PROFILE_LIMITS.social, 'creators.errors.tooMany')
@@ -53,6 +72,9 @@ export interface ProfileInput {
   specialties: string[]
   cities: string[]
   languages: string[]
+  gender: Gender | null
+  nationality: string | null
+  yearsExperience: number | null
   social: { platform: string; url: string }[]
 }
 
@@ -82,6 +104,9 @@ export function parseProfileForm(raw: unknown): { ok: true; data: ProfileInput }
       specialties: d.specialties,
       cities: d.cities,
       languages: d.languages,
+      gender: (d.gender as Gender | undefined) ?? null,
+      nationality: d.nationality ?? null,
+      yearsExperience: d.yearsExperience ?? null,
       social: d.social,
     },
   }
@@ -125,7 +150,7 @@ export function parseSampleForm(raw: unknown): { ok: true; data: SampleInput } |
   }
 }
 
-export type ReviewField = 'displayName' | 'personas' | 'specialties' | 'cities' | 'languages'
+export type ReviewField = 'displayName' | 'personas' | 'specialties' | 'cities' | 'languages' | 'gender'
 
 /**
  * What a profile still needs before it can be sent for review, in form order. Samples are not required:
@@ -137,6 +162,8 @@ export function missingForReview(profile: {
   specialties: readonly unknown[]
   cities: readonly unknown[]
   languages: readonly unknown[]
+  /** Absent means "not asked" (older callers); null or empty means missing. */
+  gender?: string | null
 }): ReviewField[] {
   const missing: ReviewField[] = []
   if (!profile.displayName.trim()) missing.push('displayName')
@@ -144,6 +171,7 @@ export function missingForReview(profile: {
   if (profile.specialties.length === 0) missing.push('specialties')
   if (profile.cities.length === 0) missing.push('cities')
   if (profile.languages.length === 0) missing.push('languages')
+  if (profile.gender !== undefined && !profile.gender) missing.push('gender')
   return missing
 }
 

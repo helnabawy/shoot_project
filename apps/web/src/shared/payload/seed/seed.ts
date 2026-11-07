@@ -5,7 +5,7 @@ import { seedDemoGuides } from './demo-guides'
 import { seedLegalDocuments } from './legal'
 import { seedStudiosPage } from './pages'
 import { pickLocale, withRowIds } from './localize'
-import { occasionCategories, quickMatchSettings, seedDemoPrices, seedDemoQuickMatch } from './quick-match'
+import { describeDemoCreators, occasionCategories, quickMatchSettings, seedDemoPrices, seedDemoQuickMatch } from './quick-match'
 
 const context = { disableRevalidate: true }
 type AnyDoc = Record<string, unknown> & { id: string | number }
@@ -144,6 +144,7 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
 
   if (options.demoCreators) {
     await seedDemoCreators(payload, { siteUrl: options.siteUrl, password: demoPassword(options.demoPassword), log })
+    await describeDemoCreators(payload, log)
     await seedDemoPrices(payload, log)
     await seedDemoQuickMatch(payload, log)
   }

@@ -51,6 +51,28 @@ describe('CP-US3-S1 provider form', () => {
     expect(checked('languages')).toEqual(['en', 'ar'])
   })
 
+  it('CP-FR-011 asks gender (female or male, explained as private), nationality and years of experience', () => {
+    render()
+    const gender = screen.getByTestId('field-gender')
+    expect(within(gender).getByRole('radio', { name: 'Female' })).toBeChecked()
+    expect(within(gender).getByRole('radio', { name: 'Male' })).not.toBeChecked()
+    expect(within(gender).getAllByRole('radio')).toHaveLength(2)
+    expect(gender).toHaveTextContent('Never shown on your profile.')
+    expect(screen.getByLabelText('Nationality')).toHaveValue('AE')
+    expect(screen.getByRole('option', { name: 'Iran' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Years of experience')).toHaveValue(8)
+    for (const name of ['gender', 'nationality', 'yearsExperience']) {
+      expect(document.querySelector(`[name="${name}"]`)).toHaveAttribute('form', 'profile-form')
+    }
+  })
+
+  it('CP-FR-011 an empty profile asks for gender before review', () => {
+    render({ profile: myProfile({ gender: null, nationality: null, yearsExperience: null, missing: ['gender'] }) })
+    expect(screen.getAllByRole('radio').every((r) => !(r as HTMLInputElement).checked)).toBe(true)
+    expect(screen.getByLabelText('Nationality')).toHaveValue('')
+    expect(screen.getByText(/your gender/)).toBeInTheDocument()
+  })
+
   it('lists cities under their emirate and offers each emirate itself', () => {
     render()
     const cities = within(screen.getByTestId('field-cities'))

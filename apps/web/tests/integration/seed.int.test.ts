@@ -175,6 +175,9 @@ describe('003 seed: Quick Match wording, no invented prices', () => {
     await seed(payload, options)
     expect((await payload.count({ collection: 'service-tiers' })).totalDocs).toBe(10)
     expect((await payload.count({ collection: 'travel-fees' })).totalDocs).toBe(8)
+    // Demo creators state gender (private, drives "shot by"), nationality and experience (002 FR-011).
+    const profiles = await payload.find({ collection: 'creator-profiles', where: { code: { in: ['D2222', 'D3333'] } }, depth: 0, sort: 'code', overrideAccess: true })
+    expect(profiles.docs.map((p) => [p.code, p.gender, p.nationality, p.yearsExperience])).toEqual([['D2222', 'woman', 'AE', 8], ['D3333', 'man', 'EG', 12]])
     expect((await payload.count({ collection: 'promo-codes', where: { code: { equals: 'WELCOME20' } } })).totalDocs).toBe(1)
     // One demo quotation (Lighthouse), idempotent; never in the default seed (checked above).
     expect((await payload.find({ collection: 'bookings', depth: 0, overrideAccess: true })).docs.map((b) => [b.reference, b.state])).toEqual([['Q-D2222', 'quoted']])

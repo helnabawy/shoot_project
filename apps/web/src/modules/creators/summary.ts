@@ -22,6 +22,9 @@ export interface RawProfile {
   languages?: string[] | null
   photo?: Media | number | null
   samples?: { category?: Ref | null }[] | null
+  /** Private (002 FR-011): read server-side only, it becomes a match value and is never put on a page. */
+  gender?: string | null
+  yearsExperience?: number | null
 }
 
 export interface RawListing extends ListingState {
@@ -73,7 +76,8 @@ export function toSummary(profile: RawProfile, listing: RawListing, parents: Loc
     sampleCount: (profile.samples ?? []).length,
     featured: Boolean(listing.featured),
     publishedAt: listing.verifiedAt ?? createdAt,
-    matchValues: listing.matchValues ?? [],
+    matchValues: [...new Set([...(profile.gender ? [profile.gender] : []), ...(listing.matchValues ?? [])])],
+    yearsExperience: profile.yearsExperience ?? null,
   }
 }
 
