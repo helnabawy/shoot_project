@@ -144,6 +144,14 @@ grid, with per-language SEO text.
   required is missing, a message MUST say plainly that the profile is not
   complete, that clients cannot find or book the provider until it is
   approved, and how many steps need attention.
+- **FR-016** (amended 2026-11-08, owner request "the profile is too long"):
+  the editor MUST show one step at a time behind **step tabs** (sticky strip
+  on phones, a column beside the step from 1024 px), each tab carrying its
+  state, and MUST show the profile's **completion percentage**: 14 equal
+  parts, the 8 required for review and 6 recommended (photo, bio,
+  nationality, experience, a link, a sample); the calendar is not a part.
+  Every field stays in the one form; a failed save opens the step of its
+  first error; without JavaScript every step shows, one under another.
 - **FR-002**: Profiles MUST have a verification state managed by admins;
   only verified, active profiles MUST be publicly visible.
 - **FR-003**: The landing page MUST offer a creator-network section with an

@@ -1,7 +1,7 @@
 'use client'
 
 import { joinList } from '@shoot/domain/personas'
-import { PROFILE_LIMITS, type ReviewField, SOCIAL_PLATFORMS } from '@shoot/domain/creators'
+import { PROFILE_LIMITS, type ReviewField, SOCIAL_PLATFORMS, STEP_NUMBER, stepOfField } from '@shoot/domain/creators'
 import { useTranslations } from 'next-intl'
 import { useActionState, useEffect, useState, type ReactNode } from 'react'
 import { BriefBar, cx, ResultGroup, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
@@ -13,7 +13,7 @@ import type { MyProfile, SelectableOptions } from '../my-profile'
 import { FieldErrorsContext } from './ActionForm'
 import { CheckRow } from './CheckRow'
 import { LocalizedPair } from './LocalizedPair'
-import { STEP_NUMBER } from './ProfileSteps'
+import { StepPanel, useProfileSteps } from './ProfileStepper'
 import { SectionHeading } from './SectionHeading'
 
 const FORM_ID = 'profile-form'
@@ -53,13 +53,19 @@ export function ProfileForm({
   const tp = useTranslations('creators.profile')
   const [state, action, pending] = useActionState(submitProfileForm, idle)
   const errors = state.status === 'error' ? state.errors : {}
-  // A failed save moves the reader to the first thing to fix: its field, or its message when it is a group.
+  const { show } = useProfileSteps()
+  // A failed save opens the step of the first thing to fix, then moves the reader to its field, or to its
+  // message when it is a group (CP-FR-015).
   useEffect(() => {
     if (state.status !== 'error') return
-    const field = document.querySelector<HTMLElement>('[aria-invalid="true"]')
-    if (field) field.focus()
-    else document.querySelector<HTMLElement>('[id$="-error"]')?.scrollIntoView({ block: 'center' })
-  }, [state])
+    const step = Object.keys(state.errors).map(stepOfField).find((s) => s !== null)
+    if (step) show(step)
+    requestAnimationFrame(() => {
+      const field = document.querySelector<HTMLElement>('[aria-invalid="true"]')
+      if (field) field.focus()
+      else document.querySelector<HTMLElement>('[id$="-error"]')?.scrollIntoView({ block: 'center' })
+    })
+  }, [state, show])
   const err = (field: string) => (errors[field] ? te(errorMessageKey(errors[field]) as never) : undefined)
 
   const personaIds = profile?.personas ?? defaults.personas
@@ -95,6 +101,7 @@ export function ProfileForm({
       <input type="hidden" name="locale" value={locale} form={FORM_ID} />
       {state.status === 'error' && state.formError && !Object.keys(errors).length ? <FormError>{te(errorMessageKey(state.formError) as never)}</FormError> : null}
 
+      <StepPanel step="basics">
       <section className="mt-10" aria-labelledby="sec-basics" data-testid="section-basics">
         <SectionHeading id="sec-basics" step={STEP_NUMBER.basics}>{t('basics')}</SectionHeading>
         <div className={block}>
@@ -108,7 +115,9 @@ export function ProfileForm({
           </div>
         </div>
       </section>
+      </StepPanel>
 
+      <StepPanel step="about">
       <section className="mt-12" aria-labelledby="sec-about" data-testid="section-about">
         <SectionHeading id="sec-about" step={STEP_NUMBER.about}>{t('about')}</SectionHeading>
         <div className={block}>
@@ -137,7 +146,9 @@ export function ProfileForm({
           </div>
         </div>
       </section>
+      </StepPanel>
 
+      <StepPanel step="places">
       <section className="mt-12" aria-labelledby="sec-places" data-testid="section-places">
         <SectionHeading id="sec-places" step={STEP_NUMBER.places}>{t('places')}</SectionHeading>
         <div className={block}>
@@ -178,7 +189,9 @@ export function ProfileForm({
           </fieldset>
         </div>
       </section>
+      </StepPanel>
 
+      <StepPanel step="links">
       <section className="mt-12" aria-labelledby="sec-links" data-testid="section-links">
         <SectionHeading id="sec-links" step={STEP_NUMBER.links}>{t('links')}</SectionHeading>
         <p className="mt-1 px-1 text-[15px] text-mute">{t('linksHelp')}</p>
@@ -206,6 +219,7 @@ export function ProfileForm({
           })}
         </div>
       </section>
+      </StepPanel>
 
       <FieldErrorsContext.Provider value={errors}>{samples}</FieldErrorsContext.Provider>
 

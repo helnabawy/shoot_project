@@ -44,6 +44,8 @@ const bigJpeg = () => sharp(randomBytes(2200 * 2200 * 3), { raw: { width: 2200, 
 
 const status = (page: Page) => page.getByTestId('profile-status')
 const feedback = (page: Page) => page.getByTestId('profile-feedback')
+/** CP-FR-016: the editor shows one step at a time; open a step's tab before using its fields. */
+const openStep = (page: Page, step: string) => page.getByTestId(`step-${step}`).click()
 
 test.describe('CP-US3 providers manage their own profile', () => {
   test('@smoke CP-US3-S1…S3 a provider fills the profile, sends it, an admin publishes it, and later edits wait for approval', async ({ page, request }, info) => {
@@ -71,9 +73,11 @@ test.describe('CP-US3 providers manage their own profile', () => {
     await page.locator('#displayName-ar').fill('محترف الرحلة')
     await page.locator('#bio-en').fill('Weddings and portraits.')
     await page.locator('#bio-ar').fill('أعراس وبورتريه.')
+    await openStep(page, 'places')
     await page.getByTestId(`specialty-${ids.category}`).click()
     await page.getByTestId(`city-${ids.city}`).click()
     await page.getByTestId('language-en').click()
+    await openStep(page, 'about')
     await page.getByTestId('gender-woman').click()
     await page.getByTestId('profile-save').click()
     await expect(feedback(page)).toContainText('Saved.', { timeout: 30_000 })
@@ -84,12 +88,14 @@ test.describe('CP-US3 providers manage their own profile', () => {
     expect((await request.get(`/creators/${code}`)).status()).toBe(404)
 
     // A sample, then send for review: the one primary action is now "Save and send for review".
+    await openStep(page, 'samples')
     await page.setInputFiles('#sample-image', { name: 'work.png', mimeType: 'image/png', buffer: await png() })
     await page.locator('#add-caption-en').fill('Golden hour')
     await page.getByTestId('sample-add-submit').click()
     await expect(page.getByTestId('sample-count')).toContainText('1 of 30', { timeout: 30_000 })
     // CP-FR-013: the Emirates ID and trade license, each uploaded on its own.
     await expect(page.getByTestId('profile-incomplete')).toContainText("Your profile isn't complete yet.")
+    await openStep(page, 'identity')
     for (const kind of ['emirates-id', 'trade-license']) {
       await page.setInputFiles(`#identity-${kind}`, { name: `${kind}.png`, mimeType: 'image/png', buffer: await png() })
       await page.getByTestId(`identity-${kind}-upload`).click()
@@ -97,6 +103,7 @@ test.describe('CP-US3 providers manage their own profile', () => {
     }
     await expect(page.getByTestId('profile-ready')).toBeVisible()
     // A caption edited on the row is saved by the one closing action, with everything else.
+    await openStep(page, 'samples')
     await page.locator('#caption-0-en').fill('Golden hour, Marina')
     await expect(page.getByTestId('profile-save')).toContainText('Save and send for review')
     await page.getByTestId('profile-save').click()
@@ -154,6 +161,7 @@ test.describe('CP-US3 providers manage their own profile', () => {
     const jpeg = await bigJpeg()
     expect(jpeg.length).toBeGreaterThan(2 * 1024 * 1024)
     expect(jpeg.length).toBeLessThan(5 * 1024 * 1024)
+    await openStep(page, 'samples')
     await page.setInputFiles('#sample-image', { name: 'big.jpg', mimeType: 'image/jpeg', buffer: jpeg })
     await page.getByTestId('sample-add-submit').click()
     await expect(page.getByTestId('sample-count')).toContainText('1 of 30', { timeout: 60_000 })
@@ -166,6 +174,7 @@ test.describe('CP-US3 providers manage their own profile', () => {
     const { id } = await signedInProvider(page, request, ids)
     await livePublishedProfile(request, ids, id, 'Refusal Pro')
     await page.goto('/account/profile')
+    await openStep(page, 'samples')
     await page.setInputFiles('#sample-image', { name: 'notes.txt', mimeType: 'text/plain', buffer: Buffer.from('not an image') })
     await page.getByTestId('sample-add-submit').click()
     await expect(page.getByText('Use a JPEG, PNG or WebP image.')).toBeVisible({ timeout: 30_000 })

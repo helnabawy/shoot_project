@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderWithLocale } from '../../../../tests/setup/render'
@@ -205,7 +205,8 @@ describe('CP-US3-S1 provider form', () => {
       expect(screen.getByText('Choose a language from the list.')).toBeInTheDocument()
       expect(screen.getByTestId('profile-feedback')).toHaveTextContent('Some parts need another look.')
       // The reader lands on the first thing to fix, not 5000 px away at the closing bar.
-      expect(screen.getByLabelText('English', { selector: '#displayName-en' })).toHaveFocus()
+      // After the error's step opens (the next frame).
+      await waitFor(() => expect(screen.getByLabelText('English', { selector: '#displayName-en' })).toHaveFocus())
     })
 
     it('a sample row\'s error reaches the row inside the form, under the row\'s own field name', async () => {
@@ -215,7 +216,7 @@ describe('CP-US3-S1 provider form', () => {
       await press()
       expect(await screen.findByText('Keep captions under 140 characters.')).toBeInTheDocument()
       expect(document.getElementById('caption-0-en')).toHaveAttribute('aria-invalid', 'true')
-      expect(document.getElementById('caption-0-en')).toHaveFocus()
+      await waitFor(() => expect(document.getElementById('caption-0-en')).toHaveFocus())
     })
 
     it('a failure that is about no field is shown once, for the whole form', async () => {
@@ -238,7 +239,7 @@ describe('CP-US3-S1 provider form', () => {
     render({}, 'ar')
     const inputs = [...document.querySelectorAll<HTMLInputElement>('input[name^="displayName_"]')]
     expect(inputs.map((i) => i.lang)).toEqual(['ar', 'en'])
-    expect(screen.getByText('الأساسيات')).toBeInTheDocument()
+    expect(screen.getByText('الاسم والصورة')).toBeInTheDocument()
     expect(document.querySelector('[dir="rtl"]')).not.toBeNull()
   })
 })

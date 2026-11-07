@@ -225,6 +225,9 @@ description: "Task list for feature 002 — creator profiles, directory, special
 - [x] T113 UI: `ProfileSteps`, `SectionHeading`, `ProfileCalendar` (month grid, `calendarMonths`), `IdentitySection`, emirates-only list; messages en/ar (CP-FR-012…015)
 - [x] T114 Tests: `ProfileSteps.test.tsx`, `calendar.test.ts`, `ProfileForm.test.tsx`, `creators-actions.int.test.ts` (identity, emirates, calendar), e2e `cp-us3-provider.spec.ts` uploads both documents before sending
 
+- [x] T115 Domain `strength.ts` (`PROFILE_STEPS`, `STEP_NUMBER`, `profileStrength`, `stepOfField`) with tests (CP-FR-016)
+- [x] T116 UI `ProfileStepper` (provider, progress meter, step tabs, panels with Back/Next), page in two columns from 1024 px, the old step list removed; tests `ProfileStepper.test.tsx`, e2e opens each step's tab (CP-FR-016)
+
 ## Dependencies & Execution Order
 
 - **Phase 1** → **Phase 2** (blocks everything). Inside Phase 2: tests (T005–T011, T082, T083) → domain (T012–T014) and collections (T015, T016, T084, T017; T085 → T018; T019–T022; T086 after T016, T084 and T018 because it edits `Media.ts` too) → migration (T023) → shared reads and seed (T024–T026, T088); T087 (body limit) any time after T018 and before US3's T053. T007 gates the drafts-based design: write it first, run it as soon as T016/T084/T017 exist, and start T018 only when it passes.

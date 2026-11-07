@@ -9,6 +9,7 @@ import {
   type ListingState,
   missingForReview,
   profileStatus,
+  profileStrength,
   type ProfileStatus,
   type ReviewField,
   SPOKEN_LANGUAGES,
@@ -227,14 +228,28 @@ export async function getMyProfileView(user: User, locale: Locale) {
     personas: registered !== null && Number.isFinite(registered) ? [registered] : [],
     specialties: (user.categories ?? []).map((c) => Number(relId(c))).filter((n) => Number.isFinite(n)),
   }
+  const missing =
+    profile?.missing ??
+    missingForReview({ displayName: defaults.name ?? '', personas: defaults.personas, specialties: defaults.specialties, cities: [], languages: [], gender: null, documents: identityProvided(identityStateOf(identity)) })
+  // CP-FR-016: the completion meter and each step's standing.
+  const strength = profileStrength({
+    missing,
+    has: {
+      photo: Boolean(profile?.photo),
+      bio: Boolean(profile?.bio.en.trim() || profile?.bio.ar.trim()),
+      nationality: Boolean(profile?.nationality),
+      yearsExperience: profile?.yearsExperience != null,
+      link: Boolean(profile?.social.length),
+      sample: Boolean(profile?.samples.length),
+    },
+  })
   return {
     profile,
     identity,
     options,
     defaults,
+    strength,
     // Before the first save, what is still missing counts the registration choices the form starts with.
-    missing:
-      profile?.missing ??
-      missingForReview({ displayName: defaults.name ?? '', personas: defaults.personas, specialties: defaults.specialties, cities: [], languages: [], gender: null, documents: identityProvided(identityStateOf(identity)) }),
+    missing,
   }
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { MAX_SAMPLES } from '@shoot/domain/creators'
+import { MAX_SAMPLES, STEP_NUMBER } from '@shoot/domain/creators'
 import { useTranslations } from 'next-intl'
 import { useActionState, useContext, useEffect, useRef, useState } from 'react'
 import { cx } from '@/shared/ui/bar'
@@ -12,7 +12,6 @@ import type { MySample } from '../my-profile'
 import { ActionForm, AnnounceContext, FieldErrorsContext } from './ActionForm'
 import { LocalizedPair } from './LocalizedPair'
 import { PhotoTile } from './PhotoTile'
-import { STEP_NUMBER } from './ProfileSteps'
 import { SectionHeading } from './SectionHeading'
 
 const idle: ProfileState = { status: 'idle' }

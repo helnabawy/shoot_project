@@ -238,7 +238,7 @@
     "form": {
       "title": "My profile",
       "metaTitle": "My profile",
-      "basics": "Basics",
+      "basics": "Name and photo",
       "places": "What you do and where",
       "links": "Links",
       "english": "English",
@@ -384,7 +384,7 @@
       "sampleBy": "{caption}, by {name}"
     },
     "steps": {
-      "label": "Your profile, step by step",
+      "label": "Profile steps",
       "incompleteTitle": "Your profile isn't complete yet.",
       "incompleteBody": "Clients can't find or book you until our team approves your profile, and we can only review it once every required step is done. {count, plural, one {# step needs} other {# steps need}} your attention.",
       "readyTitle": "Everything we need is here.",
@@ -404,9 +404,20 @@
       "identityPending": "Waiting for our check",
       "identityVerified": "Verified",
       "identityRejected": "Needs {missing} again",
-      "required": "Required",
-      "optional": "Optional",
-      "stepOf": "Step {n}"
+      "strength": "Profile strength",
+      "percent": "{percent}%",
+      "add": "Add {missing}",
+      "calendarFree": "All days free",
+      "back": "Back",
+      "next": "Next: {step}",
+      "recommended": {
+        "photo": "a photo",
+        "bio": "a short bio",
+        "nationality": "your nationality",
+        "yearsExperience": "your experience",
+        "link": "a link",
+        "sample": "a work sample"
+      }
     },
     "calendar": {
       "title": "Your calendar",

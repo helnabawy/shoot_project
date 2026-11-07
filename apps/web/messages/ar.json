@@ -238,7 +238,7 @@
     "form": {
       "title": "ملفي",
       "metaTitle": "ملفي",
-      "basics": "الأساسيات",
+      "basics": "الاسم والصورة",
       "places": "ماذا تعمل وأين",
       "links": "الروابط",
       "english": "English",
@@ -384,7 +384,7 @@
       "sampleBy": "{caption}، بعدسة {name}"
     },
     "steps": {
-      "label": "ملفك خطوة بخطوة",
+      "label": "خطوات الملف",
       "incompleteTitle": "ملفك غير مكتمل بعد.",
       "incompleteBody": "لا يستطيع العملاء العثور عليك أو حجزك حتى يوافق فريقنا على ملفك، ولا يمكننا مراجعته إلا بعد إكمال كل الخطوات المطلوبة. {count, plural, one {خطوة واحدة تحتاج} two {خطوتان تحتاجان} few {# خطوات تحتاج} many {# خطوة تحتاج} other {# خطوة تحتاج}} إلى انتباهك.",
       "readyTitle": "كل ما نحتاجه موجود.",
@@ -404,9 +404,20 @@
       "identityPending": "بانتظار تحقق فريقنا",
       "identityVerified": "تم التحقق",
       "identityRejected": "ينقصها {missing} من جديد",
-      "required": "مطلوبة",
-      "optional": "اختيارية",
-      "stepOf": "الخطوة {n}"
+      "strength": "قوة الملف",
+      "percent": "{percent}%",
+      "add": "أضف {missing}",
+      "calendarFree": "كل الأيام متاحة",
+      "back": "السابق",
+      "next": "التالي: {step}",
+      "recommended": {
+        "photo": "صورة",
+        "bio": "نبذة قصيرة",
+        "nationality": "جنسيتك",
+        "yearsExperience": "سنوات خبرتك",
+        "link": "رابطاً",
+        "sample": "نموذج عمل"
+      }
     },
     "calendar": {
       "title": "تقويمك",
