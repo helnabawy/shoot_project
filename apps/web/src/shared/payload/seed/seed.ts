@@ -2,6 +2,7 @@ import type { CollectionSlug, Payload } from 'payload'
 import { briefSlots, categories, landingPage, locations, optionSets, personas, siteSettings } from './content'
 import { demoPassword, seedDemoCreators } from './demo-creators'
 import { pickLocale, withRowIds } from './localize'
+import { occasionCategories, quickMatchSettings, seedDemoPrices, seedDemoQuickMatch } from './quick-match'
 
 const context = { disableRevalidate: true }
 type AnyDoc = Record<string, unknown> & { id: string | number }
@@ -54,12 +55,13 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
   }
   log(`Personas: ${Object.keys(personaIds).join(', ')}`)
 
+  const categoryIds: Record<string, string | number> = {}
   for (const category of categories) {
-    await upsertBySlug(payload, 'categories', category.slug, {
+    categoryIds[category.slug] = (await upsertBySlug(payload, 'categories', category.slug, {
       ...category,
       active: true,
       personas: category.personas.map((slug) => personaIds[slug]),
-    })
+    })).id
   }
   log(`Categories: ${categories.length}`)
 
@@ -75,13 +77,21 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
   for (const set of optionSets) {
     const doc = await upsertBySlug(payload, 'option-sets', set.slug, {
       ...set,
-      options: set.options.map((o, index) => ({ ...o, order: (index + 1) * 10, active: true, personas: [] })),
+      options: set.options.map((o, index) => ({
+        ...o,
+        order: (index + 1) * 10,
+        active: true,
+        personas: [],
+        // Quick Match (research §5): "anyone" means no preference; occasions rank matching specialists first.
+        matchesAny: set.slug === 'shot-by' && o.value === 'anyone',
+        category: set.slug === 'occasions' && occasionCategories[o.value] ? categoryIds[occasionCategories[o.value]!] : null,
+      })),
     })
     optionSetIds[set.slug] = doc.id
   }
   log(`Option sets: ${Object.keys(optionSetIds).join(', ')}`)
 
-  const settingsTree = { ...siteSettings, activePersonas: personas.map((p) => personaIds[p.slug]) }
+  const settingsTree = { ...siteSettings, activePersonas: personas.map((p) => personaIds[p.slug]), quickMatch: quickMatchSettings }
   const settingsEn = await payload.updateGlobal({
     slug: 'site-settings',
     data: pickLocale(settingsTree, 'en') as never,
@@ -102,7 +112,7 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
     ...landingPage,
     briefBuilder: {
       ...landingPage.briefBuilder,
-      slots: briefSlots.map((slot) => ({ ...slot, optionSet: 'optionSet' in slot ? optionSetIds[slot.optionSet] : undefined })),
+      slots: briefSlots.map((slot) => ({ ...slot, optionSet: 'optionSet' in slot ? optionSetIds[slot.optionSet] : undefined, filtersCreators: slot.token === 'shotBy' })),
     },
     _status: 'published',
   }
@@ -126,5 +136,7 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
 
   if (options.demoCreators) {
     await seedDemoCreators(payload, { siteUrl: options.siteUrl, password: demoPassword(options.demoPassword), log })
+    await seedDemoPrices(payload, log)
+    await seedDemoQuickMatch(payload, log)
   }
 }

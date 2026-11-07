@@ -63,6 +63,13 @@ export const CreatorListings: CollectionConfig = {
       access: { update: isEditorField },
       admin: { description: 'Shown to the provider in their status banner.' },
     },
+    {
+      name: 'matchValues',
+      type: 'text',
+      hasMany: true,
+      access: { create: isEditorField, update: isEditorField },
+      admin: { description: 'Quick Match: option values this creator satisfies for brief slots that filter creators (e.g. woman).' },
+    },
     { name: 'submittedAt', type: 'date', index: true, access: { update: isEditorField } },
     { name: 'verifiedAt', type: 'date', access: { update: noOne }, admin: { readOnly: true } },
   ],

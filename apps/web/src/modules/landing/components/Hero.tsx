@@ -52,6 +52,7 @@ export function Hero({
       providerHref={`${locale === 'en' ? '' : `/${locale}`}/register?type=provider${firstPersona ? `&persona=${firstPersona.slug}` : ''}`}
       providerLabel={providerLabel}
       labels={briefLabels}
+      quickMatch={settings.quickMatch?.enabled === true}
     />
   ) : null
   const photo = hero?.image && typeof hero.image === 'object' ? hero.image : null

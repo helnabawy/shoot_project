@@ -26,6 +26,7 @@ export interface RawProfile {
 
 export interface RawListing extends ListingState {
   profile: Ref
+  matchValues?: string[] | null
 }
 
 function countSamples(samples: RawProfile['samples']): Record<string, number> {
@@ -72,6 +73,7 @@ export function toSummary(profile: RawProfile, listing: RawListing, parents: Loc
     sampleCount: (profile.samples ?? []).length,
     featured: Boolean(listing.featured),
     publishedAt: listing.verifiedAt ?? createdAt,
+    matchValues: listing.matchValues ?? [],
   }
 }
 

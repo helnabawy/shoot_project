@@ -16,6 +16,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from 'react'
+import { useRouter } from 'next/navigation'
 import { PhotoTile } from '@/modules/creators/client'
 import { useHydrated } from '@/shared/ui/useHydrated'
 import {
@@ -53,6 +54,8 @@ export interface BriefBuilderProps {
   creator?: CreatorBooking
   /** A step answered for the visitor and not asked again, e.g. the professional of a single-type creator. */
   locked?: { token: string; value: string } | null
+  /** Quick Match is on (feature 003): a saved brief continues to step 2 instead of WhatsApp. */
+  quickMatch?: boolean
 }
 
 /** Slots in the order the sentence asks them; slots missing from the sentence come last. */
@@ -99,7 +102,9 @@ export function BriefBuilder({
   tone = 'default',
   creator,
   locked = null,
+  quickMatch = false,
 }: BriefBuilderProps) {
+  const router = useRouter()
   const errorText = (key: string) => labels.errors[key] ?? labels.errors['brief.errors.generic'] ?? key
   const uid = useId()
   const hydrated = useHydrated()
@@ -162,15 +167,18 @@ export function BriefBuilder({
 
   // After the server answers: send the pre-opened tab to WhatsApp, or close it on failure.
   useEffect(() => {
-    if (state.status === 'ok') {
+    if (state.status === 'ok' && state.matchUrl) {
+      popup.current?.close()
+      router.push(state.matchUrl)
+    } else if (state.status === 'ok') {
       if (popup.current && !popup.current.closed) popup.current.location.href = state.whatsappUrl
     } else if (state.status === 'error') {
       popup.current?.close()
     }
     popup.current = null
-  }, [state])
+  }, [state, router])
 
-  const success = state.status === 'ok' && !dismissed
+  const success = state.status === 'ok' && !state.matchUrl && !dismissed
 
   // Keyboard choices keep the visitor's place: the next step's first row, or the reopened choice.
   useEffect(() => {
@@ -306,7 +314,8 @@ export function BriefBuilder({
     setClientErrors({})
     setDismissed(false)
     // Opened inside the tap so browsers allow it; pointed at WhatsApp once the brief is saved.
-    popup.current = window.open('', '_blank')
+    // With Quick Match the brief continues on this page instead (step 2).
+    if (!quickMatch) popup.current = window.open('', '_blank')
   }
 
   if (success) {

@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { adminToken, auth } from './helpers'
+import { setQuickMatch } from './helpers'
 
 /** The step being asked (FR-067). */
 const asked = (page: Page) => page.locator('[data-current="true"]')
@@ -50,6 +51,10 @@ async function fillEveryList(page: Page) {
 }
 
 test.describe('US8 step-by-step brief (FR-067)', () => {
+  // Feature 001/002 flow: the brief goes to WhatsApp. Quick Match (003) has its own specs.
+  test.beforeAll(async ({ request }) => setQuickMatch(request, false))
+  test.afterAll(async ({ request }) => setQuickMatch(request, true))
+
   test('@smoke US8-S1/S3 build the brief step by step, send it, get a reference and a WhatsApp chat', async ({
     page,
     request,

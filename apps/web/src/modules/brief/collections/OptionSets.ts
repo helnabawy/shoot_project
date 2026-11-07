@@ -66,6 +66,20 @@ export const OptionSets: CollectionConfig = {
             admin: { width: '50%', description: 'Empty = every persona.' },
           },
         ] },
+        { type: 'row', fields: [
+          {
+            name: 'matchesAny',
+            type: 'checkbox',
+            defaultValue: false,
+            admin: { width: '40%', description: 'Quick Match: this option means "no preference" (e.g. "anyone").' },
+          },
+          {
+            name: 'category',
+            type: 'relationship',
+            relationTo: 'categories',
+            admin: { width: '60%', description: 'Quick Match: creators with this specialty are listed first.' },
+          },
+        ] },
       ],
     },
   ],

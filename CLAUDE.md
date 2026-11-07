@@ -25,8 +25,14 @@ Feature 001 is `specs/001-landing-auth-cms/` (planned, 106 tasks, T001–T107; T
 is `specs/002-creator-profiles/` (creator profiles and directory: `/creators`, `/creators/{code}`,
 `/book/{code}`, `/work/{specialty}`, the provider editor at `/account/profile`; module
 `apps/web/src/modules/creators/`, rules in `packages/domain/src/creators/`, test-id prefix `CP-`;
-implemented on this branch, open items in its `tasks.md`). The shootix.ae feature map and drafts for
-003–005 are in `specs/ROADMAP.md`.
+implemented on this branch, open items in its `tasks.md`). Feature 003 is `specs/003-quick-match-booking/`
+(Quick Match steps 2–4 and bookings: `/match/{ref}/{key}` (step 2), `/match/{ref}/{key}/details`
+(step 3), `/q/{ref}/{key}` (quotation + booking status, print layout), `/account/bookings`,
+`/account/availability`, cron `/api/cron/bookings`; modules `apps/web/src/modules/booking/` and
+`apps/web/src/modules/pricing/` (the price-rule core 004 builds on), rules in
+`packages/domain/src/booking/` and `packages/domain/src/pricing/`, test-id prefix `QM-`; no payment
+provider: payments are recorded by an admin). The shootix.ae feature map and drafts for 004–005 are in
+`specs/ROADMAP.md`.
 
 ## Stack (binding, see constitution "Technology Stack & Constraints")
 
@@ -86,7 +92,7 @@ pnpm db:migrate                   # apply committed migrations
 pnpm seed                         # default bilingual content + admin from .env
 pnpm dev                          # http://localhost:3000, admin at /admin
 pnpm typecheck && pnpm lint && pnpm test
-pnpm check:scenarios              # every quickstart scenario has a test named with its CP- id
+pnpm check:scenarios              # every quickstart scenario has a test named with its CP-/QM- id
 pnpm test:coverage                # domain 100 %, app >= 80 %
 pnpm build && pnpm test:e2e       # or BASE_URL=http://localhost:3100 against a running server
 pnpm db:migration:create <name>   # after any schema change; CI fails on drift

@@ -17,6 +17,12 @@ describe('environment validation', () => {
     expect(env.SEED_ADMIN_EMAIL).toBeUndefined()
   })
 
+  it('QM-US3 refuses the e2e clock override in a production deployment, allows it locally', () => {
+    expect(() => parseEnv({ ...valid, NODE_ENV: 'production', E2E_CLOCK: '1' })).toThrow(/E2E_CLOCK: is for local end-to-end runs only/)
+    expect(parseEnv({ ...valid, NODE_ENV: 'production', E2E_CLOCK: '1', NEXT_PUBLIC_SITE_URL: 'http://localhost:3100' }).E2E_CLOCK).toBe('1')
+    expect(parseEnv({ ...valid, NODE_ENV: 'development', E2E_CLOCK: '1' }).E2E_CLOCK).toBe('1')
+  })
+
   it('lists every problem in one message', () => {
     expect(() => parseEnv({ ...valid, DATABASE_URI: 'mongodb://x', PAYLOAD_SECRET: 'short' })).toThrow(
       /DATABASE_URI: must be a postgres[\s\S]*PAYLOAD_SECRET: must be at least 32/,

@@ -295,6 +295,29 @@ components:
     textColor: "{colors.on-attention}"
     rounded: "{rounded.message}"
     padding: "8px 12px"
+  creator-pick-row:
+    textColor: "{colors.graphite-ink}"
+    typography: "{typography.row}"
+    rounded: "{rounded.row}"
+    padding: "7px 10px"
+    height: "64px"
+  creator-pick-row-set:
+    backgroundColor: "{colors.selected-row}"
+    textColor: "{colors.graphite-ink}"
+    rounded: "{rounded.row}"
+    padding: "7px 10px"
+    height: "64px"
+  quote-line:
+    textColor: "{colors.graphite-ink}"
+    typography: "{typography.body}"
+    padding: "6px 10px"
+  quote-total:
+    textColor: "{colors.graphite-ink}"
+    typography: "{typography.top-hit}"
+    padding: "8px 10px 4px"
+  step-meta:
+    textColor: "{colors.warm-mute}"
+    typography: "{typography.meta}"
 ---
 
 # Design System: Shoot Project
@@ -327,6 +350,8 @@ The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingu
 **2026-11-07 (owner-directed).** The owner asked to enhance the sections below the hero. From 1024 px each titled section became a settings-style pane out to the header's 1080 px (heading in a sticky start column, content in the end column); the strip under the stage set the helper hint against the trust chips; how it works became a timeline of graphite number tiles (step numbers no longer use selection blue); the reasons became a two-column hairline cell grid; the creator invitation runs as one wide bar; FAQ rows gained a hover tint and a chevron tile; the closing heading stepped up a size. The hero stage and the brief bar were not changed.
 
 **2026-11-07 (feature 002, US4).** The specialty page at `/work/{slug}` and the landing Specialties link row were recorded from the shipped build: Specialty Header, Specialty Page, Specialty Samples and Specialties Link Row. No new colour, shadow, radius or type step; the page is the directory panel with one filter fixed, the existing Portfolio Grid grammar and the existing row.
+
+**2026-11-07 (feature 003, Quick Match).** The match and details steps (`/match/...`), the quotation (`/q/...`, `/account/bookings/{ref}`) and the account's bookings and availability pages were recorded from the shipped build: Price Group Label, Creator Pick Row, Quotation Panel, Booking Status, Quiet End Actions, Creator Booking Row, Availability Day Row, Update Row and the quotation's print rendering. No new colour, shadow, radius or type step on screen; the one addition is a print rendering of the existing roles.
 
 ## Colors
 
@@ -371,7 +396,7 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 ### Hierarchy
 - **Display** (700, 38 px, 52 px from 640 px, line-height 1.02, -0.03em, balanced): the landing headline only, the visible title of the hero stage. It is ink with a soft halo of the ground colour (a 28 px text shadow) so it holds over a busy photograph and disappears on the studio sweep. No other-language line or subheadline sits beneath it.
 - **Headline** (700, 34 px, -0.03em): the page title of login, register, account, not-found, the booking page and the specialty page.
-- **Section Title** (700, 26 px, 30 px from 640 px, -0.025em): below-the-fold section headings on the ground (including "Recent work" on a specialty page), and the creator's name as the profile page's h1 inside the identity panel. The closing call to action takes the **emphasis** step (700, 30 px, 38 px from 640 px, -0.03em), the last word on the page.
+- **Section Title** (700, 26 px, 30 px from 640 px, -0.025em): below-the-fold section headings on the ground (including "Recent work" on a specialty page), and the creator's name as the profile page's h1 inside the identity panel. The quotation's title ("Quotation Q-…") is the same step as its page h1 inside the quotation panel. The closing call to action takes the **emphasis** step (700, 30 px, 38 px from 640 px, -0.03em), the last word on the page.
 - **Field** (500, 20 px, 22 px from 640 px, line-height 1.35, -0.01em): the composed sentence in the bar. Set parts in ink, connectives in mute, unset required parts in mute italic.
 - **Top Hit** (600, 17 px): the one primary row.
 - **Row** (400, 16 px; 600 when set): result rows, FAQ questions (500, 600 when open), inputs (16 px also prevents iOS zoom). Step titles in the how-it-works timeline are 17 px semibold.
@@ -385,6 +410,8 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 **The Tabular Rule.** `font-variant-numeric: tabular-nums` is set on the root; dates, durations and references align without per-component work.
 
 **The Arabic Label Rule.** Uppercase and letter-spacing never apply to Arabic; `:lang(ar)` resets them and lifts the size one step. Headings h1 to h3 are never letter-spaced in Arabic (an unlayered `:lang(ar) :is(h1, h2, h3)` rule beats the tracking utilities), and a result row's trailing slot lifts from 13 px to 14 px.
+
+**The Step Meta Rule.** A step in a flow says where it is in one Meta line (13 px mute) directly under the h1, 4 px below it ("Step 2 of 3"), never in a kicker or label above the heading. The quotation does the same with its issued and valid-until dates (tabular) under its title.
 
 ## Layout
 
@@ -403,6 +430,8 @@ The profile page (`/creators/{code}`) is the same 680 px column: the identity pa
 The specialty page (`/work/{slug}`) is the same 680 px column: the Specialty Header on the ground (12 px gutter, 32 px of top padding, 56 px from 640 px), the directory panel 20 px under it, the rows (16 px gutter, 40 px under the panel), then "Recent work" 48 px below the rows (16 px gutter, 64 px of bottom padding).
 
 The provider's profile editor (`/account/profile`) is the account's 560 px column with 12 px gutters, the Headline, then the status bar, then sections on the ground (Basics, Specialties and places, Links, Samples; 48 px between sections, 40 px under the status bar) and the closing bar last. A section is a Section Title over a `-mx-3` block bordered top and bottom by hairlines, its fields divided by hairlines; the block bleeds 12 px past the gutter so row tints reach the column edge. Localised pairs sit side by side from 640 px and stack below it; the languages checklist goes two columns from 640 px.
+
+The Quick Match steps (`/match/{ref}/{key}` and its `/details`) are the 680 px column with 12 px gutters (32 px of top padding, 56 px from 640 px): the Headline (balanced), the step meta line, then one Brief Bar 20 px below holding the whole step. The quotation is the same 680 px column with one panel that is the document; in print the column drops its width cap and padding. The account's bookings and availability pages are the account's 560 px column: the Headline, then one panel (bookings) or month groups (availability). On phones these two pages carry 96 px of bottom padding (`pb-24`, 40 px from 640 px) so the floating WhatsApp button never covers the last row, with or without JavaScript.
 
 ### Named Rules
 **The Two Panels Rule.** A page shows at most two bar panels: the primary bar and one smaller (`sm`, 15 px) secondary bar such as the creator invitation. The profile page's identity panel and the booking page's bar are each that page's one panel. The provider editor is the exception that proves the count: its status bar and its closing bar are its two `sm` panels, and everything between them is rows on the ground. The glass tone is the primary bar dressed for the hero stage, not an extra panel. Everything else is rows on the ground.
@@ -480,7 +509,7 @@ A native `dialog` over the ground at 90% (the ground colour, no blur): the large
 On `/book/{code}` the Brief Bar leads with a set row for the creator: selection tint, 44 px Photo Tile, the name (semibold) over the code in selected ink (13 px), and a "Change" link at the end, a 44 px target in selected ink, underlined, leading back to the plain brief. The empty field uses a short prompt that fits a phone beside the search icon. When the creator has a single professional type that step is answered and never asked: its token sits in the sentence in the selection tint like any set part but cannot be reopened or taken back, its list is never shown, and step counts ("2 of 4") exclude it. With several types the step lists only theirs and nothing is pre-selected.
 
 ### Result Groups
-A group label (Group Label style, 10 px top, 4 px bottom padding) then rows. When it is a choice it is a `fieldset` whose legend is the label, so screen readers name the radio group. A group-level message sits between label and rows.
+A group label (Group Label style, 10 px top, 4 px bottom padding) then rows. When it is a choice it is a `fieldset` whose legend is the label, so screen readers name the radio group. A group-level message sits between label and rows. A group that is not a `fieldset` is a `role="group"` named by its own label through `aria-labelledby`, so a label that carries a price or a date names the group for assistive technology.
 
 ### Step Search
 With JavaScript only the asked step's result group shows under the field (its position, e.g. "2 of 5", sits in the group heading); typing searches every step's options at once, and Return picks the first match. A single choice advances in one tap, a step that takes several choices (or a number) advances with a Continue row, and an optional step offers a skip row such as "any date". Changing the professional type sends the visitor back to any step whose answer it no longer offers. Cmd+K / Ctrl+K anywhere on the page (matched by physical key so it works on an Arabic layout) focuses the field. Escape clears a typed search first, then leaves a reopened step. A validation error reopens the step it concerns. Without JavaScript every group is shown at once and the bar is the plain form.
@@ -499,6 +528,33 @@ A list item in the Samples block, hairline-divided, 12 px of block padding. Top 
 
 ### Closing Bar
 The editor's second `sm` panel, last on the page. A feedback line first (14 px, mute; peach text on error; `aria-live="polite"`) that says what is missing ("Add a city and a language to send for review."), what just happened ("Saved", "Sent for review") or "Please fix the fields marked below". Then a "Top Hit" group with exactly one blue row, chosen by state: "Save and send for review" when the profile is complete and either a draft or live with changes; "Save and publish" when the site publishes a verified creator's edits at once; "Save" otherwise. When the blue row sends for review, "Save without sending" follows as an ordinary row with a tick tile. The Top Hit and its twin submit the profile form from outside it with the `form` attribute and carry `name="intent"`. While pending the Top Hit label changes to a pending word. On a failed save, focus moves to the first field with `aria-invalid="true"` (or its error sentence is scrolled to centre when none is focusable), and the page does not move otherwise: success confirms in the feedback line, never a toast.
+
+### Price Group Label
+A result group in the match step is named by what it offers and what it costs, in one Group Label: "{types} free on {date} · AED 800, VAT included" ("{types}, any date" when no date was asked). The price is joined by a middle dot and isolated left-to-right; VAT is said once, in the label, not per row. What the price includes sits under the label as one Meta line of deliverables joined by middle dots. Without a price rule the group opens with a "price on request" row (help tile) and WhatsApp becomes the step's Top Hit. With no one free that day a plain row with a minus tile says so, and a "Free on" group of nearby dates follows. Every group is named by its label through `aria-labelledby` (see Result Groups).
+
+### Creator Pick Row
+A Creator Row that chooses: the 44 px Photo Tile, the name (semibold) over one Meta line (types, place), and in the trailing slot the code (13 px, tabular, isolated left-to-right) followed by a drawn 14 px forward arrow. Chosen, the row takes the set tint, `aria-current="true"`, and the trailing code becomes "chosen" in selected ink. It is a link in the match step; inside a form (picking a replacement creator on the quotation) the same row is the form's submit button, full row width minus its inset, start-aligned. A "Let us choose" row closes each group: check tile, a semibold title over a Meta note, set when chosen, never blue-filled. The Top Hit (Continue) appears only once every type has a choice.
+
+### Quotation Panel
+The quotation is one panel that reads like a receipt. The header holds the h1 (Section Title, the reference isolated left-to-right) over the Meta line of issued and valid-until dates and, from version 2, the version; a replaced quotation shows a peach line linking to its successor. Then the booking status (below), then groups: the brief as a 15 px sentence; the professionals as rows (check tile, type, the creator's name or "we choose" trailing); the price lines as a description list, each line a two-column grid with the label (15 px ink, deliverables in Meta beneath) at the start and the amount at the end edge (15 px, tabular, isolated); then a hairline and the total (17 px semibold both sides) with "VAT included" as a Meta line under the word Total. Terms close the document in 13 px mute. Line labels and amounts are frozen on the quotation when it is issued; the page renders what was quoted, never a recalculation. Lines never split across a page.
+
+### Booking Status
+The status group's label is the state's name and its body one 15 px status sentence (`role="status"`). Each state offers at most one Top Hit, chosen by state: accept the quotation, request a fresh one when expired, send the payment receipt on WhatsApp (after the payment instructions), confirm delivery. "Report a problem" is a native `details` disclosure under confirm delivery, opening in place to a reason field and an ordinary submit row with an alert tile. A creator who declined is replaced in a "Pick another {type}" group of Creator Pick Rows as submit buttons. The history is a Meta list of label and time, tabular. The status is hidden in print.
+
+### Quiet End Actions
+After the document, below a hairline, the quiet actions as ordinary rows in this order: Download PDF (document tile; a button calling the browser's print, shown only with JavaScript), ask on WhatsApp, and cancel (close tile, its own one-button form). Cancelling is possible but never beside the primary action. The steps end the same way: an "Actions" group under a hairline after the Top Hit, holding the WhatsApp row.
+
+### Creator Booking Row
+A booking request as the creator sees it, in the "Booking requests for you" group of the account's one panel, separated by hairlines. One open, non-interactive row: the glyph tile holds the day of the month (tabular), then the date and place (semibold), the brief sentence, and "For {first name} · {price}" in Meta; while awaiting an answer, the respond-by time in 13 px medium ink. A pending request's one action is a Confirm Top Hit under its row; Decline is a native `details` disclosure beneath it with an optional reason and an ordinary submit row with a close tile. A scheduled request offers "Mark delivered" as its Top Hit. The client's phone number never appears.
+
+### Availability Day Row
+The next days grouped by month (the month is the group label), one row per date, each its own one-button form so it works without JavaScript. The glyph tile holds the day of the month. A free day is an open row trailing "Available · Block"; a blocked day is an attention row trailing "Blocked · Free"; a booked day is a set row with a check tile trailing "Booked" and cannot be toggled. Each button's accessible name is the date and what tapping does.
+
+### Update Row
+Unread notices open the bookings panel as an "Updates" group: a bell tile, the notice (`dir="auto"`), and "Mark as read" trailing; each row is a one-button form. With nothing unread the group is absent.
+
+### Print (quotation)
+The quotation prints as itself on A4 (16 mm block, 14 mm inline margins), always light whatever the theme: the roles are reset to white ground and panel, black ink, #4a4a4a mute, a 20% black hairline, a light grey tile and attention fill, and no shadow, with `color-scheme: light`. Only the site chrome is hidden (header, footer, floating WhatsApp); the quotation's own header stays. The panel loses its shadow, blur and border. The status and the end actions are not printed. Groups never split across a page.
 
 ### Top Hit
 The one selection-blue row: 50 px minimum, 9 px corners, inset 8 px, 17 px semibold white text, an accent tile (white at 20%) holding a drawn forward arrow, and a Return key hint trailing it. Hover brightens it by 10%; it is a submit button in the brief and a link elsewhere. A "Top Hit" group label precedes it, as in Spotlight.
@@ -520,7 +576,7 @@ The one selection-blue row: 50 px minimum, 9 px corners, inset 8 px, 17 px semib
 A field is a bar row: a 13 px mute label, then a 44 px input with a hairline stroke, 9 px corners, transparent fill, 16 px ink text. Focus turns the stroke to the focus colour. An error swaps the stroke to on-attention at 50% and adds a peach message beneath, tied by `aria-describedby`; form-level errors are a peach `role="alert"` block. Date and number rows keep the row look with the native control laid invisibly over them under JavaScript.
 
 ### Icons
-One authored set on a 20 px grid, 1.75 stroke, round caps and joins, `currentColor`. No emoji, no copied platform icons. Tag (a label with a hole) marks specialties and pin (a map marker) marks places; globe marks languages and play marks a video sample; none flips in Arabic.
+One authored set on a 20 px grid, 1.75 stroke, round caps and joins, `currentColor`. No emoji, no copied platform icons. Tag (a label with a hole) marks specialties and pin (a map marker) marks places; globe marks languages and play marks a video sample; none flips in Arabic. Quick Match added plus and minus (start a brief, nobody free), alert (report a problem, an action glyph, never a state marker), bell (updates), document (a quotation, Download PDF) and help (price on request). Every glyph in a tile is drawn or is short localised text; text glyphs (arrows, ticks, bullets, symbols) are never used as icons.
 
 ### Navigation
 A quiet top bar on the ground, not sticky: wordmark at the start, language switch and menu at the end, at most 1080 px wide. The phone menu opens as a small bar. The footer carries the language link and a three-way theme segment (light, dark, system) whose active segment is an ink tile.
@@ -557,6 +613,13 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Do** ask a destructive or visibility change once, in place, with a native disclosure; make the way back one tap.
 - **Do** label a localised pair by the language's own name, give each input its own `lang` and `dir`, and say "Arabic is optional" once under the legend of the two fields it concerns.
 - **Do** give icon-only controls a 44 px target, an accessible name, and a polite announcement of what they did.
+- **Do** carry a price on the group label it applies to ("… · AED 800, VAT included"), once, with VAT stated there and not per row.
+- **Do** mark a chosen creator row with the set tint, `aria-current` and "chosen" in the trailing slot; inside a form make the row itself the submit button.
+- **Do** set money as a receipt: amounts at the end edge in tabular figures, a hairline above the total, "VAT included" as Meta under it, and labels frozen when the quotation is issued.
+- **Do** give each booking state at most one Top Hit and put PDF, WhatsApp and cancel as ordinary rows at the end of the document.
+- **Do** say a step's position in a Meta line under the h1.
+- **Do** print documents on A4, light, without site chrome, and keep each group on one page.
+- **Do** give account pages 96 px of bottom padding on phones so the floating WhatsApp button never covers the last row.
 
 ### Don't:
 - **Don't** load a webfont or a second type family.
@@ -573,3 +636,5 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Don't** letter-space Arabic headings, and don't leave Arabic trailing slots at 13 px.
 - **Don't** use a modal, a toast, a progress ring, a completion percentage or a stepper in the editor; the feedback line and the status bar say where the profile stands.
 - **Don't** invent proof: no testimonials, logos, counts or ratings that do not exist.
+- **Don't** place cancel or any destructive action beside the primary action, and don't make it blue.
+- **Don't** recalculate a quotation's lines on render; show what was issued.

@@ -57,6 +57,14 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: '/:path*', headers: securityHeaders },
+      // Quick Match private links carry their key in the path: never leak it in a Referer (research §2).
+      ...['/match/:path*', '/ar/match/:path*', '/q/:path*', '/ar/q/:path*'].map((source) => ({
+        source,
+        headers: [
+          { key: 'Referrer-Policy', value: 'no-referrer' },
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ],
+      })),
       // The Payload admin and API keep their own needs; the CSP covers the public site only.
       ...(isProd
         ? [{ source: '/((?!admin|api|_next/static).*)', headers: [{ key: 'Content-Security-Policy', value: siteCsp }] }]

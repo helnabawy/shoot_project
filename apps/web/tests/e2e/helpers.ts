@@ -25,3 +25,61 @@ export const uniqueEmail = (prefix: string) => `${prefix}-${Date.now()}-${Math.f
 export async function useEnglish(page: Page) {
   await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'en', url: page.url().startsWith('http') ? page.url() : (process.env.BASE_URL ?? 'http://localhost:3000') }])
 }
+
+/** Turns Quick Match (feature 003) on or off for specs that test the WhatsApp-only flow of 001/002. */
+export async function setQuickMatch(request: APIRequestContext, enabled: boolean) {
+  const token = await adminToken(request)
+  const res = await request.post('/api/globals/site-settings', { headers: auth(token), data: { quickMatch: { enabled } } })
+  expect(res.ok(), await res.text()).toBeTruthy()
+  // The landing page is cached and revalidated stale-while-revalidate: wait until it serves the new switch.
+  for (const path of ['/', '/ar']) {
+    await expect
+      .poll(async () => /quickMatch\\?":(true|false)/.exec(await (await request.get(path)).text())?.[1], { timeout: 30_000, intervals: [500, 1000, 2000] })
+      .toBe(String(enabled))
+  }
+}
+
+/** Answers the brief step by step with defaults (first option, skip optional steps). */
+export async function finishBriefSteps(page: Page) {
+  for (let i = 0; i < 12; i += 1) {
+    if (await page.getByTestId('brief-submit').isVisible()) return
+    const step = page.locator('[data-current="true"]')
+    const next = step.locator('[data-testid^="brief-continue-"]')
+    if (await next.isVisible()) {
+      await next.click()
+      continue
+    }
+    const skip = step.locator('[data-testid^="brief-skip-"]')
+    if (await skip.isVisible()) {
+      await skip.click()
+      continue
+    }
+    await step.locator('label[data-testid^="brief-option-"]').first().click()
+  }
+  await expect(page.getByTestId('brief-submit')).toBeVisible()
+}
+
+/** From the landing page to step 2 with a photographer brief (any date, defaults elsewhere). */
+export async function briefToStep2(page: Page, path = '/', options: { nojs?: boolean } = {}) {
+  await page.goto(path)
+  if (options.nojs) {
+    // Without JavaScript every list shows at once: take the first row of each (the professional list starts with photographer).
+    for (const list of await page.locator('[data-group]').all()) {
+      const first = list.locator('input[data-row]').first()
+      if (await first.count()) await first.check({ force: true })
+    }
+    await page.getByTestId('brief-submit').click()
+    await expect(page).toHaveURL(/\/match\/B-[0-9A-Z]{5}\//, { timeout: 20_000 })
+    return
+  }
+  await page.getByTestId('brief-option-persona-photographer').click()
+  const next = page.getByTestId('brief-continue-persona')
+  if (await next.isVisible()) await next.click()
+  await finishBriefSteps(page)
+  await page.getByTestId('brief-submit').click()
+  await expect(page).toHaveURL(/\/match\/B-[0-9A-Z]{5}\//, { timeout: 20_000 })
+}
+
+/** A date ten days ahead (the UAE calendar is close enough for a form field). */
+export const inDays = (days: number) => new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10)
+export const inTenDays = () => inDays(10)

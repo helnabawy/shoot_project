@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { localizeHref } from '@/shared/i18n/href'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { AccountSummary } from '@/modules/auth/components/AccountSummary'
 import { requireUser } from '@/modules/auth/session'
@@ -26,6 +28,16 @@ export default async function AccountPage({ params }: Props) {
     <section className="mx-auto max-w-[560px] px-3 pt-8 sm:pt-14">
       <h1 className="mb-5 px-1 text-[34px] font-bold leading-tight tracking-[-0.03em] text-ink">{t('title')}</h1>
       <AccountSummary user={user} personaLabel={persona?.singular} locale={locale} />
+      <nav aria-label={t('bookingsLink')} className="mt-4 flex flex-wrap gap-x-5 gap-y-2 px-1 text-[15px]">
+        <Link href={localizeHref('/account/bookings', locale)} className="text-accent underline-offset-4 hover:underline" data-testid="account-bookings-link">
+          {t('bookingsLink')}
+        </Link>
+        {user.accountType === 'provider' ? (
+          <Link href={localizeHref('/account/availability', locale)} className="text-accent underline-offset-4 hover:underline">
+            {t('availabilityLink')}
+          </Link>
+        ) : null}
+      </nav>
       <MyBriefs briefs={briefs} locale={locale} />
     </section>
   )

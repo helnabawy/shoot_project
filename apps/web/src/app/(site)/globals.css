@@ -365,3 +365,45 @@ html.js .native-picker::-webkit-calendar-picker-indicator {
 :lang(ar) :is(h1, h2, h3) {
   letter-spacing: 0;
 }
+
+/*
+ * Quotation print layout (feature 003, research §9): "Download PDF" is the browser's Save as PDF.
+ * A4, black on white in either theme, only the quotation document; lines never split across pages.
+ */
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 14mm;
+  }
+  :root,
+  :root:not(.light),
+  .dark {
+    --ground: #ffffff;
+    --ink: #000000;
+    --mute: #4a4a4a;
+    --panel: #ffffff;
+    --panel-solid: #ffffff;
+    --hair: rgb(0 0 0 / 0.2);
+    --tile: #f2f2f2;
+    --tile-ink: #222222;
+    --attention: #f2f2f2;
+    --on-attention: #000000;
+    --shadow: none;
+    color-scheme: light;
+  }
+  body {
+    background: #ffffff;
+  }
+  /* The site chrome only: the quotation's own header (reference, dates) stays. */
+  body:has(.quote-doc) :is(header, footer, [data-testid='whatsapp-floating']):not(.quote-doc *) {
+    display: none !important;
+  }
+  .quote-doc .bar-panel {
+    box-shadow: none;
+    backdrop-filter: none;
+    border: 0;
+  }
+  .quote-doc [role='group'] {
+    break-inside: avoid;
+  }
+}

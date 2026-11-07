@@ -36,6 +36,8 @@ const prepareBrief: CollectionBeforeChangeHook = async ({ data, req, operation }
     status: 'new',
     member: isMember ? req.user?.id : null,
     fingerprint: briefFingerprint(selections, visitorKey(req)),
+    // Only the server action supplies a Quick Match salt (research §2); REST callers cannot set it.
+    accessSalt: typeof req.context?.accessSalt === 'string' ? req.context.accessSalt : null,
   }
 }
 
@@ -107,6 +109,8 @@ export const Briefs: CollectionConfig = {
     { name: 'creator', type: 'relationship', relationTo: 'creator-profiles', index: true, admin: { readOnly: true, position: 'sidebar' } },
     { name: 'sourcePath', type: 'text', admin: { readOnly: true } },
     { name: 'fingerprint', type: 'text', index: true, admin: { hidden: true } },
+    // Quick Match private link (research §2): set by the server action only, never readable through the API.
+    { name: 'accessSalt', type: 'text', access: { read: () => false, create: () => false, update: () => false }, admin: { hidden: true } },
     // Honeypot: real visitors never fill this in; it is not stored.
     { name: 'website', type: 'text', virtual: true, admin: { hidden: true } },
   ],

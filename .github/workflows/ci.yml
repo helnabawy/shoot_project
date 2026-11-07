@@ -99,3 +99,7 @@ jobs:
           pnpm seed
       - run: npx --yes @lhci/cli@0.16.0 autorun --config=lighthouserc.json
       - run: npx --yes @lhci/cli@0.16.0 autorun --config=lighthouserc.dark.json
+      # Quick Match private pages (step 2, quotation) from the demo quotation; links derived from PAYLOAD_SECRET.
+      - run: npx --yes @lhci/cli@0.16.0 autorun --config=lighthouserc.quick-match.cjs
+      - run: npx --yes @lhci/cli@0.16.0 autorun --config=lighthouserc.quick-match.cjs
+        env: { LHCI_THEME: dark }

@@ -155,6 +155,15 @@ export const LandingPage: GlobalConfig = {
                       condition: (_d, s) => s?.kind === 'persona',
                     },
                   },
+                  {
+                    name: 'filtersCreators',
+                    type: 'checkbox',
+                    defaultValue: false,
+                    admin: {
+                      description: 'Quick Match lists only creators whose match values include the chosen option (options marked "matches any" keep everyone).',
+                      condition: (_d, s) => s?.kind === 'options',
+                    },
+                  },
                 ] },
               ],
             },

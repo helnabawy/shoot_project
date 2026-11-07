@@ -63,6 +63,7 @@ export default async function BookPage({ params }: Props) {
             whatsappHref(settings.whatsappNumber, settings.whatsappDefaultMessage) ?? '#'
           }
           providerHref={localizeHref('/register?type=provider', locale)}
+          quickMatch={settings.quickMatch?.enabled === true}
           sourcePath={localizeHref(`/book/${view.code.toLowerCase()}`, locale)}
           labels={labels}
         />

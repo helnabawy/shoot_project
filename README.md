@@ -62,5 +62,12 @@ npx @lhci/cli autorun --config=lighthouserc.json
 runs PostgreSQL, a one-off `payload migrate`, then two stateless web
 instances. Set the S3 variables so media is shared between instances, and
 call `POST /api/cron/cleanup` with `Authorization: Bearer $CRON_SECRET` daily.
+Quick Match (feature 003) also needs `GET /api/cron/bookings` with the same
+header every 15 minutes: it expires quotations, lapses unanswered booking
+requests, schedules paid bookings on the shoot day and flags unconfirmed
+deliveries. Prices, travel fees, extras and promo codes are entered in the
+admin under **Prices** (the default seed invents none); Quick Match wording,
+time windows and payment instructions are in **Site settings → Quick match**.
+Rotating `PAYLOAD_SECRET` invalidates the private quotation links already sent.
 
 See `CLAUDE.md` for the Spec Kit workflow and conventions.

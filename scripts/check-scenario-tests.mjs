@@ -1,12 +1,20 @@
 #!/usr/bin/env node
 // SC-004 / Principle III: every scenario in a feature's quickstart mapping table has its tests.
-// Fails when a test file named in the table is missing, or does not carry the row's `CP-…` id in a
-// test or describe name. Usage: node scripts/check-scenario-tests.mjs [specs/002-creator-profiles/quickstart.md]
+// Fails when a test file named in the table is missing, or does not carry the row's id (`CP-…`, `QM-…`)
+// in a test or describe name. Usage: node scripts/check-scenario-tests.mjs [specs/NNN-name/quickstart.md …]
+// With no argument, every specs/*/quickstart.md that has a mapping table is checked.
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 
 const root = resolve(new URL('..', import.meta.url).pathname)
-const quickstart = resolve(root, process.argv[2] ?? 'specs/002-creator-profiles/quickstart.md')
+const MAPPING = /^## Scenario → test mapping.*$/m
+const specsDir = join(root, 'specs')
+const quickstarts = process.argv.length > 2
+  ? process.argv.slice(2).map((p) => resolve(root, p))
+  : readdirSync(specsDir)
+      .map((d) => join(specsDir, d, 'quickstart.md'))
+      // Tables whose rows carry a feature prefix (`CP-`, `QM-`); 001's unprefixed table predates the check.
+      .filter((f) => existsSync(f) && /^\| [A-Z]{2}-(?:US|FR|SC)/m.test(readFileSync(f, 'utf8').split(MAPPING)[1] ?? ''))
 const SEARCH_ROOTS = ['apps/web/src', 'apps/web/tests', 'packages/domain/src', 'scripts'].map((p) => join(root, p))
 const SKIP = new Set(['node_modules', '.next', 'coverage', 'test-results', 'playwright-report'])
 
@@ -28,33 +36,39 @@ function resolveFile(ref) {
   return candidates.length ? candidates : files.filter((f) => basename(f) === basename(ref))
 }
 
-const text = readFileSync(quickstart, 'utf8')
-const section = text.split(/^## Scenario → test mapping.*$/m)[1]?.split(/^## /m)[0] ?? ''
-const rows = section.split('\n').filter((l) => l.startsWith('|') && !/^\|[-\s|]+\|$/.test(l) && !l.startsWith('| Id'))
 const problems = []
 let checked = 0
+let totalRows = 0
 
-for (const row of rows) {
-  const cells = row.split('|').slice(1, -1).map((c) => c.trim())
-  const id = cells[0]?.match(/^CP-[A-Z0-9]+(?:-[A-Z0-9]+)*/)?.[0] ?? null
-  const refs = [...(cells[2] ?? '').matchAll(/`([^`]+)`/g)].map((m) => m[1])
-  for (const ref of refs) {
-    if (ref.includes('*')) continue // "all cp-*.spec.ts": a pattern, not a file
-    checked += 1
-    const found = resolveFile(ref)
-    if (found.length === 0) {
-      problems.push(`missing: ${ref} (row: ${cells[0]?.slice(0, 70)})`)
-      continue
+for (const quickstart of quickstarts) {
+  const label = quickstart.replace(`${root}/`, '')
+  const text = readFileSync(quickstart, 'utf8')
+  const section = text.split(MAPPING)[1]?.split(/^## /m)[0] ?? ''
+  const rows = section.split('\n').filter((l) => l.startsWith('|') && !/^\|[-\s|]+\|$/.test(l) && !l.startsWith('| Id'))
+
+  for (const row of rows) {
+    const cells = row.split('|').slice(1, -1).map((c) => c.trim())
+    const id = cells[0]?.match(/^[A-Z]{2}-[A-Z0-9]+(?:-[A-Z0-9]+)*/)?.[0] ?? null
+    const refs = [...(cells[2] ?? '').matchAll(/`([^`]+)`/g)].map((m) => m[1])
+    for (const ref of refs) {
+      if (ref.includes('*')) continue // "all cp-*.spec.ts": a pattern, not a file
+      checked += 1
+      const found = resolveFile(ref)
+      if (found.length === 0) {
+        problems.push(`${label}: missing: ${ref} (row: ${cells[0]?.slice(0, 70)})`)
+        continue
+      }
+      if (!id || !/\.(test|spec)\.tsx?$/.test(ref)) continue
+      const named = found.some((f) => readFileSync(f, 'utf8').split('\n').some((line) => line.includes(id) && /\b(it|test|describe)(\.\w+)*\(/.test(line)))
+      if (!named) problems.push(`${label}: no test named with ${id}: ${ref}`)
     }
-    if (!id || !/\.(test|spec)\.tsx?$/.test(ref)) continue
-    const named = found.some((f) => readFileSync(f, 'utf8').split('\n').some((line) => line.includes(id) && /\b(it|test|describe)(\.\w+)*\(/.test(line)))
-    if (!named) problems.push(`no test named with ${id}: ${ref}`)
   }
+  totalRows += rows.length
 }
 
 if (problems.length) {
-  console.error(`Scenario → test mapping (${quickstart.replace(`${root}/`, '')}) has ${problems.length} problem(s):`)
+  console.error(`Scenario → test mapping has ${problems.length} problem(s):`)
   for (const p of problems) console.error(`  - ${p}`)
   process.exit(1)
 }
-console.log(`scenario tests: ok (${rows.length} rows, ${checked} test files)`)
+console.log(`scenario tests: ok (${quickstarts.length} tables, ${totalRows} rows, ${checked} test files)`)
