@@ -135,7 +135,7 @@ apps/web/src/
 │   ├── hooks.ts             # assign user + code, force-draft guard, create listing, verifiedAt on publish, revalidate
 │   ├── queries.ts           # getPublicCreators(locale), getCreatorByCode, getSpecialtyPage, getMyProfile
 │   ├── actions.ts           # saveMyProfile, addSample, removeSample, reorderSamples, submitForReview, setActive
-│   ├── components/{CreatorCard,CreatorGrid,DirectoryFilters,ProfileView,SampleGallery,
+│   ├── components/{CreatorRow,CreatorList,DirectoryFilters,ProfileView,SampleGallery,
 │   │               SpecialtyHeader,ProfileForm,SampleManager,StatusBanner}.tsx
 │   └── index.ts
 ├── modules/landing/blocks/CreatorNetwork.ts           # block schema (heading, rule, count, cta)

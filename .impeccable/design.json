@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-07T00:00:00Z",
+  "generatedAt": "2026-11-07T12:00:00Z",
   "title": "Design System: Shoot Project",
   "extensions": {
     "colorMeta": {
@@ -593,6 +593,21 @@
         "displayName": "Night Glass Sheen",
         "theme": "dark",
         "canonical": "rgb(255 255 255 / 0.1)"
+      },
+      "photo-tile-accent-fill": {
+        "role": "neutral",
+        "displayName": "Accent Tile White",
+        "canonical": "rgb(255 255 255 / 0.2)",
+        "tonalRamp": [
+          "rgb(255 255 255 / 0.05)",
+          "rgb(255 255 255 / 0.1)",
+          "rgb(255 255 255 / 0.15)",
+          "rgb(255 255 255 / 0.2)",
+          "rgb(255 255 255 / 0.3)",
+          "rgb(255 255 255 / 0.45)",
+          "rgb(255 255 255 / 0.65)",
+          "rgb(255 255 255 / 0.9)"
+        ]
       }
     },
     "typographyMeta": {
@@ -817,15 +832,39 @@
       "description": "Trailing control of the bar field: 44 px button holding a 30 px chevron tile that turns when the options drawer opens; aria-expanded / aria-controls.",
       "html": "<button class=\"ds-toggle\" type=\"button\" aria-expanded=\"false\" aria-label=\"Show options\"><span class=\"ds-toggle-tile\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 7.5 5 5 5-5\"/></svg></span></button>",
       "css": ".ds-toggle { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; border-radius: 9px; cursor: pointer; } .ds-toggle-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); transition: color 100ms; } .ds-toggle:hover .ds-toggle-tile { color: var(--ink, #1d1d1f); } .ds-toggle svg { transition: transform 300ms; } .ds-toggle[aria-expanded=\"true\"] svg { transform: rotate(180deg); }"
+    },
+    {
+      "name": "Photo Tile",
+      "kind": "chip",
+      "refersTo": "photo-tile",
+      "description": "44 px rounded lead of a creator row: cover-cropped photo, or initials when there is none. Decorative.",
+      "html": "<span class=\"ds-photo\" aria-hidden=\"true\">AH</span> <span class=\"ds-photo ds-photo-accent\" aria-hidden=\"true\">AH</span>",
+      "css": ".ds-photo { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; overflow: hidden; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 15px; font-weight: 700; line-height: 1; } .ds-photo-accent { background: var(--accent, #0a60ff) linear-gradient(rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.2)); color: #fff; }"
+    },
+    {
+      "name": "Creator Row",
+      "kind": "custom",
+      "refersTo": "creator-row",
+      "description": "Two-line result row led by a Photo Tile; name, types and place, code trailing. Directory adds a plain-text specialties line.",
+      "html": "<a class=\"ds-creator\" href=\"#\"><span class=\"ds-photo\" aria-hidden=\"true\">AB</span><span class=\"ds-creator-text\"><span class=\"ds-creator-name\">Amira Haddad</span><span class=\"ds-creator-meta\">Photographer · Dubai</span><span class=\"ds-creator-meta\">Weddings, Events, Portraits</span></span><span class=\"ds-creator-code\">SHT-0142</span></a>",
+      "css": ".ds-creator { display: grid; grid-template-columns: 44px minmax(0,1fr) auto; align-items: center; gap: 12px; margin: 0 6px; min-height: 64px; padding: 7px 10px; border-radius: 9px; color: var(--ink, #1d1d1f); text-decoration: none; font: 400 16px/1.375 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; cursor: pointer; transition: background-color 100ms; } .ds-creator:hover { background: rgb(29 29 31 / 0.045); } .ds-creator:active { background: rgb(29 29 31 / 0.08); } .ds-creator:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-creator-text { min-width: 0; } .ds-creator-name { display: block; font-weight: 600; overflow-wrap: anywhere; } .ds-creator-meta { display: block; font-size: 13px; font-weight: 400; color: var(--mute, #6b6560); } .ds-creator-code { font-size: 13px; color: var(--mute, #6b6560); font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; } .ds-photo { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 15px; font-weight: 700; line-height: 1; }"
+    },
+    {
+      "name": "Directory Filter Row",
+      "kind": "nav",
+      "refersTo": "result-row",
+      "description": "A filter as a native disclosure row: glyph tile, label, current value or Any with a chevron; options inside carry counts.",
+      "html": "<details class=\"ds-filter\" open><summary class=\"ds-filter-row\"><span class=\"ds-tile\">T</span><span>Specialty</span><span class=\"ds-filter-val\">Any</span></summary><div class=\"ds-filter-opt\"><span class=\"ds-tile\">T</span><span>Weddings</span><span class=\"ds-filter-val\">12</span></div></details>",
+      "css": ".ds-filter { margin: 0; } .ds-filter-row, .ds-filter-opt { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; margin: 0 6px; min-height: 44px; padding: 7px 10px; border-radius: 9px; list-style: none; cursor: pointer; color: var(--ink, #1d1d1f); font: 400 16px/1.375 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; transition: background-color 100ms; } .ds-filter-row::-webkit-details-marker { display: none; } .ds-filter-row:hover, .ds-filter-opt:hover { background: rgb(29 29 31 / 0.045); } .ds-filter-row:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-filter-val { font-size: 13px; text-align: end; color: var(--mute, #6b6560); font-variant-numeric: tabular-nums; } .ds-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; }"
     }
   ],
   "narrative": {
     "northStar": "The Brief Bar",
-    "overview": "The page is one panel the audience already knows how to use: a macOS Spotlight / Quick Actions bar. A single frosted panel floats on a warm stone ground; the brief is the search field, the options fold beneath it as grouped result rows, and the Top Hit, the one selection-blue row, is the shoot. The one place a picture sits behind the interface is the landing hero: a full-screen stage, the CMS hero photograph under a theme scrim (or an empty studio sweep until one exists), with the bar floating over it as glass. Everywhere else nothing is painted onto the page to signal \"photography\", and nowhere is there a serif headline, a booking widget, or a ticket or signage costume. The world is the interface.\n\nDensity is Spotlight density: identical 44 px row rhythm so the whole brief reads in one sweep, a 30 px glyph tile leading every row, quiet state text or a key hint trailing it. Below the fold the same grammar continues on the bare ground: rows separated by hairlines, without a panel. Warmth comes from the stone ground and warm greys, premium from restraint: system type at zero font bytes, one accent, and outside the hero stage one shadow and one gradient. Dark (\"the phone at night\") is a first-class rendering, not an inversion.\n\nThe owner rejected the ticket (\"The Shoot Pass\") and municipal signage (\"Bilingual Wayfinding\") worlds as gimmicky and cold; this world must never drift back toward a themed costume.",
+    "overview": "The page is one panel the audience already knows how to use: a macOS Spotlight / Quick Actions bar. A single frosted panel floats on a warm stone ground; the brief is the search field, the options fold beneath it as grouped result rows, and the Top Hit, the one selection-blue row, is the shoot. The one place a picture sits behind the interface is the landing hero: a full-screen stage, the CMS hero photograph under a theme scrim (or an empty studio sweep until one exists), with the bar floating over it as glass. Everywhere else nothing is painted onto the page to signal \"photography\", and nowhere is there a serif headline, a booking widget, or a ticket or signage costume. The world is the interface.\n\nDensity is Spotlight density: identical 44 px row rhythm so the whole brief reads in one sweep, a 30 px glyph tile leading every row (a 44 px photo tile where the row is a person), quiet state text or a key hint trailing it. Below the fold the same grammar continues on the bare ground: rows separated by hairlines, without a panel. Warmth comes from the stone ground and warm greys, premium from restraint: system type at zero font bytes, one accent, and outside the hero stage one shadow and one gradient. Dark (\"the phone at night\") is a first-class rendering, not an inversion.\n\nThe owner rejected the ticket (\"The Shoot Pass\") and municipal signage (\"Bilingual Wayfinding\") worlds as gimmicky and cold; this world must never drift back toward a themed costume.",
     "keyCharacteristics": [
       "One floating frosted panel per primary task, 14 px corners, 1 px hairline, the system's only shadow.",
       "Selection blue reserved for the Top Hit, the caret, `::selection` and focus; never body text or decoration.",
-      "Every row is glyph tile, label, trailing slot, on a single 44 px minimum rhythm.",
+      "Every row is glyph tile, label, trailing slot, on a single 44 px minimum rhythm; a creator row leads with a 44 px photo tile and runs two lines at a 64 px minimum.",
       "System UI type in both scripts, tabular figures, zero webfont bytes.",
       "Logical CSS only; Arabic is a designed rendering, not a mirrored afterthought.",
       "Works as a plain form without JavaScript.",
@@ -893,6 +932,7 @@
       "Do gate decorative motion (caret blink, smooth scroll, the drawer's fold and fade, the toggle chevron) behind `prefers-reduced-motion: no-preference`.",
       "Do keep every glyph tile's text as localised CMS data, three characters at most, or a drawn icon.",
       "Do re-run the glass contrast test (over mid grey and the worst photo after the scrim) whenever a glass or scrim value changes.",
+      "Do lead a person's row with the 44 px Photo Tile (photo or initials, `aria-hidden`), keep specialties as plain text and the code as isolated left-to-right trailing meta, and hide filter options that match nothing unless chosen.",
       "Do keep the bar a working plain form without JavaScript: the options drawer stays open, and the toggle and key hints are hidden."
     ],
     "donts": [

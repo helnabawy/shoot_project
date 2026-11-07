@@ -143,5 +143,27 @@
     "rights": "All rights reserved.",
     "social": "Follow us"
   },
-  "creators": {}
+  "creators": {
+    "directory": {
+      "title": "Find your professional",
+      "intro": "Choose what you need and where, then open anyone to see their work.",
+      "metaDescription": "Browse the professionals listed on Shoot Project by type, specialty and emirate.",
+      "searchAll": "All professionals",
+      "filtersLabel": "Filters",
+      "professional": "Professional",
+      "specialty": "Specialty",
+      "emirate": "Emirate",
+      "any": "Any",
+      "clear": "Clear filters",
+      "topHit": "Top hit",
+      "everyone": "Everyone else",
+      "resultsLabel": "Professionals",
+      "empty": "No professionals are listed yet.",
+      "noMatch": "No one matches these filters yet.",
+      "briefInstead": "Send a brief instead",
+      "page": "Page {page} of {pages}",
+      "previous": "Previous page",
+      "next": "Next page"
+    }
+  }
 }

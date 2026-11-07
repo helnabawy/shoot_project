@@ -5,11 +5,13 @@ import { GlyphTile } from './GlyphTile'
 export type RowState = 'open' | 'set' | 'attention'
 
 /** Classes for anything that should look like a result row (label, link, button, summary). */
-export function rowClass(state: RowState = 'open', interactive = true) {
+export function rowClass(state: RowState = 'open', interactive = true, lead: 'glyph' | 'photo' = 'glyph') {
   const set = state === 'set'
   // Rows sit inset with rounded corners, like a Spotlight selection; text stays 16 px from the panel edge.
+  // `photo` leads with a 44 px photo tile (a creator, specs/002 surface brief) instead of the 30 px glyph tile.
   return cx(
-    'mx-1.5 grid min-h-11 grid-cols-[30px_minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--radius-row)] px-2.5 py-[7px] text-[16px] leading-snug',
+    'mx-1.5 grid items-center gap-3 rounded-[var(--radius-row)] px-2.5 py-[7px] text-[16px] leading-snug',
+    lead === 'photo' ? 'min-h-16 grid-cols-[44px_minmax(0,1fr)_auto]' : 'min-h-11 grid-cols-[30px_minmax(0,1fr)_auto]',
     // A picked row is tinted selection blue so the client sees their choices at a glance.
     set && 'bg-selected font-semibold',
     interactive &&

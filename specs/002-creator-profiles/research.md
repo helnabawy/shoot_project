@@ -306,7 +306,7 @@ pattern); admins suspend instead.
 **Decision**: add a `creatorNetwork` block to the landing page-builder:
 `heading`, `subheading`, `rule` (`featuredThenNewest` | `newest` |
 `featuredOnly`), `count` (3–12, default 6), `cta` (to `/creators`). It renders
-`CreatorGrid` server-side from the cached summaries; with no listed creators
+`CreatorList` server-side from the cached summaries; with no listed creators
 it renders nothing (safe empty state, Principle IV). The existing
 `categoriesGrid` block links each specialty to `/work/{slug}` and shows the
 real sample/pro counts only when above zero (no invented numbers,

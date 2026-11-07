@@ -4,8 +4,10 @@ import { cx } from './cx'
 import { GlyphTile } from './GlyphTile'
 import { KeyHint } from './KeyHint'
 
-const topHitClass =
-  'mx-2 grid min-h-[50px] w-[calc(100%-16px)] grid-cols-[30px_minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--radius-row)] bg-accent px-3 py-2.5 text-start text-[17px] font-semibold leading-snug text-on-accent transition-[filter,transform] duration-100 hover:brightness-110 motion-safe:active:scale-[0.99] disabled:cursor-progress disabled:opacity-80 focus-visible:outline-offset-2'
+/** The Top Hit's look without its column template, so a creator Top Hit can lead with a photo tile. */
+export const topHitBase =
+  'mx-2 grid min-h-[50px] w-[calc(100%-16px)] items-center gap-3 rounded-[var(--radius-row)] bg-accent px-3 py-2.5 text-start text-[17px] font-semibold leading-snug text-on-accent transition-[filter,transform] duration-100 hover:brightness-110 motion-safe:active:scale-[0.99] disabled:cursor-progress disabled:opacity-80 focus-visible:outline-offset-2'
+const topHitClass = `${topHitBase} grid-cols-[30px_minmax(0,1fr)_auto]`
 
 function Inner({ label, glyph, hint }: { label: ReactNode; glyph?: ReactNode; hint?: ReactNode }) {
   return (

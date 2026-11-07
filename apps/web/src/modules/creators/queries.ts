@@ -1,10 +1,11 @@
 import 'server-only'
 import { formatCreatorCode, isListed, normaliseCode, type CreatorSummary } from '@shoot/domain/creators'
-import { getActivePersonas } from '@/modules/personas/queries'
+import { getActivePersonas, getCategoriesForAudience } from '@/modules/personas/queries'
 import { getSiteSettings } from '@/modules/site-settings/queries'
 import { cachedQuery } from '@/shared/lib/cache'
 import type { Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
+import type { Lookups } from './describe'
 import { locationParents, publicSummaries, type RawListing, type RawProfile } from './summary'
 
 const TAGS = ['creators', 'media', 'personas', 'categories', 'locations', 'site-settings']
@@ -63,4 +64,68 @@ export async function getCreatorByCode(rawCode: string, locale: Locale): Promise
 export async function formatCode(code: string, locale: Locale): Promise<string> {
   const settings = await getSiteSettings(locale)
   return formatCreatorCode(settings.creatorCodePrefix ?? 'CR', code)
+}
+
+export interface DirectoryLocation {
+  id: string
+  slug: string
+  name: string
+  parentId: string | null
+  order: number
+}
+
+/** Emirates and cities with names in the locale, cached under the `locations` tag (research §9). */
+export function getLocations(locale: Locale): Promise<DirectoryLocation[]> {
+  return cachedQuery(['locations'], ['locations', locale], async () => {
+    const payload = await getPayloadClient()
+    const { docs } = await payload.find({
+      collection: 'locations',
+      where: { active: { equals: true } },
+      locale,
+      fallbackLocale: 'en',
+      depth: 0,
+      pagination: false,
+      sort: 'order',
+    })
+    return docs.map((l) => ({
+      id: String(l.id),
+      slug: l.slug,
+      name: l.name,
+      parentId: l.parent ? String(typeof l.parent === 'object' ? l.parent.id : l.parent) : null,
+      order: l.order ?? 100,
+    }))
+  })
+}
+
+export interface DirectoryContext {
+  lookups: Lookups
+  /** Audience professional types in Site settings order. */
+  personas: { id: string; slug: string; name: string }[]
+  /** Specialties of the audience. */
+  specialties: { id: string; slug: string; name: string }[]
+  emirates: { id: string; slug: string; name: string }[]
+  prefix: string
+  pageSize: number
+}
+
+/** Everything a page needs to turn creator summaries into rows and filters, in one place. */
+export async function getDirectoryContext(locale: Locale): Promise<DirectoryContext> {
+  const [personas, categories, locations, settings] = await Promise.all([
+    getActivePersonas(locale),
+    getCategoriesForAudience(locale),
+    getLocations(locale),
+    getSiteSettings(locale),
+  ])
+  return {
+    lookups: {
+      personas: new Map(personas.map((p) => [p.id, p.singular])),
+      specialties: new Map(categories.map((c) => [c.id, c.name])),
+      locations: new Map(locations.map((l) => [l.id, l.name])),
+    },
+    personas: personas.map((p) => ({ id: p.id, slug: p.slug, name: p.plural })),
+    specialties: categories.map((c) => ({ id: c.id, slug: c.slug, name: c.name })),
+    emirates: locations.filter((l) => !l.parentId).map((l) => ({ id: l.id, slug: l.slug, name: l.name })),
+    prefix: settings.creatorCodePrefix ?? 'CR',
+    pageSize: settings.directoryPageSize ?? 24,
+  }
 }

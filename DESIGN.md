@@ -66,6 +66,7 @@ colors:
   night-glass-tile-ink: "#eeeae6"
   night-glass-edge: "rgb(255 255 255 / 0.18)"
   night-glass-sheen: "rgb(255 255 255 / 0.1)"
+  photo-tile-accent-fill: "rgb(255 255 255 / 0.2)"
 typography:
   display:
     fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif"
@@ -120,6 +121,7 @@ rounded:
   panel: "14px"
   row: "9px"
   tile: "8px"
+  photo-tile: "10px"
   message: "6px"
   key-hint: "5px"
 spacing:
@@ -181,6 +183,28 @@ components:
     rounded: "{rounded.row}"
     padding: "0 12px"
     height: "44px"
+  photo-tile:
+    backgroundColor: "{colors.tile-stone}"
+    textColor: "{colors.tile-ink}"
+    rounded: "{rounded.photo-tile}"
+    size: "44px"
+  photo-tile-accent:
+    backgroundColor: "{colors.photo-tile-accent-fill}"
+    textColor: "{colors.on-accent}"
+    rounded: "{rounded.photo-tile}"
+    size: "44px"
+  creator-row:
+    textColor: "{colors.graphite-ink}"
+    typography: "{typography.row}"
+    padding: "7px 10px"
+    height: "64px"
+  creator-top-hit:
+    backgroundColor: "{colors.selection-blue}"
+    textColor: "{colors.on-accent}"
+    typography: "{typography.top-hit}"
+    rounded: "{rounded.row}"
+    padding: "10px 12px"
+    height: "64px"
   key-hint:
     rounded: "{rounded.key-hint}"
     padding: "2px 6px"
@@ -194,14 +218,14 @@ components:
 
 The page is one panel the audience already knows how to use: a macOS Spotlight / Quick Actions bar. A single frosted panel floats on a warm stone ground; the brief is the search field, the options fold beneath it as grouped result rows, and the Top Hit, the one selection-blue row, is the shoot. The one place a picture sits behind the interface is the landing hero: a full-screen stage, the CMS hero photograph under a theme scrim (or an empty studio sweep until one exists), with the bar floating over it as glass. Everywhere else nothing is painted onto the page to signal "photography", and nowhere is there a serif headline, a booking widget, or a ticket or signage costume. The world is the interface.
 
-Density is Spotlight density: identical 44 px row rhythm so the whole brief reads in one sweep, a 30 px glyph tile leading every row, quiet state text or a key hint trailing it. Below the fold the same grammar continues on the bare ground: rows separated by hairlines, without a panel. Warmth comes from the stone ground and warm greys, premium from restraint: system type at zero font bytes, one accent, and outside the hero stage one shadow and one gradient. Dark ("the phone at night") is a first-class rendering, not an inversion.
+Density is Spotlight density: identical 44 px row rhythm so the whole brief reads in one sweep, a 30 px glyph tile leading every row (a 44 px photo tile where the row is a person), quiet state text or a key hint trailing it. Below the fold the same grammar continues on the bare ground: rows separated by hairlines, without a panel. Warmth comes from the stone ground and warm greys, premium from restraint: system type at zero font bytes, one accent, and outside the hero stage one shadow and one gradient. Dark ("the phone at night") is a first-class rendering, not an inversion.
 
 The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingual Wayfinding") worlds as gimmicky and cold; this world must never drift back toward a themed costume.
 
 **Key Characteristics:**
 - One floating frosted panel per primary task, 14 px corners, 1 px hairline, the system's only shadow.
 - Selection blue reserved for the Top Hit, the caret, `::selection` and focus; never body text or decoration.
-- Every row is glyph tile, label, trailing slot, on a single 44 px minimum rhythm.
+- Every row is glyph tile, label, trailing slot, on a single 44 px minimum rhythm; a creator row leads with a 44 px photo tile and runs two lines at a 64 px minimum.
 - System UI type in both scripts, tabular figures, zero webfont bytes.
 - Logical CSS only; Arabic is a designed rendering, not a mirrored afterthought.
 - Works as a plain form without JavaScript.
@@ -277,7 +301,7 @@ On the landing page the first viewport is a stage. Under the header (not sticky,
 
 Rows use 16 px inline padding, 12 px gap between tile, label and trailing slot, and a 44 px minimum height (the touch target). Sections are separated by 64 px of ground. Breakpoints are Tailwind's `sm` (640 px) for the type and gutter step and `md` (768 px) for hiding mobile-only chrome; verified at 360, 768, 1024 and 1440 px.
 
-Lists on the ground (how it works, why, specialties, FAQ) are real `ul`/`ol` elements bleeding to the column edge with hairlines between rows; specialties may go two columns from 640 px, divided with a logical `border-e`.
+Lists on the ground (how it works, why, specialties, FAQ, and the creator network) are real `ul`/`ol` elements bleeding to the column edge with hairlines between rows; specialties may go two columns from 640 px, divided with a logical `border-e`. The landing "Our network" block and the `/creators` list are Creator Rows in that same list, 4 px of block padding per item, with the directory panel above the list on `/creators`.
 
 ### Named Rules
 **The Two Panels Rule.** A page shows at most two bar panels: the primary bar and one smaller (`sm`, 15 px) secondary bar such as the creator invitation. The glass tone is the primary bar dressed for the hero stage, not an extra panel. Everything else is rows on the ground.
@@ -302,7 +326,7 @@ On the hero stage the bar wears glass instead: a more transparent panel under a 
 
 ## Shapes
 
-Soft, nested macOS corners stepping down with size: panel 14 px, Top Hit and inputs 9 px, glyph tiles 8 px, the theme toggle segment 7 px, focus ring and messages 6 px, key hints 5 px. The Top Hit is inset 8 px inside the panel so its corners nest inside the panel's. Borders are always the 1 px hairline; there are no heavier strokes. The floating WhatsApp button on phones is the only circle.
+Soft, nested macOS corners stepping down with size: panel 14 px, Top Hit and inputs 9 px, photo tiles 10 px, glyph tiles 8 px, the theme toggle segment 7 px, focus ring and messages 6 px, key hints 5 px. The Top Hit is inset 8 px inside the panel so its corners nest inside the panel's. Borders are always the 1 px hairline; there are no heavier strokes. The floating WhatsApp button on phones is the only circle.
 
 ## Components
 
@@ -320,6 +344,15 @@ The search magnifier (22 px, 2.25 stroke, ink) beside the composed sentence at F
 - **Shape:** rows sit inset 6 px from the panel edge with 9 px corners (`--radius-row`), so a tint or hover reads as a Spotlight selection; text stays 16 px from the edge.
 - **Interaction:** hover tints an open row with ink at 4.5%, active 8%, keyboard focus 6% plus a 2 px inset focus outline; a set row deepens to `--selected-hover`. Rows are labels over visually hidden radios (checkboxes where a slot takes several choices), so the no-JavaScript form works unchanged.
 - **Overflow:** a group shows its first few rows plus the chosen one; the rest sit behind a "Show N more" row with a chevron tile, driven by a CSS checkbox, not script.
+
+### Photo Tile
+44 px, 10 px corners, the lead of a creator row. The photograph is cover-cropped (requested at 88 px for density, sized 44 px) on the resting tile fill; with no photo the creator's initials sit centred in 15 px bold on the resting tile (tile stone / tile ink). On the Top Hit the accent variant takes white at 20% with white initials. Decorative and `aria-hidden`: the name beside it carries the meaning, and the alt text is empty.
+
+### Creator Row
+A result row whose lead is the Photo Tile: grid of 44 px tile, flexible text, auto trailing slot, 64 px minimum height, same inset, 9 px corners, 12 px gap and hover tint as any row. Line one is the name (semibold, ink, wraps); line two is professional types and place joined by a middle dot (13 px mute). In the directory a third line prints up to three specialties as plain text (13 px mute), never as chips. The creator's code trails in the slot (13 px, tabular figures), wrapped in an isolated left-to-right run so it reads the same in Arabic. As a Top Hit the row takes the shared Top Hit base (selection blue, 9 px corners, 17 px semibold, inset 8 px), the accent Photo Tile, 64 px minimum height, secondary lines in full white for AA on selection blue, and the Return key hint after the code. A Top Hit and its list rows are the same component in two tones, so the One Blue Row Rule holds.
+
+### Directory Panel
+The Brief Bar used as a filter, with the Top Hit as the best match. The field prints the chosen filters as selection-tinted tokens (the same token as the brief sentence); with none chosen it shows "All professionals" in mute as a placeholder. Under it, a filters group with one row per filter (professional, specialty, emirate): glyph tile with a drawn icon (user, tag, pin), label, and in the trailing slot the current value or "Any" with a chevron that turns over when open. Each row is a native `details`/`summary` disclosure (one open at a time), so it works without JavaScript. Opened, it lists an "Any" row (set, with a drawn check, when nothing is chosen), then the options as link rows with their counts in the trailing slot (tabular); the chosen option is a set row. Options with zero matches are hidden unless chosen. A "Clear filters" row with a close glyph appears only when a filter is active. Below a hairline, the "Top Hit" group holds the best creator, or, when nothing matches, a plain message row and a Top Hit back to the brief. Beneath the panel the remaining creators are Creator Rows on the bare ground.
 
 ### Result Groups
 A group label (Group Label style, 10 px top, 4 px bottom padding) then rows. When it is a choice it is a `fieldset` whose legend is the label, so screen readers name the radio group. A group-level message sits between label and rows.
@@ -340,7 +373,7 @@ The one selection-blue row: 50 px minimum, 9 px corners, inset 8 px, 17 px semib
 A field is a bar row: a 13 px mute label, then a 44 px input with a hairline stroke, 9 px corners, transparent fill, 16 px ink text. Focus turns the stroke to the focus colour. An error swaps the stroke to on-attention at 50% and adds a peach message beneath, tied by `aria-describedby`; form-level errors are a peach `role="alert"` block. Date and number rows keep the row look with the native control laid invisibly over them under JavaScript.
 
 ### Icons
-One authored set on a 20 px grid, 1.75 stroke, round caps and joins, `currentColor`. No emoji, no copied platform icons.
+One authored set on a 20 px grid, 1.75 stroke, round caps and joins, `currentColor`. No emoji, no copied platform icons. Tag (a label with a hole) marks specialties and pin (a map marker) marks places; neither flips in Arabic.
 
 ### Navigation
 A quiet top bar on the ground, not sticky: wordmark at the start, language switch and menu at the end, at most 1080 px wide. The phone menu opens as a small bar. The footer carries the language link and a three-way theme segment (light, dark, system) whose active segment is an ink tile.
@@ -362,6 +395,7 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Do** gate decorative motion (caret blink, smooth scroll, the step-in) behind `prefers-reduced-motion: no-preference`.
 - **Do** keep every glyph tile's text as localised CMS data, three characters at most, or a drawn icon.
 - **Do** re-run the glass contrast test (over mid grey and the worst photo after the scrim) whenever a glass or scrim value changes.
+- **Do** lead a person's row with the 44 px Photo Tile (photo or initials, `aria-hidden`), keep specialties as plain text and the code as isolated left-to-right trailing meta, and hide filter options that match nothing unless chosen.
 - **Do** keep the bar a working plain form without JavaScript: every list shows at once, and the search input and key hints are hidden.
 
 ### Don't:
