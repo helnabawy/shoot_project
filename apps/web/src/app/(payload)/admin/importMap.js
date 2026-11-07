@@ -1,4 +1,8 @@
 import { PersonasNote as PersonasNote_e28b8572f178aa4e9491e5c49957ead7 } from '../../../modules/admin/components/PersonasNote'
+import { ProfileListingLink as ProfileListingLink_4ba7671da7ecf5935ae2c88cfcabb6d0 } from '../../../modules/admin/components/CreatorLinks'
+import { CreatorProfilesNote as CreatorProfilesNote_8a950f229ffd980071bcd5d1c3b7ccfa } from '../../../modules/admin/components/CreatorProfilesNote'
+import { ListingProfileLink as ListingProfileLink_4ba7671da7ecf5935ae2c88cfcabb6d0 } from '../../../modules/admin/components/CreatorLinks'
+import { CreatorListingsNote as CreatorListingsNote_64b5a40ee7e260b5f68bfbb9e46bec0f } from '../../../modules/admin/components/CreatorListingsNote'
 import { BriefsExport as BriefsExport_2a918092ae623b8885824544a8d31e6d } from '../../../modules/admin/components/BriefsExport'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -30,6 +34,10 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 /** @type import('payload').ImportMap */
 export const importMap = {
   "/modules/admin/components/PersonasNote#PersonasNote": PersonasNote_e28b8572f178aa4e9491e5c49957ead7,
+  "/modules/admin/components/CreatorLinks#ProfileListingLink": ProfileListingLink_4ba7671da7ecf5935ae2c88cfcabb6d0,
+  "/modules/admin/components/CreatorProfilesNote#CreatorProfilesNote": CreatorProfilesNote_8a950f229ffd980071bcd5d1c3b7ccfa,
+  "/modules/admin/components/CreatorLinks#ListingProfileLink": ListingProfileLink_4ba7671da7ecf5935ae2c88cfcabb6d0,
+  "/modules/admin/components/CreatorListingsNote#CreatorListingsNote": CreatorListingsNote_64b5a40ee7e260b5f68bfbb9e46bec0f,
   "/modules/admin/components/BriefsExport#BriefsExport": BriefsExport_2a918092ae623b8885824544a8d31e6d,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,

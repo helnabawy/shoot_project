@@ -109,3 +109,65 @@ describe('CP-FR-008 provider uploads are bounded (research §6)', () => {
     expect(publicRead).not.toHaveProperty('uploadedBy')
   })
 })
+
+describe('CP-FR-008 orphaned upload cleanup (research §6)', () => {
+  it('after 24 hours deletes provider uploads no profile uses, keeps used ones, editor uploads and recent ones, and frees quota', async () => {
+    const { deleteOrphanedUploads, ORPHAN_AFTER_MS } = await import('@/modules/creators/cleanup')
+    const world = await creatorWorld()
+    const payload = await getTestPayload()
+    const tiny = await sharp({ create: { width: 16, height: 16, channels: 3, background: '#555555' } }).png().toBuffer()
+    const owner = await makeProvider(world)
+    const up = (user: CreatorUser, name: string) =>
+      payload.create({ collection: 'media', data: { alt: name }, file: { data: tiny, mimetype: 'image/png', name, size: tiny.length }, user, overrideAccess: false, context: { ...quiet, visitorId: name } })
+
+    const photo = await up(owner, 'photo.png')
+    const draftOnly = await up(owner, 'draft-sample.png')
+    const orphan = await up(owner, 'orphan.png')
+    const editorFile = await up(await createUser(['editor']), 'editor.png')
+
+    const profile = await payload.create({
+      collection: 'creator-profiles',
+      data: { displayName: 'Keeper', personas: [world.personas.photographer], photo: photo.id, _status: 'draft' } as never,
+      draft: true,
+      user: owner,
+      overrideAccess: false,
+      context: quiet,
+    })
+    await payload.update({ collection: 'creator-profiles', id: profile.id, data: { _status: 'published' } as never, draft: false, user: world.admin, overrideAccess: false, context: quiet })
+    // A reference that lives only in a pending draft still counts.
+    await payload.update({
+      collection: 'creator-profiles',
+      id: profile.id,
+      data: { samples: [{ kind: 'image', image: draftOnly.id }] } as never,
+      draft: true,
+      user: owner,
+      overrideAccess: false,
+      context: quiet,
+    })
+    const exists = async (id: number) => (await payload.count({ collection: 'media', where: { id: { equals: id } } })).totalDocs === 1
+    const owned = async () => (await payload.count({ collection: 'media', where: { uploadedBy: { equals: owner.id } } })).totalDocs
+
+    // Nothing is old enough yet.
+    expect(await deleteOrphanedUploads(payload)).toBe(0)
+    expect(await owned()).toBe(3)
+
+    // A day later only the unreferenced provider upload goes.
+    expect(await deleteOrphanedUploads(payload, Date.now() + ORPHAN_AFTER_MS + 60_000)).toBe(1)
+    expect(await exists(orphan.id)).toBe(false)
+    expect(await exists(photo.id)).toBe(true)
+    expect(await exists(draftOnly.id)).toBe(true)
+    expect(await exists(editorFile.id)).toBe(true)
+    expect(await owned()).toBe(2)
+    // Running it again finds nothing more.
+    expect(await deleteOrphanedUploads(payload, Date.now() + ORPHAN_AFTER_MS + 60_000)).toBe(0)
+  })
+
+  it('the cron route needs the secret and reports what it cleaned', async () => {
+    const { GET } = await import('@/app/(payload)/api/cron/cleanup/route')
+    expect((await GET(new Request('http://localhost/api/cron/cleanup'))).status).toBe(401)
+    expect((await GET(new Request('http://localhost/api/cron/cleanup', { headers: { authorization: 'Bearer wrong' } }))).status).toBe(401)
+    const ok = await GET(new Request('http://localhost/api/cron/cleanup', { headers: { authorization: `Bearer ${process.env.CRON_SECRET}` } }))
+    expect(ok.status).toBe(200)
+    expect(await ok.json()).toEqual({ deleted: expect.any(Number), orphanedUploads: expect.any(Number) })
+  })
+})

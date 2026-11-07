@@ -2,7 +2,7 @@ import { isAllowedSocialUrl, isAllowedVideoUrl, isSpokenLanguage, MAX_SAMPLES, S
 import { APIError, type Access, type CollectionConfig, type Where } from 'payload'
 import { isAdmin, isEditorUser, noOne } from '@/shared/payload/access'
 import { relId } from '../references'
-import { forceDraftForProviders, prepareProfile, removeListing, revalidateAfterDelete, syncListing } from '../hooks'
+import { guardProviderPublish, prepareProfile, removeListing, revalidateAfterDelete, syncListing } from '../hooks'
 
 /** Ids of profiles an owner or admin has hidden (paused or suspended); public reads exclude them. */
 async function hiddenProfileIds(req: Parameters<Access>[0]['req']): Promise<(string | number)[]> {
@@ -46,6 +46,7 @@ export const CreatorProfiles: CollectionConfig = {
     listSearchableFields: ['code', 'displayName'],
     description:
       'Publish a profile to verify it; unpublish to hide it. Pause, suspend and feature live in Creator listings and take effect at once.',
+    components: { beforeListTable: ['/modules/admin/components/CreatorProfilesNote#CreatorProfilesNote'] },
   },
   versions: { drafts: true, maxPerDoc: 25 },
   access: {
@@ -56,8 +57,8 @@ export const CreatorProfiles: CollectionConfig = {
     readVersions: ownOrEditor,
   },
   hooks: {
+    beforeOperation: [guardProviderPublish],
     beforeValidate: [prepareProfile],
-    beforeChange: [forceDraftForProviders],
     afterChange: [syncListing],
     afterDelete: [revalidateAfterDelete],
     beforeDelete: [
@@ -71,6 +72,11 @@ export const CreatorProfiles: CollectionConfig = {
     ],
   },
   fields: [
+    {
+      name: 'listingLink',
+      type: 'ui',
+      admin: { position: 'sidebar', components: { Field: '/modules/admin/components/CreatorLinks#ProfileListingLink' } },
+    },
     {
       name: 'user',
       type: 'relationship',

@@ -94,7 +94,9 @@ export async function register(_prev: AuthState, form: FormData): Promise<AuthSt
     }
     return { formError: 'auth.errors.generic', values }
   }
-  redirect({ href: safeNext(form.get('next')), locale })
+  // A new professional starts on their profile (feature 002); a `next` they came with still wins.
+  const next = safeNext(form.get('next'))
+  redirect({ href: parsed.data.accountType === 'provider' && next === '/account' ? '/account/profile' : next, locale })
 }
 
 export async function logout(form: FormData): Promise<void> {

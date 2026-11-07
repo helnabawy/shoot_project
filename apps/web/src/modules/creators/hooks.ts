@@ -6,7 +6,7 @@ import {
   type CollectionAfterChangeHook,
   type CollectionAfterDeleteHook,
   type CollectionBeforeDeleteHook,
-  type CollectionBeforeChangeHook,
+  type CollectionBeforeOperationHook,
   type CollectionBeforeValidateHook,
   type PayloadRequest,
 } from 'payload'
@@ -99,6 +99,25 @@ export const prepareProfile: CollectionBeforeValidateHook = async ({ data, origi
     }
   }
 
+  // A provider may attach only images they uploaded themselves (admins may attach any). Images already on the
+  // profile stay, so an admin-added sample never blocks the provider's later saves.
+  if (!editor && req.user && (next.photo !== undefined || next.samples !== undefined)) {
+    const rows = (Array.isArray(next.samples) ? next.samples : []) as { image?: unknown }[]
+    const wanted = new Set([relId(next.photo), ...rows.map((row) => relId(row.image))].filter((v): v is string => v !== null))
+    const original = originalDoc as { photo?: unknown; samples?: { image?: unknown }[] } | undefined
+    const already = new Set([relId(original?.photo), ...(original?.samples ?? []).map((row) => relId(row.image))].filter((v): v is string => v !== null))
+    const added = [...wanted].filter((id) => !already.has(id))
+    if (added.length) {
+      const own = await req.payload.count({
+        collection: 'media',
+        where: { and: [{ id: { in: added } }, { uploadedBy: { equals: req.user.id } }] },
+        req,
+        overrideAccess: true,
+      })
+      if (own.totalDocs !== added.length) errors.push({ path: next.samples !== undefined ? 'samples' : 'photo', message: 'creators.media.notYours' })
+    }
+  }
+
   if (errors.length) throw new ValidationError({ collection: 'creator-profiles', errors, req })
   return next
 }
@@ -119,13 +138,19 @@ async function mayAutoPublish(req: PayloadRequest, profileId: unknown): Promise<
   return Boolean(listing.docs[0]?.verifiedAt)
 }
 
-/** Providers can never publish themselves: their writes stay drafts (research §4). */
-export const forceDraftForProviders: CollectionBeforeChangeHook = async ({ data, originalDoc, req }) => {
-  if (!req.user || isEditorUser(req.user)) return data
-  if (data._status === 'published' && !(await mayAutoPublish(req, originalDoc?.id))) {
-    return { ...data, _status: 'draft' }
-  }
-  return data
+/**
+ * Providers can never publish themselves (research §4). This runs before the operation because Payload
+ * decides "draft save or live write" from the request, not from the data a hook later changes: coercing
+ * `_status` afterwards would unpublish a live profile and write the pending edits into its live row. So a
+ * provider's write is refused unless it is a draft save, or the owner of the site allows verified creators'
+ * edits to go live. The same check covers REST, where `?draft=true` is the provider's to omit.
+ */
+export const guardProviderPublish: CollectionBeforeOperationHook = async ({ args, operation, req }) => {
+  if ((operation !== 'create' && operation !== 'update') || !req.user || isEditorUser(req.user)) return args
+  const a = args as { draft?: boolean; data?: { _status?: string }; id?: string | number }
+  const wantsLive = !a.draft || a.data?._status === 'published'
+  if (wantsLive && !(await mayAutoPublish(req, a.id))) throw new APIError('creators.errors.mustBeDraft', 403, undefined, true)
+  return args
 }
 
 const CONTEXT_FLAG = 'creatorsHook'

@@ -125,7 +125,7 @@ describe('Next.js routes and pages', () => {
       await payload.create({ collection: 'rate-limits', data: { key: 'old', count: 3, windowStart: old }, context: quiet })
       await payload.create({ collection: 'rate-limits', data: { key: 'fresh', count: 1, windowStart: new Date().toISOString() }, context: quiet })
       const response = await call(`Bearer ${process.env.CRON_SECRET}`)
-      expect(await response.json()).toEqual({ deleted: 1 })
+      expect(await response.json()).toEqual({ deleted: 1, orphanedUploads: 0 })
       const left = await payload.find({ collection: 'rate-limits' })
       expect(left.docs.map((d) => d.key)).toEqual(['fresh'])
     })

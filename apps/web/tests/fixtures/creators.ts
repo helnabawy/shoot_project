@@ -65,3 +65,56 @@ export function profileView(over: Partial<ProfileView> = {}): ProfileView {
     ...over,
   }
 }
+
+import type { MyProfile, MySample, SelectableOptions } from '../../src/modules/creators/my-profile'
+
+export const selectableOptions: SelectableOptions = {
+  personas: [{ id: 1, name: 'Photographer' }, { id: 2, name: 'Videographer' }],
+  specialties: [
+    { id: 10, name: 'Portrait', personaIds: [1, 2] },
+    { id: 11, name: 'Events', personaIds: [1, 2] },
+    { id: 12, name: 'Drone work', personaIds: [2] },
+  ],
+  emirates: [
+    { id: 100, name: 'Dubai', cities: [{ id: 101, name: 'Dubai Marina' }] },
+    { id: 200, name: 'Abu Dhabi', cities: [] },
+  ],
+  languages: [{ code: 'en', name: 'English' }, { code: 'ar', name: 'Arabic' }, { code: 'ur', name: 'Urdu' }],
+}
+
+export const mySample = (n: number, over: Partial<MySample> = {}): MySample => ({
+  id: `s${n}`,
+  kind: 'image',
+  image: { id: n, url: `/api/media/file/s${n}.webp`, alt: `Sample ${n}` },
+  videoUrl: '',
+  caption: { en: `Caption ${n}`, ar: `تعليق ${n}` },
+  category: 10,
+  ...over,
+})
+
+/** A complete, live profile; override what a test cares about. */
+export function myProfile(over: Partial<MyProfile> = {}): MyProfile {
+  return {
+    id: 1,
+    code: '7K4Q2',
+    status: 'live',
+    displayName: { en: 'Sara Khan', ar: 'سارة خان' },
+    bio: { en: 'Weddings and portraits.', ar: '' },
+    personas: [1],
+    specialties: [10, 11],
+    cities: [101],
+    languages: ['en', 'ar'],
+    social: [{ platform: 'instagram', url: 'https://instagram.com/sara' }],
+    photo: null,
+    samples: [mySample(1), mySample(2)],
+    reviewNote: '',
+    submittedAt: null,
+    verifiedAt: '2026-11-01T08:00:00.000Z',
+    hasNewerDraft: false,
+    isPublished: true,
+    paused: false,
+    missing: [],
+    autoPublish: false,
+    ...over,
+  }
+}

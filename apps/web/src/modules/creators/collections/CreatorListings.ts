@@ -16,6 +16,7 @@ export const CreatorListings: CollectionConfig = {
     defaultColumns: ['profile', 'active', 'suspended', 'featured', 'submittedAt', 'verifiedAt'],
     description:
       'Standing of a creator profile. Suspend and Feature take effect at once and never publish pending edits; to verify a profile, publish it in Creator profiles.',
+    components: { beforeListTable: ['/modules/admin/components/CreatorListingsNote#CreatorListingsNote'] },
   },
   access: {
     read: isEditorOrOwner('user'),
@@ -25,6 +26,11 @@ export const CreatorListings: CollectionConfig = {
   },
   hooks: { afterChange: [revalidateTagAfterChange('creators')] },
   fields: [
+    {
+      name: 'profileLink',
+      type: 'ui',
+      admin: { position: 'sidebar', components: { Field: '/modules/admin/components/CreatorLinks#ListingProfileLink' } },
+    },
     {
       name: 'profile',
       type: 'relationship',

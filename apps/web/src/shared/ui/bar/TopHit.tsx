@@ -35,6 +35,7 @@ export function TopHit({
   className,
   name,
   value,
+  form,
   onClick,
 }: {
   label: ReactNode
@@ -47,6 +48,8 @@ export function TopHit({
   className?: string
   name?: string
   value?: string
+  /** The id of the form this button submits, when it sits outside that form's element. */
+  form?: string
   /** Makes it a plain button that moves the flow on instead of submitting (FR-064). */
   onClick?: () => void
 }) {
@@ -71,6 +74,7 @@ export function TopHit({
       aria-busy={pending || undefined}
       name={name}
       value={value}
+      form={form}
       className={cx(topHitClass, className)}
     >
       <Inner label={label} glyph={glyph} hint={hint} />

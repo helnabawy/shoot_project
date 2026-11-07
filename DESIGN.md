@@ -135,6 +135,8 @@ spacing:
   gallery-gap: "8px"
   column: "680px"
   auth-column: "480px"
+  account-column: "560px"
+  icon-button: "44px"
 components:
   brief-bar:
     backgroundColor: "{colors.frosted-panel}"
@@ -146,9 +148,6 @@ components:
     textColor: "{colors.glass-ink}"
     rounded: "{rounded.panel}"
     width: "{spacing.column}"
-  options-toggle:
-    rounded: "{rounded.row}"
-    size: "44px"
   result-row:
     textColor: "{colors.graphite-ink}"
     typography: "{typography.row}"
@@ -239,6 +238,42 @@ components:
   key-hint:
     rounded: "{rounded.key-hint}"
     padding: "2px 6px"
+  check-tile:
+    backgroundColor: "{colors.tile-stone}"
+    textColor: "{colors.tile-ink}"
+    rounded: "{rounded.tile}"
+    size: "30px"
+  check-tile-checked:
+    backgroundColor: "{colors.selection-blue}"
+    textColor: "{colors.on-accent}"
+    rounded: "{rounded.tile}"
+    size: "30px"
+  check-row-checked:
+    backgroundColor: "{colors.selected-row}"
+    textColor: "{colors.graphite-ink}"
+    rounded: "{rounded.row}"
+    padding: "7px 10px"
+    height: "44px"
+  sample-row-button:
+    textColor: "{colors.graphite-ink}"
+    rounded: "{rounded.row}"
+    size: "{spacing.icon-button}"
+  sample-row-thumb:
+    backgroundColor: "{colors.tile-stone}"
+    textColor: "{colors.tile-ink}"
+    rounded: "{rounded.photo-tile}"
+    size: "44px"
+  pause-confirm-button:
+    backgroundColor: "{colors.tile-stone}"
+    textColor: "{colors.graphite-ink}"
+    rounded: "{rounded.row}"
+    padding: "0 16px"
+    height: "44px"
+  review-note:
+    backgroundColor: "{colors.attention-peach}"
+    textColor: "{colors.on-attention}"
+    rounded: "{rounded.message}"
+    padding: "8px 12px"
 ---
 
 # Design System: Shoot Project
@@ -247,7 +282,7 @@ components:
 
 **Creative North Star: "The Brief Bar"**
 
-The page is one panel the audience already knows how to use: a macOS Spotlight / Quick Actions bar. A single frosted panel floats on a warm stone ground; the brief is the search field, the options fold beneath it as grouped result rows, and the Top Hit, the one selection-blue row, is the shoot. The one place a picture sits behind the interface is the landing hero: a full-screen stage, the CMS hero photograph under a theme scrim (or an empty studio sweep until one exists), with the bar floating over it as glass. Everywhere else nothing is painted onto the page to signal "photography", and nowhere is there a serif headline, a booking widget, or a ticket or signage costume. The world is the interface.
+The page is one panel the audience already knows how to use: a macOS Spotlight / Quick Actions bar. A single frosted panel floats on a warm stone ground; the brief is the search field, the asked step's options list beneath it as grouped result rows, and the Top Hit, the one selection-blue row, is the shoot. The one place a picture sits behind the interface is the landing hero: a full-screen stage, the CMS hero photograph under a theme scrim (or an empty studio sweep until one exists), with the bar floating over it as glass. Everywhere else nothing is painted onto the page to signal "photography", and nowhere is there a serif headline, a booking widget, or a ticket or signage costume. The world is the interface.
 
 Density is Spotlight density: identical 44 px row rhythm so the whole brief reads in one sweep, a 30 px glyph tile leading every row (a 44 px photo tile where the row is a person), quiet state text or a key hint trailing it. Below the fold the same grammar continues on the bare ground: rows separated by hairlines, without a panel. Warmth comes from the stone ground and warm greys, premium from restraint: system type at zero font bytes, one accent, and outside the hero stage one shadow and one gradient. Dark ("the phone at night") is a first-class rendering, not an inversion.
 
@@ -265,6 +300,8 @@ The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingu
 
 ### Direction history
 **2026-11-07 (owner-directed).** The owner asked for three changes explicitly. (1) The landing hero became a full-screen stage: the CMS photograph under a theme scrim, or a CSS studio sweep until a photo exists, with the CMS headline as the only visible title above the bar; the other-language headline line and the subheadline are no longer shown. This retires "no moody photo hero" and "nothing painted on the page" for the hero only. (2) The bar gained a glass tone for that stage, which brings its own sheen, inset highlight, edge and deeper shadow; the One Shadow and One Gradient rules now name these as hero-only exceptions. (3) The brief builder's options folded into a drawer under the Top Hit; the same day the owner replaced the drawer with the step-by-step search of FR-067 (nothing pre-filled, one list per step).
+
+**2026-11-07 (feature 002, US3).** The provider's profile editor at `/account/profile` was recorded from the shipped build: Status Bar, Localised Field Pair, Check Row, Sample Row and Closing Bar. No new colour, shadow or type step was introduced; every part is the existing row, tile, field and Top Hit grammar.
 
 ## Colors
 
@@ -336,8 +373,10 @@ Lists on the ground (how it works, why, specialties, FAQ, and the creator networ
 
 The profile page (`/creators/{code}`) is the same 680 px column: the identity panel (12 px gutter, 32 px of top padding, 56 px from 640 px), the bio at 60ch on the ground, then a "Work" section holding the portfolio grid. The booking page (`/book/{code}`) is the Headline, one line of intro and the Brief Bar. The floating WhatsApp button steps aside while an element marked `data-floating-hide` is on screen: the hero bar, the profile panel and the booking bar.
 
+The provider's profile editor (`/account/profile`) is the account's 560 px column with 12 px gutters, the Headline, then the status bar, then sections on the ground (Basics, Specialties and places, Links, Samples; 48 px between sections, 40 px under the status bar) and the closing bar last. A section is a Section Title over a `-mx-3` block bordered top and bottom by hairlines, its fields divided by hairlines; the block bleeds 12 px past the gutter so row tints reach the column edge. Localised pairs sit side by side from 640 px and stack below it; the languages checklist goes two columns from 640 px.
+
 ### Named Rules
-**The Two Panels Rule.** A page shows at most two bar panels: the primary bar and one smaller (`sm`, 15 px) secondary bar such as the creator invitation. The profile page's identity panel and the booking page's bar are each that page's one panel. The glass tone is the primary bar dressed for the hero stage, not an extra panel. Everything else is rows on the ground.
+**The Two Panels Rule.** A page shows at most two bar panels: the primary bar and one smaller (`sm`, 15 px) secondary bar such as the creator invitation. The profile page's identity panel and the booking page's bar are each that page's one panel. The provider editor is the exception that proves the count: its status bar and its closing bar are its two `sm` panels, and everything between them is rows on the ground. The glass tone is the primary bar dressed for the hero stage, not an extra panel. Everything else is rows on the ground.
 
 **The Logical CSS Rule.** Only logical properties and utilities: `ms/me/ps/pe`, `start/end`, `text-start/text-end`, `border-s/e`, `inset-inline`. `scripts/check-logical-css.sh` fails the build on any physical left/right in site code. Icons that point along the reading direction (forward, chevron, log out) flip with `rtl:-scale-x-100`; vertical ones never flip.
 
@@ -402,8 +441,23 @@ On `/book/{code}` the Brief Bar leads with a set row for the creator: selection 
 ### Result Groups
 A group label (Group Label style, 10 px top, 4 px bottom padding) then rows. When it is a choice it is a `fieldset` whose legend is the label, so screen readers name the radio group. A group-level message sits between label and rows.
 
-### Options Drawer
+### Step Search
 With JavaScript only the asked step's result group shows under the field (its position, e.g. "2 of 5", sits in the group heading); typing searches every step's options at once, and Return picks the first match. A single choice advances in one tap, a step that takes several choices (or a number) advances with a Continue row, and an optional step offers a skip row such as "any date". Changing the professional type sends the visitor back to any step whose answer it no longer offers. Cmd+K / Ctrl+K anywhere on the page (matched by physical key so it works on an Arabic layout) focuses the field. Escape clears a typed search first, then leaves a reopened step. A validation error reopens the step it concerns. Without JavaScript every group is shown at once and the bar is the plain form.
+
+### Status Bar (provider editor)
+The first of the editor's two `sm` panels, under the Headline. One result row holds the state: a drawn 15 px icon in the glyph tile (person for draft, calendar for in review and live with changes, tick for live, close for hidden and suspended), the state name semibold, and under it one Meta sentence of what the public sees. The row is `set` (blue tint) when live, `attention` when hidden or suspended, `open` otherwise. When the admin left a note it follows as a peach `role="note"` block (6 px corners, 14 px text, a 12 px semibold "Review note" lead). A code row (tag tile, "Code", the code isolated left-to-right in the trailing slot) appears once the profile has one. After a hairline sit the actions as ordinary rows: "View my public profile" (forward tile) only while a public version exists; for a live profile "Hide my profile" as a native `details`/`summary` disclosure that opens in place to one 14 px sentence and one tile-filled 44 px confirm button (hiding asks once, no modal, works without JavaScript); for a hidden profile "Show my profile" as one tap with no question; for a suspended profile only a WhatsApp row. The bar offers no blue row: its job is to say what the public sees, not to ask for anything.
+
+### Localised Field Pair
+One field in two languages as a `fieldset` whose `legend` is the field name (Meta, 13 px medium, mute). English and Arabic inputs sit side by side from 640 px and stack below it, the page's language first. Each label is only the language's name, written in that language ("English", "العربية", Meta 13 px); each input carries its own `lang` and `dir`, so Arabic is right-to-left and English left-to-right whatever the page direction. The inputs are the standard 44 px field (a bio is a four-row textarea, 96 px minimum); an error swaps the stroke to on-attention at 50% and prints its sentence under that input. The sentence "Arabic is optional" appears once, as Meta under the legend of the display name and the bio only, and is tied to the Arabic inputs with `aria-describedby`; sample captions and every other pair do not repeat it. Maximum lengths are enforced on the input (name 60, bio 600, caption 140).
+
+### Check Row
+A choice as a Result Row over a visually hidden checkbox (a plain form without JavaScript). The 30 px lead tile is bordered in mute and filled tile stone while unchecked, with its tick hidden; checked, the border goes, the tile fills selection blue and the white drawn tick shows, the row takes the selected tint (12% light, 24% dark) and the label turns semibold, deepening on hover. Rows live in a `fieldset` whose legend is the group label. A city is a Check Row indented 20 px (`ms-5`) under its emirate's own row; the languages list runs two columns from 640 px; a specialty whose professional type is not chosen is hidden, not disabled. Choice reads in blue tint and the tick, never in a green or a badge, so The Material Not Icons Rule holds.
+
+### Sample Row
+A list item in the Samples block, hairline-divided, 12 px of block padding. Top line: the 44 px Photo Tile (the sample's image, or its number as initials), "Sample n" in 16 px semibold over a Meta line naming image or video, then three 44 px icon buttons on the end side, move up, move down and remove, each a drawn 18 px icon (chevrons rotated and mirrored so up stays up in Arabic, and a close mark), 9 px corners, an ink tint at 6% on hover, the focus outline, 40% opacity when disabled. The first row's up and the last row's down are `invisible` so the column holds still. Each button is its own one-button form (`ActionForm`) with an accessible name, never a shared form, so it works without JavaScript; when sent it says what it did through one visually hidden `role="status"` live region owned by the section ("Moved to position 2", "Sample removed"). A failure prints one peach sentence beside the button. Below the top line sit the caption pair and the specialty select (13 px mute label, 44 px select, specialties limited to the types the provider chose), which belong to the single profile form through the HTML `form` attribute, not to the row: the closing action saves them. Adding, moving and removing save at once; captions and specialties wait for the closing action. "Add a sample" is the separate form beneath the list: an image/video choice, the file or URL controls, its own caption pair, the select and one tile-filled 44 px "Add" button (not blue), and an empty list is one plain row, not a frame.
+
+### Closing Bar
+The editor's second `sm` panel, last on the page. A feedback line first (14 px, mute; peach text on error; `aria-live="polite"`) that says what is missing ("Add a city and a language to send for review."), what just happened ("Saved", "Sent for review") or "Please fix the fields marked below". Then a "Top Hit" group with exactly one blue row, chosen by state: "Save and send for review" when the profile is complete and either a draft or live with changes; "Save and publish" when the site publishes a verified creator's edits at once; "Save" otherwise. When the blue row sends for review, "Save without sending" follows as an ordinary row with a tick tile. The Top Hit and its twin submit the profile form from outside it with the `form` attribute and carry `name="intent"`. While pending the Top Hit label changes to a pending word. On a failed save, focus moves to the first field with `aria-invalid="true"` (or its error sentence is scrolled to centre when none is focusable), and the page does not move otherwise: success confirms in the feedback line, never a toast.
 
 ### Top Hit
 The one selection-blue row: 50 px minimum, 9 px corners, inset 8 px, 17 px semibold white text, an accent tile (white at 20%) holding a drawn forward arrow, and a Return key hint trailing it. Hover brightens it by 10%; it is a submit button in the brief and a link elsewhere. A "Top Hit" group label precedes it, as in Spotlight.
@@ -448,6 +502,10 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Do** show portfolios as a uniform 4:5 grid at the tile radius with 8 px gaps and let the images carry themselves.
 - **Do** answer a step the creator fixes, lock it, and leave it out of step counts.
 - **Do** keep the bar a working plain form without JavaScript: every list shows at once, and the search input and key hints are hidden.
+- **Do** give a form one closing bar with one Top Hit per state, and make every other action on the page an ordinary row; fields that sit away from their form join it with the HTML `form` attribute rather than nesting forms.
+- **Do** ask a destructive or visibility change once, in place, with a native disclosure; make the way back one tap.
+- **Do** label a localised pair by the language's own name, give each input its own `lang` and `dir`, and say "Arabic is optional" once under the legend of the two fields it concerns.
+- **Do** give icon-only controls a 44 px target, an accessible name, and a polite announcement of what they did.
 
 ### Don't:
 - **Don't** load a webfont or a second type family.
@@ -461,4 +519,5 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Don't** paint the subject onto the page outside the hero stage, and don't costume it anywhere: no serif display, ticket, signage or booking-widget costume.
 - **Don't** add captions, hover zoom, overlays or badges to portfolio images.
 - **Don't** letter-space Arabic headings, and don't leave Arabic trailing slots at 13 px.
+- **Don't** use a modal, a toast, a progress ring, a completion percentage or a stepper in the editor; the feedback line and the status bar say where the profile stands.
 - **Don't** invent proof: no testimonials, logos, counts or ratings that do not exist.

@@ -1,4 +1,4 @@
-import type { PayloadRequest, Where } from 'payload'
+import type { Payload, PayloadRequest, Where } from 'payload'
 
 /**
  * How many creator profiles match `where` in their published row OR their latest draft, so a
@@ -6,8 +6,13 @@ import type { PayloadRequest, Where } from 'payload'
  * collection configs import it directly because the module's index pulls in server-only queries.
  */
 export async function countProfileReferences(req: PayloadRequest, where: Where): Promise<number> {
-  const published = await req.payload.count({ collection: 'creator-profiles', where, req, overrideAccess: true })
-  const latest = await req.payload.find({
+  return countReferences(req.payload, where, req)
+}
+
+/** The same count without a request, for jobs that run outside one (the cleanup cron). */
+export async function countReferences(payload: Payload, where: Where, req?: PayloadRequest): Promise<number> {
+  const published = await payload.count({ collection: 'creator-profiles', where, req, overrideAccess: true })
+  const latest = await payload.find({
     collection: 'creator-profiles',
     where,
     draft: true,

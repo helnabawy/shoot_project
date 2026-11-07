@@ -121,21 +121,22 @@ describe('CP-FR-001 / CP-FR-002 access matrix (Principle VII)', () => {
     await expect(payload.update({ collection: 'creator-listings', id: listing.id, data: { active: false }, user: other, overrideAccess: false })).rejects.toThrow()
   })
 
-  it('REST bypass: a provider asking to publish stays a draft unless auto-publish applies', async () => {
+  it('REST bypass: a provider cannot publish, or write live, unless auto-publish applies; nothing changes', async () => {
     const payload = await getTestPayload()
     const fresh = await makeProvider(world)
     const id = (await createDraft(world, fresh)).id
-    await payload.update({
-      collection: 'creator-profiles',
-      id,
-      data: { _status: 'published', displayName: 'Sneaky' } as never,
-      draft: false,
-      user: fresh,
-      overrideAccess: false,
-      context: quiet,
-    })
+    const attempt = (data: Record<string, unknown>, draft: boolean) =>
+      payload.update({ collection: 'creator-profiles', id, data: data as never, draft, user: fresh, overrideAccess: false, context: quiet })
+    await expect(attempt({ _status: 'published', displayName: 'Sneaky' }, false)).rejects.toThrow(/mustBeDraft/)
+    await expect(attempt({ _status: 'published', displayName: 'Sneaky' }, true)).rejects.toThrow(/mustBeDraft/)
+    await expect(attempt({ displayName: 'Sneaky' }, false)).rejects.toThrow(/mustBeDraft/)
     expect((await publicProfiles(world)).docs.map((d) => d.displayName)).not.toContain('Sneaky')
     const mine = await payload.findByID({ collection: 'creator-profiles', id, draft: true, user: fresh, overrideAccess: false })
     expect(mine._status).toBe('draft')
+    expect(mine.displayName).not.toBe('Sneaky')
+    // Creating a profile as a live document is refused too.
+    await expect(
+      payload.create({ collection: 'creator-profiles', data: { displayName: 'Live Create', personas: [world.personas.photographer], _status: 'published' } as never, user: await makeProvider(world), overrideAccess: false, context: quiet }),
+    ).rejects.toThrow(/mustBeDraft/)
   })
 })

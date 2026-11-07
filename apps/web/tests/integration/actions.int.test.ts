@@ -118,10 +118,11 @@ describe('server actions', () => {
       expect(state?.errors).toEqual({ persona: 'auth.errors.personaInactive' })
     })
 
-    it('FR-020 a provider with an active persona is stored with it', async () => {
-      await expectRedirect(() =>
+    it('FR-020 a provider with an active persona is stored with it, and starts on their profile', async () => {
+      const target = await expectRedirect(() =>
         register(undefined, form({ name: 'Lu', email: 'lu@example.test', password: 'password-123', accountType: 'provider', persona: 'videographer' })),
       )
+      expect(target).toEqual({ href: '/account/profile', locale: 'en' })
       const payload = await getTestPayload()
       const { docs } = await payload.find({ collection: 'users', where: { email: { equals: 'lu@example.test' } }, depth: 1 })
       expect((docs[0]?.persona as { slug?: string } | null)?.slug).toBe('videographer')
