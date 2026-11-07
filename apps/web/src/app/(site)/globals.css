@@ -395,7 +395,8 @@ html.js .native-picker::-webkit-calendar-picker-indicator {
 @keyframes step-track-end {
   from {
     opacity: 0;
-
+  }
+}
 /*
  * Quotation print layout (feature 003, research §9): "Download PDF" is the browser's Save as PDF.
  * A4, black on white in either theme, only the quotation document; lines never split across pages.

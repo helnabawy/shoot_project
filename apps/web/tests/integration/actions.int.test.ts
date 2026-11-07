@@ -27,6 +27,8 @@ vi.mock('next/navigation', () => ({
     throw new Redirect(url)
   },
 }))
+// The brief action translates its WhatsApp lines (reference, creator): read the real message files.
+vi.mock('next-intl/server', async () => await import('../setup/server-intl'))
 vi.mock('@/i18n/navigation', () => ({
   redirect: (arg: unknown) => {
     throw new Redirect(arg)
