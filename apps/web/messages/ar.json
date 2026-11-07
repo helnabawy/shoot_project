@@ -110,8 +110,11 @@
       "emailTaken": "هذا البريد مسجّل بالفعل. سجّل الدخول بدلاً من ذلك.",
       "invalid": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
       "locked": "محاولات كثيرة. حاول مرة أخرى بعد 15 دقيقة.",
-      "generic": "حدث خطأ. حاول مرة أخرى."
-    }
+      "generic": "حدث خطأ. حاول مرة أخرى.",
+      "acceptTerms": "يرجى الموافقة على الشروط وسياسة الخصوصية لإنشاء حساب."
+    },
+    "acceptTerms": "أوافق على <terms>الشروط والأحكام</terms> و<privacy>سياسة الخصوصية</privacy>.",
+    "acceptTermsWithProfessional": "أوافق على <terms>الشروط والأحكام</terms> و<professional>شروط المحترفين</professional> و<privacy>سياسة الخصوصية</privacy>."
   },
   "account": {
     "title": "حسابي",
@@ -140,11 +143,17 @@
   "notFound": {
     "title": "الصفحة غير موجودة",
     "body": "الصفحة التي تبحث عنها غير موجودة.",
-    "home": "العودة إلى البداية"
+    "home": "العودة إلى البداية",
+    "removedTitle": "تمت إزالة هذه الصفحة",
+    "removedBody": "كانت هنا من قبل لكنها لم تعد موجودة. ابدأ من أحد هذه الخيارات.",
+    "brief": "ابدأ طلباً",
+    "guides": "اقرأ الأدلة",
+    "whatsapp": "اسألنا على واتساب"
   },
   "footer": {
     "rights": "جميع الحقوق محفوظة.",
-    "social": "تابعنا"
+    "social": "تابعنا",
+    "legal": "قانوني"
   },
   "creators": {
     "directory": {
@@ -334,5 +343,48 @@
       "samplesTitle": "أعمال حديثة",
       "sampleBy": "{caption}، بعدسة {name}"
     }
+  },
+  "legal": {
+    "versionLine": "الإصدار {version} · ساري اعتباراً من {date}",
+    "versionPeriod": "الإصدار {version} · ساري من {from} حتى {until}",
+    "stillInForce": "الآن",
+    "appliesFrom": "سيسري الإصدار {version} اعتباراً من {date}. حتى ذلك الحين يبقى هذا الإصدار ساري المفعول.",
+    "arabicUnavailable": "النص العربي غير متاح بعد. النص الإنجليزي أدناه هو الإصدار الساري.",
+    "englishGoverns": "عند اختلاف النصين العربي والإنجليزي يُعتد بالنص الإنجليزي.",
+    "previousVersions": "الإصدارات السابقة",
+    "allVersions": "كل الإصدارات",
+    "versionsTitle": "{title}: كل الإصدارات",
+    "versionLabel": "الإصدار {version}",
+    "period": "من {from} حتى {until}",
+    "backToCurrent": "العودة إلى الإصدار الساري",
+    "professionalNote": "العمل عبر الموقع يعني الالتزام بـ"
+  },
+  "guides": {
+    "title": "الأدلة",
+    "titlePaged": "الأدلة، الصفحة {page}",
+    "intro": "إجابات واضحة حول كتابة الطلب والحجز والتحضير للتصوير.",
+    "categoryTitle": "الأدلة: {name}",
+    "authorTitle": "أدلة {name}",
+    "categories": "المواضيع",
+    "all": "الكل",
+    "empty": "لا توجد أدلة بعد.",
+    "pages": "صفحات الأدلة",
+    "previous": "السابق",
+    "next": "التالي",
+    "pageOf": "الصفحة {page} من {pages}",
+    "feed": "تابع الأدلة عبر RSS",
+    "feedTitle": "الأدلة",
+    "by": "بقلم {name}",
+    "readingTime": "قراءة {minutes} د",
+    "availableInEnglish": "متاح بالإنجليزية",
+    "related": "مزيد من الأدلة",
+    "ctaTitle": "جاهز لكتابة طلبك؟",
+    "ctaBody": "صِف التصوير في سطر واحد ونردّ عليك عبر واتساب.",
+    "ctaBrief": "ابدأ طلباً",
+    "ctaWhatsApp": "راسلنا على واتساب"
+  },
+  "intent": {
+    "creators": "{count, plural, one {محترف واحد يمكنه تنفيذ ذلك} other {# محترفين يمكنهم تنفيذ ذلك}}",
+    "faq": "أسئلة يطرحها الناس"
   }
 }

@@ -25,8 +25,11 @@ Feature 001 is `specs/001-landing-auth-cms/` (planned, 106 tasks, T001–T107; T
 is `specs/002-creator-profiles/` (creator profiles and directory: `/creators`, `/creators/{code}`,
 `/book/{code}`, `/work/{specialty}`, the provider editor at `/account/profile`; module
 `apps/web/src/modules/creators/`, rules in `packages/domain/src/creators/`, test-id prefix `CP-`;
-implemented on this branch, open items in its `tasks.md`). The shootix.ae feature map and drafts for
-003–005 are in `specs/ROADMAP.md`.
+implemented on this branch, open items in its `tasks.md`). Feature 005 is
+`specs/005-marketing-pages/` (editor-built pages, versioned legal documents, guides with RSS, `/hire/…`
+intent pages, not-found/removed: modules `apps/web/src/modules/{pages,legal,guides}/`, rules in
+`packages/domain/src/pages/`, test-id prefix `MP-`; implemented on this branch, open items in its
+`tasks.md`). The shootix.ae feature map and drafts for 003 and 004 are in `specs/ROADMAP.md`.
 
 ## Stack (binding, see constitution "Technology Stack & Constraints")
 
@@ -86,7 +89,7 @@ pnpm db:migrate                   # apply committed migrations
 pnpm seed                         # default bilingual content + admin from .env
 pnpm dev                          # http://localhost:3000, admin at /admin
 pnpm typecheck && pnpm lint && pnpm test
-pnpm check:scenarios              # every quickstart scenario has a test named with its CP- id
+pnpm check:scenarios              # every quickstart scenario has a test named with its CP-/MP- id
 pnpm test:coverage                # domain 100 %, app >= 80 %
 pnpm build && pnpm test:e2e       # or BASE_URL=http://localhost:3100 against a running server
 pnpm db:migration:create <name>   # after any schema change; CI fails on drift

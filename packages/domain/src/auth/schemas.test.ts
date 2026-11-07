@@ -6,10 +6,22 @@ const valid = {
   email: 'Mariam@Example.COM ',
   password: 'correct-horse',
   accountType: 'seeker',
+  acceptTerms: 'on',
 }
 
 const firstMessage = (r: { success: boolean; error?: { issues: { message: string; path: PropertyKey[] }[] } }) =>
   r.error?.issues[0]
+
+describe('MP-US2-S2 acceptance of the legal documents', () => {
+  it('refuses registration without the acceptance checkbox, and with anything but "on"', () => {
+    for (const acceptTerms of [undefined, '', 'off', 'true']) {
+      const result = registerSchema.safeParse({ ...valid, acceptTerms })
+      expect(result.success).toBe(false)
+      expect(result.error?.issues[0]).toMatchObject({ message: 'auth.errors.acceptTerms', path: ['acceptTerms'] })
+    }
+    expect(registerSchema.safeParse(valid).success).toBe(true)
+  })
+})
 
 describe('FR-019 registration schema', () => {
   it('US4-S1 accepts a valid seeker and normalises the email', () => {

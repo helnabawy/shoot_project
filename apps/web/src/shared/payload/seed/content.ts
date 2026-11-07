@@ -133,6 +133,7 @@ export const siteSettings = {
   creatorCodePrefix: 'CR',
   autoPublishEdits: false,
   directoryPageSize: 24,
+  footerGroups: [{ key: 'company', label: { en: 'Company', ar: 'الشركة' } }],
 }
 
 export const BRIEF_SENTENCE: L = {

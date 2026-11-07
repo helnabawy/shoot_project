@@ -76,7 +76,7 @@ export function RenderBlocks({
           case 'logoCloud':
             return <LogoCloud key={key} block={block} />
           case 'richText':
-            return <RichTextSection key={key} block={block} />
+            return <RichTextSection key={key} block={block} locale={context.locale} />
           case 'callToAction':
             return (
               <CallToAction

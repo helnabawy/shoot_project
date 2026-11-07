@@ -1,6 +1,7 @@
 import { isE164, normaliseE164 } from '@shoot/domain/contact'
 import type { GlobalConfig } from 'payload'
 import { anyone, isAdmin } from '@/shared/payload/access'
+import { validateSlug } from '@/shared/payload/fields/slug'
 import { revalidateTagAfterChange } from '@/shared/payload/hooks/revalidate'
 
 const normalisePhone = ({ value }: { value?: unknown }) =>
@@ -101,6 +102,36 @@ export const SiteSettings: GlobalConfig = {
               fields: [
                 { name: 'seekerLabel', type: 'text', localized: true },
                 { name: 'providerLabel', type: 'text', localized: true },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Footer',
+          fields: [
+            {
+              name: 'footerGroups',
+              type: 'array',
+              maxRows: 4,
+              admin: {
+                description:
+                  'Up to four headings in the footer. A page joins a group in its own Navigation settings. The legal links (Terms, Privacy) are always shown.',
+              },
+              validate: (rows: unknown) => {
+                const keys = ((rows ?? []) as { key?: string }[]).map((r) => r.key).filter(Boolean)
+                return new Set(keys).size === keys.length || 'Each footer group needs its own key.'
+              },
+              fields: [
+                { type: 'row', fields: [
+                  {
+                    name: 'key',
+                    type: 'text',
+                    required: true,
+                    validate: validateSlug,
+                    admin: { description: 'Identifier pages refer to, e.g. "company". Renaming it takes its pages out of the footer until they are placed again.' },
+                  },
+                  { name: 'label', type: 'text', required: true, localized: true },
+                ] },
               ],
             },
           ],

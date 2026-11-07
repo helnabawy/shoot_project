@@ -1,6 +1,9 @@
 import type { CollectionSlug, Payload } from 'payload'
 import { briefSlots, categories, landingPage, locations, optionSets, personas, siteSettings } from './content'
 import { demoPassword, seedDemoCreators } from './demo-creators'
+import { seedDemoGuides } from './demo-guides'
+import { seedLegalDocuments } from './legal'
+import { seedStudiosPage } from './pages'
 import { pickLocale, withRowIds } from './localize'
 
 const context = { disableRevalidate: true }
@@ -25,6 +28,8 @@ export interface SeedOptions {
   log?: (message: string) => void
   /** Local/e2e only: also create demo creators (refused on non-local hosts). */
   demoCreators?: boolean
+  /** Local/e2e only: also create demo guides and an intent page (refused on non-local hosts). */
+  demoGuides?: boolean
   siteUrl?: string
   demoPassword?: string
 }
@@ -124,7 +129,14 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
   })
   log('Landing page published')
 
+  await seedStudiosPage(payload, log)
+  await seedLegalDocuments(payload, { siteUrl: options.siteUrl ?? process.env.NEXT_PUBLIC_SITE_URL, log })
+
   if (options.demoCreators) {
     await seedDemoCreators(payload, { siteUrl: options.siteUrl, password: demoPassword(options.demoPassword), log })
+  }
+
+  if (options.demoGuides) {
+    await seedDemoGuides(payload, { siteUrl: options.siteUrl, log })
   }
 }

@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server'
+import Link from 'next/link'
+import { getLegalForRegistration } from '@/modules/legal'
 import { requireUser } from '@/modules/auth/session'
 import { whatsappHref } from '@/modules/contact/whatsapp'
 import { formatCode, getMyProfileView } from '@/modules/creators'
@@ -28,12 +30,15 @@ export default async function MyProfilePage({ params }: Props) {
   // Only professional accounts have a profile; everyone else gets the same page as any unknown address.
   if (user.accountType !== 'provider') notFound()
 
-  const [t, view, settings, messages] = await Promise.all([
+  const [t, tl, view, settings, messages, legal] = await Promise.all([
     getTranslations({ locale, namespace: 'creators.form' }),
+    getTranslations({ locale, namespace: 'legal' }),
     getMyProfileView(user, locale),
     getSiteSettings(locale),
     getMessages(),
+    getLegalForRegistration(locale),
   ])
+  const professionalTerms = legal['professional-terms']
   const { profile, options, defaults } = view
   const displayCode = profile?.code ? await formatCode(profile.code, locale) : null
   const publicNow = profile && (profile.status === 'live' || profile.status === 'live-with-changes')
@@ -67,6 +72,14 @@ export default async function MyProfilePage({ params }: Props) {
           }
         />
       </NextIntlClientProvider>
+      {professionalTerms ? (
+        <p className="mt-6 px-1 text-[14px] text-mute" data-testid="professional-terms-note">
+          {tl('professionalNote')}{' '}
+          <Link href={localizeHref(professionalTerms.href, locale)} className="font-medium text-ink underline">
+            {professionalTerms.label}
+          </Link>
+        </p>
+      ) : null}
     </section>
   )
 }

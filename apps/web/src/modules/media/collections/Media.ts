@@ -4,6 +4,7 @@ import { refuseDeleteWhileReferenced } from '@/modules/personas/collections/guar
 import { anyone, isEditorField, isEditorUser, noOne } from '@/shared/payload/access'
 import { revalidateTagAfterChange, revalidateTagAfterDelete } from '@/shared/payload/hooks/revalidate'
 import { consumeAllowance, visitorKey } from '@/shared/payload/rate-limit'
+import { mediaContentReferences } from '@/modules/guides/references'
 import { countProfileReferences } from '@/modules/creators/references'
 
 const createMedia: Access = ({ req }) =>
@@ -52,7 +53,8 @@ export const Media: CollectionConfig = {
     beforeDelete: [
       refuseDeleteWhileReferenced(async ({ id, req }) => {
         const profiles = await countProfileReferences(req, { or: [{ photo: { equals: id } }, { 'samples.image': { equals: id } }] })
-        return profiles ? [`${profiles} creator profile(s)`] : []
+        const content = await mediaContentReferences(req, id)
+        return [...(profiles ? [`${profiles} creator profile(s)`] : []), ...content]
       }),
     ],
   },

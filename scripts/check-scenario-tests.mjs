@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // SC-004 / Principle III: every scenario in a feature's quickstart mapping table has its tests.
-// Fails when a test file named in the table is missing, or does not carry the row's `CP-…` id in a
-// test or describe name. Usage: node scripts/check-scenario-tests.mjs [specs/002-creator-profiles/quickstart.md]
+// Fails when a test file named in the table is missing, or does not carry the row's id (`CP-…`, `MP-…`) in a
+// test or describe name (any two- or three-letter prefix: `CP-`, `MP-`). Usage: node scripts/check-scenario-tests.mjs [specs/002-creator-profiles/quickstart.md]
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 
@@ -36,7 +36,7 @@ let checked = 0
 
 for (const row of rows) {
   const cells = row.split('|').slice(1, -1).map((c) => c.trim())
-  const id = cells[0]?.match(/^CP-[A-Z0-9]+(?:-[A-Z0-9]+)*/)?.[0] ?? null
+  const id = cells[0]?.match(/^[A-Z]{2,3}-[A-Z0-9]+(?:-[A-Za-z0-9]+)*/)?.[0] ?? null
   const refs = [...(cells[2] ?? '').matchAll(/`([^`]+)`/g)].map((m) => m[1])
   for (const ref of refs) {
     if (ref.includes('*')) continue // "all cp-*.spec.ts": a pattern, not a file

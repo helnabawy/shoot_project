@@ -25,3 +25,14 @@ export const uniqueEmail = (prefix: string) => `${prefix}-${Date.now()}-${Math.f
 export async function useEnglish(page: Page) {
   await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'en', url: page.url().startsWith('http') ? page.url() : (process.env.BASE_URL ?? 'http://localhost:3000') }])
 }
+
+/** Specs of feature 005: pin the language the assertions are written in, and run only where the project fits. */
+export async function inEnglish(page: Page, info: { project: { name: string } }, skip: (condition: boolean, reason: string) => void) {
+  skip(info.project.name === 'ar-mobile', 'English wording; the Arabic tests of this spec cover ar-mobile')
+  await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'en', url: process.env.BASE_URL ?? 'http://localhost:3000' }])
+}
+
+/** Axe needs JavaScript; the no-JS project checks behaviour instead. */
+export async function a11y(page: Page, info: { project: { name: string } }) {
+  if (info.project.name !== 'nojs') await expectNoSeriousA11yIssues(page)
+}

@@ -5,6 +5,7 @@ import { redirect } from '@/i18n/navigation'
 import { RegisterForm } from '@/modules/auth/components/RegisterForm'
 import { safeNext } from '@/modules/auth/safe-next'
 import { getCurrentUser } from '@/modules/auth/session'
+import { getLegalForRegistration } from '@/modules/legal'
 import { getActivePersonas } from '@/modules/personas/queries'
 import type { Locale } from '@/shared/lib/locale'
 import { alternates } from '@/shared/lib/seo'
@@ -23,7 +24,7 @@ export default async function RegisterPage({ params, searchParams }: Props) {
   const { next, type, persona } = await searchParams
   const destination = safeNext(next)
   if (await getCurrentUser()) redirect({ href: destination, locale })
-  const [t, personas] = await Promise.all([getTranslations('auth'), getActivePersonas(locale as Locale)])
+  const [t, personas, legal] = await Promise.all([getTranslations('auth'), getActivePersonas(locale as Locale), getLegalForRegistration(locale as Locale)])
   return (
     <section className="mx-auto max-w-[480px] px-3 pt-8 sm:pt-14">
       <h1 className="px-1 text-[34px] font-bold leading-tight tracking-[-0.03em] text-ink">{t('registerTitle')}</h1>
@@ -35,6 +36,7 @@ export default async function RegisterPage({ params, searchParams }: Props) {
         personas={personas.map((p) => ({ slug: p.slug, label: p.singular }))}
         initialType={type === 'provider' ? 'provider' : 'seeker'}
         initialPersona={persona}
+        legal={legal}
       />
       </NextIntlClientProvider>
     </section>

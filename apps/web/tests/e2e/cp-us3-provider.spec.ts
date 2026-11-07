@@ -59,6 +59,7 @@ test.describe('CP-US3 providers manage their own profile', () => {
     await page.getByLabel('Email').fill(email)
     await page.getByLabel('Password').fill(PASSWORD)
     await page.getByLabel('I am a').selectOption('photographer')
+    await page.getByTestId('accept-terms').getByRole('checkbox').check()
     await page.getByTestId('register-submit').click()
     await expect(page).toHaveURL(/\/account\/profile$/, { timeout: 30_000 })
     await expect(status(page)).toHaveAttribute('data-status', 'draft')

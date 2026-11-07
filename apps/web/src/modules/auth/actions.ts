@@ -6,6 +6,7 @@ import { redirect } from '@/i18n/navigation'
 import { isLocale, type Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
 import { isPayloadError } from '@/shared/payload/errors'
+import { recordAcceptances } from '../legal'
 import { getActivePersonas } from '../personas/queries'
 import { safeNext } from './safe-next'
 
@@ -62,6 +63,7 @@ export async function register(_prev: AuthState, form: FormData): Promise<AuthSt
     accountType: form.get('accountType') ?? '',
     persona: form.get('accountType') === 'provider' ? (form.get('persona') ?? '') : '',
     categories: form.getAll('categories').map(String),
+    acceptTerms: form.get('acceptTerms') ?? '',
   }
   const values = { name: String(raw.name), email: String(raw.email), accountType: String(raw.accountType), persona: String(raw.persona) }
   const parsed = registerSchema.safeParse(raw)
@@ -75,7 +77,7 @@ export async function register(_prev: AuthState, form: FormData): Promise<AuthSt
   const payload = await getPayloadClient()
   try {
     // overrideAccess:false keeps field access in force: a "roles" value in the form is ignored (US4-S7).
-    await payload.create({
+    const created = await payload.create({
       collection: 'users',
       data: {
         name: parsed.data.name,
@@ -88,6 +90,10 @@ export async function register(_prev: AuthState, form: FormData): Promise<AuthSt
     })
     const result = await payload.login({ collection: 'users', data: { email: parsed.data.email, password: parsed.data.password } })
     if (result.token) await setSessionCookie(result.token, result.exp)
+    // The account exists either way; a failure here is reported without personal data and does not undo the sign-up.
+    await recordAcceptances(payload, { userId: created.id, accountType: parsed.data.accountType, locale }).catch(() =>
+      payload.logger.error('Could not record the legal acceptance for a new account'),
+    )
   } catch (error) {
     if (isPayloadError(error, 'ValidationError') && JSON.stringify(error.data).includes('email')) {
       return { errors: { email: 'auth.errors.emailTaken' }, values }

@@ -5,7 +5,7 @@ import { getTestPayload, resetDatabase } from './setup/payload'
 
 const counts = async () => {
   const payload = await getTestPayload()
-  const slugs = ['users', 'personas', 'categories', 'option-sets'] as const
+  const slugs = ['users', 'personas', 'categories', 'option-sets', 'pages'] as const
   return Object.fromEntries(await Promise.all(slugs.map(async (s) => [s, (await payload.count({ collection: s })).totalDocs])))
 }
 
@@ -20,9 +20,22 @@ describe('FR-032 seed', () => {
     const first = await counts()
     await seed(payload, { adminEmail: 'admin@test.local', adminPassword: 'password-123', log: () => {} })
     expect(await counts()).toEqual(first)
-    expect(first).toEqual({ users: 1, personas: 2, categories: 6, 'option-sets': 4 })
+    expect(first).toEqual({ users: 1, personas: 2, categories: 6, 'option-sets': 4, pages: 1 })
     const admin = await payload.find({ collection: 'users', limit: 1 })
     expect(admin.docs[0]?.roles).toEqual(['admin'])
+  })
+
+  it('MP-US1-S1 seeds the Studios page in both languages, in the footer, and leaves it alone once an editor owns it', async () => {
+    const payload = await getTestPayload()
+    const en = (await payload.find({ collection: 'pages', where: { slug: { equals: 'studios' } }, locale: 'en', depth: 0, limit: 1 })).docs[0]!
+    expect(en).toMatchObject({ title: 'Studios', _status: 'published', placement: { footerGroup: 'company' } })
+    const ar = await payload.findByID({ collection: 'pages', id: en.id, locale: 'ar', fallbackLocale: false, depth: 0 })
+    expect(ar).toMatchObject({ title: 'الاستوديوهات', slug: 'استوديوهات' })
+    await payload.update({ collection: 'pages', id: en.id, data: { title: 'Our studios', _status: 'published' } as never, draft: false, locale: 'en', context: { disableRevalidate: true } })
+    await seed(payload, { log: () => {} })
+    expect((await payload.findByID({ collection: 'pages', id: en.id, locale: 'en', depth: 0 })).title).toBe('Our studios')
+    const settings = await payload.findGlobal({ slug: 'site-settings', locale: 'en' })
+    expect(settings.footerGroups?.map((g) => g.key)).toEqual(['company'])
   })
 
   it('publishes the landing page in both languages with matching option counts', async () => {
