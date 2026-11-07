@@ -12,7 +12,7 @@ win over taste, habit and category defaults:
 |------|------|
 | `PRODUCT.md` | users, purpose, principles, what proof exists (none yet) |
 | `.impeccable/surfaces/*.md` | per-surface direction contract (thesis, own-world, story, first viewport, signature interaction) |
-| `DESIGN.md` + `.impeccable/design.json` | tokens and components, written by impeccable's documenter after the first reviewed build |
+| `DESIGN.md` + `.impeccable/design.json` | **the source of truth for tokens and components** (written by impeccable's documenter from the shipped build, 2026-11-07); read it before any visible change and keep it current through the documenter |
 
 Constitution Principle IX ("Designed, Not Generated") makes the impeccable
 workflow mandatory for UI work.
@@ -50,15 +50,16 @@ contract in `.impeccable/surfaces/apps-web-src-app-site-locale-page-tsx.md`.
   grouped result rows beneath it, and the Top Hit is the shoot. Nothing is
   painted on the page; the page is the one panel everyone already knows
   how to use. Arabic and English are equals in the same panel.
-- **Colour roles** (tokens; values live in `globals.css`, later DESIGN.md):
-  `--ground` #EFE9E3 (warm stone), `--ink` #1D1D1F, `--mute` #8A8580,
+- **Colour roles** (tokens; values live in `globals.css` and DESIGN.md, which win over this summary):
+  `--ground` #EFE9E3 (warm stone), `--ink` #1D1D1F, `--mute` #6B6560 (the sketch's #8A8580 failed AA),
   `--panel` white at 86 % over a 20 px blur (opaque fallback), `--hair`
   rgba(0,0,0,.08), `--tile` #F1EEEA (glyph tiles), `--accent` #0A60FF
-  (selection blue: the Top Hit row, the caret and focus rings only; never
-  text, never decoration), `--attention` as a fill behind ink text. One
+  (selection blue: the Top Hit row, the caret, focus rings, and a set
+  row's tint and tick tile, and the tint behind a chosen word in the
+  sentence (a Spotlight token); never text, never decoration), `--attention` as a fill behind ink text. One
   faint blue wash at the top of the ground is the only gradient. Dark
   theme (first-class, most visits are phones at night): ground #141416,
-  panel #28282C at 82 %, ink #F5F5F7, tiles #3A3A3F, accent #4D8DFF.
+  panel #28282C at 82 %, ink #F5F5F7, tiles #3A3A3F, accent #2B6BEB (#4D8DFF failed AA under white text).
 - **Type**: the system UI stack (`-apple-system, BlinkMacSystemFont,
   "Segoe UI", Roboto, system-ui, sans-serif`) with the platform's Arabic
   companions; no font files. Display 700 with tight tracking (38 px on

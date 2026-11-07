@@ -108,6 +108,9 @@ published config defines.
 
 1. Hero brief builder: the `{persona}` slot lists `activePersonas`; other
    slots are filtered by the chosen persona through option `personas[]`.
+   With the slot's `multiple` setting on (FR-063) the visitor ticks several
+   types, the sentence joins them with the locale's "and" (`joinList`), other
+   slots show options of any chosen type, and the brief stores every type.
 2. Registration: `accountType` toggle, then a persona `<select>` rendered
    from `activePersonas` when `provider` is chosen.
 3. Category grid section: `categoriesForPersonas`.

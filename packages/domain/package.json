@@ -1,0 +1,36 @@
+{
+  "name": "@shoot/domain",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./auth": "./src/auth/index.ts",
+    "./contact": "./src/contact/index.ts",
+    "./personas": "./src/personas/index.ts",
+    "./content": "./src/content/index.ts",
+    "./brief": "./src/brief/index.ts",
+    "./brief/validate": "./src/brief/validate.ts",
+    "./brief/sentence": "./src/brief/sentence.ts",
+    "./brief/options": "./src/brief/options.ts",
+    "./brief/message": "./src/brief/message.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@shoot/config": "workspace:*",
+    "@vitest/coverage-v8": "4.0.18",
+    "eslint": "9.39.1",
+    "typescript": "5.7.3",
+    "typescript-eslint": "8.46.4",
+    "vitest": "4.0.18"
+  },
+  "sideEffects": false
+}

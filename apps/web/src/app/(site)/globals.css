@@ -1,0 +1,367 @@
+@import 'tailwindcss';
+
+/* The Brief Bar. Tokens are roles, not colours; values live here once (DESIGN.md records them).
+   Contrast pairs (WCAG, checked by tests/unit/contrast.test.ts):
+   light  ink/ground 15.2   mute/ground 5.0   on-accent/accent 5.1   ink/panel 16.4
+   dark   ink/ground 17.5   mute/ground 7.1   on-accent/accent 4.6   ink/panel 13.6 */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --ground: #efe9e3;
+  --ink: #1d1d1f;
+  --mute: #6b6560;
+  --panel: rgb(255 255 255 / 0.86);
+  --panel-solid: #fcfbfa;
+  --hair: rgb(0 0 0 / 0.08);
+  --tile: #f1eeea;
+  --tile-ink: #5c5752;
+  --accent: #0a60ff;
+  --on-accent: #ffffff;
+  --attention: #ffe3d6;
+  --on-attention: #6a1f00;
+  --focus: #0a60ff;
+  /* A picked row: selection blue as a tint, never as text on its own (owner request 2026-11-07). */
+  --selected: rgb(10 96 255 / 0.12);
+  --selected-hover: rgb(10 96 255 / 0.18);
+  --selected-ink: #0848c2;
+  --wash: rgb(10 96 255 / 0.1);
+  --shadow: 0 18px 40px -22px rgb(29 29 31 / 0.35);
+  /* The hero's empty-studio backdrop, shown until the CMS has a photo: seamless paper under a key light. */
+  --sweep-top: #cbb39c;
+  --sweep-bottom: #8e6d52;
+  --sweep-key: rgb(255 246 234 / 0.9);
+  --sweep-floor: rgb(92 62 42 / 0.45);
+  --sweep-rim: rgb(168 196 236 / 0.6);
+  --photo-scrim: rgb(255 255 255 / 0.25);
+  color-scheme: light;
+}
+
+/* No JavaScript: follow the device. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --ground: #141416;
+    --ink: #f5f5f7;
+    --mute: #a29d98;
+    --panel: rgb(40 40 44 / 0.82);
+    --panel-solid: #28282c;
+    --hair: rgb(255 255 255 / 0.1);
+    --tile: #3a3a3f;
+    --tile-ink: #d6d2cd;
+    --accent: #2b6beb;
+    --on-accent: #ffffff;
+    --attention: #4a2416;
+    --on-attention: #ffd9c7;
+    --focus: #7aa7ff;
+    --selected: rgb(77 141 255 / 0.24);
+    --selected-hover: rgb(77 141 255 / 0.32);
+    --selected-ink: #b7d0ff;
+    --wash: rgb(43 107 235 / 0.12);
+    --shadow: 0 18px 40px -20px rgb(0 0 0 / 0.7);
+    --sweep-top: #4a3a2f;
+    --sweep-bottom: #1d1612;
+    --sweep-key: rgb(255 206 160 / 0.42);
+    --sweep-floor: rgb(0 0 0 / 0.5);
+    --sweep-rim: rgb(86 124 200 / 0.34);
+    --photo-scrim: rgb(0 0 0 / 0.35);
+    color-scheme: dark;
+  }
+}
+
+.dark {
+  --ground: #141416;
+  --ink: #f5f5f7;
+  --mute: #a29d98;
+  --panel: rgb(40 40 44 / 0.82);
+  --panel-solid: #28282c;
+  --hair: rgb(255 255 255 / 0.1);
+  --tile: #3a3a3f;
+  --tile-ink: #d6d2cd;
+  --accent: #2b6beb;
+  --on-accent: #ffffff;
+  --attention: #4a2416;
+  --on-attention: #ffd9c7;
+  --focus: #7aa7ff;
+  --selected: rgb(77 141 255 / 0.24);
+  --selected-hover: rgb(77 141 255 / 0.32);
+  --selected-ink: #b7d0ff;
+  --wash: rgb(43 107 235 / 0.12);
+  --shadow: 0 18px 40px -20px rgb(0 0 0 / 0.7);
+  --sweep-top: #4a3a2f;
+  --sweep-bottom: #1d1612;
+  --sweep-key: rgb(255 206 160 / 0.42);
+  --sweep-floor: rgb(0 0 0 / 0.5);
+  --sweep-rim: rgb(86 124 200 / 0.34);
+  --photo-scrim: rgb(0 0 0 / 0.35);
+  color-scheme: dark;
+}
+
+/* The bar over the hero image: frosted glass that lets the photo through. Light glass with dark
+   text in the light theme, smoked glass with white text in the dark theme. Text pairs are checked
+   against the glass over mid grey (a blurred photo's typical average) and over the worst photo
+   once the theme's scrim is laid on it: black under light glass, white under smoked glass
+   (tests/unit/contrast.test.ts). */
+.bar-glass {
+  --ink: #161618;
+  --mute: #4f4a46;
+  --panel: rgb(255 255 255 / 0.64);
+  --panel-solid: #f4f1ee;
+  --hair: rgb(0 0 0 / 0.09);
+  --tile: rgb(255 255 255 / 0.55);
+  --tile-ink: #45403c;
+  --glass-edge: rgb(255 255 255 / 0.7);
+  --glass-sheen: rgb(255 255 255 / 0.5);
+  --shadow: 0 30px 60px -30px rgb(40 28 18 / 0.5);
+  color: var(--ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) .bar-glass {
+    --ink: #f5f5f7;
+    --mute: #cdc8c3;
+    --panel: rgb(28 28 32 / 0.6);
+    --panel-solid: #26262a;
+    --hair: rgb(255 255 255 / 0.12);
+    --tile: rgb(255 255 255 / 0.1);
+    --tile-ink: #eeeae6;
+    --glass-edge: rgb(255 255 255 / 0.18);
+    --glass-sheen: rgb(255 255 255 / 0.1);
+    --shadow: 0 30px 60px -28px rgb(0 0 0 / 0.75);
+  }
+}
+
+.dark .bar-glass {
+  --ink: #f5f5f7;
+  --mute: #cdc8c3;
+  --panel: rgb(28 28 32 / 0.6);
+  --panel-solid: #26262a;
+  --hair: rgb(255 255 255 / 0.12);
+  --tile: rgb(255 255 255 / 0.1);
+  --tile-ink: #eeeae6;
+  --glass-edge: rgb(255 255 255 / 0.18);
+  --glass-sheen: rgb(255 255 255 / 0.1);
+  --shadow: 0 30px 60px -28px rgb(0 0 0 / 0.75);
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-panel: var(--panel);
+  --color-panel-solid: var(--panel-solid);
+  --color-hair: var(--hair);
+  --color-tile: var(--tile);
+  --color-tile-ink: var(--tile-ink);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-selected: var(--selected);
+  --color-selected-hover: var(--selected-hover);
+  --color-selected-ink: var(--selected-ink);
+  --color-attention: var(--attention);
+  --color-on-attention: var(--on-attention);
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic',
+    'Geeza Pro', 'Segoe UI Arabic', sans-serif;
+  --radius-panel: 14px;
+  --radius-row: 9px;
+  --radius-tile: 8px;
+  --shadow-panel: var(--shadow);
+}
+
+@layer base {
+  html {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    min-height: 100dvh;
+    background-color: var(--ground);
+    /* The one gradient in the system: a faint selection-blue wash at the top. */
+    background-image: radial-gradient(70% 420px at 50% 0%, var(--wash), transparent 75%);
+    background-repeat: no-repeat;
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  a {
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  input,
+  textarea,
+  select {
+    caret-color: var(--accent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  /* Anchored sections clear the sticky header. */
+  [id] {
+    scroll-margin-top: 72px;
+  }
+}
+
+@layer components {
+  .bar-panel {
+    background: var(--panel-solid);
+    border: 1px solid var(--hair);
+    border-radius: var(--radius-panel);
+    box-shadow: var(--shadow);
+  }
+  @supports ((backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))) {
+    .bar-panel {
+      background: var(--panel);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      backdrop-filter: blur(20px) saturate(1.4);
+    }
+  }
+  .bar-glass.bar-panel {
+    border-color: var(--glass-edge);
+    box-shadow:
+      inset 0 1px 0 var(--glass-sheen),
+      var(--shadow);
+  }
+  @supports ((backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))) {
+    .bar-glass.bar-panel {
+      /* A soft sheen across the top edge, then clear glass over a heavy blur. */
+      background: linear-gradient(180deg, var(--glass-sheen), transparent 140px), var(--panel);
+      -webkit-backdrop-filter: blur(32px) saturate(1.8);
+      backdrop-filter: blur(32px) saturate(1.8);
+    }
+  }
+  .group-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  :lang(ar) .group-label {
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 12px;
+  }
+  .caret {
+    display: inline-block;
+    width: 2px;
+    height: 1.05em;
+    margin-inline-start: 2px;
+    vertical-align: -0.15em;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .caret {
+      animation: caret-blink 1.1s steps(1, end) infinite;
+    }
+  }
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Progressive enhancement: the layout adds .js before first paint; controls that need
+   JavaScript stay hidden without it and keep their own display rules with it. */
+html:not(.js) .js-only {
+  display: none !important;
+}
+
+/* The options drawer. Folded under the sentence by default with JavaScript; open without it.
+   Rows animate open from 0fr to 1fr; visibility drops the folded rows out of the tab order. */
+html.js .bar-drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+}
+html.js .bar-drawer > * {
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+html.js .bar-drawer[data-open='true'] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+html.js .bar-drawer[data-open='true'] > * {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .bar-drawer {
+    transition:
+      grid-template-rows 220ms cubic-bezier(0.32, 0.72, 0, 1),
+      visibility 0s linear 220ms;
+  }
+  html.js .bar-drawer > * {
+    transition: opacity 140ms ease-out;
+  }
+  html.js .bar-drawer[data-open='true'] {
+    transition:
+      grid-template-rows 320ms cubic-bezier(0.32, 0.72, 0, 1),
+      visibility 0s;
+  }
+  html.js .bar-drawer[data-open='true'] > * {
+    transition: opacity 240ms ease-out 60ms;
+  }
+}
+
+/* The hero stage: the bar floats over a CMS photo, or over an empty studio sweep until there is one. */
+.studio-sweep {
+  background:
+    radial-gradient(55% 75% at 24% 0%, var(--sweep-key), transparent 72%),
+    radial-gradient(40% 65% at 84% 38%, var(--sweep-rim), transparent 70%),
+    radial-gradient(130% 55% at 50% 118%, var(--sweep-floor), transparent 72%),
+    linear-gradient(180deg, var(--sweep-top), var(--sweep-bottom));
+}
+.photo-scrim::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--photo-scrim);
+}
+.studio-sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Date and number rows: with JavaScript the native control lies invisibly over the row so a tap
+   opens the picker while the row reads like the rest of the bar; without JavaScript it shows. */
+html.js .native-picker {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+html.js .native-picker::-webkit-calendar-picker-indicator {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* The "tap any part" hint is for a brief still being written. */
+#content:has([data-testid='brief-success']) .brief-helper {
+  display: none;
+}

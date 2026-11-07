@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "siteName": "Shoot Project",
+    "defaultDescription": "احجز مصوّرين ومصوّري فيديو موثّقين في الإمارات. صِف التصوير في سطر واحد ونردّ عليك عبر واتساب."
+  },
+  "a11y": {
+    "skipToContent": "انتقل إلى المحتوى",
+    "mainNav": "الرئيسية",
+    "menu": "القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "openMenu": "فتح القائمة"
+  },
+  "nav": {
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "account": "حسابي",
+    "logout": "تسجيل الخروج",
+    "home": "الرئيسية"
+  },
+  "locale": {
+    "switchTo": "English",
+    "switchLabel": "اقرأ هذه الصفحة بالإنجليزية",
+    "current": "العربية"
+  },
+  "theme": {
+    "label": "المظهر",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "حسب الجهاز"
+  },
+  "contact": {
+    "whatsapp": "راسلنا على واتساب",
+    "whatsappInstead": "راسلنا على واتساب بدلاً من ذلك",
+    "whatsappFloating": "تحدّث معنا على واتساب",
+    "call": "اتصل بنا",
+    "rather": "تفضّل الحديث مباشرة؟",
+    "errors": {
+      "whatsappFormat": "استخدم الصيغة الدولية مع رمز الدولة، مثل ‎+971 58 123 4567."
+    }
+  },
+  "brief": {
+    "barLabel": "صِف التصوير",
+    "fieldLabel": "طلبك",
+    "filterPlaceholder": "اكتب للتصفية، مثل «زفاف»",
+    "topHit": "أفضل نتيجة",
+    "actions": "إجراءات",
+    "set": "تم",
+    "pickADate": "اختر تاريخاً",
+    "anyDate": "أي تاريخ",
+    "chooseOne": "اختر واحداً",
+    "pickAny": "اختر واحداً أو أكثر",
+    "orType": "أو اكتب بكلماتك",
+    "noOptions": "لا توجد خيارات بعد",
+    "submitting": "جارٍ إرسال طلبك…",
+    "keyHintReturn": "إدخال",
+    "imAProvider": "أنا {persona}",
+    "successTitle": "تم إرسال الطلب",
+    "successReference": "رقم المرجع <code>{reference}</code>",
+    "successNext": "سنردّ عليك عبر واتساب {replyTime}.",
+    "successOpenWhatsapp": "افتح واتساب",
+    "successAnother": "ابدأ طلباً جديداً",
+    "noJsHint": "اختر كل جزء من الطلب ثم أرسله.",
+    "errors": {
+      "required": "اختر هذا الجزء من الطلب.",
+      "dateInvalid": "اختر تاريخاً صحيحاً.",
+      "datePast": "اختر تاريخ اليوم أو تاريخاً لاحقاً.",
+      "numberInvalid": "أدخل رقماً من 1 إلى 999.",
+      "tooLong": "اجعلها أقل من 80 حرفاً.",
+      "notAnOption": "اختر أحد الخيارات.",
+      "tooMany": "أرسلت عدة طلبات بالفعل. حاول مرة أخرى بعد ساعة، أو راسلنا على واتساب مباشرة.",
+      "generic": "حدث خطأ أثناء إرسال طلبك. حاول مرة أخرى، أو راسلنا على واتساب مباشرة."
+    },
+    "showMore": "عرض {count} أخرى",
+    "showOptions": "إظهار الخيارات",
+    "hideOptions": "إخفاء الخيارات",
+    "successNextTitle": "ما الذي يحدث بعد ذلك"
+  },
+  "auth": {
+    "loginTitle": "تسجيل الدخول",
+    "loginIntro": "أهلاً بعودتك. سجّل الدخول لترى طلباتك.",
+    "registerTitle": "أنشئ حسابك",
+    "registerIntro": "حساب واحد لحجز تصوير أو لتقديم أعمالك.",
+    "name": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordHint": "8 أحرف على الأقل.",
+    "accountType": "أريد أن",
+    "seeker": "أحجز محترفاً",
+    "provider": "أقدّم خدماتي",
+    "persona": "أنا",
+    "personaPlaceholder": "اختر مهنتك",
+    "noPersonas": "لا نستقبل محترفين جدداً حالياً.",
+    "categories": "التخصصات (اختياري)",
+    "submitLogin": "تسجيل الدخول",
+    "submitRegister": "إنشاء الحساب",
+    "pending": "يرجى الانتظار…",
+    "haveAccount": "لديك حساب بالفعل؟",
+    "noAccount": "جديد هنا؟",
+    "errors": {
+      "nameLength": "أدخل اسمك (من 2 إلى 80 حرفاً).",
+      "emailInvalid": "أدخل بريداً إلكترونياً صحيحاً.",
+      "passwordLength": "استخدم 8 أحرف على الأقل.",
+      "passwordRequired": "أدخل كلمة المرور.",
+      "accountType": "اختر ما تريد فعله.",
+      "personaRequired": "اختر مهنتك.",
+      "personaInactive": "هذه المهنة غير متاحة. اختر مهنة أخرى.",
+      "emailTaken": "هذا البريد مسجّل بالفعل. سجّل الدخول بدلاً من ذلك.",
+      "invalid": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "locked": "محاولات كثيرة. حاول مرة أخرى بعد 15 دقيقة.",
+      "generic": "حدث خطأ. حاول مرة أخرى."
+    }
+  },
+  "account": {
+    "title": "حسابي",
+    "details": "بياناتك",
+    "type": "نوع الحساب",
+    "persona": "المهنة",
+    "briefs": "طلباتك",
+    "noBriefs": "لا توجد طلبات بعد.",
+    "newBrief": "ابدأ طلباً",
+    "status": {
+      "new": "تم الإرسال",
+      "contacted": "تم الرد",
+      "closed": "مغلق"
+    }
+  },
+  "home": {
+    "howItWorks": "كيف نعمل",
+    "faq": "أسئلة"
+  },
+  "preview": {
+    "active": "وضع المعاينة: ترى تغييرات غير منشورة.",
+    "exit": "الخروج من المعاينة"
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "body": "الصفحة التي تبحث عنها غير موجودة.",
+    "home": "العودة إلى البداية"
+  },
+  "footer": {
+    "rights": "جميع الحقوق محفوظة.",
+    "social": "تابعنا"
+  }
+}

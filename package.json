@@ -1,0 +1,31 @@
+{
+  "name": "shoot-project",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=24.22.1"
+  },
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "start": "pnpm --filter web start",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "lint": "pnpm -r --parallel lint && bash scripts/check-logical-css.sh",
+    "format": "prettier --write .",
+    "test": "pnpm --filter @shoot/domain test && pnpm --filter web test",
+    "test:watch": "pnpm --filter web test:watch",
+    "test:unit": "pnpm --filter @shoot/domain test && pnpm --filter web test:unit",
+    "test:component": "pnpm --filter web test:component",
+    "test:int": "pnpm --filter web test:int",
+    "test:e2e": "pnpm --filter web test:e2e",
+    "test:coverage": "pnpm --filter @shoot/domain test:coverage && pnpm --filter web test:coverage",
+    "analyze": "pnpm --filter web analyze",
+    "seed": "pnpm --filter web seed",
+    "db:migrate": "pnpm --filter web payload migrate",
+    "db:migration:create": "pnpm --filter web payload migrate:create"
+  },
+  "devDependencies": {
+    "prettier": "3.6.2"
+  }
+}

@@ -108,7 +108,7 @@ options, FR-051). Hooks: revalidate `option-sets`; `beforeDelete` refuses while 
 
 | Field | Type | Rules |
 |-------|------|-------|
-| `persona` | relationship → `personas` | required |
+| `persona` | relationship → `personas`, has many | required; every professional type the visitor chose, in their order (FR-063) |
 | `selections` | array | `{ token, value, label, custom: boolean }` per slot, in sentence order |
 | `date` | date | optional; not before today (Asia/Dubai) |
 | `sentence` | text | the rendered sentence in the submission language (for admins/export) |
@@ -166,7 +166,7 @@ becomes `published`.
 | Field | Type | Rules |
 |-------|------|-------|
 | `hero` | group | `eyebrow` **L** ("Quick match"), `headline` text **L** (required, ≤ 80, default "You brief. We shoot."), `subheadline` **L** (≤ 300), `trustChips` array (≤ 3, `text` **L** ≤ 40), `layout: briefBuilder \| ctas` (default `briefBuilder`: the builder is the primary action and a WhatsApp link the secondary), `primaryCta` and `secondaryCta` groups used by the `ctas` layout (`label` **L**, `kind: whatsapp\|link\|call`, `href?`), `image` → media, `imageMobile` → media |
-| `briefBuilder` | group | `enabled` (default true); `sentence` **L** (default "I need a {persona} for {occasion} on {date} for {duration} in {location}, shot by {shotBy}."); `slots` array — `{ token, kind: persona\|options\|date\|number, optionSet → option-sets (kind options), defaultValue, placeholder **L**, required, allowCustom }`; `submitLabel` **L** ("See who's free"); `helperText` **L** ("Free to search. Tap any word to change it, or write it in your own words."); `whatsappTemplate` **L** ("Hi! I need a {persona} for {occasion} on {date} for {duration} in {location}, shot by {shotBy}."); `successMessage` **L**; `steps` array `{ title **L**, description **L** }` (the four-step outline shown as context; only step 1 is interactive in this feature) |
+| `briefBuilder` | group | `enabled` (default true); `sentence` **L** (default "I need a {persona} for {occasion} on {date} for {duration} in {location}, shot by {shotBy}."); `slots` array — `{ token, kind: persona\|options\|date\|number, optionSet → option-sets (kind options), defaultValue, placeholder **L**, required, allowCustom, multiple (kind persona, default false: the visitor may pick several types, FR-063) }`; `submitLabel` **L** ("See who's free"); `helperText` **L** ("Free to search. Tap any word to change it, or write it in your own words."); `whatsappTemplate` **L** ("Hi! I need a {persona} for {occasion} on {date} for {duration} in {location}, shot by {shotBy}."); `successMessage` **L**; `steps` array `{ title **L**, description **L** }` (the four-step outline shown as context; only step 1 is interactive in this feature) |
 | `navigation` | array | `{ label` **L**`, target }` where `target` is a section anchor or path (shared) |
 | `sections` | blocks | ordered, shared structure; text leaves inside blocks are **L** |
 | `seo` | group | `title` **L** (≤ 60), `description` **L** (≤ 160), `ogImage` → media |
@@ -248,7 +248,7 @@ site-settings.logo / logoDark  ──▶ media
 landing-page.hero.imageMobile / seo.ogImage ──▶ media
 landing-page.briefBuilder.slots[].optionSet ──▶ option-sets
 option-sets.options[].personas ──▶ personas (many)
-briefs.persona               ──▶ personas (one)
+briefs.persona               ──▶ personas (many, FR-063)
 briefs.member                ──▶ users (one, optional)
 ```
 

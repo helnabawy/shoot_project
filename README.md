@@ -13,7 +13,9 @@ A fast, responsive marketing site with member accounts and a CMS, inspired by
 
 ## Status
 
-Spec-driven setup complete; implementation not started.
+Feature 001 (landing page, brief builder, accounts, CMS, personas, Arabic/RTL,
+light/dark) is implemented in `apps/web` and `packages/domain`. Not yet done:
+the usability sessions with real participants (T106) and a first deploy.
 
 | Artifact | Path |
 |----------|------|
@@ -23,7 +25,7 @@ Spec-driven setup complete; implementation not started.
 | Tasks | `specs/001-landing-auth-cms/tasks.md` |
 | Roadmap + later features | `specs/ROADMAP.md`, `specs/002…005-*/spec.md` |
 | Project skills | `.claude/skills/{payload-cms,nextjs-frontend,testing-strategy,persona-extensibility,ui-design}` |
-| Product + design authority | `PRODUCT.md`, `.impeccable/surfaces/`, `.impeccable/mocks/decision/wayfinding.html` |
+| Product + design authority | `PRODUCT.md`, `DESIGN.md`, `.impeccable/surfaces/`, `.impeccable/mocks/decision/brief-bar.html` |
 
 ## Stack
 
@@ -32,16 +34,33 @@ migrations) in one deployable app,
 TypeScript everywhere, pnpm workspaces (`apps/web`, `packages/domain`,
 `packages/config`), Tailwind CSS, Vitest, Playwright, Lighthouse CI.
 
-## Getting started (after implementation Phase 1)
+## Getting started
 
 ```bash
-nvm use            # Node 24
+nvm use                                   # Node 24
 pnpm install
-cp apps/web/.env.example apps/web/.env
+cp apps/web/.env.example apps/web/.env    # then fill the secrets
 docker compose up -d postgres
-pnpm --filter web payload migrate
-pnpm --filter web seed
-pnpm --filter web dev
+pnpm db:migrate
+pnpm seed                                 # default bilingual content + first admin
+pnpm dev                                  # http://localhost:3000, admin at /admin
 ```
+
+## Checks
+
+```bash
+pnpm typecheck && pnpm lint               # lint includes the logical-CSS (RTL) check
+pnpm test                                 # domain + unit + component + integration (Docker needed)
+pnpm test:coverage                        # domain 100 %, app ≥ 80 %
+pnpm build && pnpm test:e2e               # Playwright: mobile, desktop, no-JS, Arabic, dark
+npx @lhci/cli autorun --config=lighthouserc.json
+```
+
+## Production
+
+`apps/web/Dockerfile` builds the standalone server; `docker-compose.prod.yml`
+runs PostgreSQL, a one-off `payload migrate`, then two stateless web
+instances. Set the S3 variables so media is shared between instances, and
+call `POST /api/cron/cleanup` with `Authorization: Bearer $CRON_SECRET` daily.
 
 See `CLAUDE.md` for the Spec Kit workflow and conventions.

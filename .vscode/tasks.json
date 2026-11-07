@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "db: up",
+      "detail": "Start the local PostgreSQL 17 container",
+      "type": "shell",
+      "command": "docker compose up -d --wait postgres",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "db: migrate",
+      "detail": "Apply committed Payload migrations",
+      "type": "shell",
+      "command": "nvm use 2>/dev/null; pnpm db:migrate",
+      "options": { "cwd": "${workspaceFolder}" },
+      "dependsOn": ["db: up"],
+      "problemMatcher": []
+    },
+    {
+      "label": "seed",
+      "detail": "Seed default bilingual content and the admin user from .env",
+      "type": "shell",
+      "command": "nvm use 2>/dev/null; pnpm seed",
+      "options": { "cwd": "${workspaceFolder}" },
+      "dependsOn": ["db: migrate"],
+      "problemMatcher": []
+    },
+    {
+      "label": "build",
+      "detail": "Production build of apps/web (next build)",
+      "type": "shell",
+      "command": "nvm use 2>/dev/null; pnpm build",
+      "options": { "cwd": "${workspaceFolder}" },
+      "dependsOn": ["db: up"],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": ["$tsc"]
+    }
+  ]
+}

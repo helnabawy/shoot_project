@@ -1,0 +1,71 @@
+{
+  // Website at http://localhost:3000, Payload admin at http://localhost:3000/admin.
+  // Dev configs start the Postgres container first (tasks.json), then `pnpm dev`
+  // in apps/web and open Chrome once Next.js reports it is ready.
+  // Node 24 comes from nvm (.nvmrc); the integrated terminal must load nvm.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Dev: website",
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/web",
+      "command": "nvm use 2>/dev/null; pnpm dev",
+      "preLaunchTask": "db: up",
+      "serverReadyAction": {
+        "pattern": "Local:\\s+(https?://\\S+)",
+        "name": "Website (Chrome)",
+        "action": "startDebugging"
+      }
+    },
+    {
+      "name": "Dev: admin",
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/web",
+      "command": "nvm use 2>/dev/null; pnpm dev",
+      "preLaunchTask": "db: up",
+      "serverReadyAction": {
+        "pattern": "Local:\\s+(https?://\\S+)",
+        "name": "Admin (Chrome)",
+        "action": "startDebugging"
+      }
+    },
+    {
+      "name": "Website (Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/apps/web",
+      "sourceMaps": true
+    },
+    {
+      "name": "Admin (Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000/admin",
+      "webRoot": "${workspaceFolder}/apps/web",
+      "sourceMaps": true
+    },
+    {
+      "name": "Build + start (production)",
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/web",
+      "command": "nvm use 2>/dev/null; pnpm start",
+      "preLaunchTask": "build",
+      "serverReadyAction": {
+        "pattern": "Local:\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Dev: website + admin",
+      "configurations": ["Dev: website", "Admin (Chrome)"],
+      "stopAll": true
+    }
+  ]
+}

@@ -1,0 +1,917 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-07T00:00:00Z",
+  "title": "Design System: Shoot Project",
+  "extensions": {
+    "colorMeta": {
+      "stone-ground": {
+        "role": "neutral",
+        "displayName": "Stone Ground",
+        "theme": "light",
+        "canonical": "#efe9e3",
+        "tonalRamp": [
+          "#0e0a07",
+          "#27231f",
+          "#443f3a",
+          "#625d58",
+          "#827c77",
+          "#a39d98",
+          "#c9c3bd",
+          "#f3ede7"
+        ],
+        "oklch": "oklch(93.7% 0.010 68)"
+      },
+      "graphite-ink": {
+        "role": "neutral",
+        "displayName": "Graphite Ink",
+        "theme": "light",
+        "canonical": "#1d1d1f",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#242426",
+          "#3f3f42",
+          "#5d5d60",
+          "#7d7d7f",
+          "#9e9ea1",
+          "#c4c4c6",
+          "#eeeef1"
+        ],
+        "oklch": "oklch(23.2% 0.004 286)"
+      },
+      "warm-mute": {
+        "role": "neutral",
+        "displayName": "Warm Mute",
+        "theme": "light",
+        "canonical": "#6b6560",
+        "tonalRamp": [
+          "#0f0a07",
+          "#28231f",
+          "#443f3a",
+          "#625c57",
+          "#827c77",
+          "#a49d98",
+          "#c9c3bd",
+          "#f4ede7"
+        ],
+        "oklch": "oklch(51.1% 0.011 62)"
+      },
+      "frosted-panel": {
+        "role": "neutral",
+        "displayName": "Frosted Panel",
+        "theme": "light",
+        "canonical": "rgb(255 255 255 / 0.86)"
+      },
+      "panel-solid": {
+        "role": "neutral",
+        "displayName": "Panel Solid",
+        "theme": "light",
+        "canonical": "#fcfbfa",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#252423",
+          "#403f3f",
+          "#5e5d5c",
+          "#7e7d7c",
+          "#9f9e9d",
+          "#c5c4c3",
+          "#efeeed"
+        ],
+        "oklch": "oklch(98.9% 0.002 68)"
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "theme": "light",
+        "canonical": "rgb(0 0 0 / 0.08)"
+      },
+      "tile-stone": {
+        "role": "neutral",
+        "displayName": "Tile Stone",
+        "theme": "light",
+        "canonical": "#f1eeea",
+        "tonalRamp": [
+          "#0d0b08",
+          "#262421",
+          "#423f3c",
+          "#605d5a",
+          "#7f7d79",
+          "#a19e9a",
+          "#c6c4c0",
+          "#f1eeea"
+        ],
+        "oklch": "oklch(95.0% 0.006 75)"
+      },
+      "tile-ink": {
+        "role": "neutral",
+        "displayName": "Tile Ink",
+        "theme": "light",
+        "canonical": "#5c5752",
+        "tonalRamp": [
+          "#0e0a07",
+          "#27231f",
+          "#443f3a",
+          "#625d58",
+          "#827c77",
+          "#a39d98",
+          "#c9c3bd",
+          "#f3ede7"
+        ],
+        "oklch": "oklch(46.0% 0.010 68)"
+      },
+      "selection-blue": {
+        "role": "primary",
+        "displayName": "Selection Blue",
+        "theme": "light",
+        "canonical": "#0a60ff",
+        "tonalRamp": [
+          "#000038",
+          "#001962",
+          "#09378f",
+          "#1f55bf",
+          "#3575f1",
+          "#5e9aff",
+          "#8cc3ff",
+          "#bfefff"
+        ],
+        "oklch": "oklch(55.3% 0.247 262)"
+      },
+      "on-accent": {
+        "role": "primary",
+        "displayName": "On Accent",
+        "theme": "light",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c4c4c4",
+          "#eeeeee"
+        ],
+        "oklch": "oklch(100.0% 0.000 90)"
+      },
+      "attention-peach": {
+        "role": "secondary",
+        "displayName": "Attention Peach",
+        "theme": "light",
+        "canonical": "#ffe3d6",
+        "tonalRamp": [
+          "#170601",
+          "#321f15",
+          "#503a30",
+          "#6f584d",
+          "#90776c",
+          "#b2988c",
+          "#d9beb1",
+          "#ffe8db"
+        ],
+        "oklch": "oklch(93.5% 0.036 47)"
+      },
+      "on-attention": {
+        "role": "secondary",
+        "displayName": "On Attention",
+        "theme": "light",
+        "canonical": "#6a1f00",
+        "tonalRamp": [
+          "#2a0000",
+          "#4d0000",
+          "#6f2304",
+          "#914328",
+          "#b56448",
+          "#da8568",
+          "#ffaa8d",
+          "#ffd5b6"
+        ],
+        "oklch": "oklch(35.5% 0.113 39)"
+      },
+      "focus-ring": {
+        "role": "neutral",
+        "displayName": "Focus Ring",
+        "theme": "light",
+        "canonical": "#0a60ff",
+        "tonalRamp": [
+          "#000038",
+          "#001962",
+          "#09378f",
+          "#1f55bf",
+          "#3575f1",
+          "#5e9aff",
+          "#8cc3ff",
+          "#bfefff"
+        ],
+        "oklch": "oklch(55.3% 0.247 262)"
+      },
+      "selection-wash": {
+        "role": "primary",
+        "displayName": "Selection Wash",
+        "theme": "light",
+        "canonical": "rgb(10 96 255 / 0.1)"
+      },
+      "night-ground": {
+        "role": "neutral",
+        "displayName": "Night Stone Ground",
+        "theme": "dark",
+        "canonical": "#141416",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#242426",
+          "#3f3f42",
+          "#5d5d60",
+          "#7d7d7f",
+          "#9e9ea1",
+          "#c4c4c7",
+          "#eeeef1"
+        ],
+        "oklch": "oklch(19.2% 0.004 286)"
+      },
+      "night-ink": {
+        "role": "neutral",
+        "displayName": "Night Graphite Ink",
+        "theme": "dark",
+        "canonical": "#f5f5f7",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#242425",
+          "#3f3f41",
+          "#5d5d5f",
+          "#7d7d7f",
+          "#9e9ea0",
+          "#c4c4c6",
+          "#eeeef0"
+        ],
+        "oklch": "oklch(97.1% 0.003 286)"
+      },
+      "night-mute": {
+        "role": "neutral",
+        "displayName": "Night Warm Mute",
+        "theme": "dark",
+        "canonical": "#a29d98",
+        "tonalRamp": [
+          "#0e0a07",
+          "#27231f",
+          "#433f3b",
+          "#615d58",
+          "#817c77",
+          "#a29d98",
+          "#c8c3be",
+          "#f3ede8"
+        ],
+        "oklch": "oklch(69.9% 0.009 68)"
+      },
+      "night-panel": {
+        "role": "neutral",
+        "displayName": "Night Frosted Panel",
+        "theme": "dark",
+        "canonical": "rgb(40 40 44 / 0.82)"
+      },
+      "night-panel-solid": {
+        "role": "neutral",
+        "displayName": "Night Panel Solid",
+        "theme": "dark",
+        "canonical": "#28282c",
+        "tonalRamp": [
+          "#0b0b0e",
+          "#242427",
+          "#3f3f43",
+          "#5d5d62",
+          "#7d7d81",
+          "#9e9ea3",
+          "#c3c3c9",
+          "#eeeef3"
+        ],
+        "oklch": "oklch(27.8% 0.007 286)"
+      },
+      "night-hairline": {
+        "role": "neutral",
+        "displayName": "Night Hairline",
+        "theme": "dark",
+        "canonical": "rgb(255 255 255 / 0.1)"
+      },
+      "night-tile": {
+        "role": "neutral",
+        "displayName": "Night Tile Stone",
+        "theme": "dark",
+        "canonical": "#3a3a3f",
+        "tonalRamp": [
+          "#0b0b0f",
+          "#232328",
+          "#3f3f44",
+          "#5d5d62",
+          "#7d7d82",
+          "#9e9ea4",
+          "#c3c3ca",
+          "#eeeef4"
+        ],
+        "oklch": "oklch(35.0% 0.009 286)"
+      },
+      "night-tile-ink": {
+        "role": "neutral",
+        "displayName": "Night Tile Ink",
+        "theme": "dark",
+        "canonical": "#d6d2cd",
+        "tonalRamp": [
+          "#0d0b08",
+          "#262320",
+          "#423f3b",
+          "#605d59",
+          "#807d78",
+          "#a19e99",
+          "#c7c3be",
+          "#f2eee9"
+        ],
+        "oklch": "oklch(86.6% 0.008 74)"
+      },
+      "night-selection-blue": {
+        "role": "primary",
+        "displayName": "Night Selection Blue",
+        "theme": "dark",
+        "canonical": "#2b6beb",
+        "tonalRamp": [
+          "#000038",
+          "#001962",
+          "#0a368f",
+          "#2055bf",
+          "#3674f1",
+          "#5e9aff",
+          "#8cc2ff",
+          "#bfefff"
+        ],
+        "oklch": "oklch(56.3% 0.205 262)"
+      },
+      "night-on-accent": {
+        "role": "primary",
+        "displayName": "Night On Accent",
+        "theme": "dark",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c4c4c4",
+          "#eeeeee"
+        ],
+        "oklch": "oklch(100.0% 0.000 90)"
+      },
+      "night-attention": {
+        "role": "secondary",
+        "displayName": "Night Attention Peach",
+        "theme": "dark",
+        "canonical": "#4a2416",
+        "tonalRamp": [
+          "#1f0100",
+          "#3c180a",
+          "#5b3425",
+          "#7c5242",
+          "#9e7161",
+          "#c19281",
+          "#e8b7a6",
+          "#ffe1cf"
+        ],
+        "oklch": "oklch(30.9% 0.062 41)"
+      },
+      "night-on-attention": {
+        "role": "secondary",
+        "displayName": "Night On Attention",
+        "theme": "dark",
+        "canonical": "#ffd9c7",
+        "tonalRamp": [
+          "#1b0400",
+          "#371c0e",
+          "#553829",
+          "#755546",
+          "#967565",
+          "#b99685",
+          "#e0bbaa",
+          "#ffe5d3"
+        ],
+        "oklch": "oklch(91.3% 0.049 47)"
+      },
+      "night-focus-ring": {
+        "role": "neutral",
+        "displayName": "Night Focus Ring",
+        "theme": "dark",
+        "canonical": "#7aa7ff",
+        "tonalRamp": [
+          "#000038",
+          "#001962",
+          "#153987",
+          "#3259aa",
+          "#507ace",
+          "#709cf4",
+          "#94c3ff",
+          "#c0eeff"
+        ],
+        "oklch": "oklch(73.3% 0.137 263)"
+      },
+      "night-selection-wash": {
+        "role": "primary",
+        "displayName": "Night Selection Wash",
+        "theme": "dark",
+        "canonical": "rgb(43 107 235 / 0.12)"
+      },
+      "photo-scrim": {
+        "role": "neutral",
+        "displayName": "Photo Scrim",
+        "theme": "light",
+        "canonical": "rgb(255 255 255 / 0.25)"
+      },
+      "sweep-top": {
+        "role": "neutral",
+        "displayName": "Sweep Top",
+        "theme": "light",
+        "canonical": "#cbb39c"
+      },
+      "sweep-bottom": {
+        "role": "neutral",
+        "displayName": "Sweep Bottom",
+        "theme": "light",
+        "canonical": "#8e6d52"
+      },
+      "sweep-key": {
+        "role": "neutral",
+        "displayName": "Sweep Key Light",
+        "theme": "light",
+        "canonical": "rgb(255 246 234 / 0.9)"
+      },
+      "sweep-rim": {
+        "role": "neutral",
+        "displayName": "Sweep Rim Light",
+        "theme": "light",
+        "canonical": "rgb(168 196 236 / 0.6)"
+      },
+      "sweep-floor": {
+        "role": "neutral",
+        "displayName": "Sweep Floor Shade",
+        "theme": "light",
+        "canonical": "rgb(92 62 42 / 0.45)"
+      },
+      "night-photo-scrim": {
+        "role": "neutral",
+        "displayName": "Night Photo Scrim",
+        "theme": "dark",
+        "canonical": "rgb(0 0 0 / 0.35)"
+      },
+      "night-sweep-top": {
+        "role": "neutral",
+        "displayName": "Night Sweep Top",
+        "theme": "dark",
+        "canonical": "#4a3a2f"
+      },
+      "night-sweep-bottom": {
+        "role": "neutral",
+        "displayName": "Night Sweep Bottom",
+        "theme": "dark",
+        "canonical": "#1d1612"
+      },
+      "night-sweep-key": {
+        "role": "neutral",
+        "displayName": "Night Sweep Key Light",
+        "theme": "dark",
+        "canonical": "rgb(255 206 160 / 0.42)"
+      },
+      "night-sweep-rim": {
+        "role": "neutral",
+        "displayName": "Night Sweep Rim Light",
+        "theme": "dark",
+        "canonical": "rgb(86 124 200 / 0.34)"
+      },
+      "night-sweep-floor": {
+        "role": "neutral",
+        "displayName": "Night Sweep Floor Shade",
+        "theme": "dark",
+        "canonical": "rgb(0 0 0 / 0.5)"
+      },
+      "glass-panel": {
+        "role": "neutral",
+        "displayName": "Glass Panel",
+        "theme": "light",
+        "canonical": "rgb(255 255 255 / 0.64)"
+      },
+      "glass-panel-solid": {
+        "role": "neutral",
+        "displayName": "Glass Panel Solid",
+        "theme": "light",
+        "canonical": "#f4f1ee"
+      },
+      "glass-ink": {
+        "role": "neutral",
+        "displayName": "Glass Ink",
+        "theme": "light",
+        "canonical": "#161618"
+      },
+      "glass-mute": {
+        "role": "neutral",
+        "displayName": "Glass Mute",
+        "theme": "light",
+        "canonical": "#4f4a46"
+      },
+      "glass-hairline": {
+        "role": "neutral",
+        "displayName": "Glass Hairline",
+        "theme": "light",
+        "canonical": "rgb(0 0 0 / 0.09)"
+      },
+      "glass-tile": {
+        "role": "neutral",
+        "displayName": "Glass Tile",
+        "theme": "light",
+        "canonical": "rgb(255 255 255 / 0.55)"
+      },
+      "glass-tile-ink": {
+        "role": "neutral",
+        "displayName": "Glass Tile Ink",
+        "theme": "light",
+        "canonical": "#45403c"
+      },
+      "glass-edge": {
+        "role": "neutral",
+        "displayName": "Glass Edge",
+        "theme": "light",
+        "canonical": "rgb(255 255 255 / 0.7)"
+      },
+      "glass-sheen": {
+        "role": "neutral",
+        "displayName": "Glass Sheen",
+        "theme": "light",
+        "canonical": "rgb(255 255 255 / 0.5)"
+      },
+      "night-glass-panel": {
+        "role": "neutral",
+        "displayName": "Night Glass Panel",
+        "theme": "dark",
+        "canonical": "rgb(28 28 32 / 0.6)"
+      },
+      "night-glass-panel-solid": {
+        "role": "neutral",
+        "displayName": "Night Glass Panel Solid",
+        "theme": "dark",
+        "canonical": "#26262a"
+      },
+      "night-glass-ink": {
+        "role": "neutral",
+        "displayName": "Night Glass Ink",
+        "theme": "dark",
+        "canonical": "#f5f5f7"
+      },
+      "night-glass-mute": {
+        "role": "neutral",
+        "displayName": "Night Glass Mute",
+        "theme": "dark",
+        "canonical": "#cdc8c3"
+      },
+      "night-glass-hairline": {
+        "role": "neutral",
+        "displayName": "Night Glass Hairline",
+        "theme": "dark",
+        "canonical": "rgb(255 255 255 / 0.12)"
+      },
+      "night-glass-tile": {
+        "role": "neutral",
+        "displayName": "Night Glass Tile",
+        "theme": "dark",
+        "canonical": "rgb(255 255 255 / 0.1)"
+      },
+      "night-glass-tile-ink": {
+        "role": "neutral",
+        "displayName": "Night Glass Tile Ink",
+        "theme": "dark",
+        "canonical": "#eeeae6"
+      },
+      "night-glass-edge": {
+        "role": "neutral",
+        "displayName": "Night Glass Edge",
+        "theme": "dark",
+        "canonical": "rgb(255 255 255 / 0.18)"
+      },
+      "night-glass-sheen": {
+        "role": "neutral",
+        "displayName": "Night Glass Sheen",
+        "theme": "dark",
+        "canonical": "rgb(255 255 255 / 0.1)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Landing headline only: the visible title of the hero stage, in ink with a soft ground-coloured halo; no other-language line or subheadline beneath it."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles of login, register, account, not-found."
+      },
+      "section-title": {
+        "displayName": "Section Title",
+        "purpose": "Below-the-fold section headings on the ground."
+      },
+      "field": {
+        "displayName": "Field",
+        "purpose": "The composed brief sentence in the bar."
+      },
+      "top-hit": {
+        "displayName": "Top Hit",
+        "purpose": "The one primary row."
+      },
+      "row": {
+        "displayName": "Row",
+        "purpose": "Result rows, FAQ questions, inputs; 600 when set."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Subheadings, descriptions, FAQ answers, the filter, small bars."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Trailing state, field labels, hints, footnotes."
+      },
+      "group-label": {
+        "displayName": "Group Label",
+        "purpose": "Result-group headers; Arabic: 12 px, no tracking, no case transform."
+      }
+    },
+    "shadows": [
+      {
+        "name": "panel",
+        "value": "0 18px 40px -22px rgb(29 29 31 / 0.35)",
+        "purpose": "The bar panel on the ground (light); the only shadow outside the hero stage."
+      },
+      {
+        "name": "panel-dark",
+        "value": "0 18px 40px -20px rgb(0 0 0 / 0.7)",
+        "purpose": "The bar panel on the ground (dark)."
+      },
+      {
+        "name": "glass-panel",
+        "value": "0 30px 60px -30px rgb(40 28 18 / 0.5)",
+        "purpose": "The glass bar on the hero stage only (light). Owner-directed, 2026-11-07."
+      },
+      {
+        "name": "glass-panel-dark",
+        "value": "0 30px 60px -28px rgb(0 0 0 / 0.75)",
+        "purpose": "The glass bar on the hero stage only (dark). Owner-directed, 2026-11-07."
+      },
+      {
+        "name": "glass-highlight",
+        "value": "inset 0 1px 0 var(--glass-sheen)",
+        "purpose": "Top-edge highlight stacked on the glass panel shadow; hero only."
+      },
+      {
+        "name": "headline-halo",
+        "value": "text-shadow: 0 0 28px var(--ground)",
+        "purpose": "Keeps the hero headline legible over a busy photo; hero only."
+      }
+    ],
+    "materials": [
+      {
+        "name": "frosted-panel",
+        "value": "backdrop-filter: blur(20px) saturate(1.4) over --panel, behind @supports; opaque --panel-solid fallback",
+        "purpose": "The Brief Bar surface."
+      },
+      {
+        "name": "ground-wash",
+        "value": "radial-gradient(70% 420px at 50% 0%, var(--wash), transparent 75%)",
+        "purpose": "The one gradient on the page ground."
+      },
+      {
+        "name": "glass-panel",
+        "value": "background: linear-gradient(180deg, var(--glass-sheen), transparent 140px), var(--panel); backdrop-filter: blur(32px) saturate(1.8), behind @supports; border var(--glass-edge); opaque --panel-solid fallback",
+        "purpose": "The Brief Bar in its glass tone over the hero stage. Owner-directed, 2026-11-07."
+      },
+      {
+        "name": "photo-scrim",
+        "value": "var(--photo-scrim) laid over the hero photograph (white 25% light, black 35% dark)",
+        "purpose": "Holds headline and glass contrast over the CMS hero photo."
+      },
+      {
+        "name": "studio-sweep",
+        "value": "radial-gradient(55% 75% at 24% 0%, var(--sweep-key), transparent 72%), radial-gradient(40% 65% at 84% 38%, var(--sweep-rim), transparent 70%), radial-gradient(130% 55% at 50% 118%, var(--sweep-floor), transparent 72%), linear-gradient(180deg, var(--sweep-top), var(--sweep-bottom)); SVG fractal-noise grain at 22% overlay",
+        "purpose": "Empty-studio hero backdrop until the CMS has a photo. Owner-directed, 2026-11-07."
+      }
+    ],
+    "motion": [
+      {
+        "name": "row-tint",
+        "value": "background-color 100ms",
+        "purpose": "Row hover / active / focus tint."
+      },
+      {
+        "name": "top-hit-press",
+        "value": "filter 100ms; hover brightness(1.1)",
+        "purpose": "Top Hit hover."
+      },
+      {
+        "name": "disclosure",
+        "value": "transform 150ms",
+        "purpose": "FAQ chevron rotates 90deg when open."
+      },
+      {
+        "name": "caret-blink",
+        "value": "1.1s steps(1, end) infinite",
+        "purpose": "Sentence caret; only under prefers-reduced-motion: no-preference."
+      },
+      {
+        "name": "smooth-scroll",
+        "value": "scroll-behavior: smooth",
+        "purpose": "Anchor jumps; only under prefers-reduced-motion: no-preference."
+      },
+      {
+        "name": "drawer-open",
+        "value": "grid-template-rows 0fr to 1fr, 320ms cubic-bezier(0.32, 0.72, 0, 1); rows opacity 240ms ease-out after 60ms",
+        "purpose": "Options drawer unfolds; instant under reduced motion."
+      },
+      {
+        "name": "drawer-close",
+        "value": "grid-template-rows 1fr to 0fr, 220ms cubic-bezier(0.32, 0.72, 0, 1); rows opacity 140ms ease-out; visibility hidden after 220ms",
+        "purpose": "Options drawer folds and leaves the tab order; instant under reduced motion."
+      },
+      {
+        "name": "toggle-chevron",
+        "value": "transform 300ms; rotate(180deg) when open",
+        "purpose": "Options toggle chevron; motion-safe only."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Brief Bar",
+      "kind": "custom",
+      "refersTo": "brief-bar",
+      "description": "The one floating frosted panel: field, Top Hit group, then the options drawer of result groups; a glass tone dresses it for the hero stage.",
+      "html": "<div class=\"ds-bar\"><div class=\"ds-field\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"8.5\" cy=\"8.5\" r=\"5.5\"/><path d=\"m13 13 4 4\"/></svg><p class=\"ds-sentence\">I need a <span class=\"ds-set\">photographer</span> for <span class=\"ds-set\">a wedding</span> in <span class=\"ds-set\">Dubai</span><span class=\"ds-caret\"></span></p></div><span class=\"ds-group-label\">Top Hit</span><button class=\"ds-tophit\"><span class=\"ds-tile ds-tile-accent\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 10h12\"/><path d=\"m11 5 5 5-5 5\"/></svg></span><span>See who’s free for this</span><kbd class=\"ds-kbd\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M16 4v6a2 2 0 0 1-2 2H5\"/><path d=\"m8 9-3 3 3 3\"/></svg></kbd></button><div style=\"border-top:1px solid var(--hair, rgb(0 0 0 / 0.08));margin-top:6px\"><span class=\"ds-group-label\">Emirate</span><label class=\"ds-row ds-row-set\" tabindex=\"0\"><span class=\"ds-tile ds-tile-set\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4.5 10.5 3.5 3.5 7.5-8\"/></svg></span><span>Dubai</span><span class=\"ds-trail\">set</span></label><label class=\"ds-row\" tabindex=\"0\"><span class=\"ds-tile\">AUH</span><span>Abu Dhabi</span><span class=\"ds-trail\"></span></label></div></div>",
+      "css": ".ds-bar { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; color: var(--ink, #1d1d1f); background: var(--panel-solid, #fcfbfa); border: 1px solid var(--hair, rgb(0 0 0 / 0.08)); border-radius: 14px; box-shadow: var(--shadow, 0 18px 40px -22px rgb(29 29 31 / 0.35)); overflow: hidden; max-width: 680px; } @supports (backdrop-filter: blur(20px)) { .ds-bar { background: var(--panel, rgb(255 255 255 / 0.86)); backdrop-filter: blur(20px) saturate(1.4); } } .ds-field { display: flex; align-items: flex-start; gap: 12px; padding: 16px 16px 12px; border-bottom: 1px solid var(--hair, rgb(0 0 0 / 0.08)); } .ds-field svg { margin-top: 3px; flex-shrink: 0; } .ds-sentence { margin: 0; font-size: 22px; font-weight: 500; line-height: 1.35; letter-spacing: -0.01em; color: var(--mute, #6b6560); } .ds-set { color: var(--ink, #1d1d1f); background: var(--selected, rgb(10 96 255 / 0.12)); border-radius: 6px; padding: 1px 5px; -webkit-box-decoration-break: clone; box-decoration-break: clone; } .ds-unset { font-style: italic; } .ds-caret { display: inline-block; width: 2px; height: 1.05em; margin-inline-start: 2px; vertical-align: -0.15em; background: var(--accent, #0a60ff); border-radius: 1px; } .ds-group-label { display: block; padding: 10px 16px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute, #6b6560); } .ds-tophit { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; margin: 0 8px; width: calc(100% - 16px); min-height: 50px; padding: 10px 12px; border: 0; border-radius: 9px; background: var(--accent, #0a60ff); color: var(--on-accent, #fff); font: 600 17px/1.375 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; text-align: start; cursor: pointer; transition: filter 100ms; } .ds-tophit:hover { filter: brightness(1.1); } .ds-tophit:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: 2px; } .ds-tile { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; line-height: 1; letter-spacing: -0.025em; } .ds-tile-set { background: var(--accent, #0a60ff); color: var(--on-accent, #fff); } .ds-tile-accent { background: rgb(255 255 255 / 0.2); color: #fff; } .ds-row { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 44px; margin: 0 6px; padding: 7px 10px; border-radius: 9px; font-size: 16px; line-height: 1.375; color: var(--ink, #1d1d1f); cursor: pointer; transition: background-color 100ms; } .ds-row:hover { background: rgb(29 29 31 / 0.045); } .ds-row:active { background: rgb(29 29 31 / 0.08); } .ds-row:focus-visible { background: rgb(29 29 31 / 0.06); outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-row-set { font-weight: 600; background: var(--selected, rgb(10 96 255 / 0.12)); } .ds-row-set:hover { background: var(--selected-hover, rgb(10 96 255 / 0.18)); } .ds-row-set .ds-trail { color: var(--selected-ink, #0848c2); } .ds-trail { text-align: end; font-size: 13px; color: var(--mute, #6b6560); } .ds-trail-attn { border-radius: 6px; background: var(--attention, #ffe3d6); color: var(--on-attention, #6a1f00); padding: 2px 6px; } .ds-kbd { display: inline-flex; align-items: center; border: 1px solid rgb(255 255 255 / 0.4); border-radius: 5px; padding: 2px 6px; font: 500 12px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; opacity: 0.8; }"
+    },
+    {
+      "name": "Brief Bar (glass)",
+      "kind": "custom",
+      "refersTo": "brief-bar-glass",
+      "description": "The primary bar on the hero stage: light glass with dark text, smoked glass with white text in dark; sheen, inset highlight, glass edge.",
+      "html": "<div class=\"ds-stage\"><div class=\"ds-glass\"><p class=\"ds-glass-sentence\">I need a <span class=\"ds-glass-set\">photographer</span> for <span class=\"ds-glass-set\">a wedding</span></p></div></div>",
+      "css": ".ds-stage { padding: 32px 16px; background: radial-gradient(55% 75% at 24% 0%, rgb(255 246 234 / 0.9), transparent 72%), radial-gradient(40% 65% at 84% 38%, rgb(168 196 236 / 0.6), transparent 70%), radial-gradient(130% 55% at 50% 118%, rgb(92 62 42 / 0.45), transparent 72%), linear-gradient(180deg, #cbb39c, #8e6d52); } .ds-glass { max-width: 680px; margin: 0 auto; border-radius: 14px; border: 1px solid rgb(255 255 255 / 0.7); background: #f4f1ee; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), 0 30px 60px -30px rgb(40 28 18 / 0.5); padding: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; color: #161618; } @supports (backdrop-filter: blur(32px)) { .ds-glass { background: linear-gradient(180deg, rgb(255 255 255 / 0.5), transparent 140px), rgb(255 255 255 / 0.64); backdrop-filter: blur(32px) saturate(1.8); } } .ds-glass-sentence { margin: 0; font-size: 22px; font-weight: 500; line-height: 1.35; letter-spacing: -0.01em; color: #4f4a46; } .ds-glass-set { color: #161618; }"
+    },
+    {
+      "name": "Top Hit",
+      "kind": "button",
+      "refersTo": "top-hit",
+      "description": "The one selection-blue row; the primary action of a panel.",
+      "html": "<button class=\"ds-tophit\"><span class=\"ds-tile ds-tile-accent\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 10h12\"/><path d=\"m11 5 5 5-5 5\"/></svg></span><span>See who’s free for this</span><kbd class=\"ds-kbd\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M16 4v6a2 2 0 0 1-2 2H5\"/><path d=\"m8 9-3 3 3 3\"/></svg></kbd></button>",
+      "css": ".ds-tophit { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; margin: 0 8px; width: calc(100% - 16px); min-height: 50px; padding: 10px 12px; border: 0; border-radius: 9px; background: var(--accent, #0a60ff); color: var(--on-accent, #fff); font: 600 17px/1.375 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; text-align: start; cursor: pointer; transition: filter 100ms; } .ds-tophit:hover { filter: brightness(1.1); } .ds-tophit:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: 2px; } .ds-tile { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; line-height: 1; letter-spacing: -0.025em; } .ds-tile-set { background: var(--accent, #0a60ff); color: var(--on-accent, #fff); } .ds-tile-accent { background: rgb(255 255 255 / 0.2); color: #fff; } .ds-kbd { display: inline-flex; align-items: center; border: 1px solid rgb(255 255 255 / 0.4); border-radius: 5px; padding: 2px 6px; font: 500 12px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; opacity: 0.8; }"
+    },
+    {
+      "name": "Result Row",
+      "kind": "custom",
+      "refersTo": "result-row",
+      "description": "Glyph tile, label, trailing slot; open, set and attention states.",
+      "html": "<div><label class=\"ds-row\" tabindex=\"0\"><span class=\"ds-tile\">W</span><span>a wedding or engagement</span><span class=\"ds-trail\"></span></label><label class=\"ds-row ds-row-set\" tabindex=\"0\"><span class=\"ds-tile ds-tile-set\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4.5 10.5 3.5 3.5 7.5-8\"/></svg></span><span>an event</span><span class=\"ds-trail\">set</span></label><label class=\"ds-row\" tabindex=\"0\"><span class=\"ds-tile\">1h</span><span>pick a date</span><span class=\"ds-trail ds-trail-attn\">Choose a date from today on.</span></label></div>",
+      "css": ".ds-row { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 44px; margin: 0 6px; padding: 7px 10px; border-radius: 9px; font-size: 16px; line-height: 1.375; color: var(--ink, #1d1d1f); cursor: pointer; transition: background-color 100ms; } .ds-row:hover { background: rgb(29 29 31 / 0.045); } .ds-row:active { background: rgb(29 29 31 / 0.08); } .ds-row:focus-visible { background: rgb(29 29 31 / 0.06); outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-row-set { font-weight: 600; background: var(--selected, rgb(10 96 255 / 0.12)); } .ds-row-set:hover { background: var(--selected-hover, rgb(10 96 255 / 0.18)); } .ds-row-set .ds-trail { color: var(--selected-ink, #0848c2); } .ds-trail { text-align: end; font-size: 13px; color: var(--mute, #6b6560); } .ds-trail-attn { border-radius: 6px; background: var(--attention, #ffe3d6); color: var(--on-attention, #6a1f00); padding: 2px 6px; } .ds-tile { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; line-height: 1; letter-spacing: -0.025em; } .ds-tile-set { background: var(--accent, #0a60ff); color: var(--on-accent, #fff); } .ds-tile-accent { background: rgb(255 255 255 / 0.2); color: #fff; }"
+    },
+    {
+      "name": "Result Group",
+      "kind": "custom",
+      "refersTo": "result-row",
+      "description": "Spotlight-style group header over rows, opened by a hairline.",
+      "html": "<fieldset style=\"border:0;padding:0;margin:0;border-top:1px solid var(--hair, rgb(0 0 0 / 0.08))\"><legend style=\"display:contents\"><span class=\"ds-group-label\">Shot by</span></legend><label class=\"ds-row\" tabindex=\"0\"><span class=\"ds-tile\">Her</span><span>a woman</span><span class=\"ds-trail\"></span></label><label class=\"ds-row\" tabindex=\"0\"><span class=\"ds-tile\">Him</span><span>a man</span><span class=\"ds-trail\"></span></label></fieldset>",
+      "css": ".ds-group-label { display: block; padding: 10px 16px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute, #6b6560); } .ds-row { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 44px; margin: 0 6px; padding: 7px 10px; border-radius: 9px; font-size: 16px; line-height: 1.375; color: var(--ink, #1d1d1f); cursor: pointer; transition: background-color 100ms; } .ds-row:hover { background: rgb(29 29 31 / 0.045); } .ds-row:active { background: rgb(29 29 31 / 0.08); } .ds-row:focus-visible { background: rgb(29 29 31 / 0.06); outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-row-set { font-weight: 600; background: var(--selected, rgb(10 96 255 / 0.12)); } .ds-row-set:hover { background: var(--selected-hover, rgb(10 96 255 / 0.18)); } .ds-row-set .ds-trail { color: var(--selected-ink, #0848c2); } .ds-trail { text-align: end; font-size: 13px; color: var(--mute, #6b6560); } .ds-trail-attn { border-radius: 6px; background: var(--attention, #ffe3d6); color: var(--on-attention, #6a1f00); padding: 2px 6px; } .ds-tile { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; line-height: 1; letter-spacing: -0.025em; } .ds-tile-set { background: var(--accent, #0a60ff); color: var(--on-accent, #fff); } .ds-tile-accent { background: rgb(255 255 255 / 0.2); color: #fff; }"
+    },
+    {
+      "name": "Glyph Tile",
+      "kind": "chip",
+      "refersTo": "glyph-tile",
+      "description": "30 px tile leading every row: up to 3 localised characters or a drawn icon.",
+      "html": "<div style=\"display:flex;gap:8px\"><span class=\"ds-tile\">AUH</span><span class=\"ds-tile\">2h</span><span class=\"ds-tile ds-tile-set\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4.5 10.5 3.5 3.5 7.5-8\"/></svg></span></div>",
+      "css": ".ds-tile { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; line-height: 1; letter-spacing: -0.025em; } .ds-tile-set { background: var(--accent, #0a60ff); color: var(--on-accent, #fff); } .ds-tile-accent { background: rgb(255 255 255 / 0.2); color: #fff; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "text-field",
+      "description": "A labelled input as a bar row, with its peach error beside it.",
+      "html": "<div class=\"ds-input-wrap\"><label class=\"ds-input-label\" for=\"ds-email\">Email</label><input id=\"ds-email\" class=\"ds-input\" type=\"email\" value=\"you@example.com\"><p class=\"ds-error\">Enter an email address like name@example.com.</p></div>",
+      "css": ".ds-input-wrap { padding: 10px 16px; } .ds-input-label { display: block; font-size: 13px; font-weight: 500; color: var(--mute, #6b6560); } .ds-input { display: block; margin-top: 4px; box-sizing: border-box; width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--hair, rgb(0 0 0 / 0.08)); border-radius: 9px; background: transparent; color: var(--ink, #1d1d1f); font: 400 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; outline: none; transition: border-color 150ms; } .ds-input:focus-visible { border-color: var(--focus, #0a60ff); } .ds-error { display: inline-block; margin-top: 6px; border-radius: 6px; background: var(--attention, #ffe3d6); color: var(--on-attention, #6a1f00); padding: 4px 8px; font-size: 13px; }"
+    },
+    {
+      "name": "Key Hint",
+      "kind": "chip",
+      "refersTo": "key-hint",
+      "description": "Return / Esc / Cmd K (Ctrl K) chip, shown only on hover-capable pointers.",
+      "html": "<span style=\"display:inline-block;background:var(--accent, #0a60ff);color:#fff;padding:8px;border-radius:9px\"><kbd class=\"ds-kbd\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M16 4v6a2 2 0 0 1-2 2H5\"/><path d=\"m8 9-3 3 3 3\"/></svg></kbd></span>",
+      "css": ".ds-kbd { display: inline-flex; align-items: center; border: 1px solid rgb(255 255 255 / 0.4); border-radius: 5px; padding: 2px 6px; font: 500 12px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; opacity: 0.8; }"
+    },
+    {
+      "name": "Options Toggle",
+      "kind": "button",
+      "refersTo": "options-toggle",
+      "description": "Trailing control of the bar field: 44 px button holding a 30 px chevron tile that turns when the options drawer opens; aria-expanded / aria-controls.",
+      "html": "<button class=\"ds-toggle\" type=\"button\" aria-expanded=\"false\" aria-label=\"Show options\"><span class=\"ds-toggle-tile\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 7.5 5 5 5-5\"/></svg></span></button>",
+      "css": ".ds-toggle { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; border-radius: 9px; cursor: pointer; } .ds-toggle-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); transition: color 100ms; } .ds-toggle:hover .ds-toggle-tile { color: var(--ink, #1d1d1f); } .ds-toggle svg { transition: transform 300ms; } .ds-toggle[aria-expanded=\"true\"] svg { transform: rotate(180deg); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Brief Bar",
+    "overview": "The page is one panel the audience already knows how to use: a macOS Spotlight / Quick Actions bar. A single frosted panel floats on a warm stone ground; the brief is the search field, the options fold beneath it as grouped result rows, and the Top Hit, the one selection-blue row, is the shoot. The one place a picture sits behind the interface is the landing hero: a full-screen stage, the CMS hero photograph under a theme scrim (or an empty studio sweep until one exists), with the bar floating over it as glass. Everywhere else nothing is painted onto the page to signal \"photography\", and nowhere is there a serif headline, a booking widget, or a ticket or signage costume. The world is the interface.\n\nDensity is Spotlight density: identical 44 px row rhythm so the whole brief reads in one sweep, a 30 px glyph tile leading every row, quiet state text or a key hint trailing it. Below the fold the same grammar continues on the bare ground: rows separated by hairlines, without a panel. Warmth comes from the stone ground and warm greys, premium from restraint: system type at zero font bytes, one accent, and outside the hero stage one shadow and one gradient. Dark (\"the phone at night\") is a first-class rendering, not an inversion.\n\nThe owner rejected the ticket (\"The Shoot Pass\") and municipal signage (\"Bilingual Wayfinding\") worlds as gimmicky and cold; this world must never drift back toward a themed costume.",
+    "keyCharacteristics": [
+      "One floating frosted panel per primary task, 14 px corners, 1 px hairline, the system's only shadow.",
+      "Selection blue reserved for the Top Hit, the caret, `::selection` and focus; never body text or decoration.",
+      "Every row is glyph tile, label, trailing slot, on a single 44 px minimum rhythm.",
+      "System UI type in both scripts, tabular figures, zero webfont bytes.",
+      "Logical CSS only; Arabic is a designed rendering, not a mirrored afterthought.",
+      "Works as a plain form without JavaScript.",
+      "On the landing hero the primary bar wears its glass tone over a full-screen photo stage; everywhere else it floats on the ground.",
+      "With JavaScript the bar's options fold into a drawer under the Top Hit; a toggle, a sentence part, the filter or Cmd/Ctrl+K opens it."
+    ],
+    "rules": [
+      {
+        "name": "The One Blue Row Rule",
+        "body": "A panel has exactly one selection-blue row, its Top Hit. If a second action is needed, it is an ordinary row in an \"Actions\" group.",
+        "section": "colors"
+      },
+      {
+        "name": "The Roles Not Colours Rule",
+        "body": "No component names a hex. Every colour is a role token with a light value, a `.dark` value and an identical `prefers-color-scheme` fallback; new roles are added to all three blocks and to the contrast test, or not at all. The glass tone is the one scoped override: it redefines the panel roles inside the glass bar, in the same three blocks, and its text pairs are tested over mid grey and over the worst photo after the scrim.",
+        "section": "colors"
+      },
+      {
+        "name": "The Material Not Icons Rule",
+        "body": "State is carried by material: weight, a filled ink tile, a peach tint. Not by coloured badges, ticks in green or warning triangles.",
+        "section": "colors"
+      },
+      {
+        "name": "The Zero Font Bytes Rule",
+        "body": "No webfont, ever. The stack is the type.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "`font-variant-numeric: tabular-nums` is set on the root; dates, durations and references align without per-component work.",
+        "section": "typography"
+      },
+      {
+        "name": "The Arabic Label Rule",
+        "body": "Uppercase and letter-spacing never apply to Arabic; `:lang(ar)` resets them and lifts the size one step.",
+        "section": "typography"
+      },
+      {
+        "name": "The Two Panels Rule",
+        "body": "A page shows at most two bar panels: the primary bar and one smaller (`sm`, 15 px) secondary bar such as the creator invitation. The glass tone is the primary bar dressed for the hero stage, not an extra panel. Everything else is rows on the ground.",
+        "section": "layout"
+      },
+      {
+        "name": "The Logical CSS Rule",
+        "body": "Only logical properties and utilities: `ms/me/ps/pe`, `start/end`, `text-start/text-end`, `border-s/e`, `inset-inline`. `scripts/check-logical-css.sh` fails the build on any physical left/right in site code. Icons that point along the reading direction (forward, chevron, log out) flip with `rtl:-scale-x-100`; vertical ones never flip.",
+        "section": "layout"
+      },
+      {
+        "name": "The One Shadow Rule",
+        "body": "There is one shadow and it belongs to the floating panel. Rows, tiles, the Top Hit and section lists never cast one. Owner-directed exceptions (2026-11-07), for the hero stage only: the glass bar's deeper shadow and its 1 px inset top highlight, and the headline's ground-coloured halo. No other surface takes a shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The One Gradient Rule",
+        "body": "On the ground the only gradient is the faint selection-blue radial wash at the top (70% × 420 px at top centre). Owner-directed exceptions (2026-11-07), for the hero stage only: the glass bar's top sheen and the studio sweep's paper, key, rim and floor gradients with their noise grain. No gradients anywhere else.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do put each task in one Brief Bar with exactly one Top Hit; secondary actions are ordinary rows in an \"Actions\" group.",
+      "Do build every list item as glyph tile, label, trailing slot at 44 px minimum height.",
+      "Do consume colour through role tokens and add any new role to `:root`, `.dark` and the `prefers-color-scheme` block together, with its pair in the contrast test.",
+      "Do keep text pairs at WCAG AA in both themes: muted text is #6B6560 in light, and the dark accent is #2B6BEB, deepened for white text.",
+      "Do use logical properties only and flip direction-bearing icons with `rtl:-scale-x-100`.",
+      "Do gate decorative motion (caret blink, smooth scroll, the drawer's fold and fade, the toggle chevron) behind `prefers-reduced-motion: no-preference`.",
+      "Do keep every glyph tile's text as localised CMS data, three characters at most, or a drawn icon.",
+      "Do re-run the glass contrast test (over mid grey and the worst photo after the scrim) whenever a glass or scrim value changes.",
+      "Do keep the bar a working plain form without JavaScript: the options drawer stays open, and the toggle and key hints are hidden."
+    ],
+    "donts": [
+      "Don't load a webfont or a second type family.",
+      "Don't use selection blue for text, links, borders, icons or decoration.",
+      "Don't add a shadow, a gradient or a panel style beyond the panel and its glass tone, their shadows, the one top wash and the hero stage's sweep, sheen and halo.",
+      "Don't put more than two bar panels on a page.",
+      "Don't use uppercase or letter-spacing on Arabic text.",
+      "Don't write `left`/`right`, `ml-`/`pr-`, `text-left` or any physical utility in site code.",
+      "Don't use emoji, Unicode symbols or copied Apple icons as icons.",
+      "Don't add eyebrows or kickers above headlines; group labels exist only as Spotlight's group headers over rows.",
+      "Don't paint the subject onto the page outside the hero stage, and don't costume it anywhere: no serif display, ticket, signage or booking-widget costume.",
+      "Don't invent proof: no testimonials, logos, counts or ratings that do not exist."
+    ],
+    "directionHistory": [
+      {
+        "date": "2026-11-07",
+        "note": "The owner asked for three changes explicitly. (1) The landing hero became a full-screen stage: the CMS photograph under a theme scrim, or a CSS studio sweep until a photo exists, with the CMS headline as the only visible title above the bar; the other-language headline line and the subheadline are no longer shown. This retires \"no moody photo hero\" and \"nothing painted on the page\" for the hero only. (2) The bar gained a glass tone for that stage, which brings its own sheen, inset highlight, edge and deeper shadow; the One Shadow and One Gradient rules now name these as hero-only exceptions. (3) The brief builder's options fold into a drawer under the Top Hit, open without JavaScript."
+      }
+    ]
+  }
+}

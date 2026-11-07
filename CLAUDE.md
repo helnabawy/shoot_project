@@ -73,17 +73,21 @@ shootix.ae feature map and drafts for 002–005 are in `specs/ROADMAP.md`.
   no flash of the wrong theme.
 - No new package, service or abstraction without a Complexity Tracking justification in the plan.
 
-## Commands (available after Phase 1 setup tasks)
+## Commands
 
 ```bash
 pnpm install
-docker compose up -d postgres     # local PostgreSQL
-pnpm --filter web payload migrate # apply committed migrations
-pnpm --filter web dev             # http://localhost:3000, admin at /admin
-pnpm --filter web seed            # default content + admin from .env
+docker compose up -d postgres     # local PostgreSQL 17
+pnpm db:migrate                   # apply committed migrations
+pnpm seed                         # default bilingual content + admin from .env
+pnpm dev                          # http://localhost:3000, admin at /admin
 pnpm typecheck && pnpm lint && pnpm test
-pnpm test:e2e
+pnpm test:coverage                # domain 100 %, app >= 80 %
+pnpm build && pnpm test:e2e       # or BASE_URL=http://localhost:3100 against a running server
+pnpm db:migration:create <name>   # after any schema change; CI fails on drift
 ```
+
+Every Bash call needs Node 24 on PATH (`nvm use`); integration tests need Docker.
 
 ## Conventions
 

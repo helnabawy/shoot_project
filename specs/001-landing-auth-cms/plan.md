@@ -26,7 +26,7 @@ end-to-end) with Lighthouse CI enforcing the performance budgets.
 
 **Storage**: PostgreSQL 17 (Docker Compose locally; managed PostgreSQL in production) through Payload's Postgres adapter (Drizzle), schema changes shipped as committed migrations. Media on local disk in development, S3-compatible object storage in production.
 
-**Testing**: Vitest 5.x (unit; component with jsdom + React Testing Library; integration against a PostgreSQL container started by Testcontainers), Playwright 1.65 (+ `@axe-core/playwright`), Lighthouse CI 0.16.
+**Testing**: Vitest 4.0.x (unit; component with jsdom + React Testing Library; integration against a PostgreSQL container started by Testcontainers), Playwright 1.63 (+ `@axe-core/playwright`), Lighthouse CI 0.16. (Planned as Vitest 5 / Playwright 1.65; kept at the template's versions, see research.md "Confirmed during implementation".)
 
 **Target Platform**: Linux container (Next.js standalone output) behind a load balancer; browsers: last 2 evergreen versions + iOS Safari ≥ 16.
 

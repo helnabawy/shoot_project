@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "siteName": "Shoot Project",
+    "defaultDescription": "Book verified photographers and videographers in the UAE. Describe the shoot in one line and we reply on WhatsApp."
+  },
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "mainNav": "Main",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu"
+  },
+  "nav": {
+    "login": "Log in",
+    "register": "Create account",
+    "account": "My account",
+    "logout": "Log out",
+    "home": "Home"
+  },
+  "locale": {
+    "switchTo": "العربية",
+    "switchLabel": "Read this page in Arabic",
+    "current": "English"
+  },
+  "theme": {
+    "label": "Appearance",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "contact": {
+    "whatsapp": "WhatsApp us",
+    "whatsappInstead": "WhatsApp us instead",
+    "whatsappFloating": "Chat with us on WhatsApp",
+    "call": "Call us",
+    "rather": "Rather talk?",
+    "errors": {
+      "whatsappFormat": "Use the international format with the country code, for example +971 58 123 4567."
+    }
+  },
+  "brief": {
+    "barLabel": "Describe your shoot",
+    "fieldLabel": "Your brief",
+    "filterPlaceholder": "Type to filter, for example “wedding”",
+    "topHit": "Top hit",
+    "actions": "Actions",
+    "set": "set",
+    "pickADate": "pick a date",
+    "anyDate": "any date",
+    "chooseOne": "choose one",
+    "pickAny": "pick one or more",
+    "orType": "or type your own words",
+    "noOptions": "No options yet",
+    "submitting": "Sending your brief…",
+    "keyHintReturn": "Return",
+    "imAProvider": "I'm a {persona}",
+    "successTitle": "Brief sent",
+    "successReference": "Reference <code>{reference}</code>",
+    "successNext": "We'll reply on WhatsApp {replyTime}.",
+    "successOpenWhatsapp": "Open WhatsApp",
+    "successAnother": "Start another brief",
+    "noJsHint": "Choose each part of the brief, then send it.",
+    "errors": {
+      "required": "Choose this part of the brief.",
+      "dateInvalid": "Pick a real date.",
+      "datePast": "Pick today or a later date.",
+      "numberInvalid": "Enter a number from 1 to 999.",
+      "tooLong": "Keep it under 80 characters.",
+      "notAnOption": "Choose one of the options.",
+      "tooMany": "You've sent several briefs already. Please try again in an hour, or WhatsApp us directly.",
+      "generic": "Something went wrong sending your brief. Please try again, or WhatsApp us directly."
+    },
+    "showMore": "Show {count} more",
+    "showOptions": "Show options",
+    "hideOptions": "Hide options",
+    "successNextTitle": "What happens next"
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "loginIntro": "Welcome back. Log in to see your briefs.",
+    "registerTitle": "Create your account",
+    "registerIntro": "One account for booking a shoot or offering your work.",
+    "name": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 8 characters.",
+    "accountType": "I want to",
+    "seeker": "Book a professional",
+    "provider": "Offer my services",
+    "persona": "I am a",
+    "personaPlaceholder": "Choose your profession",
+    "noPersonas": "We're not taking new professionals right now.",
+    "categories": "Specialties (optional)",
+    "submitLogin": "Log in",
+    "submitRegister": "Create account",
+    "pending": "Please wait…",
+    "haveAccount": "Already have an account?",
+    "noAccount": "New here?",
+    "errors": {
+      "nameLength": "Enter your name (2 to 80 characters).",
+      "emailInvalid": "Enter a valid email address.",
+      "passwordLength": "Use at least 8 characters.",
+      "passwordRequired": "Enter your password.",
+      "accountType": "Choose what you want to do.",
+      "personaRequired": "Choose your profession.",
+      "personaInactive": "That profession isn't available. Choose another.",
+      "emailTaken": "This email already has an account. Log in instead.",
+      "invalid": "Email or password is incorrect.",
+      "locked": "Too many attempts. Try again in 15 minutes.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "account": {
+    "title": "My account",
+    "details": "Your details",
+    "type": "Account type",
+    "persona": "Profession",
+    "briefs": "Your briefs",
+    "noBriefs": "No briefs yet.",
+    "newBrief": "Start a brief",
+    "status": {
+      "new": "Sent",
+      "contacted": "We replied",
+      "closed": "Closed"
+    }
+  },
+  "home": {
+    "howItWorks": "How it works",
+    "faq": "Questions"
+  },
+  "preview": {
+    "active": "Preview mode: you are seeing unpublished changes.",
+    "exit": "Exit preview"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you're looking for doesn't exist.",
+    "home": "Back to the start"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "social": "Follow us"
+  }
+}

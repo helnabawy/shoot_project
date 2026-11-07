@@ -307,13 +307,48 @@ verified from official docs and are to be checked during Phase 1 setup.
   Principle V). Hosting: any managed PostgreSQL; choose a UAE or nearby
   region for latency.
 
-## Open items carried into tasks
+## Confirmed during implementation (2026-11-07)
 
-- Verify `packages/domain` consumption by Next 16/Turbopack without
-  `transpilePackages` (T005; fall back documented above).
-- Confirm `create-payload-app` `--secret` behaviour (set env manually
-  regardless).
-- Confirm Vitest 5 `projects` + `@vitejs/plugin-react` versions at install.
-- Confirm Lighthouse CI dark-scheme emulation approach (T091).
-- Confirm at T075 that `required: true` on a localised field is enforced per
-  saved locale (expected; undocumented) and decide which fields keep it.
+- **Versions in use**: Next.js **16.4.3** (raised from 16.3.3 in the T068
+  security pass; the newest patched release older than two weeks), Payload
+  3.93.0, React 19.2.6, Tailwind 4.3.5, zod 4.6.7, sharp 0.35.5. Test tools
+  stayed at the template's **Vitest 4.0.18** and **Playwright 1.63.0**: the
+  `projects` API and every feature the plan needs exist there, so the planned
+  Vitest 5 / Playwright 1.65 bump adds risk without benefit (revisit with
+  feature 002). `pnpm-workspace.yaml` overrides dompurify 3.4.17 and
+  happy-dom 21.0.4 (transitive, via the Payload admin and Lexical).
+- **`packages/domain`** ships TypeScript source and needs
+  `transpilePackages: ['@shoot/domain']` in `next.config.ts`.
+- **Client bundle**: zod stays on the server; the client imports the
+  dependency-free `@shoot/domain/brief/validate`. The next-intl client runtime
+  is not shipped on public pages: server components resolve labels and pass
+  them as props; only the login/register forms use `NextIntlClientProvider`.
+  Landing JS 187 KB, auth pages 199 KB (budget 200 KB).
+- **Routes**: `robots.ts` and `sitemap.ts` live at the `app/` root (route
+  groups do not build them); `/api/health` and `/api/cron/cleanup` live under
+  `app/(payload)/api/` beside Payload's catch-all.
+- **Design adjustments for contrast** (WCAG AA, `tests/unit/contrast.test.ts`):
+  muted text `#6B6560` (the sketch's `#8A8580` is 3.3:1 on the stone ground);
+  dark accent `#2B6BEB` instead of `#4D8DFF` so white Top Hit text stays
+  ≥ 4.5:1. The hero eyebrow field exists in the CMS but is not rendered (craft
+  floor: no eyebrow above the headline); the logo is optional and the wordmark
+  falls back to the site name. Rows carry a CMS `glyph` field.
+- **Required localised fields** are enforced for the default locale; Arabic
+  falls back to English (`fallback: true`), and the admin "Arabic
+  translation" sidebar panel lists what is still untranslated.
+- **Lighthouse dark run**: Chrome flags `--force-dark-mode
+  --blink-settings=preferredColorScheme=0` (`lighthouserc.dark.json`).
+- **CSP**: a baseline policy on public routes in production. Inline scripts are
+  allowed because the landing page is statically generated (no per-request
+  nonce); `form-action` includes wa.me because the no-JS brief redirects
+  there. The admin and API are outside the policy.
+- **Coverage scope**: Vitest counts our routes, pages and layouts under
+  `src/app`; only Payload's generated admin, layout and REST/GraphQL
+  catch-all files are excluded. `tests/integration/routes.int.test.ts` calls
+  the route handlers, pages and layout against the test database with
+  Next's request APIs stubbed. App coverage: 93.9 % statements, 81.3 %
+  branches (gate 80 %).
+- **Motion** (T103) lives in `globals.css` (row highlight, caret, float-in,
+  all inside `prefers-reduced-motion: no-preference`) and the builder's
+  keyboard handling, not in a separate `motion.ts`.
+- **Usability (T106)** needs real participants and is still open.

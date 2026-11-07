@@ -6,7 +6,7 @@
 
 **Status**: Draft
 
-**Amended**: 2026-11-06 — added bilingual English/Arabic (US6, FR-034–FR-041) and light/dark appearance (US7, FR-042–FR-045) for the public site and the content area; added the one-sentence brief builder with CMS-managed options (US8, FR-046–FR-054), modelled on shootix.ae's Quick Match step 1. Later Quick Match steps (creator, details, quotation) are feature 003. 2026-11-07 — added client-flow simplicity and design-quality requirements (FR-055–FR-062, SC-015–SC-017); visual direction chosen through the impeccable workflow: "The Shoot Pass" first, replaced the same day by "Bilingual Wayfinding" at the owner's request (premium, more readable, no ticket gimmick), then replaced again the same day by "The Brief Bar", a Spotlight / Quick Actions direction the owner pinned after a re-roll (warmer, more premium, no costume).
+**Amended**: 2026-11-06 — added bilingual English/Arabic (US6, FR-034–FR-041) and light/dark appearance (US7, FR-042–FR-045) for the public site and the content area; added the one-sentence brief builder with CMS-managed options (US8, FR-046–FR-054), modelled on shootix.ae's Quick Match step 1. Later Quick Match steps (creator, details, quotation) are feature 003. 2026-11-07 — added client-flow simplicity and design-quality requirements (FR-055–FR-062, SC-015–SC-017); visual direction chosen through the impeccable workflow: "The Shoot Pass" first, replaced the same day by "Bilingual Wayfinding" at the owner's request (premium, more readable, no ticket gimmick), then replaced again the same day by "The Brief Bar", a Spotlight / Quick Actions direction the owner pinned after a re-roll (warmer, more premium, no costume). 2026-11-07 — the brief builder's professional slot may let the visitor pick more than one professional type, e.g. a photographer and a videographer for the same shoot (FR-063, US8 scenario 10).
 
 **Input**: User description: "New website inspired by shootix.ae. Fast, single-page feel, responsive. Hero section 'You brief. We shoot.' Visitors can register and log in. A CMS lets the owner edit the landing page content and the WhatsApp mobile number. The structure must scale. Unit tests cover all use cases. The target audience (today photographers, videographers and other shooters) must be changeable from the backend in future, e.g. to teachers, without code changes."
 
@@ -32,10 +32,11 @@ the page meets the performance and accessibility targets in Success Criteria.
 **Acceptance Scenarios**:
 
 1. **Given** the site has published landing content, **When** a visitor opens
-   the home page, **Then** they see the hero with the headline "You brief. We
-   shoot.", a sub-headline, the brief builder as the primary action and a
-   WhatsApp link as the secondary action, followed by the published sections in the configured
-   order.
+   the home page, **Then** they see the hero filling the screen under the
+   header: the headline "You brief. We shoot." as its title and the brief
+   builder beneath it as the primary action, over the hero image (FR-066),
+   with a WhatsApp link as the secondary action, followed by the published
+   sections in the configured order.
 2. **Given** the visitor is on the home page, **When** they tap an in-page
    navigation link (e.g. "How it works"), **Then** the page scrolls to that
    section without reloading and the browser URL reflects the section.
@@ -322,6 +323,21 @@ an occasion in the content area and see it in the list within a minute.
 9. **Given** JavaScript is disabled, **When** the visitor submits the
    sentence, **Then** the brief is still recorded and they are taken to the
    WhatsApp chat.
+10. **Given** the editor allows several professional types in the
+   professional slot, **When** the visitor picks Photographer and
+   Videographer, **Then** the sentence reads "a photographer and
+   videographer" (joined in the page language), the other slots list the
+   options of either type, and the recorded brief and the WhatsApp message
+   name both types.
+11. **Given** JavaScript is available, **When** a visitor opens the page,
+   **Then** the builder shows only the sentence, its filter and the primary
+   action, with the options folded away; **When** they tap a word of the
+   sentence, **Then** the options open, that slot's group scrolls into view
+   with all of its values, and focus rests on the current choice (FR-064).
+12. **Given** the builder is on the page, **When** the visitor presses
+   Cmd+K (Ctrl+K off Apple devices), **Then** the options open with focus in
+   the filter; pressing it again, or Escape with an empty filter, folds them
+   (FR-065).
 
 ---
 
@@ -332,8 +348,9 @@ an occasion in the content area and see it in the list within a minute.
   warning in the content area.
 - Landing content has never been published: the public page shows the hero
   with seeded defaults and no sections, never an error page.
-- Hero image missing or slow: the layout reserves its space so text does not
-  jump; a solid colour background is shown until the image arrives.
+- Hero image missing or slow: the full-screen stage reserves its space so
+  text does not jump; with no image, a designed studio backdrop is shown
+  instead (FR-066), never an invented photo.
 - Very long headline or sub-headline (200+ characters): wraps gracefully on
   all viewports; the content area warns editors above a recommended length.
 - Visitor has JavaScript disabled: the page, its anchors, the WhatsApp links
@@ -389,11 +406,12 @@ an occasion in the content area and see it in the list within a minute.
 
 - **FR-001**: The system MUST serve a single public landing page composed of a
   hero area followed by an ordered list of content sections.
-- **FR-002**: The hero MUST display a headline, sub-headline, up to three
+- **FR-002**: The hero MUST display a headline, up to three
   trust statements, the brief builder (FR-046) as the primary action and a
   WhatsApp link as the secondary action (editors MAY switch to an alternative
   layout with two plain actions), all sourced from the content store; the shipped default headline is "You brief.
-  We shoot.".
+  We shoot.". The sub-headline stays an editable field but is not shown in
+  the full-screen hero (FR-066).
 - **FR-003**: The system MUST support at least these section types, each
   fully editable: How it works (ordered steps), Why us (feature list),
   Specialties/categories grid, For professionals (persona band), FAQ,
@@ -565,6 +583,15 @@ an occasion in the content area and see it in the list within a minute.
   reader (each slot a labelled control) and MUST work without JavaScript.
 - **FR-054**: Each recorded brief MUST have a stable identifier so that a
   later feature can resume the matching flow from it.
+- **FR-063**: Editors MUST be able to let visitors pick more than one
+  professional type in the professional slot (a per-slot setting, off by
+  default). When it is on, the visitor MAY pick any number of the active
+  types (at least one when the slot is required); the sentence and the
+  WhatsApp message MUST join the chosen types with the page language's
+  "and"; dependent slots MUST list options that apply to any chosen type
+  (FR-048); and the recorded brief MUST reference every chosen type, so
+  admins can filter by any of them (FR-052). No type name is hardcoded: the
+  setting works for any audience.
 
 **Client flow simplicity and design quality**
 
@@ -594,12 +621,40 @@ an occasion in the content area and see it in the list within a minute.
   options as grouped result rows, the Top Hit as the one primary action),
   in both languages and both themes, and MUST NOT contain stock gradients,
   translucent panels other than the brief bar itself, generic icon tiles, or invented proof
-  (testimonials, client logos, counts, ratings).
+  (testimonials, client logos, counts, ratings). The hero stage (FR-066) is
+  the one place for a photograph or the designed studio backdrop behind
+  the bar.
 - **FR-062**: Interactive feedback MUST be immediate: every tap shows a
   visible state within 100 ms; pending actions show progress; set route
   lines show a check and the route progress advances; submission marks the
   route complete with its reference, and an equivalent non-animated
   confirmation appears when the visitor prefers reduced motion.
+
+**Brief bar refinements** (owner-directed, 2026-11-07)
+
+- **FR-064**: With JavaScript, the builder's option groups and its secondary
+  actions MUST start folded under the sentence, leaving the sentence, the
+  filter and the primary action. Tapping a word of the sentence MUST open
+  them, bring that slot's group into view with all of its values and put
+  focus on its current choice. Typing in the filter, pressing the down arrow
+  from it, and a validation error (FR-050) MUST also open them. A visible
+  toggle at the end of the sentence MUST open and fold them, announce its
+  state (expanded or collapsed) and be named in the page language. Without
+  JavaScript every group MUST stay open so the plain form works (FR-053).
+- **FR-065**: Cmd+K on Apple devices and Ctrl+K elsewhere MUST open and fold
+  the options from anywhere on the page, matched by the physical key so it
+  works on an Arabic keyboard layout; opening MUST put focus in the filter.
+  Escape MUST clear a typed filter first, then fold the options and return
+  focus to the toggle. The shortcut MUST be shown as a key hint on devices
+  with a pointer that can hover, and never on touch-only devices.
+- **FR-066**: The hero MUST fill the screen below the header, edge to edge:
+  the headline as its title in the page language (the other language's line
+  and the sub-headline are not shown) and the brief bar beneath it, over the
+  hero image from the content area, or over a designed studio backdrop until
+  an image is uploaded (never an invented photo). Over that background the
+  bar MUST be frosted glass (light in the light theme, smoked in the dark
+  theme) whose text keeps WCAG AA contrast over any photograph, which a
+  theme-matched tint over the image guarantees.
 
 ### Key Entities
 

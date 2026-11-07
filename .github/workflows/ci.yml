@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DATABASE_URI: postgres://shoot:shoot@127.0.0.1:5432/shoot
+  PAYLOAD_SECRET: ci-only-secret-0123456789abcdef0123456789
+  PREVIEW_SECRET: ci-preview-secret
+  CRON_SECRET: ci-cron-secret
+  NEXT_PUBLIC_SITE_URL: http://localhost:3000
+  SEED_ADMIN_EMAIL: admin@example.test
+  SEED_ADMIN_PASSWORD: ci-admin-password-1
+  NEXT_TELEMETRY_DISABLED: 1
+
+jobs:
+  quality:
+    name: Typecheck, lint, unit, component, integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      # Integration tests start their own PostgreSQL with Testcontainers (Docker is available on ubuntu-latest).
+      - run: pnpm --filter @shoot/domain test:coverage
+      - run: pnpm --filter web test:coverage
+      - name: Migration drift check
+        working-directory: apps/web
+        env: { PAYLOAD_MIGRATING: 'true' }
+        run: |
+          before=$(ls src/migrations/*.ts | wc -l)
+          pnpm payload migrate:create drift_check --skip-empty
+          after=$(ls src/migrations/*.ts | wc -l)
+          if [ "$before" != "$after" ]; then
+            echo "::error::The Payload schema changed without a committed migration. Run 'pnpm db:migration:create <name>' and commit it."
+            exit 1
+          fi
+
+  e2e:
+    name: Playwright
+    runs-on: ubuntu-latest
+    needs: quality
+    services:
+      postgres:
+        image: postgres:17
+        env: { POSTGRES_USER: shoot, POSTGRES_PASSWORD: shoot, POSTGRES_DB: shoot }
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U shoot -d shoot" --health-interval 5s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter web exec playwright install --with-deps chromium
+      - run: pnpm --filter web build
+      # playwright.config.ts starts the server: migrate, seed, then next start.
+      - run: pnpm --filter web test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with: { name: playwright-report, path: apps/web/playwright-report, retention-days: 7 }
+
+  lighthouse:
+    name: Lighthouse budgets
+    runs-on: ubuntu-latest
+    needs: quality
+    services:
+      postgres:
+        image: postgres:17
+        env: { POSTGRES_USER: shoot, POSTGRES_PASSWORD: shoot, POSTGRES_DB: shoot }
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U shoot -d shoot" --health-interval 5s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter web build
+      - name: Migrate and seed
+        working-directory: apps/web
+        run: |
+          PAYLOAD_MIGRATING=true pnpm payload migrate
+          pnpm seed
+      - run: npx --yes @lhci/cli@0.16.0 autorun --config=lighthouserc.json
+      - run: npx --yes @lhci/cli@0.16.0 autorun --config=lighthouserc.dark.json

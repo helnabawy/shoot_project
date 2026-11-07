@@ -1,0 +1,69 @@
+import { describe, expect, it } from 'vitest'
+import { isProviderRegistrationValid, loginSchema, registerSchema } from './schemas'
+
+const valid = {
+  name: 'Mariam Saeed',
+  email: 'Mariam@Example.COM ',
+  password: 'correct-horse',
+  accountType: 'seeker',
+}
+
+const firstMessage = (r: { success: boolean; error?: { issues: { message: string; path: PropertyKey[] }[] } }) =>
+  r.error?.issues[0]
+
+describe('FR-019 registration schema', () => {
+  it('US4-S1 accepts a valid seeker and normalises the email', () => {
+    const parsed = registerSchema.parse(valid)
+    expect(parsed.email).toBe('mariam@example.com')
+    expect(parsed.persona).toBeUndefined()
+  })
+
+  it.each([
+    [{ name: 'M' }, 'auth.errors.nameLength'],
+    [{ name: 'x'.repeat(81) }, 'auth.errors.nameLength'],
+    [{ email: 'not-an-email' }, 'auth.errors.emailInvalid'],
+    [{ password: 'short' }, 'auth.errors.passwordLength'],
+    [{ password: 'x'.repeat(129) }, 'auth.errors.passwordLength'],
+    [{ accountType: 'admin' }, 'auth.errors.accountType'],
+  ])('rejects %o with %s', (override, message) => {
+    const result = registerSchema.safeParse({ ...valid, ...override })
+    expect(result.success).toBe(false)
+    expect(firstMessage(result)?.message).toBe(message)
+  })
+
+  it('FR-021 requires at least 8 characters', () => {
+    expect(registerSchema.safeParse({ ...valid, password: '12345678' }).success).toBe(true)
+  })
+
+  it('US4-S2 requires a persona for providers', () => {
+    const result = registerSchema.safeParse({ ...valid, accountType: 'provider', persona: '  ' })
+    expect(firstMessage(result)?.message).toBe('auth.errors.personaRequired')
+    expect(firstMessage(result)?.path).toEqual(['persona'])
+  })
+
+  it('accepts a provider with a persona and categories', () => {
+    const parsed = registerSchema.parse({ ...valid, accountType: 'provider', persona: '12', categories: ['3'] })
+    expect(parsed.persona).toBe('12')
+    expect(parsed.categories).toEqual(['3'])
+  })
+})
+
+describe('FR-022 login schema', () => {
+  it('normalises the email and requires a password', () => {
+    expect(loginSchema.parse({ email: ' A@B.co ', password: 'x' }).email).toBe('a@b.co')
+    expect(firstMessage(loginSchema.safeParse({ email: 'a@b.co', password: '' }))?.message).toBe(
+      'auth.errors.passwordRequired',
+    )
+  })
+})
+
+describe('provider persona must be active', () => {
+  it('seekers always pass', () => {
+    expect(isProviderRegistrationValid({ accountType: 'seeker' }, [])).toBe(true)
+  })
+  it('providers need an active persona', () => {
+    expect(isProviderRegistrationValid({ accountType: 'provider', persona: '1' }, ['1', '2'])).toBe(true)
+    expect(isProviderRegistrationValid({ accountType: 'provider', persona: '9' }, ['1'])).toBe(false)
+    expect(isProviderRegistrationValid({ accountType: 'provider' }, ['1'])).toBe(false)
+  })
+})
