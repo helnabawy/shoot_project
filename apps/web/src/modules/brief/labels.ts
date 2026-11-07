@@ -46,6 +46,7 @@ export const BRIEF_ERROR_KEYS = [
   'brief.errors.tooLong',
   'brief.errors.notAnOption',
   'brief.errors.tooMany',
+  'brief.errors.creatorPersona',
   'brief.errors.generic',
 ] as const
 

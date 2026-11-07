@@ -33,3 +33,35 @@ export const creatorsAr: CreatorSummary[] = creatorsEn.map((c, i) => ({
   displayName: ['سارة خان', 'عمر حداد', 'لينا عزيز'][i] ?? c.displayName,
   bio: 'تصوير أعراس وبورتريه في دبي.',
 }))
+
+import type { ProfileView } from '../../src/modules/creators/profile'
+
+const image = (n: number) => ({ url: `/api/media/file/s${n}-card.webp`, width: 800, height: 1000 })
+const large = (n: number) => ({ url: `/api/media/file/s${n}-hero.webp`, width: 1600, height: 2000 })
+
+/** A full public profile view for component tests. */
+export function profileView(over: Partial<ProfileView> = {}): ProfileView {
+  return {
+    id: '1',
+    code: '7K4Q2',
+    name: 'Sara Khan',
+    initials: 'SK',
+    bio: 'Weddings and portraits.\nBased in Dubai.',
+    photo: { url: '/api/media/file/sara-400.webp', alt: 'Sara Khan', width: 400, height: 400 },
+    types: 'Photographer and videographer',
+    places: ['Dubai Marina', 'Abu Dhabi'],
+    specialties: ['Portrait', 'Wedding & engagement'],
+    languages: ['English', 'Arabic'],
+    samples: [
+      { id: 'a', kind: 'image', thumb: image(1), large: large(1), alt: 'A bride at golden hour', caption: 'Golden hour', specialty: 'Wedding & engagement' },
+      { id: 'b', kind: 'video', thumb: image(2), large: large(2), alt: 'Showreel poster', caption: 'Showreel', specialty: '', videoUrl: 'https://www.youtube.com/watch?v=abc', provider: 'YouTube' },
+      { id: 'c', kind: 'image', thumb: image(3), large: large(3), alt: 'A portrait by the window', caption: '', specialty: 'Portrait' },
+    ],
+    social: [
+      { platform: 'instagram', url: 'https://instagram.com/sara' },
+      { platform: 'website', url: 'https://sara.example' },
+    ],
+    shareImage: large(1),
+    ...over,
+  }
+}

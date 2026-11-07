@@ -10,18 +10,21 @@ export function PhotoTile({
   photo,
   initials,
   tone = 'default',
+  size = 'md',
   className,
 }: {
   photo: CreatorSummary['photo']
   initials: string
   tone?: 'default' | 'accent'
+  /** `md` 44 px (rows); `lg` 64 px (the profile header). */
+  size?: 'md' | 'lg'
   className?: string
 }) {
-  const base = 'size-11 shrink-0 overflow-hidden rounded-[10px]'
+  const base = cx('shrink-0 overflow-hidden', size === 'lg' ? 'size-16 rounded-xl' : 'size-11 rounded-[10px]')
   if (photo) {
     return (
       <span aria-hidden="true" className={cx(base, tone === 'accent' ? 'bg-white/20' : 'bg-tile', className)}>
-        <Image src={photo.url} alt="" width={88} height={88} sizes="44px" className="size-full object-cover" />
+        <Image src={photo.url} alt="" width={size === 'lg' ? 128 : 88} height={size === 'lg' ? 128 : 88} sizes={size === 'lg' ? '64px' : '44px'} className="size-full object-cover" />
       </span>
     )
   }
@@ -30,7 +33,8 @@ export function PhotoTile({
       aria-hidden="true"
       className={cx(
         base,
-        'grid place-items-center text-[15px] font-bold leading-none',
+        'grid place-items-center font-bold leading-none',
+        size === 'lg' ? 'text-[20px]' : 'text-[15px]',
         tone === 'accent' ? 'bg-white/20 text-on-accent' : 'bg-tile text-tile-ink',
         className,
       )}

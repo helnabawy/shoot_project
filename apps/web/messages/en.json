@@ -68,7 +68,8 @@
       "tooLong": "Keep it under 80 characters.",
       "notAnOption": "Choose one of the options.",
       "tooMany": "You've sent several briefs already. Please try again in an hour, or WhatsApp us directly.",
-      "generic": "Something went wrong sending your brief. Please try again, or WhatsApp us directly."
+      "generic": "Something went wrong sending your brief. Please try again, or WhatsApp us directly.",
+      "creatorPersona": "This professional does not offer that. Choose one of their types."
     },
     "showMore": "Show {count} more",
     "successNextTitle": "What happens next",
@@ -164,6 +165,45 @@
       "page": "Page {page} of {pages}",
       "previous": "Previous page",
       "next": "Next page"
+    },
+    "booking": {
+      "whatsappLine": "Creator: {creator}",
+      "prompt": "Who do you need?"
+    },
+    "profile": {
+      "metaTitle": "{name} · {types}",
+      "metaTitleNoTypes": "{name}",
+      "verified": "Verified",
+      "verifiedHelp": "Profile checked by our team before it was listed.",
+      "types": "Professional",
+      "shoots": "Shoots",
+      "places": "Works in",
+      "languages": "Speaks",
+      "topHit": "Top hit",
+      "actions": "Actions",
+      "book": "Book with {name}",
+      "ask": "Ask on WhatsApp",
+      "askMessage": "Hi! I have a question about {name} ({code}).",
+      "work": "Work",
+      "noSamples": "{name} hasn't added work yet.",
+      "watchOn": "Watch on {provider}",
+      "viewer": {
+        "label": "Sample {index} of {total}",
+        "close": "Close",
+        "previous": "Previous sample",
+        "next": "Next sample"
+      },
+      "social": {
+        "instagram": "Instagram",
+        "linkedin": "LinkedIn",
+        "youtube": "YouTube",
+        "tiktok": "TikTok",
+        "x": "X",
+        "website": "Website"
+      },
+      "bookTitle": "Book {name}",
+      "bookIntro": "Describe the shoot and send it on WhatsApp.",
+      "change": "Change"
     }
   }
 }

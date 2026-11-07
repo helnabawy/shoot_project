@@ -140,3 +140,16 @@ export const PinIcon = (p: IconProps) => (
     <circle cx="10" cy="8" r="1.9" />
   </Svg>
 )
+export const GlobeIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="10" cy="10" r="7" />
+    <path d="M3 10h14" />
+    <path d="M10 3c2 2 3 4.4 3 7s-1 5-3 7c-2-2-3-4.4-3-7s1-5 3-7Z" />
+  </Svg>
+)
+/** A play mark for video samples: drawn, never a font glyph. */
+export const PlayIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M7 4.75v10.5L15.25 10Z" fill="currentColor" />
+  </Svg>
+)

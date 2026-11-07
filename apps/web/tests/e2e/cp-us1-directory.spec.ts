@@ -82,7 +82,8 @@ test.describe('CP-US1 browse verified creators', () => {
     await page.waitForURL(/place=sharjah/)
     await page.getByTestId('creator-top-hit').click()
     interactions += 1
-    await expect(page).toHaveURL(/\/creators\/d4444$/)
+    // The profile route is compiled on first visit on a development server, which can take a few seconds.
+    await expect(page).toHaveURL(/\/creators\/d4444$/, { timeout: 20_000 })
     expect(interactions).toBeLessThanOrEqual(5)
   })
 

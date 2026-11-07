@@ -44,7 +44,7 @@ export function RowContent({
       <span className="min-w-0 break-words">{label}</span>
       <span
         className={cx(
-          'max-w-[46vw] text-end text-[13px] font-normal sm:max-w-none',
+          'max-w-[46vw] text-end text-[13px] font-normal sm:max-w-none [&:lang(ar)]:text-[14px]',
           state === 'attention'
             ? 'rounded-md bg-attention px-1.5 py-0.5 text-on-attention'
             : state === 'set'

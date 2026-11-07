@@ -45,7 +45,7 @@ export function locationParents(locations: { id: number | string; parent?: Ref |
   return new Map(locations.map((l) => [String(l.id), l.parent ? refId(l.parent) : null]))
 }
 
-function photoOf(photo: RawProfile['photo']): CreatorSummary['photo'] {
+export function photoOf(photo: RawProfile['photo']): CreatorSummary['photo'] {
   if (!photo || typeof photo !== 'object') return null
   const size = photo.sizes?.thumbnail?.url ? photo.sizes.thumbnail : photo.sizes?.card?.url ? photo.sizes.card : null
   const url = size?.url ?? photo.url

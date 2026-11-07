@@ -359,3 +359,9 @@ html.js .native-picker::-webkit-calendar-picker-indicator {
 #content:has([data-testid='brief-success']) .brief-helper {
   display: none;
 }
+
+/* Arabic is never letter-spaced (DESIGN.md, the Arabic Label Rule): tight tracking collapses the joins and
+   word spaces. Unlayered on purpose, so it beats the tracking-* utilities on headings. */
+:lang(ar) :is(h1, h2, h3) {
+  letter-spacing: 0;
+}

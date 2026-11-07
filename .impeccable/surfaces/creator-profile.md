@@ -19,6 +19,12 @@ A client who has found a creator (from the directory, the landing block, a speci
 
 The only proof is what the creator uploaded and an admin approved: their samples, their stated cities and languages, and the fact that the profile was checked before it was listed. No ratings, reviews, job counts, response times, prices or availability exist; none are shown or implied. The verified row says only what is true ("Profile checked by our team before it was listed"; copy in messages so the owner can change it). Samples may be absent: the page must be complete without them. Budgets as the landing page; the gallery must not push LCP or CLS. EN/AR with RTL; light and dark; works without JavaScript (the gallery links to each large image; the viewer is an enhancement).
 
+## Build notes (2026-11-07)
+
+- Fact rows are single 44 px rows (value, with what it is in the trailing slot) so the Top Hit stays above the fold on a 360 x 640 phone; only the Verified row keeps a second line. A fifth fact, "Shoots" (specialties), was added to the four above.
+- The site's floating WhatsApp button steps aside while the profile panel or the booking panel is on screen (both carry `data-floating-hide`; both already offer WhatsApp), so it never covers their rows.
+- Gallery images are all lazy: the identity panel sits above them on every viewport.
+
 ## Direction history
 
 2026-11-07 (owner, T004 shaping): the owner chose an identity panel with the portfolio below over a portfolio-first page with a pinned booking bar, because the action stays above the fold on a 360 × 640 phone, the page works before any real photography exists, and a pinned bar would be a second floating panel.
@@ -35,7 +41,7 @@ FIRST VIEWPORT: Phone 390 px: the quiet top bar; the panel from 12 px margins: h
 
 SIGNATURE INTERACTION: The facts are rows, not badges: each is a glyph tile, a label and, where useful, a trailing value, so the profile reads with the same sweep as the brief. The gallery opens in place (native dialog, focus returns to the tapped image on close, arrow keys and swipe move between samples, reduced motion: no transition). On `/book/{code}` the creator is a set row the visitor never has to answer, so the brief is one step shorter than on the landing page.
 
-FORM: A Spotlight result with Quick Look under it. Raises kept: facts as rows at one rhythm; one action, promoted; the work shown plainly at a uniform crop so no sample is decorated over another.
+FORM: A Spotlight result with Quick Look under it. Raises kept: facts as rows at one rhythm; one action, promoted; the work shown plainly at a uniform crop so no sample is decorated over another. Surface-scope addition: no new concept roll. It inherits the owner-pinned Spotlight world (re-roll round 1 of seed 0ba1ece0, recorded in the landing contract).
 
 FINISH: unreviewed and undocumented is unfinished; profile and book pages end with the impeccable detector, captures at 360 and 1440 px in en/ar and light/dark, a `ship` finish review, and the documenter recording the larger photo tile, the fact rows and the gallery grid in DESIGN.md.
 

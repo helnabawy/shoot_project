@@ -2,13 +2,18 @@
 
 import { briefFingerprint } from '@shoot/domain/brief'
 import { buildWhatsAppLink } from '@shoot/domain/contact'
+import { formatCreatorCode } from '@shoot/domain/creators'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { isLocale, type Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
 import { errorStatus } from '@/shared/payload/errors'
 import { getCurrentUser } from '../auth/session'
+import { getCreatorByCode } from '../creators'
+import { getActivePersonas } from '../personas/queries'
 import { getSiteSettings } from '../site-settings/queries'
+import { fillCreatorPersona, personasOutside } from './creator'
 import { getBriefBuilderConfig } from './queries'
 import { composeMessage, composeSentence, parseBrief } from './submit'
 import type { BriefState } from './types'
@@ -34,9 +39,22 @@ export async function submitBrief(_prev: BriefState, form: FormData): Promise<Br
   const [config, settings] = await Promise.all([getBriefBuilderConfig(locale), getSiteSettings(locale)])
   if (!config) return { status: 'error', errors: {}, formError: 'brief.errors.generic' }
 
-  const parsed = parseBrief(config, form)
+  // A brief for a creator (feature 002): the code is resolved here, never trusted. A creator who cannot
+  // be booked (hidden, or none of their types is on offer) is ignored and the brief goes out as a normal one.
+  const creatorCode = String(form.get('creator') ?? '').trim()
+  const found = creatorCode ? await getCreatorByCode(creatorCode, locale) : null
+  const creator = found?.canBook ? found.creator : null
+  const allowed = creator
+    ? (await getActivePersonas(locale)).filter((p) => creator.personaIds.includes(p.id)).map((p) => p.slug)
+    : []
+
+  const parsed = parseBrief(config, creator ? fillCreatorPersona(form, config, allowed) : form)
   if (!parsed.ok) return { status: 'error', errors: parsed.errors }
   const { brief } = parsed
+  if (creator && personasOutside(brief.personaSlugs, allowed).length) {
+    const token = config.slots.find((s) => s.kind === 'persona')?.token ?? 'persona'
+    return { status: 'error', errors: { [token]: 'brief.errors.creatorPersona' } }
+  }
 
   const payload = await getPayloadClient()
   const [user, visitor] = await Promise.all([getCurrentUser(), visitorId()])
@@ -47,12 +65,15 @@ export async function submitBrief(_prev: BriefState, form: FormData): Promise<Br
     custom: brief.custom[slot.token] ?? false,
   }))
   const sentence = composeSentence(config, brief.labels, brief.values)
-  const message = composeMessage(config, brief.labels, brief.values)
+  const creatorText = creator ? `${creator.displayName} (${formatCreatorCode(settings.creatorCodePrefix ?? 'CR', creator.code)})` : null
+  const creatorLine = creatorText ? (await getTranslations({ locale, namespace: 'creators.booking' }))('whatsappLine', { creator: creatorText }) : null
+  const message = composeMessage(config, brief.labels, brief.values, creatorText && creatorLine ? { creator: creatorText, creatorLine } : undefined)
   const whatsappUrl = buildWhatsAppLink(settings.whatsappNumber, message)
   const replyTime = settings.expectedReplyTime ?? ''
 
   try {
-    const fingerprint = briefFingerprint(selections, visitor)
+    // Two briefs to different creators are not duplicates, even with the same selections.
+    const fingerprint = briefFingerprint(creator ? [...selections, { token: 'creator', value: creator.code }] : selections, visitor)
     const recent = await payload.find({
       collection: 'briefs',
       where: {
@@ -79,12 +100,14 @@ export async function submitBrief(_prev: BriefState, form: FormData): Promise<Br
           date: brief.date,
           sentence,
           locale,
+          creator: creator ? Number(creator.id) : undefined,
           sourcePath: String(form.get('sourcePath') ?? '/').slice(0, 200),
           website: String(form.get('website') ?? ''),
         },
         overrideAccess: false,
         user: user ?? undefined,
-        context: { visitorId: visitor },
+        // `creatorResolved` lets the briefs hook keep the creator; REST callers cannot set it.
+        context: { visitorId: visitor, ...(creator ? { creatorResolved: true } : {}) },
       })
       reference = created.reference ?? ''
     }

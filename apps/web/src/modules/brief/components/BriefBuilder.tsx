@@ -16,6 +16,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from 'react'
+import { PhotoTile } from '@/modules/creators/client'
 import { useHydrated } from '@/shared/ui/useHydrated'
 import {
   CalendarIcon,
@@ -27,6 +28,7 @@ import {
 } from '@/shared/ui/icons'
 import { BarField, BriefBar, cx, GlyphTile, KeyHint, ResultGroup, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
 import { submitBrief } from '../actions'
+import type { CreatorBooking } from '../creator'
 import { chosenPersonas, CUSTOM_SUFFIX, CUSTOM_VALUE, readSlotValues, sentenceLabelFor, slotRules } from '../submit'
 import type { BriefBuilderConfig, BriefState, BuilderOption, BuilderSlot } from '../types'
 import { fill, type BriefLabels } from '../labels'
@@ -47,6 +49,10 @@ export interface BriefBuilderProps {
   labels: BriefLabels
   /** `glass` when the bar floats over the hero image. */
   tone?: 'default' | 'glass'
+  /** The brief is for this creator (feature 002): shown as a set row and posted as the hidden `creator` field. */
+  creator?: CreatorBooking
+  /** A step answered for the visitor and not asked again, e.g. the professional of a single-type creator. */
+  locked?: { token: string; value: string } | null
 }
 
 /** Slots in the order the sentence asks them; slots missing from the sentence come last. */
@@ -91,14 +97,18 @@ export function BriefBuilder({
   sourcePath,
   labels,
   tone = 'default',
+  creator,
+  locked = null,
 }: BriefBuilderProps) {
   const errorText = (key: string) => labels.errors[key] ?? labels.errors['brief.errors.generic'] ?? key
   const uid = useId()
   const hydrated = useHydrated()
   const [state, formAction, pending] = useActionState<BriefState, FormData>(submitBrief, { status: 'idle' })
 
-  // Nothing is pre-filled: the visitor builds the brief one step at a time (FR-067).
-  const [values, setValues] = useState<Record<string, string>>({})
+  // Nothing is pre-filled for the visitor (FR-067); only a step the creator fixes starts answered and locked.
+  const lockedValues = useMemo<Record<string, string>>(() => (locked ? { [locked.token]: locked.value } : {}), [locked])
+  const isLocked = (slot: BuilderSlot) => locked?.token === slot.token
+  const [values, setValues] = useState<Record<string, string>>(lockedValues)
   const [custom, setCustom] = useState<Record<string, string>>({})
   const [skipped, setSkipped] = useState<Record<string, boolean>>({})
   const [confirmed, setConfirmed] = useState<Record<string, boolean>>({})
@@ -135,7 +145,9 @@ export function BriefBuilder({
     if (value === CUSTOM_VALUE) return Boolean(custom[slot.token])
     return slot.multiple ? splitMultiValue(value).length > 0 : value !== ''
   }
+  // A locked step is answered from the start, even when its list takes several choices and would wait for Continue.
   const answered = (slot: BuilderSlot) =>
+    isLocked(slot) ||
     Boolean(skipped[slot.token]) || (hasValue(slot) && (!needsContinue(slot) || Boolean(confirmed[slot.token])))
   const isChosen = (slot: BuilderSlot, value: string) => {
     const current = values[slot.token] ?? ''
@@ -250,6 +262,7 @@ export function BriefBuilder({
   }
 
   function reopen(token: string) {
+    if (locked?.token === token) return
     setEditing(token)
     setQuery('')
     setFocusTarget('checked')
@@ -257,7 +270,7 @@ export function BriefBuilder({
 
   /** Backspace in the empty field: takes back the last answer in sentence order. */
   function takeBack() {
-    const last = [...order].reverse().find((s) => hasValue(s) || skipped[s.token])
+    const last = [...order].reverse().find((s) => !isLocked(s) && (hasValue(s) || skipped[s.token]))
     if (!last) return
     const clear = <T,>(record: Record<string, T>) => {
       const { [last.token]: _gone, ...rest } = record
@@ -271,7 +284,7 @@ export function BriefBuilder({
   }
 
   function reset() {
-    setValues({})
+    setValues(lockedValues)
     setCustom({})
     setSkipped({})
     setConfirmed({})
@@ -319,7 +332,7 @@ export function BriefBuilder({
   // While a step already has an answer (several choices, or a reopened step) its word stays in the
   // sentence and the caret waits right after it.
   const placeholder = !started
-    ? labels.searchPrompt
+    ? (creator?.prompt ?? labels.searchPrompt)
     : current && !showTopHit
       ? hasValue(current)
         ? ''
@@ -436,6 +449,15 @@ export function BriefBuilder({
         )
         return
       }
+      if (isLocked(slot)) {
+        // The creator fixes this part: a token that cannot be reopened.
+        fieldItems.push(
+          <span key={`k-${slot.token}`} data-state="locked" className="bar-token rounded-[6px] bg-selected px-[5px] py-px text-ink [box-decoration-break:clone]">
+            {labelFor(slot)}
+          </span>,
+        )
+        return
+      }
       const error = errors[slot.token]
       fieldItems.push(
         <a
@@ -471,8 +493,16 @@ export function BriefBuilder({
     Boolean(query) &&
     order.some((s) => (s.kind === 'persona' || s.kind === 'options') && visibleOptions(s, personas).some(matches))
   let shownBefore = 0
+  let stepNo = 0
+  const askedSteps = order.filter((s) => !isLocked(s)).length
   const groups: ReactNode[] = []
-  for (const [index, slot] of order.entries()) {
+  for (const slot of order) {
+    if (isLocked(slot)) {
+      // The answer travels with the form; the list is never shown.
+      groups.push(<input key={slot.token} type="hidden" name={slot.token} value={locked?.value} />)
+      continue
+    }
+    stepNo += 1
     const groupId = `${uid}-group-${slot.token}`
     const error = errors[slot.token]
     const isCurrent = !query && current?.token === slot.token && !showTopHit
@@ -495,7 +525,7 @@ export function BriefBuilder({
         </span>
         {hydrated && isCurrent ? (
           <span data-step-count="" aria-hidden="true" className="ms-auto font-normal normal-case tabular-nums">
-            {fill(labels.stepOf, { step: index + 1, total: order.length })}
+            {fill(labels.stepOf, { step: stepNo, total: askedSteps })}
           </span>
         ) : null}
       </span>
@@ -707,6 +737,7 @@ export function BriefBuilder({
         <input type="hidden" name="locale" value={config.locale} />
         <input type="hidden" name="sourcePath" value={sourcePath} />
         <input type="hidden" name="js" value={hydrated ? '1' : ''} />
+        {creator ? <input type="hidden" name="creator" value={creator.code} /> : null}
         {/* Honeypot for bots; hidden from people and assistive tech. */}
         <div aria-hidden="true" className="absolute -start-[9999px] h-px w-px overflow-hidden">
           <label>
@@ -714,6 +745,26 @@ export function BriefBuilder({
             <input type="text" name="website" tabIndex={-1} autoComplete="off" defaultValue="" />
           </label>
         </div>
+
+        {creator ? (
+          <div data-testid="brief-creator-chip" className="border-b border-hair py-1.5">
+            <div className={cx(rowClass('set', false, 'photo'))}>
+              <PhotoTile photo={creator.photo} initials={creator.initials} />
+              <span className="min-w-0">
+                <span className="block break-words font-semibold">{creator.name}</span>
+                <span className="block text-[13px] font-normal text-selected-ink tabular-nums">
+                  <bdi dir="ltr">{creator.displayCode}</bdi>
+                </span>
+              </span>
+              <a
+                href={creator.changeHref}
+                className="-mx-2 inline-flex min-h-11 items-center px-2 text-[13px] font-medium text-selected-ink underline underline-offset-2"
+              >
+                {creator.changeLabel}
+              </a>
+            </div>
+          </div>
+        ) : null}
 
         <BarField
           trailing={

@@ -6,6 +6,7 @@ import { cachedQuery } from '@/shared/lib/cache'
 import type { Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
 import type { Lookups } from './describe'
+import { buildProfileView, type ProfileView, type RawProfileDoc } from './profile'
 import { locationParents, publicSummaries, type RawListing, type RawProfile } from './summary'
 
 const TAGS = ['creators', 'media', 'personas', 'categories', 'locations', 'site-settings']
@@ -127,5 +128,35 @@ export async function getDirectoryContext(locale: Locale): Promise<DirectoryCont
     emirates: locations.filter((l) => !l.parentId).map((l) => ({ id: l.id, slug: l.slug, name: l.name })),
     prefix: settings.creatorCodePrefix ?? 'CR',
     pageSize: settings.directoryPageSize ?? 24,
+  }
+}
+
+export interface CreatorProfilePage {
+  view: ProfileView
+  /** With the brand prefix: "CR-7K4Q2". */
+  displayCode: string
+  canBook: boolean
+  /** Slugs of the creator's professional types that the site offers (the booking's allowed types). */
+  personaSlugs: string[]
+}
+
+/** A public creator's full profile for the profile and booking pages; null unless they are public. */
+export async function getCreatorProfile(rawCode: string, locale: Locale): Promise<CreatorProfilePage | null> {
+  const found = await getCreatorByCode(rawCode, locale)
+  if (!found) return null
+  const { creator, canBook } = found
+  const [doc, context, personas] = await Promise.all([
+    cachedQuery(['creators', 'media', 'personas', 'categories', 'locations'], ['creator-profile', locale, creator.id], async () => {
+      const payload = await getPayloadClient()
+      return payload.findByID({ collection: 'creator-profiles', id: Number(creator.id), locale, fallbackLocale: 'en', depth: 1 })
+    }),
+    getDirectoryContext(locale),
+    getActivePersonas(locale),
+  ])
+  return {
+    view: buildProfileView(doc as unknown as RawProfileDoc, context.lookups, locale),
+    displayCode: formatCreatorCode(context.prefix, creator.code),
+    canBook,
+    personaSlugs: personas.filter((p) => creator.personaIds.includes(p.id)).map((p) => p.slug),
   }
 }

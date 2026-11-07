@@ -68,7 +68,8 @@
       "tooLong": "اجعلها أقل من 80 حرفاً.",
       "notAnOption": "اختر أحد الخيارات.",
       "tooMany": "أرسلت عدة طلبات بالفعل. حاول مرة أخرى بعد ساعة، أو راسلنا على واتساب مباشرة.",
-      "generic": "حدث خطأ أثناء إرسال طلبك. حاول مرة أخرى، أو راسلنا على واتساب مباشرة."
+      "generic": "حدث خطأ أثناء إرسال طلبك. حاول مرة أخرى، أو راسلنا على واتساب مباشرة.",
+      "creatorPersona": "هذا المحترف لا يقدّم ذلك. اختر أحد أنواعه."
     },
     "showMore": "عرض {count} أخرى",
     "successNextTitle": "ما الذي يحدث بعد ذلك",
@@ -164,6 +165,45 @@
       "page": "الصفحة {page} من {pages}",
       "previous": "الصفحة السابقة",
       "next": "الصفحة التالية"
+    },
+    "booking": {
+      "whatsappLine": "المحترف: {creator}",
+      "prompt": "من تحتاج؟"
+    },
+    "profile": {
+      "metaTitle": "{name} · {types}",
+      "metaTitleNoTypes": "{name}",
+      "verified": "موثّق",
+      "verifiedHelp": "راجع فريقنا هذا الملف قبل إدراجه.",
+      "types": "المحترف",
+      "shoots": "يصوّر",
+      "places": "يعمل في",
+      "languages": "يتحدث",
+      "topHit": "أفضل نتيجة",
+      "actions": "إجراءات",
+      "book": "احجز مع {name}",
+      "ask": "اسأل عبر واتساب",
+      "askMessage": "مرحباً! لدي سؤال عن {name} ({code}).",
+      "work": "الأعمال",
+      "noSamples": "لم يضف {name} أعمالاً بعد.",
+      "watchOn": "شاهد على {provider}",
+      "viewer": {
+        "label": "العمل {index} من {total}",
+        "close": "إغلاق",
+        "previous": "العمل السابق",
+        "next": "العمل التالي"
+      },
+      "social": {
+        "instagram": "إنستغرام",
+        "linkedin": "لينكدإن",
+        "youtube": "يوتيوب",
+        "tiktok": "تيك توك",
+        "x": "إكس",
+        "website": "الموقع"
+      },
+      "bookTitle": "احجز {name}",
+      "bookIntro": "صف الجلسة وأرسلها عبر واتساب.",
+      "change": "تغيير"
     }
   }
 }

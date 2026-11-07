@@ -11,6 +11,10 @@ export interface CreatorBooking {
   photo: { url: string; alt: string; width?: number; height?: number } | null
   /** Where "Change" leads: the normal, creator-free brief. */
   changeHref: string
+  /** The "Change" link text, in the page language. */
+  changeLabel: string
+  /** The empty field's prompt, short enough to fit a phone beside the search icon ("Who do you need?"). */
+  prompt?: string
 }
 
 const personaSlot = (config: BriefBuilderConfig): BuilderSlot | undefined => config.slots.find((s) => s.kind === 'persona')

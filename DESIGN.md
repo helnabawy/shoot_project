@@ -122,6 +122,7 @@ rounded:
   row: "9px"
   tile: "8px"
   photo-tile: "10px"
+  photo-tile-lg: "12px"
   message: "6px"
   key-hint: "5px"
 spacing:
@@ -131,6 +132,7 @@ spacing:
   top-hit-inset: "8px"
   page-gutter: "12px"
   section-gap: "64px"
+  gallery-gap: "8px"
   column: "680px"
   auth-column: "480px"
 components:
@@ -205,6 +207,35 @@ components:
     rounded: "{rounded.row}"
     padding: "10px 12px"
     height: "64px"
+  photo-tile-lg:
+    backgroundColor: "{colors.tile-stone}"
+    textColor: "{colors.tile-ink}"
+    rounded: "{rounded.photo-tile-lg}"
+    size: "64px"
+  fact-row:
+    textColor: "{colors.graphite-ink}"
+    typography: "{typography.row}"
+    padding: "7px 16px"
+    height: "44px"
+  sample-tile:
+    backgroundColor: "{colors.tile-stone}"
+    rounded: "{rounded.tile}"
+  sample-viewer-button:
+    backgroundColor: "{colors.panel-solid}"
+    textColor: "{colors.graphite-ink}"
+    rounded: "{rounded.row}"
+    size: "44px"
+  booking-creator-row:
+    backgroundColor: "{colors.selected-row}"
+    textColor: "{colors.graphite-ink}"
+    rounded: "{rounded.row}"
+    padding: "7px 10px"
+    height: "64px"
+  locked-token:
+    backgroundColor: "{colors.selected-row}"
+    textColor: "{colors.graphite-ink}"
+    rounded: "{rounded.message}"
+    padding: "1px 5px"
   key-hint:
     rounded: "{rounded.key-hint}"
     padding: "2px 6px"
@@ -277,8 +308,8 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 
 ### Hierarchy
 - **Display** (700, 38 px, 52 px from 640 px, line-height 1.02, -0.03em, balanced): the landing headline only, the visible title of the hero stage. It is ink with a soft halo of the ground colour (a 28 px text shadow) so it holds over a busy photograph and disappears on the studio sweep. No other-language line or subheadline sits beneath it.
-- **Headline** (700, 34 px, -0.03em): the page title of login, register, account and not-found.
-- **Section Title** (700, 26 px, 30 px from 640 px, -0.025em): below-the-fold section headings on the ground.
+- **Headline** (700, 34 px, -0.03em): the page title of login, register, account, not-found and the booking page.
+- **Section Title** (700, 26 px, 30 px from 640 px, -0.025em): below-the-fold section headings on the ground, and the creator's name as the profile page's h1 inside the identity panel.
 - **Field** (500, 20 px, 22 px from 640 px, line-height 1.35, -0.01em): the composed sentence in the bar. Set parts in ink, connectives in mute, unset required parts in mute italic.
 - **Top Hit** (600, 17 px): the one primary row.
 - **Row** (400, 16 px; 600 when set): result rows, FAQ questions, inputs (16 px also prevents iOS zoom).
@@ -291,7 +322,7 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 
 **The Tabular Rule.** `font-variant-numeric: tabular-nums` is set on the root; dates, durations and references align without per-component work.
 
-**The Arabic Label Rule.** Uppercase and letter-spacing never apply to Arabic; `:lang(ar)` resets them and lifts the size one step.
+**The Arabic Label Rule.** Uppercase and letter-spacing never apply to Arabic; `:lang(ar)` resets them and lifts the size one step. Headings h1 to h3 are never letter-spaced in Arabic (an unlayered `:lang(ar) :is(h1, h2, h3)` rule beats the tracking utilities), and a result row's trailing slot lifts from 13 px to 14 px.
 
 ## Layout
 
@@ -303,8 +334,10 @@ Rows use 16 px inline padding, 12 px gap between tile, label and trailing slot, 
 
 Lists on the ground (how it works, why, specialties, FAQ, and the creator network) are real `ul`/`ol` elements bleeding to the column edge with hairlines between rows; specialties may go two columns from 640 px, divided with a logical `border-e`. The landing "Our network" block and the `/creators` list are Creator Rows in that same list, 4 px of block padding per item, with the directory panel above the list on `/creators`.
 
+The profile page (`/creators/{code}`) is the same 680 px column: the identity panel (12 px gutter, 32 px of top padding, 56 px from 640 px), the bio at 60ch on the ground, then a "Work" section holding the portfolio grid. The booking page (`/book/{code}`) is the Headline, one line of intro and the Brief Bar. The floating WhatsApp button steps aside while an element marked `data-floating-hide` is on screen: the hero bar, the profile panel and the booking bar.
+
 ### Named Rules
-**The Two Panels Rule.** A page shows at most two bar panels: the primary bar and one smaller (`sm`, 15 px) secondary bar such as the creator invitation. The glass tone is the primary bar dressed for the hero stage, not an extra panel. Everything else is rows on the ground.
+**The Two Panels Rule.** A page shows at most two bar panels: the primary bar and one smaller (`sm`, 15 px) secondary bar such as the creator invitation. The profile page's identity panel and the booking page's bar are each that page's one panel. The glass tone is the primary bar dressed for the hero stage, not an extra panel. Everything else is rows on the ground.
 
 **The Logical CSS Rule.** Only logical properties and utilities: `ms/me/ps/pe`, `start/end`, `text-start/text-end`, `border-s/e`, `inset-inline`. `scripts/check-logical-css.sh` fails the build on any physical left/right in site code. Icons that point along the reading direction (forward, chevron, log out) flip with `rtl:-scale-x-100`; vertical ones never flip.
 
@@ -326,7 +359,7 @@ On the hero stage the bar wears glass instead: a more transparent panel under a 
 
 ## Shapes
 
-Soft, nested macOS corners stepping down with size: panel 14 px, Top Hit and inputs 9 px, photo tiles 10 px, glyph tiles 8 px, the theme toggle segment 7 px, focus ring and messages 6 px, key hints 5 px. The Top Hit is inset 8 px inside the panel so its corners nest inside the panel's. Borders are always the 1 px hairline; there are no heavier strokes. The floating WhatsApp button on phones is the only circle.
+Soft, nested macOS corners stepping down with size: panel 14 px, Top Hit and inputs 9 px, photo tiles 10 px (the 64 px profile tile 12 px), portfolio samples and glyph tiles 8 px, the theme toggle segment 7 px, focus ring and messages 6 px, key hints 5 px. The Top Hit is inset 8 px inside the panel so its corners nest inside the panel's. Borders are always the 1 px hairline; there are no heavier strokes. The floating WhatsApp button on phones is the only circle.
 
 ## Components
 
@@ -346,13 +379,25 @@ The search magnifier (22 px, 2.25 stroke, ink) beside the composed sentence at F
 - **Overflow:** a group shows its first few rows plus the chosen one; the rest sit behind a "Show N more" row with a chevron tile, driven by a CSS checkbox, not script.
 
 ### Photo Tile
-44 px, 10 px corners, the lead of a creator row. The photograph is cover-cropped (requested at 88 px for density, sized 44 px) on the resting tile fill; with no photo the creator's initials sit centred in 15 px bold on the resting tile (tile stone / tile ink). On the Top Hit the accent variant takes white at 20% with white initials. Decorative and `aria-hidden`: the name beside it carries the meaning, and the alt text is empty.
+44 px, 10 px corners, the lead of a creator row. The `lg` size is 64 px with 12 px corners and 20 px bold initials (requested at 128 px), the lead of the profile identity panel. The photograph is cover-cropped (requested at 88 px for density, sized 44 px) on the resting tile fill; with no photo the creator's initials sit centred in 15 px bold on the resting tile (tile stone / tile ink). On the Top Hit the accent variant takes white at 20% with white initials. Decorative and `aria-hidden`: the name beside it carries the meaning, and the alt text is empty.
 
 ### Creator Row
 A result row whose lead is the Photo Tile: grid of 44 px tile, flexible text, auto trailing slot, 64 px minimum height, same inset, 9 px corners, 12 px gap and hover tint as any row. Line one is the name (semibold, ink, wraps); line two is professional types and place joined by a middle dot (13 px mute). In the directory a third line prints up to three specialties as plain text (13 px mute), never as chips. The creator's code trails in the slot (13 px, tabular figures), wrapped in an isolated left-to-right run so it reads the same in Arabic. As a Top Hit the row takes the shared Top Hit base (selection blue, 9 px corners, 17 px semibold, inset 8 px), the accent Photo Tile, 64 px minimum height, secondary lines in full white for AA on selection blue, and the Return key hint after the code. A Top Hit and its list rows are the same component in two tones, so the One Blue Row Rule holds.
 
 ### Directory Panel
 The Brief Bar used as a filter, with the Top Hit as the best match. The field prints the chosen filters as selection-tinted tokens (the same token as the brief sentence); with none chosen it shows "All professionals" in mute as a placeholder. Under it, a filters group with one row per filter (professional, specialty, emirate): glyph tile with a drawn icon (user, tag, pin), label, and in the trailing slot the current value or "Any" with a chevron that turns over when open. Each row is a native `details`/`summary` disclosure (one open at a time), so it works without JavaScript. Opened, it lists an "Any" row (set, with a drawn check, when nothing is chosen), then the options as link rows with their counts in the trailing slot (tabular); the chosen option is a set row. Options with zero matches are hidden unless chosen. A "Clear filters" row with a close glyph appears only when a filter is active. Below a hairline, the "Top Hit" group holds the best creator, or, when nothing matches, a plain message row and a Top Hit back to the brief. Beneath the panel the remaining creators are Creator Rows on the bare ground.
+
+### Profile Identity Panel
+The Brief Bar as a person. A header of the 64 px Photo Tile (`lg`) beside the creator's name, which is the page h1 at Section Title size, with the code under it in Meta (tabular, isolated left-to-right). A hairline, then fact rows: each is a single 44 px row with a glyph tile, the value on the start side and what it is in the trailing slot ("Works in", "Speaks"). Only the Verified row has a second line, a plain Meta sentence of what verified means, never a badge. After a hairline the "Top Hit" group holds the one blue row, which books the creator by full display name (a creator who cannot be booked gets "ask on WhatsApp" as the Top Hit instead). An "Actions" group of ordinary rows follows: the WhatsApp row (when booking is the Top Hit) and one row per social link, each opening a new tab with `rel="noopener nofollow ugc"`. The bio sits under the panel on the ground, 15 px, 60ch.
+
+### Portfolio Grid
+Work samples as a grid on the bare ground: two columns on phones, three from 640 px, 8 px gaps, every sample cropped to a uniform 4:5 and cornered at 8 px (the tile radius). No captions, no hover zoom, no overlays on images. A video sample is its poster with a drawn play tile (32 px, 8 px corners, at the end-bottom corner) and the host name in Meta beneath; it opens the host in a new tab. Image links point at the large file so the grid works without JavaScript; with it they open the viewer. With no samples the section is one plain row, not an empty frame.
+
+### Sample Viewer
+A native `dialog` over the ground at 90% (the ground colour, no blur): the large image at up to 78svh with 8 px corners, the caption (15 px ink) with its specialty (mute) beneath, then three 44 px buttons, previous, close and next, on the solid panel colour with 9 px corners. Focus starts on close; Escape and a backdrop tap close; the arrow keys follow the reading direction (reversed in Arabic); focus returns to the tapped image. The chevrons are the shared chevron, flipped in RTL.
+
+### Booking Creator Row and Locked Token
+On `/book/{code}` the Brief Bar leads with a set row for the creator: selection tint, 44 px Photo Tile, the name (semibold) over the code in selected ink (13 px), and a "Change" link at the end, a 44 px target in selected ink, underlined, leading back to the plain brief. The empty field uses a short prompt that fits a phone beside the search icon. When the creator has a single professional type that step is answered and never asked: its token sits in the sentence in the selection tint like any set part but cannot be reopened or taken back, its list is never shown, and step counts ("2 of 4") exclude it. With several types the step lists only theirs and nothing is pre-selected.
 
 ### Result Groups
 A group label (Group Label style, 10 px top, 4 px bottom padding) then rows. When it is a choice it is a `fieldset` whose legend is the label, so screen readers name the radio group. A group-level message sits between label and rows.
@@ -373,13 +418,16 @@ The one selection-blue row: 50 px minimum, 9 px corners, inset 8 px, 17 px semib
 A field is a bar row: a 13 px mute label, then a 44 px input with a hairline stroke, 9 px corners, transparent fill, 16 px ink text. Focus turns the stroke to the focus colour. An error swaps the stroke to on-attention at 50% and adds a peach message beneath, tied by `aria-describedby`; form-level errors are a peach `role="alert"` block. Date and number rows keep the row look with the native control laid invisibly over them under JavaScript.
 
 ### Icons
-One authored set on a 20 px grid, 1.75 stroke, round caps and joins, `currentColor`. No emoji, no copied platform icons. Tag (a label with a hole) marks specialties and pin (a map marker) marks places; neither flips in Arabic.
+One authored set on a 20 px grid, 1.75 stroke, round caps and joins, `currentColor`. No emoji, no copied platform icons. Tag (a label with a hole) marks specialties and pin (a map marker) marks places; globe marks languages and play marks a video sample; none flips in Arabic.
 
 ### Navigation
 A quiet top bar on the ground, not sticky: wordmark at the start, language switch and menu at the end, at most 1080 px wide. The phone menu opens as a small bar. The footer carries the language link and a three-way theme segment (light, dark, system) whose active segment is an ink tile.
 
 ### Motion
 Short and functional: row tint 100 ms, Top Hit brightness 100 ms, FAQ chevron rotation 150 ms, input stroke on focus. The asked step enters with a 160 ms fade-and-rise on one ease-out curve (cubic-bezier(0.16, 1, 0.3, 1)). The caret blinks (1.1 s, stepped) and the page scrolls smoothly only under `prefers-reduced-motion: no-preference`; under reduced motion the step simply appears. Arrow keys move focus between rows without animated highlight travel.
+
+### Floating WhatsApp
+The phone-only circle steps aside while any `data-floating-hide` element (the hero bar, the profile panel, the booking bar) is on screen, so it never covers the primary action.
 
 ### Theme
 Light under `:root`, dark under `.dark` (next-themes, set before paint, so no flash), and the same dark values under `prefers-color-scheme: dark` for `:root:not(.light)` so a visitor without JavaScript follows the device. `color-scheme` is set per theme so native pickers and scrollbars follow.
@@ -396,6 +444,9 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Do** keep every glyph tile's text as localised CMS data, three characters at most, or a drawn icon.
 - **Do** re-run the glass contrast test (over mid grey and the worst photo after the scrim) whenever a glass or scrim value changes.
 - **Do** lead a person's row with the 44 px Photo Tile (photo or initials, `aria-hidden`), keep specialties as plain text and the code as isolated left-to-right trailing meta, and hide filter options that match nothing unless chosen.
+- **Do** state a person's facts as single 44 px rows, value first and its name in the trailing slot; give "verified" a plain sentence, not a badge.
+- **Do** show portfolios as a uniform 4:5 grid at the tile radius with 8 px gaps and let the images carry themselves.
+- **Do** answer a step the creator fixes, lock it, and leave it out of step counts.
 - **Do** keep the bar a working plain form without JavaScript: every list shows at once, and the search input and key hints are hidden.
 
 ### Don't:
@@ -408,4 +459,6 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Don't** use emoji, Unicode symbols or copied Apple icons as icons.
 - **Don't** add eyebrows or kickers above headlines; group labels exist only as Spotlight's group headers over rows.
 - **Don't** paint the subject onto the page outside the hero stage, and don't costume it anywhere: no serif display, ticket, signage or booking-widget costume.
+- **Don't** add captions, hover zoom, overlays or badges to portfolio images.
+- **Don't** letter-space Arabic headings, and don't leave Arabic trailing slots at 13 px.
 - **Don't** invent proof: no testimonials, logos, counts or ratings that do not exist.
