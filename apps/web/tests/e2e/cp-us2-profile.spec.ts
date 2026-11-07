@@ -29,7 +29,7 @@ const stubWhatsApp = (page: Page) =>
   page.context().route(/https:\/\/(wa\.me|api\.whatsapp\.com)\/.*/, (route) => route.fulfill({ body: 'whatsapp' }))
 
 test.describe('CP-US2 view a creator profile', () => {
-  test('@smoke CP-US2-S1 the profile renders every section from the data, and the code redirects to one address', async ({ page }, info) => {
+  test('@smoke CP-US2-S1 CP-FR-007 the profile renders every section from the data, and the code redirects to one address', async ({ page }, info) => {
     await page.goto('/creators/CR-D2222')
     await expect(page).toHaveURL(/\/creators\/d2222$/)
     await expect(page.getByRole('heading', { level: 1 })).toContainText(info.project.name === 'ar-mobile' ? '(تجريبي)' : 'Sara Demo')

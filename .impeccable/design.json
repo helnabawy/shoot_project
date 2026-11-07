@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-07T12:00:00Z",
+  "generatedAt": "2026-11-07T22:00:00Z",
   "title": "Design System: Shoot Project",
   "extensions": {
     "colorMeta": {
@@ -617,11 +617,11 @@
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Page titles of login, register, account, not-found."
+        "purpose": "Page titles of login, register, account, not-found and the booking page."
       },
       "section-title": {
         "displayName": "Section Title",
-        "purpose": "Below-the-fold section headings on the ground."
+        "purpose": "Below-the-fold section headings on the ground, and the creator's name as the profile page h1 inside the identity panel."
       },
       "field": {
         "displayName": "Field",
@@ -732,21 +732,6 @@
         "name": "smooth-scroll",
         "value": "scroll-behavior: smooth",
         "purpose": "Anchor jumps; only under prefers-reduced-motion: no-preference."
-      },
-      {
-        "name": "drawer-open",
-        "value": "grid-template-rows 0fr to 1fr, 320ms cubic-bezier(0.32, 0.72, 0, 1); rows opacity 240ms ease-out after 60ms",
-        "purpose": "Options drawer unfolds; instant under reduced motion."
-      },
-      {
-        "name": "drawer-close",
-        "value": "grid-template-rows 1fr to 0fr, 220ms cubic-bezier(0.32, 0.72, 0, 1); rows opacity 140ms ease-out; visibility hidden after 220ms",
-        "purpose": "Options drawer folds and leaves the tab order; instant under reduced motion."
-      },
-      {
-        "name": "toggle-chevron",
-        "value": "transform 300ms; rotate(180deg) when open",
-        "purpose": "Options toggle chevron; motion-safe only."
       }
     ],
     "breakpoints": [
@@ -765,7 +750,7 @@
       "name": "Brief Bar",
       "kind": "custom",
       "refersTo": "brief-bar",
-      "description": "The one floating frosted panel: field, Top Hit group, then the options drawer of result groups; a glass tone dresses it for the hero stage.",
+      "description": "The one floating frosted panel: field, Top Hit group (once the brief is complete), the asked step's result group and the Actions group; a glass tone dresses it for the hero stage, and `size=\"sm\"` makes the 15 px secondary bars.",
       "html": "<div class=\"ds-bar\"><div class=\"ds-field\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"8.5\" cy=\"8.5\" r=\"5.5\"/><path d=\"m13 13 4 4\"/></svg><p class=\"ds-sentence\">I need a <span class=\"ds-set\">photographer</span> for <span class=\"ds-set\">a wedding</span> in <span class=\"ds-set\">Dubai</span><span class=\"ds-caret\"></span></p></div><span class=\"ds-group-label\">Top Hit</span><button class=\"ds-tophit\"><span class=\"ds-tile ds-tile-accent\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 10h12\"/><path d=\"m11 5 5 5-5 5\"/></svg></span><span>See who’s free for this</span><kbd class=\"ds-kbd\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M16 4v6a2 2 0 0 1-2 2H5\"/><path d=\"m8 9-3 3 3 3\"/></svg></kbd></button><div style=\"border-top:1px solid var(--hair, rgb(0 0 0 / 0.08));margin-top:6px\"><span class=\"ds-group-label\">Emirate</span><label class=\"ds-row ds-row-set\" tabindex=\"0\"><span class=\"ds-tile ds-tile-set\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4.5 10.5 3.5 3.5 7.5-8\"/></svg></span><span>Dubai</span><span class=\"ds-trail\">set</span></label><label class=\"ds-row\" tabindex=\"0\"><span class=\"ds-tile\">AUH</span><span>Abu Dhabi</span><span class=\"ds-trail\"></span></label></div></div>",
       "css": ".ds-bar { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; color: var(--ink, #1d1d1f); background: var(--panel-solid, #fcfbfa); border: 1px solid var(--hair, rgb(0 0 0 / 0.08)); border-radius: 14px; box-shadow: var(--shadow, 0 18px 40px -22px rgb(29 29 31 / 0.35)); overflow: hidden; max-width: 680px; } @supports (backdrop-filter: blur(20px)) { .ds-bar { background: var(--panel, rgb(255 255 255 / 0.86)); backdrop-filter: blur(20px) saturate(1.4); } } .ds-field { display: flex; align-items: flex-start; gap: 12px; padding: 16px 16px 12px; border-bottom: 1px solid var(--hair, rgb(0 0 0 / 0.08)); } .ds-field svg { margin-top: 3px; flex-shrink: 0; } .ds-sentence { margin: 0; font-size: 22px; font-weight: 500; line-height: 1.35; letter-spacing: -0.01em; color: var(--mute, #6b6560); } .ds-set { color: var(--ink, #1d1d1f); background: var(--selected, rgb(10 96 255 / 0.12)); border-radius: 6px; padding: 1px 5px; -webkit-box-decoration-break: clone; box-decoration-break: clone; } .ds-unset { font-style: italic; } .ds-caret { display: inline-block; width: 2px; height: 1.05em; margin-inline-start: 2px; vertical-align: -0.15em; background: var(--accent, #0a60ff); border-radius: 1px; } .ds-group-label { display: block; padding: 10px 16px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute, #6b6560); } .ds-tophit { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; margin: 0 8px; width: calc(100% - 16px); min-height: 50px; padding: 10px 12px; border: 0; border-radius: 9px; background: var(--accent, #0a60ff); color: var(--on-accent, #fff); font: 600 17px/1.375 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; text-align: start; cursor: pointer; transition: filter 100ms; } .ds-tophit:hover { filter: brightness(1.1); } .ds-tophit:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: 2px; } .ds-tile { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; line-height: 1; letter-spacing: -0.025em; } .ds-tile-set { background: var(--accent, #0a60ff); color: var(--on-accent, #fff); } .ds-tile-accent { background: rgb(255 255 255 / 0.2); color: #fff; } .ds-row { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 44px; margin: 0 6px; padding: 7px 10px; border-radius: 9px; font-size: 16px; line-height: 1.375; color: var(--ink, #1d1d1f); cursor: pointer; transition: background-color 100ms; } .ds-row:hover { background: rgb(29 29 31 / 0.045); } .ds-row:active { background: rgb(29 29 31 / 0.08); } .ds-row:focus-visible { background: rgb(29 29 31 / 0.06); outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-row-set { font-weight: 600; background: var(--selected, rgb(10 96 255 / 0.12)); } .ds-row-set:hover { background: var(--selected-hover, rgb(10 96 255 / 0.18)); } .ds-row-set .ds-trail { color: var(--selected-ink, #0848c2); } .ds-trail { text-align: end; font-size: 13px; color: var(--mute, #6b6560); } .ds-trail-attn { border-radius: 6px; background: var(--attention, #ffe3d6); color: var(--on-attention, #6a1f00); padding: 2px 6px; } .ds-kbd { display: inline-flex; align-items: center; border: 1px solid rgb(255 255 255 / 0.4); border-radius: 5px; padding: 2px 6px; font: 500 12px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; opacity: 0.8; }"
     },
@@ -826,20 +811,12 @@
       "css": ".ds-kbd { display: inline-flex; align-items: center; border: 1px solid rgb(255 255 255 / 0.4); border-radius: 5px; padding: 2px 6px; font: 500 12px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; opacity: 0.8; }"
     },
     {
-      "name": "Options Toggle",
-      "kind": "button",
-      "refersTo": "options-toggle",
-      "description": "Trailing control of the bar field: 44 px button holding a 30 px chevron tile that turns when the options drawer opens; aria-expanded / aria-controls.",
-      "html": "<button class=\"ds-toggle\" type=\"button\" aria-expanded=\"false\" aria-label=\"Show options\"><span class=\"ds-toggle-tile\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 7.5 5 5 5-5\"/></svg></span></button>",
-      "css": ".ds-toggle { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; border-radius: 9px; cursor: pointer; } .ds-toggle-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); transition: color 100ms; } .ds-toggle:hover .ds-toggle-tile { color: var(--ink, #1d1d1f); } .ds-toggle svg { transition: transform 300ms; } .ds-toggle[aria-expanded=\"true\"] svg { transform: rotate(180deg); }"
-    },
-    {
       "name": "Photo Tile",
       "kind": "chip",
       "refersTo": "photo-tile",
-      "description": "44 px rounded lead of a creator row: cover-cropped photo, or initials when there is none. Decorative.",
-      "html": "<span class=\"ds-photo\" aria-hidden=\"true\">AH</span> <span class=\"ds-photo ds-photo-accent\" aria-hidden=\"true\">AH</span>",
-      "css": ".ds-photo { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; overflow: hidden; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 15px; font-weight: 700; line-height: 1; } .ds-photo-accent { background: var(--accent, #0a60ff) linear-gradient(rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.2)); color: #fff; }"
+      "description": "44 px rounded lead of a creator row (64 px, 12 px corners, 20 px initials in the lg size, the lead of the profile panel): cover-cropped photo, or initials when there is none. Decorative.",
+      "html": "<span class=\"ds-photo\" aria-hidden=\"true\">AH</span> <span class=\"ds-photo ds-photo-accent\" aria-hidden=\"true\">AH</span> <span class=\"ds-photo ds-photo-lg\" aria-hidden=\"true\">AH</span>",
+      "css": ".ds-photo { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; overflow: hidden; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 15px; font-weight: 700; line-height: 1; } .ds-photo-accent { background: var(--accent, #0a60ff) linear-gradient(rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.2)); color: #fff; } .ds-photo-lg { width: 64px; height: 64px; border-radius: 12px; font-size: 20px; }"
     },
     {
       "name": "Creator Row",
@@ -856,11 +833,99 @@
       "description": "A filter as a native disclosure row: glyph tile, label, current value or Any with a chevron; options inside carry counts.",
       "html": "<details class=\"ds-filter\" open><summary class=\"ds-filter-row\"><span class=\"ds-tile\">T</span><span>Specialty</span><span class=\"ds-filter-val\">Any</span></summary><div class=\"ds-filter-opt\"><span class=\"ds-tile\">T</span><span>Weddings</span><span class=\"ds-filter-val\">12</span></div></details>",
       "css": ".ds-filter { margin: 0; } .ds-filter-row, .ds-filter-opt { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; margin: 0 6px; min-height: 44px; padding: 7px 10px; border-radius: 9px; list-style: none; cursor: pointer; color: var(--ink, #1d1d1f); font: 400 16px/1.375 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; transition: background-color 100ms; } .ds-filter-row::-webkit-details-marker { display: none; } .ds-filter-row:hover, .ds-filter-opt:hover { background: rgb(29 29 31 / 0.045); } .ds-filter-row:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-filter-val { font-size: 13px; text-align: end; color: var(--mute, #6b6560); font-variant-numeric: tabular-nums; } .ds-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; }"
+    },
+    {
+      "name": "Profile Identity Panel",
+      "kind": "custom",
+      "refersTo": "fact-row",
+      "description": "The Brief Bar as a person: 64 px Photo Tile, name as h1 with the code in Meta, single 44 px fact rows (value first, what it is trailing; only Verified has a second line), then the Top Hit that books by full name.",
+      "html": "<section class=\"ds-profile\"><header class=\"ds-profile-head\"><span class=\"ds-photo ds-photo-lg\" aria-hidden=\"true\">AH</span><div><h1 class=\"ds-profile-name\">Amira Haddad</h1><p class=\"ds-profile-code\">SHT-0142</p></div></header><div class=\"ds-facts\"><div class=\"ds-row\"><span class=\"ds-tile\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4.5 10.5 3.5 3.5 7.5-8\"/></svg></span><span>Verified<span class=\"ds-note\">We have checked this person's ID.</span></span><span class=\"ds-trail\"></span></div><div class=\"ds-row\"><span class=\"ds-tile\">P</span><span>Dubai · Abu Dhabi</span><span class=\"ds-trail\">Works in</span></div></div><button class=\"ds-tophit\">Book Amira Haddad</button></section>",
+      "css": ".ds-profile { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; color: var(--ink, #1d1d1f); background: var(--panel-solid, #fcfbfa); border: 1px solid var(--hair, rgb(0 0 0 / 0.08)); border-radius: 14px; box-shadow: var(--shadow, 0 18px 40px -22px rgb(29 29 31 / 0.35)); overflow: hidden; max-width: 680px; } .ds-profile-head { display: flex; align-items: center; gap: 16px; padding: 16px 16px 12px; border-bottom: 1px solid var(--hair, rgb(0 0 0 / 0.08)); } .ds-profile-name { margin: 0; font-size: 26px; font-weight: 700; line-height: 1.25; letter-spacing: -0.025em; } .ds-profile-code { margin: 2px 0 0; font-size: 13px; color: var(--mute, #6b6560); font-variant-numeric: tabular-nums; } .ds-facts { padding: 4px 0; } .ds-note { display: block; font-size: 13px; font-weight: 400; color: var(--mute, #6b6560); } .ds-row { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 44px; margin: 0 6px; padding: 7px 10px; border-radius: 9px; font-size: 16px; line-height: 1.375; color: var(--ink, #1d1d1f); } .ds-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; } .ds-trail { text-align: end; font-size: 13px; color: var(--mute, #6b6560); } .ds-photo { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border-radius: 10px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 15px; font-weight: 700; line-height: 1; } .ds-photo-lg { width: 64px; height: 64px; border-radius: 12px; font-size: 20px; } .ds-tophit { display: block; margin: 8px; width: calc(100% - 16px); min-height: 50px; padding: 10px 12px; border: 0; border-radius: 9px; background: var(--accent, #0a60ff); color: var(--on-accent, #fff); font: 600 17px/1.375 sans-serif; text-align: start; cursor: pointer; } .ds-tophit:hover { filter: brightness(1.1); } .ds-tophit:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: 2px; }"
+    },
+    {
+      "name": "Portfolio Grid",
+      "kind": "custom",
+      "refersTo": "sample-tile",
+      "description": "Work samples on the ground: 2 columns (3 from 640 px), 8 px gaps, uniform 4:5 crops at 8 px corners; no captions, no hover zoom. A video is its poster with a drawn play tile and the host name beneath.",
+      "html": "<ul class=\"ds-grid\"><li><a class=\"ds-sample\" href=\"#\" aria-label=\"Wedding at Atlantis\"><span class=\"ds-sample-img\"></span></a></li><li><a class=\"ds-sample\" href=\"#\" aria-label=\"Watch on Vimeo\"><span class=\"ds-sample-img\"></span><span class=\"ds-play\" aria-hidden=\"true\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\"><path d=\"M7 4.75v10.5L15.25 10Z\" fill=\"currentColor\"/></svg></span></a><span class=\"ds-host\">Vimeo</span></li><li><a class=\"ds-sample\" href=\"#\" aria-label=\"Portrait\"><span class=\"ds-sample-img\"></span></a></li></ul>",
+      "css": ".ds-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; } @media (min-width: 640px) { .ds-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } } .ds-sample { position: relative; display: block; overflow: hidden; border-radius: 8px; background: var(--tile, #f1eeea); } .ds-sample:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: 2px; } .ds-sample-img { display: block; aspect-ratio: 4 / 5; width: 100%; background: linear-gradient(var(--tile, #f1eeea), var(--tile, #f1eeea)); } .ds-play { position: absolute; inset-inline-end: 8px; inset-block-end: 8px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; } .ds-host { display: block; margin-top: 4px; font-size: 13px; color: var(--mute, #6b6560); }"
+    },
+    {
+      "name": "Booking Creator Row",
+      "kind": "custom",
+      "refersTo": "booking-creator-row",
+      "description": "The set row that leads the booking bar: selection tint, 44 px Photo Tile, name over the code, and a 44 px Change link. Beside it, the locked professional token: tinted like a set part, never reopened.",
+      "html": "<div class=\"ds-book\"><div class=\"ds-crow\"><span class=\"ds-photo\" aria-hidden=\"true\">AH</span><span><span class=\"ds-cname\">Amira Haddad</span><span class=\"ds-ccode\">SHT-0142</span></span><a class=\"ds-change\" href=\"#\">Change</a></div><p class=\"ds-sentence\">I need a <span class=\"ds-locked\">photographer</span> for</p></div>",
+      "css": ".ds-book { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; color: var(--ink, #1d1d1f); background: var(--panel-solid, #fcfbfa); border: 1px solid var(--hair, rgb(0 0 0 / 0.08)); border-radius: 14px; overflow: hidden; max-width: 680px; } .ds-crow { display: grid; grid-template-columns: 44px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 64px; margin: 6px; padding: 7px 10px; border-radius: 9px; background: var(--selected, rgb(10 96 255 / 0.12)); font-size: 16px; line-height: 1.375; } .ds-cname { display: block; font-weight: 600; } .ds-ccode { display: block; font-size: 13px; color: var(--selected-ink, #0848c2); font-variant-numeric: tabular-nums; } .ds-change { display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; margin-inline: -8px; font-size: 13px; font-weight: 500; color: var(--selected-ink, #0848c2); text-decoration: underline; text-underline-offset: 2px; } .ds-change:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: 2px; } .ds-sentence { margin: 0; padding: 12px 16px; font-size: 22px; font-weight: 500; line-height: 1.35; letter-spacing: -0.01em; color: var(--mute, #6b6560); } .ds-locked { color: var(--ink, #1d1d1f); background: var(--selected, rgb(10 96 255 / 0.12)); border-radius: 6px; padding: 1px 5px; } .ds-photo { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border-radius: 10px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 15px; font-weight: 700; line-height: 1; } .ds-photo-lg { width: 64px; height: 64px; border-radius: 12px; font-size: 20px; } "
+    },
+    {
+      "name": "Status Bar",
+      "kind": "custom",
+      "refersTo": "brief-bar",
+      "description": "The provider editor's first small panel: one state row (icon, state, what the public sees), the admin's peach note, the code row, then ordinary action rows; hiding is a native disclosure that asks once in place.",
+      "html": "<div class=\"ds-bar\"><div class=\"ds-gap\"><div class=\"ds-row ds-row-set\"><span class=\"ds-tile\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4.5 10.5 3.5 3.5 7.5-8\"/></svg></span><span><b>Live</b><span class=\"ds-meta\">The public sees your profile.</span></span><span></span></div><div class=\"ds-note\" role=\"note\"><b>Review note</b>Add a clearer photo.</div><div class=\"ds-row\"><span class=\"ds-tile\">T</span><span>Code</span><span class=\"ds-trail\">SH-1042</span></div></div><div class=\"ds-actions\"><a class=\"ds-row\" href=\"#\"><span class=\"ds-tile\">&#8594;</span><span>View my public profile</span><span></span></a><details open><summary class=\"ds-row\"><span class=\"ds-tile\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 5 10 10M15 5 5 15\"/></svg></span><span>Hide my profile</span><span></span></summary><div class=\"ds-confirm\"><p>Hide your profile from the public?</p><button class=\"ds-quiet\" type=\"button\">Yes, hide it</button></div></details></div></div>",
+      "css": ".ds-bar { font: 15px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; color: var(--ink, #1d1d1f); background: var(--panel-solid, #fcfbfa); border: 1px solid var(--hair, rgb(0 0 0 / 0.08)); border-radius: 14px; box-shadow: var(--shadow, 0 18px 40px -22px rgb(29 29 31 / 0.35)); overflow: hidden; max-width: 560px; } .ds-gap { padding: 6px 0; } .ds-actions { border-top: 1px solid var(--hair, rgb(0 0 0 / 0.08)); padding: 4px 0; } .ds-row b { font-weight: 600; } summary.ds-row { list-style: none; } summary.ds-row::-webkit-details-marker { display: none; } .ds-row { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 44px; margin: 0 6px; padding: 7px 10px; border-radius: 9px; font-size: 16px; line-height: 1.375; color: var(--ink, #1d1d1f); cursor: pointer; transition: background-color 100ms; } .ds-row:hover { background: rgb(29 29 31 / 0.045); } .ds-row:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-row-set { font-weight: 600; background: var(--selected, rgb(10 96 255 / 0.12)); } .ds-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); } .ds-meta { display: block; font-size: 13px; font-weight: 400; color: var(--mute, #6b6560); } .ds-trail { font-size: 13px; color: var(--mute, #6b6560); } .ds-note { margin: 4px 16px; padding: 8px 12px; border-radius: 6px; background: var(--attention, #ffe3d6); color: var(--on-attention, #6a1f00); font-size: 14px; } .ds-note b { display: block; font-size: 12px; } .ds-confirm { padding: 0 16px 8px; font-size: 14px; } .ds-confirm p { margin: 0; } .ds-quiet { margin-top: 4px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 9px; background: var(--tile, #f1eeea); color: var(--ink, #1d1d1f); font: 600 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; cursor: pointer; } .ds-quiet:hover { background: rgb(29 29 31 / 0.08); } .ds-quiet:focus-visible { outline: 2px solid var(--focus, #0a60ff); }"
+    },
+    {
+      "name": "Localised Field Pair",
+      "kind": "input",
+      "refersTo": "text-field",
+      "description": "One field in English and Arabic: legend is the field name, labels are only the language names, each input has its own lang and dir, 'Arabic is optional' said once under the legend (name and bio only).",
+      "html": "<fieldset class=\"ds-pair\"><legend>Display name</legend><p class=\"ds-help\">Arabic is optional.</p><div class=\"ds-cols\"><div><label for=\"ds-n-en\"><span lang=\"en\">English</span></label><input id=\"ds-n-en\" lang=\"en\" dir=\"ltr\" value=\"Amira Haddad\"></div><div><label for=\"ds-n-ar\"><span lang=\"ar\">العربية</span></label><input id=\"ds-n-ar\" lang=\"ar\" dir=\"rtl\" value=\"\"></div></div></fieldset>",
+      "css": ".ds-pair { margin: 0; border: 0; padding: 10px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; color: var(--ink, #1d1d1f); } .ds-pair legend { padding: 0; font-size: 13px; font-weight: 500; color: var(--mute, #6b6560); } .ds-help { margin: 2px 0 0; font-size: 13px; color: var(--mute, #6b6560); } .ds-cols { display: grid; gap: 12px; margin-top: 4px; } @media (min-width: 640px) { .ds-cols { grid-template-columns: 1fr 1fr; } } .ds-pair label { display: block; font-size: 13px; color: var(--mute, #6b6560); } .ds-pair input { display: block; box-sizing: border-box; width: 100%; min-height: 44px; margin-top: 4px; padding: 0 12px; border: 1px solid var(--hair, rgb(0 0 0 / 0.08)); border-radius: 9px; background: transparent; color: var(--ink, #1d1d1f); font: 400 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; outline: none; transition: border-color 150ms; } .ds-pair input:focus-visible { border-color: var(--focus, #0a60ff); }"
+    },
+    {
+      "name": "Check Row",
+      "kind": "custom",
+      "refersTo": "check-row-checked",
+      "description": "A choice as a bar row over a hidden checkbox: bordered 30 px tile when unchecked, filled selection blue with a white tick when checked, selected tint and semibold label; a city is indented 20 px under its emirate.",
+      "html": "<div><label class=\"ds-cr\"><input type=\"checkbox\" checked><span class=\"ds-box\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4.5 10.5 3.5 3.5 7.5-8\"/></svg></span><span>Dubai</span><span></span></label><label class=\"ds-cr ds-in\"><input type=\"checkbox\"><span class=\"ds-box\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4.5 10.5 3.5 3.5 7.5-8\"/></svg></span><span>Downtown</span><span></span></label></div>",
+      "css": ".ds-cr { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 44px; margin: 0 6px; padding: 7px 10px; border-radius: 9px; font: 16px/1.375 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; color: var(--ink, #1d1d1f); cursor: pointer; transition: background-color 100ms; } .ds-cr:hover { background: rgb(29 29 31 / 0.045); } .ds-cr:has(:checked) { background: var(--selected, rgb(10 96 255 / 0.12)); font-weight: 600; } .ds-cr:has(:checked):hover { background: var(--selected-hover, rgb(10 96 255 / 0.18)); } .ds-cr:has(:focus-visible) { outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-cr input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); } .ds-in { margin-inline-start: 26px; } .ds-box { display: grid; place-items: center; width: 30px; height: 30px; box-sizing: border-box; border: 1px solid var(--mute, #6b6560); border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); } .ds-box svg { opacity: 0; } .ds-cr input:checked + .ds-box { border-color: transparent; background: var(--accent, #0a60ff); color: var(--on-accent, #fff); } .ds-cr input:checked + .ds-box svg { opacity: 1; }"
+    },
+    {
+      "name": "Sample Row",
+      "kind": "custom",
+      "refersTo": "sample-row-button",
+      "description": "Photo tile (44 px), 'Sample n', then move up, move down and remove as 44 px icon buttons on the end side, each its own one-button form announced politely; the caption pair and specialty select below belong to the profile form and are saved by the closing action.",
+      "html": "<div class=\"ds-sr\"><span class=\"ds-ph\">2</span><p class=\"ds-name\">Sample 2<span class=\"ds-meta\">Image</span></p><button class=\"ds-ib\" aria-label=\"Move up\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" style=\"transform:rotate(-90deg)\"><path d=\"m5 7.5 5 5 5-5\"/></svg></button><button class=\"ds-ib\" aria-label=\"Move down\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" style=\"transform:rotate(90deg)\"><path d=\"m5 7.5 5 5 5-5\"/></svg></button><button class=\"ds-ib\" aria-label=\"Remove\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 5 10 10M15 5 5 15\"/></svg></button></div>",
+      "css": ".ds-sr { display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; color: var(--ink, #1d1d1f); } .ds-ph { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: 10px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 15px; font-weight: 700; } .ds-name { flex: 1; min-width: 0; margin: 0; font-size: 16px; font-weight: 600; } .ds-meta { display: block; font-size: 13px; font-weight: 400; color: var(--mute, #6b6560); } .ds-ib { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 9px; background: transparent; color: var(--ink, #1d1d1f); cursor: pointer; transition: background-color 100ms; } .ds-ib:hover { background: rgb(29 29 31 / 0.06); } .ds-ib:focus-visible { outline: 2px solid var(--focus, #0a60ff); } .ds-ib:disabled { opacity: 0.4; }"
+    },
+    {
+      "name": "Closing Bar",
+      "kind": "custom",
+      "refersTo": "brief-bar",
+      "description": "The editor's second small panel: a feedback line, then one Top Hit for the state (Save and send for review / Save / Save and publish) and, when sending, 'Save without sending' as an ordinary row.",
+      "html": "<div class=\"ds-bar\"><p class=\"ds-fb\" aria-live=\"polite\">Add a city and a language to send for review.</p><span class=\"ds-gl\">Top Hit</span><button class=\"ds-tophit\" type=\"button\"><span class=\"ds-tl\">&#8594;</span><span>Save and send for review</span><span></span></button><div class=\"ds-row\"><span class=\"ds-tile\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4.5 10.5 3.5 3.5 7.5-8\"/></svg></span><span>Save without sending</span><span></span></div></div>",
+      "css": ".ds-bar { font: 15px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; color: var(--ink, #1d1d1f); background: var(--panel-solid, #fcfbfa); border: 1px solid var(--hair, rgb(0 0 0 / 0.08)); border-radius: 14px; box-shadow: var(--shadow, 0 18px 40px -22px rgb(29 29 31 / 0.35)); overflow: hidden; max-width: 560px; padding-bottom: 8px; } .ds-fb { margin: 0; padding: 12px 16px 4px; font-size: 14px; color: var(--mute, #6b6560); } .ds-gl { display: block; padding: 10px 16px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute, #6b6560); } .ds-tophit { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; margin: 0 8px; width: calc(100% - 16px); min-height: 50px; padding: 10px 12px; border: 0; border-radius: 9px; background: var(--accent, #0a60ff); color: var(--on-accent, #fff); font: 600 17px/1.375 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; text-align: start; cursor: pointer; transition: filter 100ms; } .ds-tophit:hover { filter: brightness(1.1); } .ds-tophit:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: 2px; } .ds-tl { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: rgb(255 255 255 / 0.2); } .ds-row { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 44px; margin: 0 6px; padding: 7px 10px; border-radius: 9px; font-size: 16px; line-height: 1.375; color: var(--ink, #1d1d1f); cursor: pointer; transition: background-color 100ms; } .ds-row:hover { background: rgb(29 29 31 / 0.045); } .ds-row:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-row-set { font-weight: 600; background: var(--selected, rgb(10 96 255 / 0.12)); } .ds-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); } .ds-meta { display: block; font-size: 13px; font-weight: 400; color: var(--mute, #6b6560); } .ds-trail { font-size: 13px; color: var(--mute, #6b6560); }"
+    },
+    {
+      "name": "Specialty Header",
+      "kind": "custom",
+      "refersTo": "brief-bar",
+      "description": "Specialty page top on the ground, no panel: Headline h1 (editor's SEO title or fallback), optional 16 px mute intro at 60ch, and a Meta tabular counts line shown only above zero.",
+      "html": "<header class=\"ds-sh\"><h1>Weddings</h1><p class=\"ds-sh-intro\">Photographers and videographers who shoot weddings across the UAE.</p><p class=\"ds-sh-counts\">428 samples · 43 pros</p></header>",
+      "css": ".ds-sh { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; color: var(--ink, #1d1d1f); } .ds-sh h1 { margin: 0; padding: 0 4px; font-size: 34px; font-weight: 700; line-height: 1.25; letter-spacing: -0.03em; text-wrap: balance; } .ds-sh-intro { margin: 8px 0 0; padding: 0 4px; max-width: 60ch; font-size: 16px; line-height: 1.625; color: var(--mute, #6b6560); } .ds-sh-counts { margin: 8px 0 0; padding: 0 4px; font-size: 13px; color: var(--mute, #6b6560); font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Specialty Samples",
+      "kind": "custom",
+      "refersTo": "sample-tile",
+      "description": "'Recent work' Section Title over up to 24 samples: 2 columns (3 from 640 px), 8 px gaps, 4:5 crops at 8 px corners, all lazy; each tile links to the creator's profile named 'caption, by name'. No captions or hover zoom.",
+      "html": "<section><h2 class=\"ds-ss-h\">Recent work</h2><ul class=\"ds-ss\"><li><a href=\"#\" aria-label=\"Atlantis ceremony, by Layla\"><span class=\"ds-ss-img\"></span></a></li><li><a href=\"#\" aria-label=\"First dance, by Omar\"><span class=\"ds-ss-img\"></span></a></li><li><a href=\"#\" aria-label=\"Portrait, by Sara\"><span class=\"ds-ss-img\"></span></a></li></ul></section>",
+      "css": ".ds-ss-h { margin: 0; font: 700 26px/1.25 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; letter-spacing: -0.025em; color: var(--ink, #1d1d1f); text-wrap: balance; } .ds-ss { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; } @media (min-width: 640px) { .ds-ss-h { font-size: 30px; } .ds-ss { grid-template-columns: repeat(3, minmax(0,1fr)); } } .ds-ss a { display: block; overflow: hidden; border-radius: 8px; background: var(--tile, #f1eeea); } .ds-ss a:focus-visible { outline: 2px solid var(--focus, #0a60ff); } .ds-ss-img { display: block; aspect-ratio: 4 / 5; width: 100%; }"
+    },
+    {
+      "name": "Specialties Link Row",
+      "kind": "nav",
+      "refersTo": "result-row",
+      "description": "Landing Specialties row linking to /work/{slug}: glyph tile, name, trailing counts line (each part only above zero). A category with no page is a quiet mute row, not a link.",
+      "html": "<ul class=\"ds-sl\"><li><a class=\"ds-sl-row\" href=\"#\"><span class=\"ds-sl-tile\">W</span><span>Weddings</span><span class=\"ds-sl-trail\">428 samples · 43 pros</span></a></li><li><div class=\"ds-sl-row ds-sl-plain\"><span class=\"ds-sl-tile\">E</span><span>Events</span></div></li></ul>",
+      "css": ".ds-sl { list-style: none; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif; } .ds-sl li { padding: 4px 0; } .ds-sl-row { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 44px; padding: 7px 16px; border-radius: 9px; font-size: 16px; line-height: 1.375; color: var(--ink, #1d1d1f); text-decoration: none; transition: background-color 100ms; } a.ds-sl-row:hover { background: rgb(29 29 31 / 0.045); } a.ds-sl-row:focus-visible { outline: 2px solid var(--focus, #0a60ff); outline-offset: -2px; } .ds-sl-tile { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--tile, #f1eeea); color: var(--tile-ink, #5c5752); font-size: 11px; font-weight: 700; } .ds-sl-trail { font-size: 13px; text-align: end; color: var(--mute, #6b6560); font-variant-numeric: tabular-nums; } .ds-sl-plain { color: var(--mute, #6b6560); }"
     }
   ],
   "narrative": {
     "northStar": "The Brief Bar",
-    "overview": "The page is one panel the audience already knows how to use: a macOS Spotlight / Quick Actions bar. A single frosted panel floats on a warm stone ground; the brief is the search field, the options fold beneath it as grouped result rows, and the Top Hit, the one selection-blue row, is the shoot. The one place a picture sits behind the interface is the landing hero: a full-screen stage, the CMS hero photograph under a theme scrim (or an empty studio sweep until one exists), with the bar floating over it as glass. Everywhere else nothing is painted onto the page to signal \"photography\", and nowhere is there a serif headline, a booking widget, or a ticket or signage costume. The world is the interface.\n\nDensity is Spotlight density: identical 44 px row rhythm so the whole brief reads in one sweep, a 30 px glyph tile leading every row (a 44 px photo tile where the row is a person), quiet state text or a key hint trailing it. Below the fold the same grammar continues on the bare ground: rows separated by hairlines, without a panel. Warmth comes from the stone ground and warm greys, premium from restraint: system type at zero font bytes, one accent, and outside the hero stage one shadow and one gradient. Dark (\"the phone at night\") is a first-class rendering, not an inversion.\n\nThe owner rejected the ticket (\"The Shoot Pass\") and municipal signage (\"Bilingual Wayfinding\") worlds as gimmicky and cold; this world must never drift back toward a themed costume.",
+    "overview": "The page is one panel the audience already knows how to use: a macOS Spotlight / Quick Actions bar. A single frosted panel floats on a warm stone ground; the brief is the search field, the asked step's options list beneath it as grouped result rows, and the Top Hit, the one selection-blue row, is the shoot. The one place a picture sits behind the interface is the landing hero: a full-screen stage, the CMS hero photograph under a theme scrim (or an empty studio sweep until one exists), with the bar floating over it as glass. Everywhere else nothing is painted onto the page to signal \"photography\", and nowhere is there a serif headline, a booking widget, or a ticket or signage costume. The world is the interface.\n\nDensity is Spotlight density: identical 44 px row rhythm so the whole brief reads in one sweep, a 30 px glyph tile leading every row (a 44 px photo tile where the row is a person), quiet state text or a key hint trailing it. Below the fold the same grammar continues on the bare ground: rows separated by hairlines, without a panel. Warmth comes from the stone ground and warm greys, premium from restraint: system type at zero font bytes, one accent, and outside the hero stage one shadow and one gradient. Dark (\"the phone at night\") is a first-class rendering, not an inversion.\n\nThe owner rejected the ticket (\"The Shoot Pass\") and municipal signage (\"Bilingual Wayfinding\") worlds as gimmicky and cold; this world must never drift back toward a themed costume.",
     "keyCharacteristics": [
       "One floating frosted panel per primary task, 14 px corners, 1 px hairline, the system's only shadow.",
       "Selection blue reserved for the Top Hit, the caret, `::selection` and focus; never body text or decoration.",
@@ -869,7 +934,7 @@
       "Logical CSS only; Arabic is a designed rendering, not a mirrored afterthought.",
       "Works as a plain form without JavaScript.",
       "On the landing hero the primary bar wears its glass tone over a full-screen photo stage; everywhere else it floats on the ground.",
-      "With JavaScript the bar's options fold into a drawer under the Top Hit; a toggle, a sentence part, the filter or Cmd/Ctrl+K opens it."
+      "With JavaScript the bar is a step-by-step search (FR-067): one field and only the asked step's list; a choice prints into the sentence as a token and the next list appears, and the Top Hit appears only once every part is answered."
     ],
     "rules": [
       {
@@ -899,12 +964,12 @@
       },
       {
         "name": "The Arabic Label Rule",
-        "body": "Uppercase and letter-spacing never apply to Arabic; `:lang(ar)` resets them and lifts the size one step.",
+        "body": "Uppercase and letter-spacing never apply to Arabic; `:lang(ar)` resets them and lifts the size one step. Headings h1 to h3 are never letter-spaced in Arabic (an unlayered `:lang(ar) :is(h1, h2, h3)` rule beats the tracking utilities), and a result row's trailing slot lifts from 13 px to 14 px.",
         "section": "typography"
       },
       {
         "name": "The Two Panels Rule",
-        "body": "A page shows at most two bar panels: the primary bar and one smaller (`sm`, 15 px) secondary bar such as the creator invitation. The glass tone is the primary bar dressed for the hero stage, not an extra panel. Everything else is rows on the ground.",
+        "body": "A page shows at most two bar panels: the primary bar and one smaller (`sm`, 15 px) secondary bar such as the creator invitation. The profile page's identity panel and the booking page's bar are each that page's one panel. The glass tone is the primary bar dressed for the hero stage, not an extra panel. Everything else is rows on the ground. The provider editor is the exception that proves the count: its status bar and its closing bar are its two `sm` panels, and everything between them is rows on the ground.",
         "section": "layout"
       },
       {
@@ -929,11 +994,21 @@
       "Do consume colour through role tokens and add any new role to `:root`, `.dark` and the `prefers-color-scheme` block together, with its pair in the contrast test.",
       "Do keep text pairs at WCAG AA in both themes: muted text is #6B6560 in light, and the dark accent is #2B6BEB, deepened for white text.",
       "Do use logical properties only and flip direction-bearing icons with `rtl:-scale-x-100`.",
-      "Do gate decorative motion (caret blink, smooth scroll, the drawer's fold and fade, the toggle chevron) behind `prefers-reduced-motion: no-preference`.",
+      "Do gate decorative motion (caret blink, smooth scroll, the step-in) behind `prefers-reduced-motion: no-preference`.",
       "Do keep every glyph tile's text as localised CMS data, three characters at most, or a drawn icon.",
       "Do re-run the glass contrast test (over mid grey and the worst photo after the scrim) whenever a glass or scrim value changes.",
       "Do lead a person's row with the 44 px Photo Tile (photo or initials, `aria-hidden`), keep specialties as plain text and the code as isolated left-to-right trailing meta, and hide filter options that match nothing unless chosen.",
-      "Do keep the bar a working plain form without JavaScript: the options drawer stays open, and the toggle and key hints are hidden."
+      "Do keep the bar a working plain form without JavaScript: every list shows at once, and the search input and key hints are hidden.",
+      "Do state a person's facts as single 44 px rows, value first and its name in the trailing slot; give \"verified\" a plain sentence, not a badge.",
+      "Do show portfolios as a uniform 4:5 grid at the tile radius with 8 px gaps and let the images carry themselves.",
+      "Do answer a step the creator fixes, lock it, and leave it out of step counts.",
+      "Do give a form one closing bar with one Top Hit per state, and make every other action on the page an ordinary row; fields that sit away from their form join it with the HTML `form` attribute rather than nesting forms.",
+      "Do ask a destructive or visibility change once, in place, with a native disclosure; make the way back one tap.",
+      "Do label a localised pair by the language's own name, give each input its own `lang` and `dir`, and say \"Arabic is optional\" once under the legend of the two fields it concerns.",
+      "Do give icon-only controls a 44 px target, an accessible name, and a polite announcement of what they did.",
+      "Do print counts only when they are real and above zero, each part on its own (\"428 samples · 43 pros\"), and omit the line when there is nothing true to say.",
+      "Do make every sample picture lead to the person who shot it, with a link named \"caption, by name\".",
+      "Do render a thing with no page as quiet muted text, not a look-alike link."
     ],
     "donts": [
       "Don't load a webfont or a second type family.",
@@ -945,12 +1020,24 @@
       "Don't use emoji, Unicode symbols or copied Apple icons as icons.",
       "Don't add eyebrows or kickers above headlines; group labels exist only as Spotlight's group headers over rows.",
       "Don't paint the subject onto the page outside the hero stage, and don't costume it anywhere: no serif display, ticket, signage or booking-widget costume.",
-      "Don't invent proof: no testimonials, logos, counts or ratings that do not exist."
+      "Don't invent proof: no testimonials, logos, counts or ratings that do not exist.",
+      "Don't add captions, hover zoom, overlays or badges to portfolio images.",
+      "Don't letter-space Arabic headings, and don't leave Arabic trailing slots at 13 px.",
+      "Don't use a modal, a toast, a progress ring, a completion percentage or a stepper in the editor; the feedback line and the status bar say where the profile stands.",
+      "Don't show a zero, a placeholder or a rounded-up count, and don't show a sample without a way to its creator."
     ],
     "directionHistory": [
       {
         "date": "2026-11-07",
-        "note": "The owner asked for three changes explicitly. (1) The landing hero became a full-screen stage: the CMS photograph under a theme scrim, or a CSS studio sweep until a photo exists, with the CMS headline as the only visible title above the bar; the other-language headline line and the subheadline are no longer shown. This retires \"no moody photo hero\" and \"nothing painted on the page\" for the hero only. (2) The bar gained a glass tone for that stage, which brings its own sheen, inset highlight, edge and deeper shadow; the One Shadow and One Gradient rules now name these as hero-only exceptions. (3) The brief builder's options fold into a drawer under the Top Hit, open without JavaScript."
+        "note": "The owner asked for three changes explicitly. (1) The landing hero became a full-screen stage: the CMS photograph under a theme scrim, or a CSS studio sweep until a photo exists, with the CMS headline as the only visible title above the bar; the other-language headline line and the subheadline are no longer shown. This retires \"no moody photo hero\" and \"nothing painted on the page\" for the hero only. (2) The bar gained a glass tone for that stage, which brings its own sheen, inset highlight, edge and deeper shadow; the One Shadow and One Gradient rules now name these as hero-only exceptions. (3) The brief builder's options folded into a drawer under the Top Hit; the same day the owner replaced the drawer with the step-by-step search of FR-067 (nothing pre-filled, one list per step)."
+      },
+      {
+        "date": "2026-11-07",
+        "note": "Feature 002, US3: the provider's profile editor at /account/profile was recorded from the shipped build (Status Bar, Localised Field Pair, Check Row, Sample Row, Closing Bar). No new colour, shadow or type step."
+      },
+      {
+        "date": "2026-11-07",
+        "note": "Feature 002, US4: the specialty page at /work/{slug} and the landing Specialties link row were recorded from the shipped build (Specialty Header, Specialty Page, Specialty Samples, Specialties Link Row). No new colour, shadow, radius or type step."
       }
     ]
   }

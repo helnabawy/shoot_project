@@ -3,7 +3,16 @@
     "collect": {
       "startServerCommand": "pnpm --filter web start",
       "startServerReadyPattern": "Ready|started server",
-      "url": ["http://localhost:3000/", "http://localhost:3000/ar"],
+      "url": [
+        "http://localhost:3000/",
+        "http://localhost:3000/ar",
+        "http://localhost:3000/creators",
+        "http://localhost:3000/creators/d2222",
+        "http://localhost:3000/work/portrait",
+        "http://localhost:3000/ar/creators",
+        "http://localhost:3000/ar/creators/d2222",
+        "http://localhost:3000/ar/work/portrait"
+      ],
       "numberOfRuns": 1,
       "settings": {
         "formFactor": "mobile",
@@ -12,10 +21,23 @@
     },
     "assert": {
       "assertions": {
-        "categories:performance": ["error", { "minScore": 0.9 }],
-        "categories:accessibility": ["error", { "minScore": 0.95 }]
+        "categories:performance": [
+          "error",
+          {
+            "minScore": 0.9
+          }
+        ],
+        "categories:accessibility": [
+          "error",
+          {
+            "minScore": 0.95
+          }
+        ]
       }
     },
-    "upload": { "target": "filesystem", "outputDir": ".lighthouseci-dark" }
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci-dark"
+    }
   }
 }

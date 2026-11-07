@@ -12,7 +12,7 @@ describe('CP-US3-S2 / S3 verification is publishing', () => {
   const unpublish = (id: number) =>
     world.payload.update({ collection: 'creator-profiles', id, data: { _status: 'draft' } as never, draft: false, user: world.admin, overrideAccess: false, context: quiet })
 
-  it('CP-US3-S2 publishing makes the profile public and stamps verifiedAt once; unpublishing hides it and keeps the stamp', async () => {
+  it('CP-FR-002 CP-US3-S2 publishing makes the profile public and stamps verifiedAt once; unpublishing hides it and keeps the stamp', async () => {
     const provider = await makeProvider(world)
     const profile = await createDraft(world, provider, { displayName: 'Verify Me' })
     expect((await publicProfiles(world)).docs.map((d) => d.id)).not.toContain(profile.id)

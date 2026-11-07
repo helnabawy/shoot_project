@@ -23,7 +23,7 @@ describe('CP-FR-001 / CP-FR-002 access matrix (Principle VII)', () => {
     expect(await createDraft(world, other)).toMatchObject({ _status: 'draft' })
   })
 
-  it('CP-FR-002 anonymous reads only published, active, non-suspended profiles', async () => {
+  it('CP-FR-002 CP-US1-S3 anonymous reads only published, active, non-suspended profiles', async () => {
     expect((await publicProfiles(world)).docs.map((d) => d.id)).toEqual([profileId])
     const listing = await listingOf(world, profileId)
     await world.payload.update({ collection: 'creator-listings', id: listing!.id, data: { suspended: true }, user: world.admin, overrideAccess: false, context: quiet })

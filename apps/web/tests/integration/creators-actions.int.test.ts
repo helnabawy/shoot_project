@@ -189,7 +189,15 @@ describe('CP-US3-S1 provider actions', () => {
       expect((await mine(provider))!.samples).toHaveLength(0)
     })
 
-    it('rejects a type other than JPEG, PNG or WebP, and a file over 5 MB, with the media messages', async () => {
+    it('CP-FR-008 accepts a photo of about 4 MB, over a server action\'s default 1 MB and under the 5 MB limit', async () => {
+      const photo = await sharp(randomBytes(2200 * 2200 * 3), { raw: { width: 2200, height: 2200, channels: 3 } }).jpeg({ quality: 92 }).toBuffer()
+      expect(photo.length).toBeGreaterThan(2 * 1024 * 1024)
+      expect(photo.length).toBeLessThan(5 * 1024 * 1024)
+      expect(await actions.addSample(idle, imageSample({ image: file(photo, 'big.jpg', 'image/jpeg') }))).toMatchObject({ status: 'saved' })
+      expect((await mine(provider))!.samples).toHaveLength(1)
+    }, 120_000)
+
+    it('CP-FR-008 rejects a type other than JPEG, PNG or WebP, and a file over 5 MB, with the media messages', async () => {
       const gif = await sharp(png).gif().toBuffer()
       expect(await actions.addSample(idle, imageSample({ image: file(gif, 'a.gif', 'image/gif') }))).toMatchObject({ status: 'error', errors: { image: 'media.upload.type' } })
       expect(await actions.addSample(idle, imageSample({ image: file(Buffer.from('plain text'), 'notes.txt', 'text/plain') }))).toMatchObject({ status: 'error', errors: { image: 'media.upload.type' } })

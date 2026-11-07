@@ -95,6 +95,18 @@ contract in `.impeccable/surfaces/apps-web-src-app-site-locale-page-tsx.md`.
   creator invitation as a second smaller bar with its own Top Hit, FAQ as
   expanding rows, a closing Top Hit.
 
+## Creator surfaces (feature 002)
+
+The directory, the profile, booking a creator, the specialty pages and the provider's profile editor
+all inherit this world; their direction contracts are `.impeccable/surfaces/creators-directory.md`,
+`creator-profile.md` and `provider-profile.md`, and their parts are recorded in `DESIGN.md`. Reuse,
+do not reinvent: a creator is a **result row with a photo tile** (initials when there is no photo),
+never a card; the directory and the specialty page are the same panel (`buildDirectory` with a fixed
+filter); facts on a profile are single rows, not badges; the work is a uniform 4:5 grid with no
+captions or hover zoom; the editor is one page in sections between a status bar and a closing bar,
+with English and Arabic fields side by side (page language first), never a wizard. Counts, proof and
+verification are real or absent: no ratings, reviews, response times or invented totals.
+
 ## Client flow rules (spec FR-055–FR-062)
 
 - One primary action per screen; it is the Top Hit row, visible without
