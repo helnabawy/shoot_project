@@ -238,6 +238,8 @@
       "ask": "اسأل عبر واتساب",
       "askMessage": "مرحباً! لدي سؤال عن {name} ({code}).",
       "work": "الأعمال",
+      "workCount": "{count, plural, one {عمل واحد} two {عملان} few {# أعمال} many {# عملاً} other {# عمل}}",
+      "seeWork": "شاهد الأعمال",
       "noSamples": "لم يضف {name} أعمالاً بعد.",
       "watchOn": "شاهد على {provider}",
       "viewer": {

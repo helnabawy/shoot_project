@@ -4,7 +4,8 @@ import { PlayIcon } from '@/shared/ui/icons'
 import type { SampleView } from '../profile'
 
 /**
- * The portfolio as a grid on the ground: two columns on phones, three from 640 px, a uniform 4:5 crop,
+ * The portfolio as a grid on the ground: two columns on phones, three from 640 px, and two large columns
+ * from 1024 px where the work fills the profile's wide end column; a uniform 4:5 crop,
  * no captions, no hover zoom. Image links point at the large file (they work without JavaScript; the
  * viewer enhances them); video samples open on their own site in a new tab.
  */
@@ -13,7 +14,7 @@ export function SampleGallery({ samples }: { samples: SampleView[] }) {
   // Position of each image among the images only (videos are not in the viewer).
   const imageIndexes = samples.map((_, i) => samples.slice(0, i).filter((s) => s.kind === 'image').length)
   return (
-    <ul data-testid="sample-gallery" className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+    <ul data-testid="sample-gallery" className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-2 lg:gap-3">
       {samples.map((sample, i) => {
         const picture = (
           <Image
@@ -21,7 +22,7 @@ export function SampleGallery({ samples }: { samples: SampleView[] }) {
             alt={sample.alt}
             width={sample.thumb.width}
             height={sample.thumb.height}
-            sizes="(min-width: 640px) 220px, 46vw"
+            sizes="(min-width: 1024px) 300px, (min-width: 640px) 220px, 46vw"
             loading="lazy"
             className="aspect-[4/5] w-full object-cover"
           />

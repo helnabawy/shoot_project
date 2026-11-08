@@ -27,6 +27,8 @@ The only proof is what the creator uploaded and an admin approved: their samples
 
 ## Direction history
 
+2026-11-08 (owner): "make the creator page like the account page and highlight the gallery". From 1024 px the profile takes the account home's frame out to 1080 px: a 360 px start column holding the identity panel (sticky under the toolbar only when the viewport is at least 52rem tall, so a tall panel never hides its own rows), and the end column holding the bio (17 px) then "Work" with a piece count and the grid at two large columns (12 px gaps). Phones keep one column (panel, bio, work); the panel's Actions group gains a "See the work" row with the count, jumping to `#work`, hidden from 1024 px where the work is beside it. The empty-work row uses an image glyph.
+
 2026-11-07 (owner, T004 shaping): the owner chose an identity panel with the portfolio below over a portfolio-first page with a pinned booking bar, because the action stays above the fold on a 360 × 640 phone, the page works before any real photography exists, and a pinned bar would be a second floating panel.
 
 ## Direction contract

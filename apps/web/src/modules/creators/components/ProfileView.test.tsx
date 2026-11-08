@@ -89,8 +89,23 @@ describe('CP-US2-S1 profile', () => {
     expect(screen.queryByTestId('profile-awaiting-samples')).toBeNull()
   })
 
+  it('CP-US2-S1 counts the work and, from the panel, jumps to it (the row is for phones, where the work sits below)', () => {
+    const view = profileView()
+    render({ view })
+    const count = view.samples.length
+    expect(screen.getByTestId('profile-work-count')).toHaveTextContent(new RegExp(`^${count} piece`))
+    const jump = within(screen.getByTestId('profile-header')).getByTestId('profile-see-work')
+    expect(jump).toHaveAttribute('href', '#work')
+    expect(jump.className).toContain('lg:hidden')
+    expect(document.getElementById('work')).toContainElement(screen.getByTestId('sample-gallery'))
+    // The booking still comes first: the jump is an action, never the Top Hit.
+    expect(screen.getByTestId('profile-book').compareDocumentPosition(jump) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
   it('without samples: an honest "hasn\'t added work yet" row, never an empty grid', () => {
     render({ view: profileView({ samples: [] }) })
+    expect(screen.queryByTestId('profile-see-work')).toBeNull()
+    expect(screen.queryByTestId('profile-work-count')).toBeNull()
     expect(screen.getByTestId('profile-awaiting-samples')).toHaveTextContent("Sara Khan hasn't added work yet.")
     expect(screen.queryByTestId('sample-gallery')).toBeNull()
   })

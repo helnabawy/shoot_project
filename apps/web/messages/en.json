@@ -238,6 +238,8 @@
       "ask": "Ask on WhatsApp",
       "askMessage": "Hi! I have a question about {name} ({code}).",
       "work": "Work",
+      "workCount": "{count, plural, one {# piece} other {# pieces}}",
+      "seeWork": "See the work",
       "noSamples": "{name} hasn't added work yet.",
       "watchOn": "Watch on {provider}",
       "viewer": {

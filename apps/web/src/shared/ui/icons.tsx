@@ -211,3 +211,10 @@ export const LockIcon = (p: IconProps) => (
     <path d="M7 9V6.5a3 3 0 0 1 6 0V9M10 12.25v1.5" />
   </Svg>
 )
+export const ImageIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <rect x="3" y="4" width="14" height="12" rx="2" />
+    <circle cx="7.5" cy="8.25" r="1.25" />
+    <path d="m3.5 14.5 4-4 3 3 2-2 4 4" />
+  </Svg>
+)
