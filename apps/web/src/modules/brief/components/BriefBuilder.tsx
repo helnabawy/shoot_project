@@ -31,7 +31,7 @@ import { BarField, BriefBar, cx, GlyphTile, KeyHint, ResultGroup, RowContent, ro
 import { submitBrief } from '../actions'
 import { MatchPreview } from './MatchPreview'
 import type { CreatorBooking } from '../creator'
-import { chosenPersonas, CUSTOM_SUFFIX, CUSTOM_VALUE, readSlotValues, sentenceLabelFor, slotRules } from '../submit'
+import { briefWhatsAppMessage, chosenPersonas, CUSTOM_SUFFIX, CUSTOM_VALUE, readSlotValues, sentenceLabelFor, slotRules } from '../submit'
 import type { BriefBuilderConfig, BriefState, BuilderOption, BuilderSlot } from '../types'
 import { fill, type BriefLabels } from '../labels'
 import { BriefSuccess } from './BriefSuccess'
@@ -174,18 +174,28 @@ export function BriefBuilder({
   const complete = firstOpen === null
   const started = order.some((s) => hasValue(s) || skipped[s.token])
   const showTopHit = complete && !editing
-  // 003 US1-S7: the answers as a submit would send them, for the matches shown in the bar once complete.
-  const previewAnswers = useMemo(() => {
-    if (!quickMatch || creator || !complete) return null
-    const answers: { values: Record<string, string>; custom: Record<string, boolean> } = { values: {}, custom: {} }
+  // The answers as a submit would send them, once every step is answered.
+  const answers = useMemo(() => {
+    if (!complete) return null
+    const result: { values: Record<string, string>; custom: Record<string, boolean> } = { values: {}, custom: {} }
     for (const slot of order) {
       const value = values[slot.token] ?? ''
       const typed = value === CUSTOM_VALUE
-      answers.values[slot.token] = typed ? (custom[slot.token] ?? '') : skipped[slot.token] ? '' : value
-      answers.custom[slot.token] = typed
+      result.values[slot.token] = typed ? (custom[slot.token] ?? '') : skipped[slot.token] ? '' : value
+      result.custom[slot.token] = typed
     }
-    return answers
-  }, [quickMatch, creator, complete, order, values, custom, skipped])
+    return result
+  }, [complete, order, values, custom, skipped])
+  // 003 US1-S7: the matches shown in the bar once complete.
+  const previewAnswers = quickMatch && !creator ? answers : null
+  // FR-068: the WhatsApp alternative carries the finished brief instead of the default message.
+  const secondaryWhatsappHref = useMemo(() => {
+    const message = answers ? briefWhatsAppMessage(config, answers) : null
+    if (!message || !whatsappHref.startsWith('https://wa.me/')) return whatsappHref
+    const url = new URL(whatsappHref)
+    url.search = `?text=${encodeURIComponent(message)}`
+    return url.toString()
+  }, [answers, config, whatsappHref])
 
   // After the server answers: send the pre-opened tab to WhatsApp, or close it on failure.
   useEffect(() => {
@@ -836,7 +846,7 @@ export function BriefBuilder({
         <div hidden={Boolean(query)}>
           <ResultGroup label={labels.actions} className="border-t border-hair pb-2">
             <a
-              href={whatsappHref}
+              href={secondaryWhatsappHref}
               target="_blank"
               rel="noopener noreferrer"
               className={rowClass('open')}

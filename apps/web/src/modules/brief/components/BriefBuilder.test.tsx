@@ -240,6 +240,21 @@ describe('US8 step-by-step brief (FR-067)', () => {
     expect(screen.getByRole('link', { name: /I'm a photographer/ })).toHaveAttribute('href', '/register?type=provider')
   })
 
+  it('FR-068 the WhatsApp alternative carries the finished brief, the default message before', async () => {
+    const user = userEvent.setup()
+    renderWithLocale(<BriefBuilder {...props()} />)
+    await pick(user, /Photographer/)
+    expect(screen.getByTestId('whatsapp-secondary')).toHaveAttribute('href', 'https://wa.me/971500000000')
+    await pick(user, /a wedding/)
+    await user.click(screen.getByRole('button', { name: /any date/ }))
+    await pick(user, /2 hours/)
+    await pick(user, /Sharjah/)
+    const href = screen.getByTestId('whatsapp-secondary').getAttribute('href') ?? ''
+    expect(href.startsWith('https://wa.me/971500000000?text=')).toBe(true)
+    // Worded by the CMS WhatsApp template, exactly as a submitted brief's message (the fixture's names two steps).
+    expect(new URL(href).searchParams.get('text')).toBe('Hi! I need a photographer for a wedding.')
+  })
+
   it('US8-S10 a step that takes several professionals moves on with Continue', async () => {
     const user = userEvent.setup()
     renderWithLocale(<BriefBuilder {...props('en', undefined, { multiple: true })} />)

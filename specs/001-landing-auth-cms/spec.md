@@ -674,6 +674,11 @@ an occasion in the content area and see it in the list within a minute.
   bar MUST be frosted glass (light in the light theme, smoked in the dark
   theme) whose text keeps WCAG AA contrast over any photograph, which a
   theme-matched tint over the image guarantees.
+- **FR-068**: Once every step of the brief is answered, the bar's secondary
+  "WhatsApp us instead" action MUST open the chat pre-filled with the brief
+  as the visitor built it (the same wording as the message a submitted brief
+  sends, without a brief ID because none is created); before that it opens
+  the chat with the default WhatsApp message from site settings.
 
 ### Key Entities
 

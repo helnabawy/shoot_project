@@ -94,7 +94,15 @@ export function parseBrief(
   form: FormData,
   options: { today?: string } = {},
 ): { ok: true; brief: ParsedBrief } | { ok: false; errors: Record<string, string> } {
-  const { values, custom } = readSlotValues(config, form)
+  return resolveBrief(config, readSlotValues(config, form), options)
+}
+
+/** Validates answers (one value per slot, and which were typed) and resolves their sentence labels. */
+export function resolveBrief(
+  config: BriefBuilderConfig,
+  { values, custom }: { values: Record<string, string>; custom: Record<string, boolean> },
+  options: { today?: string } = {},
+): { ok: true; brief: ParsedBrief } | { ok: false; errors: Record<string, string> } {
   const errors = validateBrief(slotRules(config, values, custom), values, { today: options.today })
   if (Object.keys(errors).length > 0) return { ok: false, errors }
   const labels: Record<string, string> = {}
@@ -132,3 +140,9 @@ export const composeMessage = (
   creator?: CreatorMessage,
   reference?: ReferenceMessage,
 ) => renderBriefMessage(withoutUnset(config, config.whatsappTemplate, values), labels, { creator, reference })
+
+/** The finished brief as a WhatsApp message (FR-068), or null while it is incomplete or invalid. */
+export function briefWhatsAppMessage(config: BriefBuilderConfig, answers: { values: Record<string, string>; custom: Record<string, boolean> }): string | null {
+  const parsed = resolveBrief(config, answers)
+  return parsed.ok ? composeMessage(config, parsed.brief.labels, parsed.brief.values) : null
+}
