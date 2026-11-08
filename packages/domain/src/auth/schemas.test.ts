@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isProviderRegistrationValid, loginSchema, registerSchema } from './schemas'
+import { combinedPersonaValue, isProviderRegistrationValid, loginSchema, MAX_PROVIDER_PERSONAS, registerSchema } from './schemas'
 
 const valid = {
   name: 'Mariam Saeed',
@@ -27,7 +27,7 @@ describe('FR-019 registration schema', () => {
   it('US4-S1 accepts a valid seeker and normalises the email', () => {
     const parsed = registerSchema.parse(valid)
     expect(parsed.email).toBe('mariam@example.com')
-    expect(parsed.persona).toBeUndefined()
+    expect(parsed.persona).toEqual([])
   })
 
   it.each([
@@ -55,8 +55,14 @@ describe('FR-019 registration schema', () => {
 
   it('accepts a provider with a persona and categories', () => {
     const parsed = registerSchema.parse({ ...valid, accountType: 'provider', persona: '12', categories: ['3'] })
-    expect(parsed.persona).toBe('12')
+    expect(parsed.persona).toEqual(['12'])
     expect(parsed.categories).toEqual(['3'])
+  })
+
+  it('accepts the combined option: several personas in one value, trimmed and de-duplicated', () => {
+    const parsed = registerSchema.parse({ ...valid, accountType: 'provider', persona: combinedPersonaValue(['photographer', 'videographer']) })
+    expect(parsed.persona).toEqual(['photographer', 'videographer'])
+    expect(registerSchema.parse({ ...valid, accountType: 'provider', persona: ' a , ,b,a ' }).persona).toEqual(['a', 'b'])
   })
 })
 
@@ -71,11 +77,17 @@ describe('FR-022 login schema', () => {
 
 describe('provider persona must be active', () => {
   it('seekers always pass', () => {
-    expect(isProviderRegistrationValid({ accountType: 'seeker' }, [])).toBe(true)
+    expect(isProviderRegistrationValid({ accountType: 'seeker', persona: [] }, [])).toBe(true)
   })
-  it('providers need an active persona', () => {
-    expect(isProviderRegistrationValid({ accountType: 'provider', persona: '1' }, ['1', '2'])).toBe(true)
-    expect(isProviderRegistrationValid({ accountType: 'provider', persona: '9' }, ['1'])).toBe(false)
-    expect(isProviderRegistrationValid({ accountType: 'provider' }, ['1'])).toBe(false)
+  it('providers need active personas, every one of them', () => {
+    expect(isProviderRegistrationValid({ accountType: 'provider', persona: ['1'] }, ['1', '2'])).toBe(true)
+    expect(isProviderRegistrationValid({ accountType: 'provider', persona: ['1', '2'] }, ['1', '2'])).toBe(true)
+    expect(isProviderRegistrationValid({ accountType: 'provider', persona: ['1', '9'] }, ['1', '2'])).toBe(false)
+    expect(isProviderRegistrationValid({ accountType: 'provider', persona: ['9'] }, ['1'])).toBe(false)
+    expect(isProviderRegistrationValid({ accountType: 'provider', persona: [] }, ['1'])).toBe(false)
+  })
+  it('caps a provider at the number of personas a profile holds', () => {
+    const many = Array.from({ length: MAX_PROVIDER_PERSONAS + 1 }, (_, i) => String(i))
+    expect(isProviderRegistrationValid({ accountType: 'provider', persona: many }, many)).toBe(false)
   })
 })

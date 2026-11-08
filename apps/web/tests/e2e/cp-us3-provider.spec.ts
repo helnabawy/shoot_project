@@ -19,7 +19,7 @@ async function seedIds(request: APIRequestContext): Promise<Ids> {
 /** A provider account signed in in this browser context (cookie set through the REST login). */
 async function signedInProvider(page: Page, request: APIRequestContext, ids: Ids) {
   const email = uniqueEmail('provider')
-  const created = await request.post('/api/users', { data: { name: 'E2E Provider', email, password: PASSWORD, accountType: 'provider', persona: ids.persona } })
+  const created = await request.post('/api/users', { data: { name: 'E2E Provider', email, password: PASSWORD, accountType: 'provider', persona: [ids.persona] } })
   expect(created.ok()).toBeTruthy()
   const login = await page.context().request.post('/api/users/login', { data: { email, password: PASSWORD } })
   expect(login.ok()).toBeTruthy()

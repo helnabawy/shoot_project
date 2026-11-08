@@ -101,6 +101,7 @@
     "provider": "أقدّم خدماتي",
     "persona": "أنا",
     "personaPlaceholder": "اختر مهنتك",
+    "personaCombined": "{count, plural, =2 {كلاهما} other {الكل}} ({list})",
     "noPersonas": "لا نستقبل محترفين جدداً حالياً.",
     "categories": "التخصصات (اختياري)",
     "submitLogin": "تسجيل الدخول",

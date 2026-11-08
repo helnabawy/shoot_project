@@ -1,4 +1,5 @@
 import { effectiveState, type BookingState } from '@shoot/domain/booking'
+import { joinList } from '@shoot/domain/personas'
 import { formatMoney } from '@shoot/domain/pricing'
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -76,10 +77,14 @@ export default async function AccountPage({ params }: Props) {
     provider ? getMyAvailability(user, today) : Promise.resolve(null),
   ])
   const ts = await getTranslations('creators.status')
-  const personaId = user.persona
-    ? String(typeof user.persona === 'object' ? user.persona.id : user.persona)
-    : null
-  const persona = personas.find((p) => p.id === personaId)
+  // Every profession the member offers, primary first ("Photographer and Videographer").
+  const personaLabel = joinList(
+    (user.persona ?? [])
+      .map((ref) => personas.find((p) => p.id === String(typeof ref === 'object' ? ref.id : ref))?.singular)
+      .filter((label): label is string => Boolean(label)),
+    'and',
+    locale,
+  )
   const placeName = (slug: string) => locations.find((l) => l.slug === slug)?.name ?? slug
 
   const jobs: JobView[] = creatorBookingViews(assigned, profileIds, locale, placeName).map((v) => ({
@@ -116,7 +121,7 @@ export default async function AccountPage({ params }: Props) {
       {/* pb-24 on phones: room under the last row for the floating WhatsApp button, with or without JavaScript. */}
       {/* The start column holds who you are, the places in the account and log out; on phones it dissolves so log out falls to the end of the page. */}
       <div className="contents lg:sticky lg:top-24 lg:col-start-1 lg:row-start-1 lg:block lg:self-start">
-        <AccountSummary user={user} personaLabel={persona?.singular} locale={locale} />
+        <AccountSummary user={user} personaLabel={personaLabel || undefined} locale={locale} />
         <nav aria-labelledby="account-places-title" className="max-lg:order-2 lg:mt-8">
           <h2 id="account-places-title" className="group-label px-1 pb-2">
             {t('places')}

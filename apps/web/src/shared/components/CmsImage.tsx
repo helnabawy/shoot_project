@@ -4,7 +4,8 @@ import { cx } from '@/shared/ui/bar'
 
 type Size = 'thumbnail' | 'card' | 'hero'
 
-function source(media: Media, size: Size) {
+/** The file to serve for a media item at a size, falling back to the original. */
+export function mediaSource(media: Media, size: Size) {
   const variant = media.sizes?.[size]
   if (variant?.url && variant.width && variant.height) return { url: variant.url, width: variant.width, height: variant.height }
   if (media.url && media.width && media.height) return { url: media.url, width: media.width, height: media.height }
@@ -31,10 +32,10 @@ export function CmsImage({
   className?: string
 }) {
   if (!media || typeof media !== 'object') return null
-  const light = source(media, size)
+  const light = mediaSource(media, size)
   if (!light) return null
   const darkMedia = dark && typeof dark === 'object' ? dark : null
-  const darkSource = darkMedia ? source(darkMedia, size) : null
+  const darkSource = darkMedia ? mediaSource(darkMedia, size) : null
   return (
     <>
       <Image

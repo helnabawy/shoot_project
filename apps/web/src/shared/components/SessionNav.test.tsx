@@ -2,10 +2,18 @@ import { render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { AccountLink, MemberLink, resetSession, type SessionUser } from './SessionNav'
 
-const props = { loginHref: '/login', accountHref: '/account', loginLabel: 'Log in', accountLabel: 'My account' }
+const props = {
+  loginHref: '/login',
+  accountHref: '/account',
+  loginLabel: 'Log in',
+  accountLabel: 'My account',
+}
 
 function serve(user: SessionUser | null) {
-  vi.stubGlobal('fetch', vi.fn(async () => Response.json({ user })))
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async () => Response.json({ user })),
+  )
 }
 
 beforeEach(() => resetSession())
@@ -36,7 +44,10 @@ describe('header session links', () => {
     const avatar = await screen.findByRole('link', { name: 'My account: Mona Ali' })
     expect(avatar).toHaveAttribute('href', '/account')
     expect(avatar).toHaveTextContent('M')
-    expect(screen.getByRole('link', { name: 'Bookings' })).toHaveAttribute('href', '/account/bookings')
+    expect(screen.getByRole('link', { name: 'Bookings' })).toHaveAttribute(
+      'href',
+      '/account/bookings',
+    )
     expect(screen.queryByRole('link', { name: 'Log in' })).toBeNull()
     // Both islands share one request.
     expect(fetch).toHaveBeenCalledOnce()
@@ -52,6 +63,33 @@ describe('header session links', () => {
   it('labels the phone-menu row with the account name', async () => {
     serve({ name: 'Mona Ali', avatarUrl: null })
     render(<AccountLink {...props} row />)
-    expect(await screen.findByRole('link', { name: /My account/ })).toHaveAttribute('href', '/account')
+    expect(await screen.findByRole('link', { name: /My account/ })).toHaveAttribute(
+      'href',
+      '/account',
+    )
+  })
+})
+
+describe('visitor-only content', () => {
+  it('keeps the join band for visitors and hides it from signed-in members', async () => {
+    const { VisitorOnly } = await import('./SessionNav')
+    serve(null)
+    const { unmount } = render(
+      <VisitorOnly>
+        <p>Join as a professional</p>
+      </VisitorOnly>,
+    )
+    await vi.waitFor(() => expect(fetch).toHaveBeenCalledOnce())
+    expect(screen.getByText('Join as a professional')).toBeInTheDocument()
+    unmount()
+
+    resetSession()
+    serve({ name: 'Mona Ali', avatarUrl: null })
+    render(
+      <VisitorOnly>
+        <p>Join as a professional</p>
+      </VisitorOnly>,
+    )
+    await vi.waitFor(() => expect(screen.queryByText('Join as a professional')).toBeNull())
   })
 })

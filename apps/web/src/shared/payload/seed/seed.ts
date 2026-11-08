@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises'
 import type { CollectionSlug, Payload } from 'payload'
 import { briefSlots, categories, landingPage, locations, optionSets, personas, siteSettings } from './content'
 import { demoPassword, removeDemoCreators, seedDemoCreators } from './demo-creators'
@@ -117,6 +118,7 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
 
   const landingTree = {
     ...landingPage,
+    hero: { ...landingPage.hero, overlay: await seedHeroOverlay(payload), overlayOpacity: 8 },
     briefBuilder: {
       ...landingPage.briefBuilder,
       slots: briefSlots.map((slot) => ({ ...slot, optionSet: 'optionSet' in slot ? optionSetIds[slot.optionSet] : undefined, filtersCreators: slot.token === 'shotBy' })),
@@ -156,4 +158,24 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
   if (options.demoGuides) {
     await seedDemoGuides(payload, { siteUrl: options.siteUrl, log })
   }
+}
+
+const HERO_OVERLAY_FILE = 'uae-map.svg'
+
+/**
+ * The hero's faint map: the United Arab Emirates outline (Natural Earth 1:10m, public domain),
+ * uploaded once and reused on later runs.
+ */
+async function seedHeroOverlay(payload: Payload): Promise<number> {
+  const existing = await payload.find({ collection: 'media', where: { filename: { equals: HERO_OVERLAY_FILE } }, limit: 1, depth: 0, overrideAccess: true })
+  if (existing.docs[0]) return existing.docs[0].id
+  const data = await readFile(new URL(`./assets/${HERO_OVERLAY_FILE}`, import.meta.url))
+  const media = await payload.create({
+    collection: 'media',
+    data: { alt: 'Outline map of the United Arab Emirates' },
+    file: { data, mimetype: 'image/svg+xml', name: HERO_OVERLAY_FILE, size: data.length },
+    locale: 'en',
+    context,
+  })
+  return media.id
 }

@@ -381,6 +381,13 @@ html.js .no-js-only {
 }
 
 /* The hero stage: the bar floats over a CMS photo, or over an empty studio sweep until there is one. */
+/* Hero overlay (CMS): the uploaded shape is a mask over the text colour, centred and contained. */
+.hero-overlay {
+  -webkit-mask: var(--overlay-src) center / contain no-repeat;
+  mask: var(--overlay-src) center / contain no-repeat;
+  pointer-events: none;
+}
+
 .studio-sweep {
   background:
     radial-gradient(55% 75% at var(--sweep-key-x, 24%) 0%, var(--sweep-key), transparent 72%),

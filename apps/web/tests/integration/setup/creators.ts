@@ -39,7 +39,7 @@ export async function creatorWorld(): Promise<CreatorWorld> {
 }
 
 export async function makeProvider(world: CreatorWorld, persona: number = world.personas.photographer) {
-  return createUser(['member'], { accountType: 'provider', persona })
+  return createUser(['member'], { accountType: 'provider', persona: [persona] })
 }
 
 /** A complete profile body (valid for publishing). */

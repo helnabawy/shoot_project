@@ -191,7 +191,7 @@ export interface User {
   name: string;
   roles?: ('admin' | 'editor' | 'member')[] | null;
   accountType: 'seeker' | 'provider';
-  persona?: (number | null) | Persona;
+  persona?: (number | Persona)[] | null;
   categories?: (number | Category)[] | null;
   phone?: string | null;
   updatedAt: string;
@@ -2634,8 +2634,22 @@ export interface LandingPage {
        */
       href?: string | null;
     };
+    /**
+     * Photo behind the brief bar. Leave empty for the plain studio backdrop.
+     */
     image?: (number | null) | Media;
+    /**
+     * Optional portrait crop shown on phones instead.
+     */
     imageMobile?: (number | null) | Media;
+    /**
+     * A faint shape over the background, e.g. a map outline. Use a transparent PNG or SVG; it is drawn in the text colour so it suits light and dark themes.
+     */
+    overlay?: (number | null) | Media;
+    /**
+     * How strong the shape is, in percent. 5 to 12 reads as a watermark.
+     */
+    overlayOpacity?: number | null;
   };
   briefBuilder?: {
     enabled?: boolean | null;
@@ -2942,6 +2956,8 @@ export interface LandingPageSelect<T extends boolean = true> {
             };
         image?: T;
         imageMobile?: T;
+        overlay?: T;
+        overlayOpacity?: T;
       };
   briefBuilder?:
     | T

@@ -13,6 +13,7 @@ export function PersonaSelect({
   placeholder,
   emptyMessage,
   options,
+  combined,
   defaultValue,
   error,
 }: {
@@ -21,6 +22,8 @@ export function PersonaSelect({
   placeholder: string
   emptyMessage: string
   options: PersonaOption[]
+  /** An extra option offering several personas at once, e.g. "Both (Photographer and Videographer)". */
+  combined?: PersonaOption | null
   defaultValue?: string
   error?: string
 }) {
@@ -46,6 +49,7 @@ export function PersonaSelect({
             {o.label}
           </option>
         ))}
+        {combined ? <option value={combined.slug}>{combined.label}</option> : null}
       </select>
       {error ? <FieldError id={`${id}-error`}>{error}</FieldError> : null}
     </div>

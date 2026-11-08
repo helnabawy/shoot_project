@@ -97,7 +97,7 @@ export async function seedDemoCreators(
     const personas = await Promise.all(demo.personas.map((s) => bySlug('personas', s)))
     const user = await payload.create({
       collection: 'users',
-      data: { name: demo.name.en, email: demo.email, password: options.password, accountType: 'provider', persona: personas[0] } as never,
+      data: { name: demo.name.en, email: demo.email, password: options.password, accountType: 'provider', persona: personas } as never,
       context,
     })
     const uploadPlaceholder = async (label: string) => {

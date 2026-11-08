@@ -129,7 +129,28 @@ describe('server actions', () => {
       expect(target).toEqual({ href: '/account/profile', locale: 'en' })
       const payload = await getTestPayload()
       const { docs } = await payload.find({ collection: 'users', where: { email: { equals: 'lu@example.test' } }, depth: 1 })
-      expect((docs[0]?.persona as { slug?: string } | null)?.slug).toBe('videographer')
+      expect((docs[0]?.persona as { slug: string }[]).map((p) => p.slug)).toEqual(['videographer'])
+    })
+
+    it('a provider who picks "Both" is stored with every persona, in order, and their profile starts with them', async () => {
+      await expectRedirect(() =>
+        register(undefined, form({ name: 'Bo', email: 'bo@example.test', password: 'password-123', accountType: 'provider', persona: 'photographer,videographer' })),
+      )
+      const payload = await getTestPayload()
+      const { docs } = await payload.find({ collection: 'users', where: { email: { equals: 'bo@example.test' } }, depth: 1 })
+      expect((docs[0]?.persona as { slug: string }[]).map((p) => p.slug)).toEqual(['photographer', 'videographer'])
+      const { getMyProfileView } = await import('@/modules/creators/my-profile')
+      const user = await payload.findByID({ collection: 'users', id: docs[0]!.id, depth: 0 })
+      const view = await getMyProfileView(user, 'en')
+      expect(view.defaults.personas).toEqual((docs[0]?.persona as { id: number }[]).map((p) => p.id))
+    })
+
+    it('refuses a combined value that includes an inactive persona', async () => {
+      const state = await register(
+        undefined,
+        form({ name: 'Pat', email: 'pat2@example.test', password: 'password-123', accountType: 'provider', persona: 'photographer,teacher' }),
+      )
+      expect(state?.errors).toEqual({ persona: 'auth.errors.personaInactive' })
     })
 
     it('US4-S2 login sets the session cookie and refuses an off-site next', async () => {

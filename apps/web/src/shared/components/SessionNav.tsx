@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { UserIcon } from '@/shared/ui/icons'
 import { RowContent } from '@/shared/ui/bar'
 
@@ -123,4 +123,13 @@ export function AccountLink({
       <Avatar user={user} />
     </Link>
   )
+}
+
+/**
+ * Content for visitors only (e.g. the "join as a professional" band): server-rendered for
+ * everyone, so cached pages and no-JavaScript visitors keep it, and removed once a signed-in
+ * session is known.
+ */
+export function VisitorOnly({ children }: { children: ReactNode }) {
+  return useSession() ? null : children
 }

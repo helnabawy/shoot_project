@@ -1,6 +1,7 @@
 import { normaliseE164 } from '@shoot/domain/contact'
 import type { CollectionConfig } from 'payload'
 import { countProfileReferences } from '@/modules/creators/references'
+import { MAX_PROVIDER_PERSONAS } from '@shoot/domain/auth'
 import { refuseDeleteWhileReferenced } from '@/modules/personas/collections/guards'
 import { anyone, hasRole, isAdmin, isAdminField, isAdminOrSelf } from '@/shared/payload/access'
 
@@ -60,11 +61,18 @@ export const Users: CollectionConfig = {
       ],
     },
     {
+      // A provider may offer several professional types (e.g. "Both" at registration); the first is
+      // the primary one. Their profile starts with all of them.
       name: 'persona',
+      label: 'Professions',
       type: 'relationship',
       relationTo: 'personas',
+      hasMany: true,
+      maxRows: MAX_PROVIDER_PERSONAS,
       validate: (value: unknown, { data }: { data: Partial<{ accountType: string }> }) =>
-        data?.accountType !== 'provider' || Boolean(value) || 'Choose a profession for a provider account.',
+        data?.accountType !== 'provider' ||
+        (Array.isArray(value) && value.length > 0) ||
+        'Choose at least one profession for a provider account.',
       admin: { condition: (data) => data?.accountType === 'provider' },
     },
     {

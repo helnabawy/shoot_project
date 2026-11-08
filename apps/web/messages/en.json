@@ -101,6 +101,7 @@
     "provider": "Offer my services",
     "persona": "I am a",
     "personaPlaceholder": "Choose your profession",
+    "personaCombined": "{count, plural, =2 {Both} other {All}} ({list})",
     "noPersonas": "We're not taking new professionals right now.",
     "categories": "Specialties (optional)",
     "submitLogin": "Log in",

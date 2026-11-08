@@ -5,11 +5,42 @@ import type { BriefLabels } from '@/modules/brief/labels'
 import type { BriefBuilderConfig } from '@/modules/brief/types'
 import { whatsappHref } from '@/modules/contact/whatsapp'
 import type { AudiencePersona } from '@/modules/personas/queries'
-import { CmsImage } from '@/shared/components/CmsImage'
+import { getImageProps } from 'next/image'
+import type { Media } from '@/payload-types'
+import { CmsImage, mediaSource } from '@/shared/components/CmsImage'
 import { CtaLink, type ContactDetails } from '@/shared/components/CtaLink'
 import { cx } from '@/shared/ui/bar'
 import type { Locale } from '@/shared/lib/locale'
 import { StudioSet } from './StudioSet'
+
+/** Phones (below `sm`) get the portrait crop when the CMS has one. */
+const PHONE_MEDIA = '(max-width: 639px)'
+
+const asMedia = (m: Media | number | null | undefined): Media | null => (m && typeof m === 'object' ? m : null)
+
+/**
+ * The stage photo. With a phone crop it is one `<picture>` (art direction), so each device
+ * downloads, and preloads as its LCP image, only the file it shows.
+ */
+function StagePhoto({ photo, phone }: { photo: Media; phone: Media | null }) {
+  const wide = mediaSource(photo, 'hero')
+  const narrow = phone ? mediaSource(phone, 'card') : null
+  if (!wide) return null
+  const common = { alt: photo.alt ?? '', sizes: '100vw', priority: true }
+  const {
+    props: { srcSet: wideSet, ...img },
+  } = getImageProps({ ...common, src: wide.url, width: wide.width, height: wide.height })
+  const narrowSet = narrow
+    ? getImageProps({ ...common, src: narrow.url, width: narrow.width, height: narrow.height }).props.srcSet
+    : null
+  return (
+    <picture>
+      {narrowSet ? <source media={PHONE_MEDIA} srcSet={narrowSet} /> : null}
+      <source srcSet={wideSet} />
+      <img {...img} alt={photo.alt ?? ''} className="size-full object-cover" />
+    </picture>
+  )
+}
 
 /**
  * First viewport: a full-screen stage with the CMS headline as its title and the glass brief bar
@@ -55,7 +86,10 @@ export function Hero({
       quickMatch={settings.quickMatch?.enabled === true}
     />
   ) : null
-  const photo = hero?.image && typeof hero.image === 'object' ? hero.image : null
+  const photo = asMedia(hero?.image)
+  const phonePhoto = asMedia(hero?.imageMobile)
+  const overlay = asMedia(hero?.overlay)
+  const overlayOpacity = Math.min(100, Math.max(0, hero?.overlayOpacity ?? 8)) / 100
   // The title sits on the stage above the bar, aligned to its edge. A soft halo in the ground colour
   // keeps it legible over a busy photo; on the studio sweep it is invisible.
   const title = (
@@ -81,19 +115,23 @@ export function Hero({
             )}
           >
             {photo ? (
-              <CmsImage
-                media={photo}
-                size="hero"
-                priority
-                sizes="100vw"
-                className="size-full object-cover"
-              />
+              <StagePhoto photo={photo} phone={phonePhoto} />
             ) : (
               <>
                 <div className="studio-sweep absolute inset-0" />
                 <StudioSet />
               </>
             )}
+            {/* The CMS overlay (e.g. the UAE outline): its shape masks a fill in the text colour,
+                so one file reads in light and dark. Decorative. */}
+            {overlay?.url ? (
+              <div
+                aria-hidden="true"
+                data-testid="hero-overlay"
+                className="hero-overlay absolute inset-x-[4%] inset-y-[6%] bg-ink"
+                style={{ ['--overlay-src' as string]: `url(${JSON.stringify(overlay.url)})`, opacity: overlayOpacity }}
+              />
+            ) : null}
           </div>
           <div className="mx-auto max-w-[680px] px-3 pt-[max(2rem,calc(50svh-200px))] pb-8 sm:px-4">
             {title}

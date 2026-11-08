@@ -313,7 +313,7 @@ describe('Next.js routes and pages', () => {
     it('US4-S1 the account page shows the member, their profession and their briefs', async () => {
       const payload = await getTestPayload()
       const { docs } = await payload.find({ collection: 'personas', where: { slug: { equals: 'videographer' } } })
-      await signIn(['member'], { accountType: 'provider', persona: docs[0]!.id })
+      await signIn(['member'], { accountType: 'provider', persona: [docs[0]!.id] })
       const tree = elements(await account.default(params('en')))
       const summary = tree.find((el) => (el.type as { name?: string }).name === 'AccountSummary') as ReactElement<{ personaLabel?: string }>
       expect(summary.props.personaLabel).toBe('Videographer')

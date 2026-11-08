@@ -90,10 +90,51 @@ export const LandingPage: GlobalConfig = {
             },
             { ...ctaGroup('primaryCta', 'Primary action'), admin: { condition: (_d, s) => s?.layout === 'ctas' } },
             { ...ctaGroup('secondaryCta', 'Secondary action'), admin: { condition: (_d, s) => s?.layout === 'ctas' } },
-            { type: 'row', fields: [
-              { name: 'image', type: 'upload', relationTo: 'media' },
-              { name: 'imageMobile', type: 'upload', relationTo: 'media' },
-            ] },
+            {
+              type: 'collapsible',
+              label: 'Background',
+              admin: { description: 'What sits behind the headline and the brief bar.' },
+              fields: [
+                { type: 'row', fields: [
+                  {
+                    name: 'image',
+                    type: 'upload',
+                    relationTo: 'media',
+                    admin: { width: '50%', description: 'Photo behind the brief bar. Leave empty for the plain studio backdrop.' },
+                  },
+                  {
+                    name: 'imageMobile',
+                    type: 'upload',
+                    relationTo: 'media',
+                    admin: { width: '50%', description: 'Optional portrait crop shown on phones instead.' },
+                  },
+                ] },
+                { type: 'row', fields: [
+                  {
+                    name: 'overlay',
+                    type: 'upload',
+                    relationTo: 'media',
+                    admin: {
+                      width: '50%',
+                      description: 'A faint shape over the background, e.g. a map outline. Use a transparent PNG or SVG; it is drawn in the text colour so it suits light and dark themes.',
+                    },
+                  },
+                  {
+                    name: 'overlayOpacity',
+                    type: 'number',
+                    min: 0,
+                    max: 100,
+                    defaultValue: 8,
+                    admin: {
+                      width: '50%',
+                      step: 1,
+                      description: 'How strong the shape is, in percent. 5 to 12 reads as a watermark.',
+                      condition: (_d, s) => Boolean(s?.overlay),
+                    },
+                  },
+                ] },
+              ],
+            },
           ],
         },
         {

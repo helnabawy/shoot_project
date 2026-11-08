@@ -222,10 +222,11 @@ export async function getSelectableOptions(locale: Locale): Promise<SelectableOp
 export async function getMyProfileView(user: User, locale: Locale) {
   const identity = await getMyIdentity(user)
   const [profile, options] = await Promise.all([getMyProfile(user, identity), getSelectableOptions(locale)])
-  const registered = user.persona ? Number(relId(user.persona)) : null
+  // Every profession chosen at registration (one, or several with "Both"), primary first.
+  const registered = (user.persona ?? []).map((p) => Number(relId(p))).filter((n) => Number.isFinite(n))
   const defaults = {
     name: user.name,
-    personas: registered !== null && Number.isFinite(registered) ? [registered] : [],
+    personas: registered,
     specialties: (user.categories ?? []).map((c) => Number(relId(c))).filter((n) => Number.isFinite(n)),
   }
   const missing =

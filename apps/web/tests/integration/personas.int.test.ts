@@ -38,11 +38,11 @@ describe('US5 audience is CMS data', () => {
     const payload = await getTestPayload()
     const { docs } = await payload.find({ collection: 'personas', where: { slug: { equals: 'photographer' } } })
     const photographer = docs[0]!
-    const provider = await createUser(['member'], { accountType: 'provider', persona: photographer.id })
+    const provider = await createUser(['member'], { accountType: 'provider', persona: [photographer.id] })
     await payload.update({ collection: 'personas', id: photographer.id, data: { active: false }, context: quiet })
     expect((await getActivePersonas('en')).map((p) => p.slug)).not.toContain('photographer')
     const still = await payload.findByID({ collection: 'users', id: provider.id, depth: 0 })
-    expect(still.persona).toBe(photographer.id)
+    expect(still.persona).toEqual([photographer.id])
   })
 
   it('US5-S4 refuses to delete a referenced persona and a referenced category', async () => {
@@ -50,7 +50,7 @@ describe('US5 audience is CMS data', () => {
     const { docs } = await payload.find({ collection: 'personas', where: { slug: { equals: 'teacher' } } })
     await expect(payload.delete({ collection: 'personas', id: docs[0]!.id })).rejects.toThrow(/still used by/)
     const category = (await payload.find({ collection: 'categories', where: { slug: { equals: 'physics' } } })).docs[0]!
-    await createUser(['member'], { accountType: 'provider', persona: docs[0]!.id, categories: [category.id] })
+    await createUser(['member'], { accountType: 'provider', persona: [docs[0]!.id], categories: [category.id] })
     await expect(payload.delete({ collection: 'categories', id: category.id })).rejects.toThrow(/still used by/)
   })
 })

@@ -7,6 +7,7 @@ import {
   sectionsFixture,
   settingsFixture,
 } from '../../../../tests/fixtures/landing'
+import type { LandingPage, Media } from '@/payload-types'
 import { renderWithLocale } from '../../../../tests/setup/render'
 import { Hero } from './Hero'
 import { RenderBlocks } from './RenderBlocks'
@@ -99,6 +100,42 @@ describe('US1 hero', () => {
     )
     // Internal links stay in the page's language.
     expect(screen.getByRole('link', { name: /Join/ })).toHaveAttribute('href', '/ar/register')
+  })
+
+  const media = (id: number, name: string, width = 1600, height = 900) =>
+    ({ id, alt: name, url: `/api/media/file/${name}`, width, height, updatedAt: '', createdAt: '' }) as Media
+  const renderStage = (hero: Partial<NonNullable<LandingPage['hero']>>) =>
+    renderWithLocale(
+      <Hero
+        hero={{ headline: 'You brief. We shoot.', layout: 'briefBuilder', ...hero }}
+        builder={briefBuilderFixture()}
+        briefLabels={testBriefLabels()}
+        settings={settingsFixture}
+        personas={personasFixture}
+        contact={contact}
+        locale="en"
+      />,
+    )
+
+  it('draws the CMS overlay (the UAE outline) faintly over the backdrop, at the CMS opacity', () => {
+    renderStage({ overlay: media(9, 'uae-map.svg'), overlayOpacity: 12 })
+    const overlay = screen.getByTestId('hero-overlay')
+    expect(overlay).toHaveAttribute('aria-hidden', 'true')
+    expect(overlay.style.opacity).toBe('0.12')
+    expect(overlay.style.getPropertyValue('--overlay-src')).toBe('url("/api/media/file/uae-map.svg")')
+  })
+
+  it('shows no overlay until the CMS sets one', () => {
+    renderStage({})
+    expect(screen.queryByTestId('hero-overlay')).toBeNull()
+  })
+
+  it('uses the CMS background photo, with the phone crop as an art-directed source', () => {
+    const { container } = renderStage({ image: media(1, 'wide.jpg'), imageMobile: media(2, 'tall.jpg', 800, 1200) })
+    const sources = container.querySelectorAll('picture source')
+    expect(sources[0]).toHaveAttribute('media', '(max-width: 639px)')
+    expect(sources[0]?.getAttribute('srcset')).toContain('tall.jpg')
+    expect(container.querySelector('picture img')).toHaveAttribute('alt', 'wide.jpg')
   })
 })
 

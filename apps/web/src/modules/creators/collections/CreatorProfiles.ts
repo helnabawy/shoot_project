@@ -1,4 +1,5 @@
 import { COUNTRIES, isAllowedSocialUrl, isAllowedVideoUrl, isCountryCode, isSpokenLanguage, MAX_SAMPLES, MAX_YEARS_EXPERIENCE, SOCIAL_PLATFORMS, SPOKEN_LANGUAGES, type SocialPlatform } from '@shoot/domain/creators'
+import { MAX_PROVIDER_PERSONAS } from '@shoot/domain/auth'
 import { APIError, type Access, type CollectionConfig, type Where } from 'payload'
 import { isAdmin, isEditorUser, noOne } from '@/shared/payload/access'
 import { relId } from '../references'
@@ -113,7 +114,7 @@ export const CreatorProfiles: CollectionConfig = {
       hasMany: true,
       required: true,
       minRows: 1,
-      maxRows: 4,
+      maxRows: MAX_PROVIDER_PERSONAS,
       admin: { description: 'The first is the primary professional type.' },
     },
     { name: 'specialties', type: 'relationship', relationTo: 'categories', hasMany: true, maxRows: 12 },

@@ -46,7 +46,18 @@ describe('US4 registration form', () => {
       'Choose your profession',
       'Photographer',
       'Videographer',
+      'Both (Photographer and Videographer)',
     ])
+    expect(screen.getByRole('option', { name: 'Both (Photographer and Videographer)' })).toHaveAttribute('value', 'photographer,videographer')
+  })
+
+  it('offers "All" for three active personas and no combined option for one, from CMS data only', async () => {
+    const three = [...personas, { slug: 'teacher', label: 'Teacher' }]
+    const { unmount } = renderWithLocale(<RegisterForm locale="en" personas={three} initialType="provider" />)
+    expect(screen.getByRole('option', { name: 'All (Photographer, Videographer and Teacher)' })).toHaveAttribute('value', 'photographer,videographer,teacher')
+    unmount()
+    renderWithLocale(<RegisterForm locale="en" personas={personas.slice(0, 1)} initialType="provider" />)
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Choose your profession', 'Photographer'])
   })
 
   it('opens on the provider path from ?type=provider with the persona preselected', () => {

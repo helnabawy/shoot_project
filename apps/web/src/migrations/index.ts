@@ -7,6 +7,8 @@ import * as migration_20261107_133522_marketing_pages from './20261107_133522_ma
 import * as migration_20261107_150007_quick_match from './20261107_150007_quick_match';
 import * as migration_20261107_211232_creator_gender_nationality_experience from './20261107_211232_creator_gender_nationality_experience';
 import * as migration_20261107_230004_creator_identity_documents_emirates from './20261107_230004_creator_identity_documents_emirates';
+import * as migration_20261108_073311_hero_background_overlay from './20261108_073311_hero_background_overlay';
+import * as migration_20261108_074725_user_multiple_personas from './20261108_074725_user_multiple_personas';
 
 export const migrations = [
   {
@@ -52,6 +54,16 @@ export const migrations = [
   {
     up: migration_20261107_230004_creator_identity_documents_emirates.up,
     down: migration_20261107_230004_creator_identity_documents_emirates.down,
-    name: '20261107_230004_creator_identity_documents_emirates'
+    name: '20261107_230004_creator_identity_documents_emirates',
+  },
+  {
+    up: migration_20261108_073311_hero_background_overlay.up,
+    down: migration_20261108_073311_hero_background_overlay.down,
+    name: '20261108_073311_hero_background_overlay',
+  },
+  {
+    up: migration_20261108_074725_user_multiple_personas.up,
+    down: migration_20261108_074725_user_multiple_personas.down,
+    name: '20261108_074725_user_multiple_personas'
   },
 ];

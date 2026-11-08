@@ -73,7 +73,8 @@ export async function register(_prev: AuthState, form: FormData): Promise<AuthSt
   if (!isProviderRegistrationValid(parsed.data, personas.map((p) => p.slug))) {
     return { errors: { persona: 'auth.errors.personaInactive' }, values }
   }
-  const persona = personas.find((p) => p.slug === parsed.data.persona)
+  // In the order chosen (the first is primary): one persona, or all of them with "Both".
+  const chosen = parsed.data.persona.flatMap((slug) => personas.filter((p) => p.slug === slug))
   const payload = await getPayloadClient()
   try {
     // overrideAccess:false keeps field access in force: a "roles" value in the form is ignored (US4-S7).
@@ -84,7 +85,7 @@ export async function register(_prev: AuthState, form: FormData): Promise<AuthSt
         email: parsed.data.email,
         password: parsed.data.password,
         accountType: parsed.data.accountType,
-        persona: persona ? Number(persona.id) : null,
+        persona: chosen.map((p) => Number(p.id)),
       },
       overrideAccess: false,
     })
