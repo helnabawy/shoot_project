@@ -38,9 +38,14 @@ export const envSchema = z
 
 export type Env = z.infer<typeof envSchema>
 
+/** DATABASE_URI, or DATABASE_URL as the Vercel Neon integration names it (per-preview branches included). */
+export function databaseUri(source: Record<string, string | undefined>): string | undefined {
+  return source.DATABASE_URI || source.DATABASE_URL
+}
+
 /** Parses and validates environment variables; throws one readable message listing every problem. */
 export function parseEnv(source: Record<string, string | undefined>): Env {
-  const result = envSchema.safeParse(source)
+  const result = envSchema.safeParse({ ...source, DATABASE_URI: databaseUri(source) })
   if (!result.success) {
     const lines = result.error.issues.map((i) => `  - ${i.path.join('.') || 'env'}: ${i.message}`)
     throw new Error(`Invalid environment configuration:\n${lines.join('\n')}`)

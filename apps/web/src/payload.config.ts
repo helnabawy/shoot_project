@@ -91,7 +91,7 @@ export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   db: postgresAdapter({
-    pool: { connectionString: process.env.DATABASE_URI || '' },
+    pool: { connectionString: process.env.DATABASE_URI || process.env.DATABASE_URL || '' },
     // Development pushes schema changes automatically; every change also gets a committed migration.
     push: process.env.NODE_ENV === 'development' && process.env.PAYLOAD_MIGRATING !== 'true',
     migrationDir: path.resolve(dirname, 'migrations'),

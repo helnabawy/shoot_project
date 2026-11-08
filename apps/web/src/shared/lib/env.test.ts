@@ -42,6 +42,12 @@ describe('environment validation', () => {
     expect(hasS3(env)).toBe(true)
   })
 
+  it('falls back to DATABASE_URL (set by the Vercel Neon integration) when DATABASE_URI is unset', () => {
+    const { DATABASE_URI, ...rest } = valid
+    expect(parseEnv({ ...rest, DATABASE_URL: DATABASE_URI }).DATABASE_URI).toBe(DATABASE_URI)
+    expect(parseEnv({ ...valid, DATABASE_URL: 'postgres://other/db' }).DATABASE_URI).toBe(DATABASE_URI)
+  })
+
   it('treats empty optional values as unset', () => {
     expect(parseEnv({ ...valid, SEED_ADMIN_EMAIL: '' }).SEED_ADMIN_EMAIL).toBeUndefined()
   })

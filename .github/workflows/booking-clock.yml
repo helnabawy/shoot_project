@@ -1,0 +1,20 @@
+name: Booking clock
+
+# Vercel Hobby crons run at most once a day; the Quick Match clock needs every 15 minutes
+# (README "Scheduled jobs"). Needs repository secret CRON_SECRET and variable SITE_URL
+# (the production URL, no trailing slash). GitHub may delay scheduled runs by a few minutes.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: ${{ vars.SITE_URL != '' }}
+    steps:
+      - run: curl --fail-with-body -sS -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/bookings"
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL }}
