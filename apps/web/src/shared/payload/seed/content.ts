@@ -192,7 +192,6 @@ export const landingPage = {
   navigation: [
     { label: { en: 'How it works', ar: 'كيف نعمل' }, target: '#how-it-works' },
     { label: { en: 'Specialties', ar: 'التخصصات' }, target: '#specialties' },
-    { label: { en: 'Questions', ar: 'أسئلة' }, target: '#faq' },
   ],
   sections: [
     {

@@ -2,36 +2,61 @@ import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { localizeHref } from '@/shared/i18n/href'
 import type { Brief } from '@/payload-types'
-import { CheckIcon } from '@/shared/ui/icons'
-import { BriefBar, ResultGroup, rowClass, RowContent } from '@/shared/ui/bar'
+import { rowClass, RowContent } from '@/shared/ui/bar'
 import { Bidi } from '@/shared/ui/Bidi'
+import { PlusIcon, SearchIcon } from '@/shared/ui/icons'
 
-/** A member's briefs as completed rows: sentence, reference and status (FR-052, US8-S8). */
-export async function MyBriefs({ briefs, locale }: { briefs: Brief[]; locale: string }) {
+/**
+ * A member's briefs as rows on the ground: sentence, reference and status (FR-052, US8-S8). `offerNew` adds
+ * "Start a brief" as an ordinary row; the account page drops it when its Top Hit already says that.
+ */
+export async function MyBriefs({
+  briefs,
+  locale,
+  offerNew = true,
+}: {
+  briefs: Brief[]
+  locale: string
+  offerNew?: boolean
+}) {
   const t = await getTranslations({ locale, namespace: 'account' })
+  if (!briefs.length && !offerNew) return null
   return (
-    <BriefBar className="mt-4" data-testid="my-briefs">
-      <ResultGroup label={t('briefs')} className="pt-1">
-        {briefs.length === 0 ? <p className="px-4 py-3 text-[15px] text-mute">{t('noBriefs')}</p> : null}
+    <section aria-labelledby="my-briefs-title" data-testid="my-briefs">
+      <h2 id="my-briefs-title" className="group-label px-1 pb-2">
+        {t('briefs')}
+      </h2>
+      <ul className="-mx-3 divide-y divide-hair border-y border-hair">
+        {briefs.length === 0 ? (
+          <li className="px-4 py-3 text-[15px] text-mute">{t('noBriefs')}</li>
+        ) : null}
         {briefs.map((brief) => (
-          <div key={brief.id} className="grid grid-cols-[30px_minmax(0,1fr)] gap-3 px-4 py-2.5">
-            <span className="grid size-[30px] place-items-center rounded-[var(--radius-tile)] bg-ink text-ground">
-              <CheckIcon width={15} height={15} />
-            </span>
-            <div className="min-w-0">
-              <p className="text-[15px] text-ink">{brief.sentence}</p>
-              <p className="mt-0.5 text-[13px] text-mute">
-                <Bidi>{brief.reference}</Bidi> · {t(`status.${brief.status ?? 'new'}`)}
-              </p>
+          <li key={brief.id} className="py-1">
+            <div className={rowClass('open', false)}>
+              <RowContent
+                glyph={<SearchIcon width={15} height={15} />}
+                label={
+                  <>
+                    <span dir="auto" className="block text-[15px] text-ink">
+                      {brief.sentence}
+                    </span>
+                    <span className="mt-0.5 block text-[13px] text-mute [&:lang(ar)]:text-[14px]">
+                      <Bidi>{brief.reference}</Bidi> · {t(`status.${brief.status ?? 'new'}`)}
+                    </span>
+                  </>
+                }
+              />
             </div>
-          </div>
+          </li>
         ))}
-      </ResultGroup>
-      <div className="border-t border-hair py-1">
-        <Link href={`${localizeHref('/', locale)}#brief`} className={rowClass('open')}>
-          <RowContent glyph="+" label={t('newBrief')} />
-        </Link>
-      </div>
-    </BriefBar>
+        {offerNew ? (
+          <li className="py-1">
+            <Link href={`${localizeHref('/', locale)}#brief`} className={rowClass('open')}>
+              <RowContent glyph={<PlusIcon width={15} height={15} />} label={t('newBrief')} />
+            </Link>
+          </li>
+        ) : null}
+      </ul>
+    </section>
   )
 }

@@ -5,14 +5,19 @@ import { renderWithLocale } from '../../../../tests/setup/render'
 import { LoginForm } from './LoginForm'
 import { RegisterForm } from './RegisterForm'
 
-const register = vi.fn(async () => ({ errors: { email: 'auth.errors.emailTaken' }, values: { email: 'a@b.co' } }))
+const register = vi.fn(async () => ({
+  errors: { email: 'auth.errors.emailTaken' },
+  values: { email: 'a@b.co' },
+}))
 const login = vi.fn(async () => ({ formError: 'auth.errors.locked' }))
 vi.mock('../actions', () => ({
   register: (...a: unknown[]) => register(...(a as [])),
   login: (...a: unknown[]) => login(...(a as [])),
 }))
 vi.mock('@/i18n/navigation', () => ({
-  Link: ({ href, children }: { href: unknown; children: React.ReactNode }) => <a href={JSON.stringify(href)}>{children}</a>,
+  Link: ({ href, children }: { href: unknown; children: React.ReactNode }) => (
+    <a href={JSON.stringify(href)}>{children}</a>
+  ),
 }))
 
 const personas = [
@@ -37,11 +42,22 @@ describe('US4 registration form', () => {
     renderWithLocale(<RegisterForm locale="en" personas={personas} />)
     await userEvent.click(screen.getByRole('radio', { name: 'Offer my services' }))
     expect(screen.getByTestId('persona-select').parentElement).not.toHaveClass('hidden')
-    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Choose your profession', 'Photographer', 'Videographer'])
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual([
+      'Choose your profession',
+      'Photographer',
+      'Videographer',
+    ])
   })
 
   it('opens on the provider path from ?type=provider with the persona preselected', () => {
-    renderWithLocale(<RegisterForm locale="en" personas={personas} initialType="provider" initialPersona="videographer" />)
+    renderWithLocale(
+      <RegisterForm
+        locale="en"
+        personas={personas}
+        initialType="provider"
+        initialPersona="videographer"
+      />,
+    )
     expect(screen.getByRole('radio', { name: 'Offer my services' })).toBeChecked()
     expect(screen.getByLabelText('I am a')).toHaveValue('videographer')
   })
@@ -62,33 +78,53 @@ describe('US4 registration form', () => {
     expect(box).toBeRequired()
     expect(box).not.toBeChecked()
     expect(screen.getByRole('link', { name: 'Terms' }).getAttribute('href')).toContain('/terms')
-    expect(screen.getByRole('link', { name: 'Privacy Policy' }).getAttribute('href')).toContain('/privacy')
+    expect(screen.getByRole('link', { name: 'Privacy Policy' }).getAttribute('href')).toContain(
+      '/privacy',
+    )
     expect(screen.queryByRole('link', { name: 'Professional Terms' })).toBeNull()
     await userEvent.click(screen.getByRole('radio', { name: 'Offer my services' }))
     expect(screen.getByRole('checkbox', { name: /Professional Terms/ })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Professional Terms' }).getAttribute('href')).toContain('/terms/professional')
+    expect(screen.getByRole('link', { name: 'Professional Terms' }).getAttribute('href')).toContain(
+      '/terms/professional',
+    )
   })
 
   it('MP-US2-S2 says the same words without a link for a document that is not published yet', () => {
-    renderWithLocale(<RegisterForm locale="en" personas={personas} legal={{ terms: null, privacy: null }} />)
-    expect(screen.getByRole('checkbox', { name: /I accept the Terms and the Privacy Policy/ })).toBeInTheDocument()
+    renderWithLocale(
+      <RegisterForm locale="en" personas={personas} legal={{ terms: null, privacy: null }} />,
+    )
+    expect(
+      screen.getByRole('checkbox', { name: /I accept the Terms and the Privacy Policy/ }),
+    ).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Terms' })).toBeNull()
   })
 
   it('MP-US2-S2 shows the refusal beside the checkbox, linked to it', async () => {
-    register.mockResolvedValueOnce({ errors: { acceptTerms: 'auth.errors.acceptTerms' }, values: {} } as never)
+    register.mockResolvedValueOnce({
+      errors: { acceptTerms: 'auth.errors.acceptTerms' },
+      values: {},
+    } as never)
     renderWithLocale(<RegisterForm locale="en" personas={personas} />)
     await userEvent.click(screen.getByTestId('register-submit'))
-    const message = await screen.findByText('Please accept the Terms and the Privacy Policy to create an account.')
-    expect(screen.getByRole('checkbox', { name: /I accept/ })).toHaveAttribute('aria-invalid', 'true')
-    expect(screen.getByRole('checkbox', { name: /I accept/ }).getAttribute('aria-describedby')).toBe(message.id)
+    const message = await screen.findByText(
+      'Please accept the Terms and the Privacy Policy to create an account.',
+    )
+    expect(screen.getByRole('checkbox', { name: /I accept/ })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+    expect(
+      screen.getByRole('checkbox', { name: /I accept/ }).getAttribute('aria-describedby'),
+    ).toBe(message.id)
   })
 
   it('US4-S3 shows the server error beside the field, in plain words', async () => {
     renderWithLocale(<RegisterForm locale="en" personas={personas} />)
     await userEvent.click(screen.getByTestId('register-submit'))
     expect(register).toHaveBeenCalledTimes(1)
-    expect(await screen.findByText('This email already has an account. Log in instead.')).toBeInTheDocument()
+    expect(
+      await screen.findByText('This email already has an account. Log in instead.'),
+    ).toBeInTheDocument()
     expect(screen.getByLabelText('Email')).toHaveAttribute('aria-invalid', 'true')
   })
 })
@@ -100,7 +136,9 @@ describe('US4 login form', () => {
     expect(new FormData(form).get('next')).toBe('/account')
     expect(screen.getByLabelText('Password')).toHaveAttribute('autocomplete', 'current-password')
     await userEvent.click(screen.getByTestId('login-submit'))
-    expect(await screen.findByRole('alert')).toHaveTextContent('Too many attempts. Try again in 15 minutes.')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Too many attempts. Try again in 15 minutes.',
+    )
   })
 
   it('renders in Arabic', () => {

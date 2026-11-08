@@ -15,7 +15,8 @@
     "register": "إنشاء حساب",
     "account": "حسابي",
     "logout": "تسجيل الخروج",
-    "home": "الرئيسية"
+    "home": "الرئيسية",
+    "bookings": "الحجوزات"
   },
   "locale": {
     "switchTo": "English",
@@ -126,8 +127,6 @@
   },
   "account": {
     "title": "حسابي",
-    "details": "بياناتك",
-    "type": "نوع الحساب",
     "persona": "المهنة",
     "briefs": "طلباتك",
     "noBriefs": "لا توجد طلبات بعد.",
@@ -138,9 +137,35 @@
       "closed": "مغلق"
     },
     "myProfile": "ملفي",
-    "myProfileHint": "الصور والأماكن وما تصوّره",
     "bookingsLink": "الحجوزات",
-    "availabilityLink": "التوفر"
+    "availabilityLink": "التوفر",
+    "places": "في حسابك",
+    "place": {
+      "waiting": "{count, plural, one {طلب واحد بانتظارك} two {طلبان بانتظارك} few {# طلبات بانتظارك} other {# طلباً بانتظارك}}",
+      "updates": "{count, plural, one {تحديث جديد} two {تحديثان جديدان} few {# تحديثات جديدة} other {# تحديثاً جديداً}}",
+      "open": "{count, plural, one {حجز مفتوح} two {حجزان مفتوحان} few {# حجوزات مفتوحة} other {# حجزاً مفتوحاً}}",
+      "none": "لا شيء بعد",
+      "daysOff": "{count, plural, =0 {متاح كل يوم} one {يوم إجازة واحد} two {يوما إجازة} few {# أيام إجازة} other {# يوم إجازة}}"
+    },
+    "next": {
+      "label": "التالي",
+      "answerTitle": "{count, plural, one {عميل ينتظر ردك} two {عميلان ينتظران ردك} few {# عملاء ينتظرون ردك} other {# عميلاً ينتظرون ردك}}",
+      "answerAction": "{count, plural, one {رُدّ على الطلب} other {رُدّ على الطلبات}}",
+      "profileFinish": "أكمل ملفي",
+      "profileOpen": "افتح ملفي",
+      "jobTitle": "تصويرك القادم",
+      "jobAction": "اعرض حجوزاتي",
+      "clearTitle": "لا شيء بانتظارك",
+      "clearBody": "تظهر الطلبات الجديدة هنا أولاً. حدّث أيام إجازتك ليُعرض اسمك على العملاء فقط حين تكون متاحاً.",
+      "clearAction": "حدّث أيام إجازتي",
+      "quoteTitle": "عرض السعر جاهز",
+      "quoteAction": "راجع عرض السعر",
+      "bookingTitle": "تصويرك القادم",
+      "bookingAction": "افتح الحجز",
+      "briefTitle": "لا حجوزات بعد",
+      "briefBody": "اكتب ما تحتاجه في جملة واحدة ونتولى الباقي.",
+      "briefAction": "ابدأ طلباً"
+    }
   },
   "home": {
     "howItWorks": "كيف نعمل",

@@ -10,7 +10,7 @@ const { Header } = await import('./Header')
 const { Footer } = await import('./Footer')
 const { CmsImage } = await import('./CmsImage')
 const { MyBriefs } = await import('@/modules/brief/components/MyBriefs')
-const { AccountSummary } = await import('@/modules/auth/components/AccountSummary')
+const { AccountSummary, SignOut } = await import('@/modules/auth/components/AccountSummary')
 
 const media = (over: Partial<Media> = {}): Media =>
   ({ id: 1, alt: 'Logo', url: '/api/media/file/logo.png', width: 400, height: 100, updatedAt: '', createdAt: '', ...over }) as Media
@@ -37,9 +37,9 @@ describe('Header', () => {
     expect(links.map((l) => l.getAttribute('href'))).toEqual(['#how-it-works', '/ar/studios'])
   })
 
-  it('shows the account link to a signed-in member and the CMS logo when set', async () => {
-    render(await Header({ siteName: 'Shoot Project', logo: media(), navigation: [], accountHref: '/account', locale: 'en' }))
-    expect(screen.getAllByRole('link', { name: /account/i })[0]).toHaveAttribute('href', '/account')
+  it('renders the login entry before the session is known and the CMS logo when set', async () => {
+    render(await Header({ siteName: 'Shoot Project', logo: media(), navigation: [], locale: 'en' }))
+    expect(screen.getAllByRole('link', { name: /log in/i })[0]).toHaveAttribute('href', '/login')
     expect(screen.getByAltText('Logo')).toBeInTheDocument()
   })
 })
@@ -141,14 +141,28 @@ describe('MyBriefs', () => {
     expect(screen.getByTestId('my-briefs')).toHaveTextContent(/\p{Script=Arabic}/u)
     expect(screen.getByRole('link')).toHaveAttribute('href', '/ar#brief')
   })
+
+  it('leaves out "Start a brief" when the page already offers it, and hides when there is nothing to list', async () => {
+    const briefs = [{ id: 1, sentence: 'I need a photographer.', reference: 'B-ABCDE', status: 'new' }] as Brief[]
+    const { rerender } = render(await MyBriefs({ briefs, locale: 'en', offerNew: false }))
+    expect(screen.queryByRole('link')).toBeNull()
+    rerender(<>{await MyBriefs({ briefs: [], locale: 'en', offerNew: false })}</>)
+    expect(screen.queryByTestId('my-briefs')).toBeNull()
+  })
 })
 
 describe('AccountSummary', () => {
   it('US4-S1 shows the member details, profession and a logout button', async () => {
     const user = { id: 1, name: 'mona', email: 'mona@example.test', accountType: 'provider' } as User
-    render(await AccountSummary({ user, personaLabel: 'Photographer', locale: 'en' }))
+    render(
+      <>
+        {AccountSummary({ user, personaLabel: 'Photographer', locale: 'en' })}
+        {await SignOut({ locale: 'en' })}
+      </>,
+    )
+    expect(screen.getByRole('heading', { level: 1, name: 'mona' })).toBeInTheDocument()
     expect(screen.getByText('mona@example.test')).toBeInTheDocument()
-    expect(screen.getByText('Photographer')).toBeInTheDocument()
+    expect(screen.getByText(/Photographer/)).toBeInTheDocument()
     expect(screen.getByTestId('logout')).toHaveAttribute('type', 'submit')
   })
 })

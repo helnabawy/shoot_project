@@ -15,7 +15,8 @@
     "register": "Create account",
     "account": "My account",
     "logout": "Log out",
-    "home": "Home"
+    "home": "Home",
+    "bookings": "Bookings"
   },
   "locale": {
     "switchTo": "العربية",
@@ -126,8 +127,6 @@
   },
   "account": {
     "title": "My account",
-    "details": "Your details",
-    "type": "Account type",
     "persona": "Profession",
     "briefs": "Your briefs",
     "noBriefs": "No briefs yet.",
@@ -138,9 +137,35 @@
       "closed": "Closed"
     },
     "myProfile": "My profile",
-    "myProfileHint": "Photos, places and what you shoot",
     "bookingsLink": "Bookings",
-    "availabilityLink": "Availability"
+    "availabilityLink": "Availability",
+    "places": "In your account",
+    "place": {
+      "waiting": "{count, plural, one {# waiting for you} other {# waiting for you}}",
+      "updates": "{count, plural, one {# new update} other {# new updates}}",
+      "open": "{count, plural, one {# open} other {# open}}",
+      "none": "None yet",
+      "daysOff": "{count, plural, =0 {Free every day} one {# day off} other {# days off}}"
+    },
+    "next": {
+      "label": "Up next",
+      "answerTitle": "{count, plural, one {A client is waiting for your answer} other {# clients are waiting for your answer}}",
+      "answerAction": "{count, plural, one {Answer the request} other {Answer the requests}}",
+      "profileFinish": "Finish my profile",
+      "profileOpen": "Open my profile",
+      "jobTitle": "Your next shoot",
+      "jobAction": "See my bookings",
+      "clearTitle": "Nothing is waiting for you",
+      "clearBody": "New requests show up here first. Keep your days off up to date so clients are only offered you when you can work.",
+      "clearAction": "Update my days off",
+      "quoteTitle": "Your quotation is ready",
+      "quoteAction": "Review the quotation",
+      "bookingTitle": "Your next shoot",
+      "bookingAction": "Open the booking",
+      "briefTitle": "Nothing booked yet",
+      "briefBody": "Say what you need in one sentence and we take it from there.",
+      "briefAction": "Start a brief"
+    }
   },
   "home": {
     "howItWorks": "How it works",

@@ -6,11 +6,12 @@ import type { Locale } from '@/shared/lib/locale'
 import type { Media } from '@/payload-types'
 import { LocaleSwitcher } from '@/shared/i18n/LocaleSwitcher'
 import { ThemeToggle } from '@/shared/theme/ThemeToggle'
-import { GlobeIcon, UserIcon } from '@/shared/ui/icons'
+import { GlobeIcon } from '@/shared/ui/icons'
 import { BriefBar, rowClass, RowContent } from '@/shared/ui/bar'
 import { CmsImage } from './CmsImage'
 import { MobileMenu } from './MobileMenu'
 import { SectionNav } from './SectionNav'
+import { AccountLink, MemberLink } from './SessionNav'
 
 export interface NavItem {
   label: string
@@ -44,6 +45,9 @@ function NavLink({
   )
 }
 
+const NAV_LINK =
+  'flex h-9 items-center rounded-[9px] px-3 text-[14px] whitespace-nowrap font-medium text-mute transition-colors hover:bg-ink/[0.045] hover:text-ink active:bg-ink/[0.08] [&[aria-current]]:bg-ink/[0.06] [&[aria-current]]:text-ink'
+
 /**
  * The window toolbar: wordmark at the start, section links centred, language, appearance and
  * account at the end. It sticks as the page scrolls under its frosted ground (`.toolbar`).
@@ -53,20 +57,23 @@ export async function Header({
   logo,
   logoDark,
   navigation,
-  accountHref = '/login',
   locale,
 }: {
   siteName: string
   logo?: Media | number | null
   logoDark?: Media | number | null
   navigation: NavItem[]
-  accountHref?: '/login' | '/account'
   locale: Locale
 }) {
   const [t, chrome] = await Promise.all([getTranslations({ locale }), chromeLabels(locale)])
   const home = localizeHref('/', locale)
-  const account = localizeHref(accountHref, locale)
-  const accountLabel = accountHref === '/account' ? t('nav.account') : t('nav.login')
+  const accountProps = {
+    loginHref: localizeHref('/login', locale),
+    accountHref: localizeHref('/account', locale),
+    loginLabel: t('nav.login'),
+    accountLabel: t('nav.account'),
+  }
+  const bookings = { href: localizeHref('/account/bookings', locale), label: t('nav.bookings') }
   const initial = Array.from(siteName.trim())[0] ?? ''
   return (
     <header className="toolbar relative">
@@ -104,9 +111,10 @@ export async function Header({
               key={item.target}
               item={item}
               locale={locale}
-              className="flex h-9 items-center rounded-[9px] px-3 text-[14px] whitespace-nowrap font-medium text-mute transition-colors hover:bg-ink/[0.045] hover:text-ink active:bg-ink/[0.08] [&[aria-current]]:bg-ink/[0.06] [&[aria-current]]:text-ink"
+              className={NAV_LINK}
             />
           ))}
+          <MemberLink {...bookings} className={NAV_LINK} />
         </SectionNav>
 
         <div className="flex items-center gap-1 justify-self-end">
@@ -117,13 +125,11 @@ export async function Header({
           />
           <ThemeToggle labels={chrome.theme} className="hidden md:inline-flex" />
           <span aria-hidden="true" className="mx-1.5 hidden h-5 w-px bg-hair md:block" />
-          <Link
-            href={account}
+          <AccountLink
+            {...accountProps}
             className="hidden h-9 items-center gap-1.5 rounded-[9px] border whitespace-nowrap border-hair bg-panel-solid ps-2.5 pe-3 text-[14px] font-medium text-ink transition-colors hover:border-ink/15 active:bg-tile md:inline-flex"
-          >
-            <UserIcon width={16} height={16} />
-            {accountLabel}
-          </Link>
+            avatarClassName="hidden size-9 items-center justify-center rounded-full transition-colors hover:bg-ink/[0.045] active:bg-ink/[0.08] md:inline-flex"
+          />
           <MobileMenu {...chrome.menu}>
             <BriefBar size="sm" className="py-1.5">
               <nav aria-label={t('a11y.mainNav')}>
@@ -136,11 +142,10 @@ export async function Header({
                     row
                   />
                 ))}
+                <MemberLink {...bookings} className={rowClass('open')} row />
               </nav>
               <div className="border-t border-hair pt-1">
-                <Link href={account} className={rowClass('open')}>
-                  <RowContent glyph={<UserIcon width={16} height={16} />} label={accountLabel} />
-                </Link>
+                <AccountLink {...accountProps} className={rowClass('open')} row />
                 <div className="flex items-center justify-between px-4 py-2">
                   <span className="group-label">{t('theme.label')}</span>
                   <ThemeToggle labels={chrome.theme} />

@@ -20,3 +20,27 @@ export async function requireUser(locale: Locale, next: string): Promise<User> {
   }
   return user as User
 }
+
+/** What the site header needs to know about the visitor: a name and an avatar, or nothing. */
+export interface SessionSummary {
+  name: string
+  avatarUrl: string | null
+}
+
+export async function getSessionSummary(): Promise<SessionSummary | null> {
+  const user = await getCurrentUser()
+  if (!user) return null
+  const payload = await getPayloadClient()
+  const { docs } = await payload.find({
+    collection: 'creator-profiles',
+    where: { user: { equals: user.id } },
+    depth: 1,
+    limit: 1,
+    overrideAccess: true,
+    select: { photo: true },
+  })
+  const photo = docs[0]?.photo
+  const avatarUrl =
+    photo && typeof photo === 'object' ? (photo.sizes?.thumbnail?.url ?? photo.url ?? null) : null
+  return { name: user.name, avatarUrl }
+}
