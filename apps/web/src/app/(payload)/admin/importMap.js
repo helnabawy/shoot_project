@@ -33,6 +33,7 @@ import { SimilarPages as SimilarPages_6925df9aa5a5531344b2de1ee24f6ee1 } from '.
 import { UntranslatedFields as UntranslatedFields_16c0cf1027aca9ad3a4d2088d0941419 } from '../../../modules/admin/components/UntranslatedFields'
 import { ActivePersonasWarning as ActivePersonasWarning_ae816ea16856d8023320d8a902805f93 } from '../../../modules/admin/components/ActivePersonasWarning'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
+import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e } from '@payloadcms/storage-vercel-blob/client'
 
 /** @type import('payload').ImportMap */
 export const importMap = {
@@ -70,5 +71,6 @@ export const importMap = {
   "/modules/pages/components/SimilarPages#SimilarPages": SimilarPages_6925df9aa5a5531344b2de1ee24f6ee1,
   "/modules/admin/components/UntranslatedFields#UntranslatedFields": UntranslatedFields_16c0cf1027aca9ad3a4d2088d0941419,
   "/modules/admin/components/ActivePersonasWarning#ActivePersonasWarning": ActivePersonasWarning_ae816ea16856d8023320d8a902805f93,
-  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
+  "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e
 }

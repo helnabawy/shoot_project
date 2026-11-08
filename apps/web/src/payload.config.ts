@@ -1,6 +1,7 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { ar } from '@payloadcms/translations/languages/ar'
 import { en } from '@payloadcms/translations/languages/en'
 import path from 'path'
@@ -39,6 +40,8 @@ import { SiteSettings } from './modules/site-settings/globals/SiteSettings'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const useS3 = Boolean(process.env.S3_BUCKET)
+// Vercel Blob is public-only, so it takes media alone; identity documents need a private store (S3/R2).
+const blobToken = useS3 ? undefined : process.env.BLOB_READ_WRITE_TOKEN
 
 export default buildConfig({
   admin: {
@@ -113,5 +116,7 @@ export default buildConfig({
           },
         }),
       ]
-    : [],
+    : blobToken
+      ? [vercelBlobStorage({ collections: { media: true }, token: blobToken })]
+      : [],
 })
