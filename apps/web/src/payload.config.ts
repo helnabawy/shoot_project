@@ -43,6 +43,16 @@ const useS3 = Boolean(process.env.S3_BUCKET)
 // Vercel Blob is public-only, so it takes media alone; identity documents need a private store (S3/R2).
 const blobToken = useS3 ? undefined : process.env.BLOB_READ_WRITE_TOKEN
 
+const databaseUrl = process.env.DATABASE_URI || process.env.DATABASE_URL || ''
+
+function isLocalDatabase(url: string): boolean {
+  try {
+    return ['localhost', '127.0.0.1', '[::1]', 'postgres'].includes(new URL(url).hostname)
+  } catch {
+    return false
+  }
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -94,9 +104,14 @@ export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   db: postgresAdapter({
-    pool: { connectionString: process.env.DATABASE_URI || process.env.DATABASE_URL || '' },
-    // Development pushes schema changes automatically; every change also gets a committed migration.
-    push: process.env.NODE_ENV === 'development' && process.env.PAYLOAD_MIGRATING !== 'true',
+    pool: { connectionString: databaseUrl },
+    // Development pushes schema changes automatically (every change also gets a committed migration), but only
+    // into a database on this machine: a push into a hosted database leaves a "dev" marker in payload_migrations
+    // that makes `payload migrate` stop and wait for a yes/no, which hangs the Vercel build.
+    push:
+      process.env.NODE_ENV === 'development' &&
+      process.env.PAYLOAD_MIGRATING !== 'true' &&
+      isLocalDatabase(databaseUrl),
     migrationDir: path.resolve(dirname, 'migrations'),
   }),
   sharp,
