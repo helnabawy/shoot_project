@@ -17,7 +17,7 @@ export function buildBriefConfig(landing: LandingPage, personas: AudiencePersona
       options = personas.map((p) => ({
         value: p.slug,
         label: p.singular,
-        sentenceLabel: p.singular.toLocaleLowerCase(locale),
+        sentenceLabel: lowerFor(p.singular, locale),
         glyph: p.glyph,
         personas: [],
       }))
@@ -58,5 +58,14 @@ export function buildBriefConfig(landing: LandingPage, personas: AudiencePersona
     whatsappTemplate: builder.whatsappTemplate ?? builder.sentence,
     successMessage: builder.successMessage ?? '',
     steps: (builder.steps ?? []).map((s) => ({ title: s.title, description: s.description ?? '' })),
+  }
+}
+
+/** Locale-aware lower-casing that never throws on a malformed locale tag. */
+function lowerFor(text: string, locale: string): string {
+  try {
+    return text.toLocaleLowerCase(locale)
+  } catch {
+    return text.toLocaleLowerCase()
   }
 }

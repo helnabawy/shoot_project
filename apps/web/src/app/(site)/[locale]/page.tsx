@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
+import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 import { lexicalToText } from '@shoot/domain/content'
 import { faqJsonLd, jsonLdScript } from '@shoot/domain/pages'
@@ -12,19 +13,20 @@ import { getActivePersonas, getCategoriesForAudience } from '@/modules/personas/
 import { getSiteSettings } from '@/modules/site-settings/queries'
 import { briefLabels } from '@/shared/i18n/server-labels'
 import { alternates } from '@/shared/lib/seo'
-import type { Locale } from '@/shared/lib/locale'
+import { isLocale } from '@/shared/lib/locale'
 
 type Props = { params: Promise<{ locale: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
-  const landing = await getLandingPage({ locale: locale as Locale })
+  if (!isLocale(locale)) notFound()
+  const landing = await getLandingPage({ locale })
   const og =
     landing.seo?.ogImage && typeof landing.seo.ogImage === 'object' ? landing.seo.ogImage : null
   return {
     title: { absolute: landing.seo?.title || landing.hero?.headline || '' },
     description: landing.seo?.description ?? undefined,
-    alternates: alternates('/', locale as Locale),
+    alternates: alternates('/', locale),
     openGraph: {
       title: landing.seo?.title ?? undefined,
       description: landing.seo?.description ?? undefined,
@@ -45,9 +47,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function HomePage({ params }: Props) {
-  const { locale: raw } = await params
-  setRequestLocale(raw)
-  const locale = raw as Locale
+  const { locale } = await params
+  // The layout's locale guard runs in parallel with this page, so a file-like path that skips
+  // the proxy (e.g. /favicon.ico) would otherwise reach the queries with an invalid locale.
+  if (!isLocale(locale)) notFound()
+  setRequestLocale(locale)
   const { isEnabled: draft } = await draftMode()
   const [landing, settings, builder, personas, categories, labels, specialtyCounts] = await Promise.all([
     getLandingPage({ locale, draft }),

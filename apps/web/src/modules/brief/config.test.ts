@@ -77,4 +77,13 @@ describe('brief builder config from the CMS', () => {
     )
     expect(config?.slots.map((s) => s.multiple)).toEqual([true, false])
   })
+
+  it('does not throw when handed a malformed locale tag (e.g. /favicon.ico reaching [locale])', () => {
+    const config = buildBriefConfig(
+      landing({ sentence: '{persona}', slots: [{ token: 'persona', kind: 'persona' }] as never }),
+      personas,
+      'favicon.ico',
+    )
+    expect(config?.slots[0]?.options.length).toBe(personas.length)
+  })
 })
