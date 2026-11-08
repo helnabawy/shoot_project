@@ -9,6 +9,7 @@ import * as migration_20261107_211232_creator_gender_nationality_experience from
 import * as migration_20261107_230004_creator_identity_documents_emirates from './20261107_230004_creator_identity_documents_emirates';
 import * as migration_20261108_073311_hero_background_overlay from './20261108_073311_hero_background_overlay';
 import * as migration_20261108_074725_user_multiple_personas from './20261108_074725_user_multiple_personas';
+import * as migration_20261108_112308_media_storage_fields from './20261108_112308_media_storage_fields';
 
 export const migrations = [
   {
@@ -64,6 +65,11 @@ export const migrations = [
   {
     up: migration_20261108_074725_user_multiple_personas.up,
     down: migration_20261108_074725_user_multiple_personas.down,
-    name: '20261108_074725_user_multiple_personas'
+    name: '20261108_074725_user_multiple_personas',
+  },
+  {
+    up: migration_20261108_112308_media_storage_fields.up,
+    down: migration_20261108_112308_media_storage_fields.down,
+    name: '20261108_112308_media_storage_fields'
   },
 ];

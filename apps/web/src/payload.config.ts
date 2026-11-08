@@ -116,7 +116,9 @@ export default buildConfig({
           },
         }),
       ]
-    : blobToken
-      ? [vercelBlobStorage({ collections: { media: true }, token: blobToken })]
-      : [],
+    : [
+        // Registered even without a token so the media schema (`prefix`, `_objectKey`) is the same in every
+        // environment; it only stores in Blob when BLOB_READ_WRITE_TOKEN is set.
+        vercelBlobStorage({ collections: { media: true }, token: blobToken, enabled: Boolean(blobToken), alwaysInsertFields: true }),
+      ],
 })

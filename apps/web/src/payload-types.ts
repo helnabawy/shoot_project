@@ -263,6 +263,7 @@ export interface Media {
    * Set automatically.
    */
   uploadedBy?: (number | null) | User;
+  prefix?: string | null;
   _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -2155,6 +2156,7 @@ export interface PromoCodesSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   uploadedBy?: T;
+  prefix?: T;
   _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
