@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-09
 
-**Status**: Draft, clarified 2026-11-09 (decisions taken from the owner's redesign decisions of 2026-11-09 and the design handoff in `specs/design-system/README.md`; the choice of a code-delivery provider is deliberately left to planning)
+**Status**: Planned 2026-11-09 (clarified the same day from the owner's redesign decisions and the design handoff in `specs/design-system/README.md`; plan, research, data model, contracts and quickstart written; the code-delivery provider is decided in `plan.md` Complexity Tracking, not here; tasks next)
 
 **Amended**: 2026-11-09 (same day) — owner decision: sign-in happens at the **end of the brief flow**, never as a gate before it (User Story 1); the standalone sign-in stays for the header's account icon and for professionals and is the only place the role question is asked (User Stories 4 and 5); the first-visit experience (splash and three learning steps, User Story 6) and the one-time "Finish your account" checklist (User Story 7) are in scope.
 
@@ -730,13 +730,16 @@ is.
   service is unavailable, the person MUST be told and offered the other
   channel and the business WhatsApp contact; failed sends count towards
   the sending limits.
-- **FR-019**: The text of the SMS and WhatsApp messages MUST be managed in
-  the content area per language, MUST include the brand name, the code and
-  its validity, and MUST NOT include a link that signs the person in.
-  Delivery MUST go through one replaceable delivery capability so that the
-  provider can change without changing the flows; the choice of provider
-  and its test mode are planning decisions recorded with a Complexity
-  Tracking justification.
+- **FR-019**: The text of the SMS message MUST be managed in the content
+  area per language, MUST include the brand name, the code and its
+  validity, and MUST NOT include a link that signs the person in. Where a
+  channel only delivers text that its operator has approved in advance
+  (WhatsApp), the content area MUST hold the reference of the approved
+  message per language and that channel MUST be offered only when the
+  reference is set. Delivery MUST go through one replaceable delivery
+  capability so that the provider can change without changing the flows;
+  the choice of provider and its test mode are planning decisions recorded
+  with a Complexity Tracking justification.
 
 **First visit of a number and accounts**
 

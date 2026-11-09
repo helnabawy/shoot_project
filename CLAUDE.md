@@ -42,8 +42,10 @@ Feature 006 is `specs/006-otp-signin/` (mobile number + one-time code as the pri
 members, placed at the end of the brief flow (details → number → code → WhatsApp, booking saved to
 the account) with a standalone sign-in for the header icon and professionals; email/password kept
 only as an editor fallback; first-visit splash, learning steps and "Finish your account" checklist;
-spec and clarifications written 2026-11-09, test-id prefix `PO-`; the code-delivery provider is a
-plan-step decision with a Complexity Tracking entry; not yet planned or implemented).
+spec, clarifications and plan written 2026-11-09 (plan, research, data-model, contracts, quickstart),
+test-id prefix `PO-`; module folder `apps/web/src/modules/auth/otp/`, rules in `packages/domain/src/auth/`
+and `packages/domain/src/contact/`; the SMS/WhatsApp vendor is Twilio over REST behind a `CodeSender`
+seam with a `log` sender for local and tests; not yet tasked or implemented).
 
 ## Stack (binding, see constitution "Technology Stack & Constraints")
 
