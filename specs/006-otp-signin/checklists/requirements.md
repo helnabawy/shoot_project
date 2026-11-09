@@ -31,6 +31,11 @@
 
 ## Notes
 
+- Re-validated 2026-11-09 after the same-day amendment (sign-in at the end of the brief flow,
+  standalone sign-in keeps the role question, splash + learning steps, "Finish your account"
+  checklist): all items still pass; feature 003 US2 is amended by this spec (details step loses the
+  name and number fields), stated under "Supersedes / amends".
+
 - No clarification markers were left in the spec: the owner's 2026-11-09 decision and the
   design handoff answered the scope questions, and the remaining choices (code lifetime,
   attempt and send limits, lock duration, channel default, treatment of pre-existing
