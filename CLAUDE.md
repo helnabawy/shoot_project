@@ -38,6 +38,10 @@ Feature 003 is `specs/003-quick-match-booking/`
 `packages/domain/src/booking/` and `packages/domain/src/pricing/`, test-id prefix `QM-`; no payment
 provider: payments are recorded by an admin). The shootix.ae feature map and the draft for 004 are in
 `specs/ROADMAP.md`.
+Feature 006 is `specs/006-otp-signin/` (mobile number + one-time code as the primary sign-in for
+members, one flow for login and register, email/password kept only as an editor fallback; spec and
+clarifications written 2026-11-09, test-id prefix `PO-`; the code-delivery provider is a plan-step
+decision with a Complexity Tracking entry; not yet planned or implemented).
 
 ## Stack (binding, see constitution "Technology Stack & Constraints")
 

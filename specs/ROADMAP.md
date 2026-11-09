@@ -1,6 +1,6 @@
 # Product Roadmap — features mapped from shootix.ae
 
-**Updated**: 2026-11-06. Each row is a Spec Kit feature; `specs/NNN-*/spec.md`
+**Updated**: 2026-11-09 (006 is now the mobile-number sign-in from the 2026-11-09 redesign decision; the referral programme moved to 007). Each row is a Spec Kit feature; `specs/NNN-*/spec.md`
 holds the specification. Status: *planned* = spec + plan + tasks exist,
 *draft* = spec only (run `/speckit-plan` then `/speckit-tasks` when it is
 next), *implemented* = built on its branch, *idea* = not yet specified.
@@ -12,8 +12,8 @@ next), *implemented* = built on its branch, *idea* = not yet specified.
 | 003 | Quick Match matching, quotation & booking | Steps 2–4: "Your creator" (availability by date, one price), "Your details" (name + WhatsApp), "Your quotation" (PDF, accept online), pro confirmation, booking states, payment held until delivery, "paid within 10 days", client six-step process | 001 (briefs), 002 (creators); carries 004's price-rule core | implemented |
 | 004 | Pricing, packages & promotions | /pricing tabs (photo / video / both), hourly tiers with edited-photo counts, included/not included, travel fees per emirate, promo codes (WELCOME20), multi-day partner rates, /corporate retainers (term tabs, Essential/Growth/Brand Studio, add-ons, planning-call CTA, comparison, FAQ), /flash-deals, /extras, /plus, "Call" CTA | 001 (CMS, personas, option sets for durations/locations) | draft |
 | 005 | Marketing & legal pages, blog | /terms, /terms/professional, /terms/ar, /privacy, /studios, /blog (guides), SEO landing pages (/hire/…, /work/…), 404, sitemap entries | 001 (blocks, localisation) | implemented (open: design finish reviews, Lighthouse CI run, full e2e run; shipped when merged) |
-| 006 | Introducer / referral programme | 10% / 15% agency commission, referral links, payouts | 003 | idea |
-| 007 | Phone / email one-time-code and Google sign-in | Client "Email OTP — no password", pro phone + code, "Continue with Google", country-code list | 001 (auth) | idea |
+| 006 | Mobile number + one-time code sign-in | Client "Email OTP — no password", pro phone + code, country-code list; here: one phone-first flow for login and register (+971 default, SMS or WhatsApp, 6-digit code, role and name on first visit), email/password kept as an editor fallback; Google sign-in and email codes dropped | 001 (accounts), 005 (legal acceptance), 002 (provider onboarding) | draft (spec + clarifications in `specs/006-otp-signin/`; delivery provider decided in the plan) |
+| 007 | Introducer / referral programme | 10% / 15% agency commission, referral links, payouts | 003 | idea |
 | 008 | Notifications & messaging | WhatsApp / email notifications for briefs, quotations, confirmations; admin alerts | 003 | idea |
 
 ## Order of delivery
@@ -24,7 +24,7 @@ next), *implemented* = built on its branch, *idea* = not yet specified.
 3. **004** — prices exist, so quotations can be computed.
 4. **003** — full Quick Match: availability → creator → details → quotation → booking.
 5. **005** — content pages and SEO landing pages (can run alongside 002–004).
-6. 006–008 as the business needs them.
+6. **006** — mobile-number sign-in replaces email/password for members (the 2026-11-09 redesign decision); 007–008 as the business needs them.
 
 ## Principles that apply to every feature
 
