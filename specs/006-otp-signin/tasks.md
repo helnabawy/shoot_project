@@ -1,0 +1,336 @@
+---
+
+description: "Task list for feature 006 — mobile-number sign-in with a one-time code, sign-in at the end of the brief, first-visit experience"
+---
+
+# Tasks: Mobile Number Sign-In with a One-Time Code
+
+**Input**: Design documents from `/specs/006-otp-signin/`
+
+**Prerequisites**: plan.md, spec.md (clarified and amended 2026-11-09), research.md (§1–§14), data-model.md, contracts/ (`routes-and-actions.md`, `code-sender.md`), quickstart.md (80 `PO-` rows); features 001 (accounts, briefs, rate limits, site settings), 002 (creator profiles, provider onboarding), 003 (Quick Match steps, quotations, bookings, booking clock) and 005 (legal documents and acceptances) shipped on this branch.
+
+**Design**: every task that changes visible UI follows the `ui-design` skill and the `impeccable` workflow (context → craft floor → build → detector); the three surface briefs were written in planning (`.impeccable/surfaces/{phone-otp,first-visit,account-checklist}.md`) and are the direction contracts. Each surface closes with the impeccable finish review (`ship`) and DESIGN.md (Principle IX). The world is "The Brief Bar": one primary action per screen, no password field anywhere in the member flows, no invented proof, the number asked once and only where there is something worth saving.
+
+**Tests**: REQUIRED (Principle III). Every phase lists its tests first; write them, watch them fail, then implement. Name tests with the 006 ids (`PO-US1-S4`, `PO-FR-020`) exactly as the "Scenario → test mapping" table in `quickstart.md` lists them; `pnpm check:scenarios` verifies the mapping. Codes in tests come from the `log` sender's outbox file (`contracts/code-sender.md`); `now` is injected everywhere, `E2E_CLOCK` moves the dormant check.
+
+**Organization**: Phases 1–2 build the shared infrastructure (domain rules, schema, migration, seed, the delivery seam, codes, limits, sessions). Phases 3–6 build the sign-in engine and the standalone screens that the brief flow reuses (US2 codes, US3 channel, US4 standalone, US5 welcome). Phase 7 wires sign-in into the end of the brief (US1, the owner's primary journey, the MVP line). Phases 8–12 add the first-visit experience, the checklist, the editor fallback and legacy accounts, number changes and pre-feature history. Phase 13 is cross-cutting polish. The five P1 stories are delivered in dependency order, not spec order, because US1 is composed of US2–US5.
+
+## Format: `[ID] [P?] [Story] Description`
+
+- **[P]**: Can run in parallel (different files, no dependencies on incomplete tasks)
+- **[Story]**: US1 sign in at the end of the brief · US2 codes, limits, locks · US3 SMS or WhatsApp · US4 standalone sign-in · US5 first visit of a number (welcome) · US6 first visit of a device (splash, steps) · US7 finish your account · US8 editors and existing accounts · US9 see and change your number · US10 pre-feature bookings
+- Paths are relative to the repository root; `apps/web/src` is abbreviated as `web/`; `packages/domain/src` as `domain/`; integration tests use the harness in `apps/web/tests/integration/setup`
+
+## Path Conventions
+
+- `apps/web` — Next.js 16 + Payload 3 app (`web/app`, `web/modules/auth` with the new `otp/` folder, `web/modules/booking`, `web/modules/brief`, `web/modules/landing`, `web/modules/site-settings`)
+- `packages/domain/src/auth`, `packages/domain/src/contact` — framework-free rules, 100 % covered
+- No new module, no new package; one new external service (Twilio over `fetch`) behind the `CodeSender` seam (plan.md Complexity Tracking)
+
+---
+
+## Phase 1: Setup (Shared Infrastructure)
+
+**Purpose**: Baseline, empty homes for the new code, message namespaces, environment, scenario check, design context.
+
+- [ ] T001 Baseline: run `nvm use && pnpm typecheck && pnpm lint && pnpm test` on this branch; all must pass before 006 work (record any pre-existing failure in the PR instead of fixing it here)
+- [ ] T002 [P] Create the domain homes as empty modules exported from the barrels: `domain/auth/otp.ts`, `domain/auth/limits.ts`, `domain/auth/checklist.ts`, `domain/auth/signin-flow.ts` (exported from `domain/auth/index.ts`) and `domain/contact/phone.ts`, `domain/contact/countries.ts` (exported from `domain/contact/index.ts`); confirm `packages/domain/vitest.config.ts` keeps the 100 % threshold over both folders with no exclude
+- [ ] T003 [P] Messages: add the namespaces `signin` (`number.*`, `code.*`, `welcome.*`, `confirm.*`, `saved.*`, `brief.*`, `errors.*` with one key per error code of `contracts/routes-and-actions.md`: `format`, `country`, `tooManyCodes`, `tooManyFromDevice`, `locked`, `paused`, `deliveryFailed`, `channelUnsupported`, `tooSoon`, `wrong`, `expired`, `expiredWait`, `used`, `numberTaken`, `emailTaken`), `firstVisit` (skip, next, start, stage a11y names), `account.number.*`, `account.checklist.*`, keys `footer.editorSignIn`, `footer.howItWorks`, and change `nav.login` to "Sign in" / "تسجيل الدخول" in `apps/web/messages/en.json` and `apps/web/messages/ar.json`; the key parity test still passes; `auth.register.*` stays until T061 removes `RegisterForm`
+- [ ] T004 [P] Environment: `web/shared/lib/env.ts` gains `OTP_SENDER` (`'twilio' | 'log'`, required), `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_SMS_FROM`, `TWILIO_WHATSAPP_FROM` (optional; the other three all-or-none like the S3 group and required when the sender is `twilio`), `OTP_OUTBOX_FILE` (default `.otp-outbox.jsonl`); `log` is refused at startup unless `NEXT_PUBLIC_SITE_URL` is `localhost`, `127.0.0.1`, `*.localhost` or `*.test` (reuse the `SEED_DEMO_CREATORS` host rule); tests in `web/shared/lib/env.test.ts`; document every variable in `apps/web/.env.example`; add `.otp-outbox.jsonl` to `.gitignore`; set `OTP_SENDER=log` in `.github/workflows/ci.yml` and in `apps/web/playwright.config.ts`'s web server env
+- [ ] T005 [P] Scenario check: add `node scripts/check-scenario-tests.mjs specs/006-otp-signin/quickstart.md` to the `check:scenarios` script in the root `package.json` (add 003's table too if it is still missing); `pnpm check:scenarios` reports the 006 rows as missing until their tests exist and passes for 002/005
+- [ ] T006 [P] Design context: read `PRODUCT.md`, `DESIGN.md`, `.impeccable/design.json`, the three surface briefs `.impeccable/surfaces/{phone-otp,first-visit,account-checklist}.md`, the `PhoneOtp` section and "First visit and where sign-in happens" of `specs/design-system/README.md`, and the `ui-design` skill; run the impeccable craft floor for the three surfaces (as 003's T005 did) and add any token the briefs name that `web/app/globals.css` lacks (`whatsapp-ink`, `control-border`, `success`, `danger` in light and `.dark`) with no other visual change
+
+**Checkpoint**: baseline green; homes, messages, env and scenario check exist; design context read.
+
+---
+
+## Phase 2: Foundational (Blocking Prerequisites)
+
+**Purpose**: Domain rules, schema edits, two collections, one global, the Sign-in settings tab, migration, seed, the delivery seam, codes, limits, password-less sessions and the state cookies that every story uses. **No user story starts before this phase is complete.**
+
+### Tests first
+
+- [ ] T007 [P] Unit tests in `domain/contact/phone.test.ts` (PO-US4-S4): `parsePhone('050 123 4567', '971')`, `'50-123-4567'`, `'00971501234567'`, `'+971 50 123 4567'` and Arabic-Indic `'٠٥٠١٢٣٤٥٦٧'` all → `{ ok: true, e164: '+971501234567', iso: 'AE' }`; `'051 123 4567'` (UAE mobiles must match `+9715[0245689]\d{7}`) → `{ ok: false, reason: 'format' }`; `'0501234'` → `format`; `'+44 7700 900123'` → `+447700900123` (E.164 length only outside the UAE); `'+1 5'` and letters → `format`; `parsePhone(…, { allowed: ['AE'] })` refuses `+44…` with `country`; `maskNumber('+971501234567')` → `'+971 50 ••• 4567'`; `formatNumber('+971501234567', 'en')` and `'ar'` → `'+971 50 123 4567'` (Western digits in both)
+- [ ] T008 [P] Unit tests in `domain/contact/countries.test.ts` (PO-US4-S5): `COUNTRIES[0]` is `{ iso: 'AE', dial: '971' }`; every entry has a two-letter `iso` and a digit-only `dial`; `countryName('AE', 'ar')` uses `Intl.DisplayNames` and is non-Latin; `sortedCountries('en')` keeps the UAE first then alphabetical by localised name; `searchCountries(list, 'emir', 'en')` and `'971'` both find the UAE; `filterAllowed(list, [])` returns all, `['AE','SA']` returns two
+- [ ] T009 [P] Unit tests in `domain/auth/otp.test.ts` (PO-US2-S1, S2, S3, S4, S5, PO-FR-020): `newCode(() => 7)` → `'000007'` (six Western digits, zero-padded, `randomInt` injected); `hashInput('row1', '123456')` → `'row1:123456'`; `judgeAttempt(request, submitted, now, settings)` table: pending + equal → `{ kind: 'ok' }`; wrong with `attempts` 1 (already incremented) → `{ kind: 'wrong', remaining: 2 }`; wrong with `attempts` 3 → `{ kind: 'locked', until }`; `expiresAt <= now` → `expired` before any comparison; state `used` → `used`; `replaced`/`locked`/`expired` states → `invalid`; equality through an injected `equals(a, b)` so the app can pass `timingSafeEqual`; `resendAllowedAt(request, settings)` = `createdAt + resendAfterSeconds`; `isDormant(null, now, 12)` → false, 13 months ago → true, 11 → false
+- [ ] T010 [P] Unit tests in `domain/auth/limits.test.ts` (PO-US2-S6, S7, S10): `limitKeys('+971501234567', 'dev1', '2026-11-09')` → `otp:number:+971501234567`, `otp:device:dev1`, `otp:day:2026-11-09`, `otp:lock:+971501234567`; `limitWindows(settings)` → `{ number: 15 min, device: 60 min, day: 24 h, lock: 15 min }` in ms from the settings; `dubaiDay(new Date('2026-11-09T21:30:00Z'))` → `'2026-11-10'` (Asia/Dubai); `firstRefusal([...])` returns the first refused check in the order lock → paused → day → device → number with its `retryAt`, and the message family is the same for a number with and without an account
+- [ ] T011 [P] Unit tests in `domain/auth/schemas.test.ts` extend (PO-US5-S6): `phoneSchema` `{ dial, number, channel: 'sms' | 'whatsapp' }`; `codeSchema` accepts exactly six digits, trims spaces, converts Arabic-Indic digits, refuses five or seven; `nameSchema` 2–80 characters after trim (`''`, `'A'`, 81 chars refused); `welcomeSchema` `{ accountType: 'seeker' | 'provider', name, acceptTerms: literal true }`; `emailOptionalSchema` (empty → undefined, invalid refused); `loginSchema` unchanged
+- [ ] T012 [P] Unit tests in `domain/auth/checklist.test.ts` (PO-US7-S1, S4): `checklistProgress({ username, name, email, preferences })`: number + name → `{ done: 2, total: 4, next: 'email', complete: false }`; + email → 3, `next: 'preferences'`; `preferences.locale` and `theme` both set → 4, `next: null`, `complete: true`; only `locale` set → not counted; `checklistDue({ progress, hasBooking, completedAt, dismissedOnDevice })` true only when a booking exists, not complete, not completed and not dismissed
+- [ ] T013 [P] Unit tests in `domain/auth/signin-flow.test.ts`: `nextStep` for the brief flow: signed-in member → `'book'`; no draft → `'details'`; draft expired → `'match'`; no pending request → `'number'`; pending request → `'code'`; verified new number without a name → `'code'` with `needsName: true`; for the standalone flow: new number → `'welcome'`; existing account dormant → `'confirm'`; existing → `'done'` with `next` (safe) or `/account`, provider first visit → `/account/profile`
+- [ ] T014 [P] Unit tests in `domain/booking/notifications.test.ts` extend (PO-US3-S5): `renderTemplate('{brand}: your code is {code}. It expires in {minutes} minutes.', { brand, code, minutes })` fills all three; `templateHasPlaceholder(text, 'code')` true/false; a template without `{code}` is reported invalid by `validateCodeTemplate(text)` with a readable message
+- [ ] T015 [P] Tests in `web/shared/payload/rate-limit.test.ts` extend: `consumeAllowance(req, key, limit, messageKey, now, windowMs)` resets after `windowMs` (15 min) and keeps the hourly default when omitted; the result carries `retryAt`; `readAllowance(req, key, now, windowMs)` reads without counting; `deleteAllowance(req, key)` removes the row; `setLock(req, key, now, windowMs)` / `isLocked(req, key, now, windowMs)` express the `otp:lock:` marker
+- [ ] T016 [P] Unit tests in `web/modules/auth/otp/senders/log.test.ts` and `web/modules/auth/otp/senders/twilio.test.ts` (`contracts/code-sender.md`): `log` appends one JSON line `{ at, to, channel, code, locale }` to the outbox path and returns `{ ok: true, providerRef: '<line no>' }`, a logger spy never sees the code or the number; `+971509990001` → `unavailable`, `+971509990002` → `rejected`, `+971509990003` → `channel-unsupported` on `whatsapp` only; `twilio` with a mocked `fetch`: URL `https://api.twilio.com/2010-04-01/Accounts/{SID}/Messages.json`, basic auth header, form body `To`/`From`/`Body` for SMS and `To=whatsapp:…`/`From`/`ContentSid`/`ContentVariables={"1":code}` for WhatsApp, status mapping 201 → ok with `body.sid`, 400/404 → `rejected`, 401/403 → `config`, 429/5xx/network → `unavailable`, abort after 10 s → `unavailable`, never retried; `channels` excludes `whatsapp` when `TWILIO_WHATSAPP_FROM` is empty; `sendText` sends a plain SMS
+- [ ] T017 [P] Integration tests in `apps/web/tests/integration/otp-access.int.test.ts` (PO-US5-S9, PO-US9-S5): through REST as anonymous, member, editor and admin: `sign-in-codes` read by admins only and `codeHash` absent from every response, create/update/delete refused for everyone; `account-events` the same; `users.username`, `phoneVerifiedAt`, `phoneVerifiedBy`, `lastSignInAt`, `preferences` readable by self and admins only, `username` not writable by a member, `roles` still admin-only; `briefs.draft` absent from every brief response; `first-visit` readable publicly and updatable by editors; `site-settings.signIn` limits not readable publicly, templates writable by editors, limits by admins only; `rate-limits` readable and deletable by admins only
+- [ ] T018 [P] Integration tests in `apps/web/tests/integration/otp-privacy.int.test.ts` (PO-FR-040, PO-US9-S5, PO-US9-S6): after `createRequest` the stored `codeHash` equals `HMAC-SHA256(PAYLOAD_SECRET, "{id}:{code}")` base64url and never the code; a logger spy (Payload logger and `console`) sees neither the test number nor the code; action results and redirect paths never contain the number; the landing page, directory, a profile and a specialty page render no member number; a member's `/api/users/{id}` is not readable by another member (extended by T094 once the flows exist)
+- [ ] T019 [P] Integration tests in `apps/web/tests/integration/seed.int.test.ts` extend: the default seed writes `site-settings.signIn` with every default of data-model.md and the SMS template in en and ar, and `first-visit` with three steps (illustrations `brief-bar`, `price-and-creators`, `number-and-code`), four checklist rows and three facts in both languages; idempotent on a second run; no accounts created
+- [ ] T020 [P] Integration tests in `apps/web/tests/integration/booking-clock.int.test.ts` extend (PO-FR-041): the booking clock deletes `sign-in-codes` and `account-events` rows older than `signIn.eventRetentionDays`, keeps younger rows, and leaves expired `briefs.draft` values untouched
+
+### Implementation
+
+- [ ] T021 [P] Implement `domain/contact/phone.ts` (`parsePhone` with the UAE rule, local and international spellings, Arabic-Indic digit folding, `allowed` countries; `maskNumber`; `formatNumber`) and `domain/contact/countries.ts` (`COUNTRIES` reference list of ISO code + dial code with the UAE first, `countryName` via `Intl.DisplayNames`, `sortedCountries`, `searchCountries`, `filterAllowed`) to pass T007, T008
+- [ ] T022 [P] Implement `domain/auth/otp.ts` (`newCode`, `hashInput`, `judgeAttempt`, `resendAllowedAt`, `isDormant`) and `domain/auth/limits.ts` (`limitKeys`, `limitWindows`, `dubaiDay`, `firstRefusal`) to pass T009, T010
+- [ ] T023 [P] Implement `domain/auth/schemas.ts` additions, `domain/auth/checklist.ts`, `domain/auth/signin-flow.ts` and `templateHasPlaceholder` / `validateCodeTemplate` in `domain/booking/notifications.ts`; export everything from the barrels; pass T011–T014
+- [ ] T024 Extend `web/shared/payload/rate-limit.ts`: `windowMs` parameter (default `RATE_WINDOW_MS`), `readAllowance`, `deleteAllowance`, `setLock`, `isLocked`; every existing caller unchanged; pass T015
+- [ ] T025 Edit `web/modules/auth/collections/Users.ts`: `auth.loginWithUsername: { allowEmailLogin: true, requireEmail: false, requireUsername: false }`, `admin.useAsTitle: 'name'`; `email` optional with a `beforeValidate` hook that requires it when `roles` include `admin` or `editor`; new fields with the data-model rules: `username` (the verified E.164, unique; field access read admin or self, create/update only through the server (`req.context.serverOnly`) or an admin), `phoneVerifiedAt` (date), `phoneVerifiedBy` (select `member | admin`), `passwordRetiredAt` (date, never set for admins/editors), `lastSignInAt` (date, indexed), `preferences` group `{ locale: select en | ar, theme: select light | dark | system }` (self-updatable), `checklistCompletedAt` (date); `beforeChange` normalises `username` with `parsePhone` and refuses a value already used with the readable message `signin.errors.numberTaken`, and when an admin sets or clears it sets `phoneVerifiedAt/By = admin` and mirrors `phone`; `afterChange` writes the `account-events` row (`number-set` / `number-cleared`, actor = the admin); `roles` keeps `isAdminField`; update `apps/web/tests/integration/auth.int.test.ts` and `web/modules/auth/components/forms.test.tsx` for the optional email (never delete a test)
+- [ ] T026 [P] Create `web/modules/auth/collections/SignInCodes.ts` (slug `sign-in-codes`; fields exactly as data-model.md: `number` text required indexed, `channel` select `sms | whatsapp` required, `locale` select `en | ar`, `codeHash` text required with field `access.read: () => false`, `expiresAt` date required, `attempts` number default 0, `state` select `pending | used | expired | replaced | locked` default `pending` indexed, `usedAt` date, `purpose` select `brief | standalone | add-number | change-number`, `briefRef` text, `userId` relationship → users, `deviceKey` text indexed, `deliveryStatus` select `queued | sent | failed`, `deliveryError` text, `providerRef` text; collection access `read: isAdmin`, `create/update/delete: () => false`, server writes with `overrideAccess`; admin group "Accounts") and `web/modules/auth/collections/AccountEvents.ts` (slug `account-events`; `user` relationship indexed nullable, `kind` select `number-set | number-cleared | number-detached | lock-cleared | password-retired | dormant-confirmed`, `actor` relationship, `actorRole` select `admin | member | system`, `at` date required, `note` text; same access); labels in en and ar
+- [ ] T027 [P] Edit `web/modules/brief/collections/Briefs.ts`: `draft` group hidden in admin with field `access.read: () => false` (`picks` text, `date` text `YYYY-MM-DD`, `addOnIds` text holding a JSON array, `promo` text, `savedAt` date, `expiresAt` date); index on `contact.whatsapp`; edit `web/modules/booking/collections/Bookings.ts`: index on `client.whatsapp`
+- [ ] T028 [P] Sign-in settings tab: `web/modules/site-settings/globals/signIn.ts` (like `quickMatch.ts`) registered as the `signIn` group in `SiteSettings.ts` with every field, range and default of data-model.md (`codeLifetimeMinutes` 1–30 default 5, `attemptsPerCode` 1–10 default 3, `lockMinutes` 1–1440 default 15, `resendAfterSeconds` 15–300 default 60, `codesPerNumber` 1–20 default 3, `codesPerNumberWindowMinutes` 1–1440 default 15, `codesPerDevicePerHour` 1–100 default 10, `dailyCap` 1–100000 default 500, `dormantAfterMonths` 1–60 default 12, `eventRetentionDays` 1–365 default 30, `allowedCountries` select hasMany from `COUNTRIES` (empty = all), `sendingPaused` checkbox default false, `smsTemplate` textarea localized with `validateCodeTemplate`, `whatsappTemplateRef` group `{ en, ar }`, `numberChangedTemplate` textarea localized); field access: templates editable by editors, limits by admins, nothing readable publicly; `web/modules/auth/otp/settings.ts` `readSignIn(payload)` uncached (like `readQuickMatch`) with defaults and the derived `whatsappEnabled` (sender `channels` includes `whatsapp` ∧ both refs set)
+- [ ] T029 [P] Create the `first-visit` global `web/modules/landing/globals/FirstVisit.ts` (`splash.line` text localized; `steps` array `minRows: 3, maxRows: 3` of `{ title text localized required maxLength 60, body text localized required maxLength 200, illustration select brief-bar | price-and-creators | number-and-code, action text localized }`; `howItWorksLabel` text localized; `checklist.title`, `checklist.laterLabel` text localized; `checklist.rows` four `{ label localized }` groups (number, name, email, languageTheme); `checklist.facts` array `maxRows: 3` of `{ text localized maxLength 120 }`; access `read: anyone`, `update: isEditorOrAdmin`; `afterChange` revalidates tags `first-visit` and `landing`), `getFirstVisit(locale)` in `web/modules/landing/queries.ts` cached by tag `first-visit` with English fallback, exported through `web/modules/landing/index.ts`
+- [ ] T030 Register `SignInCodes`, `AccountEvents` and `FirstVisit` in `web/payload.config.ts`; run `pnpm --filter web payload generate:types`; run `pnpm --filter web payload migrate:create otp_signin`; review the SQL for data loss (additive only: new tables, `users.email` nullable with its unique index kept, `users.username` unique, `users.last_sign_in_at` index, `briefs.draft_*`, `briefs.contact_whatsapp` index, `bookings.client_whatsapp` index, `site_settings.sign_in_*`, `first_visit` tables, `sign_in_codes` indexes); apply it on a fresh database and on a database with existing users and bookings (nothing lost); commit `web/migrations/<ts>_otp_signin.{ts,json}` and the migration index
+- [ ] T031 Seed: `web/shared/payload/seed/sign-in.ts` (the `signIn` defaults and both SMS templates, `numberChangedTemplate`) and `web/shared/payload/seed/first-visit.ts` (the handoff's three steps, checklist title, later label, four rows and three facts in en and ar, from `specs/design-system/README.md` "First visit and where sign-in happens"), wired into `seed.ts`; pass T019
+- [ ] T032 Delivery seam: `web/modules/auth/otp/sender.ts` (the `Channel`, `SendCodeInput`, `SendResult`, `CodeSender` types of the contract; `getSender()` memoised from `env.OTP_SENDER`), `web/modules/auth/otp/senders/log.ts` (outbox append, debug log with the line number only, the three reserved failure numbers) and `web/modules/auth/otp/senders/twilio.ts` (`fetch` with basic auth, 10 s `AbortSignal.timeout`, status mapping, `channels` from env); pass T016
+- [ ] T033 Codes and limits: `web/modules/auth/otp/codes.ts` (`createRequest({ number, channel, locale, purpose, briefRef, deviceKey, now })`: marks the number's previous `pending` row `replaced`, generates the code with `crypto.randomInt`, stores the HMAC, inserts with `expiresAt`, returns `{ id, code }` to the caller that sends; `judge(id, submitted, now, settings)`: increments `attempts` with the Local API first, then `judgeAttempt` with `timingSafeEqual`, and on `locked` sets the lock row; `markUsed`, `markReplaced`, `markLocked`, `recordDelivery(id, result)` without the number), `web/modules/auth/otp/limits.ts` (`deviceKeyFor(req)`: HMAC of the `shoot-device` cookie, hashed IP as fallback; `otpAllowance(req, { number, deviceKey, settings, now })` in the order lock → paused → day → device → number returning `{ ok: true } | { ok: false, code, retryAt }`, every refusal in the same message family); pass T018
+- [ ] T034 Sessions and accounts: `web/modules/auth/otp/session.ts` `signInAs(user, { payload, req, now })` = `addSessionToUser` + `getFieldsToSign` + `jwtSign` with the collection's `tokenExpiration`, then `setSessionCookie` (the existing `payload-token` cookie) and `lastSignInAt = now`; `web/modules/auth/otp/accounts.ts`: `findByVerifiedNumber(e164)`, `createAccountFromNumber({ e164, name, accountType, locale })` (random 32-byte password, `username`, `phone`, `phoneVerifiedAt`, `phoneVerifiedBy: 'member'`, `roles: ['member']`), `verifyNumberOn(user, e164, actorRole)` (conflict → `numberTaken`; sets `username`, `phone`, `phoneVerifiedAt/By`; for members also `passwordRetiredAt` and a `password-retired` event), `detachNumber(user, actor)` (`username`/`phoneVerifiedAt` cleared, `number-detached` event), `recordEvent(kind, user, actor, note)`; behaviour tests arrive with the stories (T052, T059, T083)
+- [ ] T035 State cookies: `web/modules/auth/otp/state-cookie.ts` with read/write/clear helpers over `cookies()` for `shoot-signin` (HttpOnly, SameSite Lax, 30 min, HMAC-signed JSON `{ id, purpose, next }`; a tampered signature reads as null), `shoot-device` (HttpOnly, 1 year, random 16 bytes), `shoot-otp-channel` (HttpOnly, 1 year), `shoot-resume` (not HttpOnly, 7 days, a 3b path only), `shoot-checklist-later` (HttpOnly, 1 year), `shoot-apply-theme` (HttpOnly, one request); unit tests in `web/modules/auth/otp/state-cookie.test.ts`
+- [ ] T036 Retention and the module surface: extend the booking clock (`web/modules/booking/clock.ts`, served by `web/app/(payload)/api/cron/bookings/route.ts`) to purge `sign-in-codes` and `account-events` older than `eventRetentionDays` (pass T020); create `web/modules/auth/otp/index.ts` exporting what booking and the pages import (`requestCode`, `verifyCode`, `readSignIn`, `signInAs`, the screens once T055 adds them) and `web/modules/auth/index.ts` if the module has none
+
+**Checkpoint**: domain 100 % green; migration applied; seed idempotent; sender, codes, limits, sessions and cookies unit- and integration-tested; no user-facing route changed yet.
+
+---
+
+## Phase 3: User Story 2 — Codes that expire, can be resent and resist guessing (Priority: P1)
+
+**Goal**: the request and verify actions with every limit, lock, resend and expiry rule, settings applied live, and the admin "Clear lock" action.
+
+**Independent test**: through the actions (no UI yet) and on `/admin`: three wrong codes lock the number for 15 minutes; a resend invalidates the old code; the fourth request in 15 minutes is refused; an admin clears the lock and the event is recorded.
+
+### Tests first
+
+- [ ] T037 [P] [US2] Integration tests in `apps/web/tests/integration/otp-request.int.test.ts` (PO-US2-S4, PO-US3-S1, PO-US3-S2, PO-US3-S4, PO-US4-S6): `requestCode` creates one `pending` row, sends through the `log` sender to a temp outbox (the line carries the code and channel), sets `shoot-signin`, `shoot-device` and `shoot-otp-channel`, and redirects to the purpose's code screen without the number; a second request before `resendAfterSeconds` → `tooSoon` with the seconds left; `resendCode` after the wait → a new row, the previous row `replaced`, the old code judged `invalid`, attempts reset, the same channel unless `channel` is given; `changeNumber` marks the row `replaced` and clears `shoot-signin`; the chosen channel is remembered in `shoot-otp-channel` and preselected on the next request
+- [ ] T038 [P] [US2] Integration tests in `apps/web/tests/integration/otp-verify.int.test.ts` (PO-US2-S1, S2, S3, S5): a wrong code → `{ status: 'error', code: 'wrong', remaining: 2 }` and the correct code still verifies afterwards; the third wrong code → `locked`, the lock row exists, both the correct code and `requestCode` are refused for `lockMinutes`; an expired code (`now` injected) → `expired` plus a fresh row and send when the limits allow, otherwise `expiredWait` with the time to wait; a used code → `used`; `attempts` is incremented even when the comparison throws
+- [ ] T039 [P] [US2] Integration tests in `apps/web/tests/integration/otp-limits.int.test.ts` (PO-US2-S6, S7, S8, S10): 3 codes in 15 minutes per number → the fourth refused with `retryAt`; 10 per hour per device across different numbers → refused; the refusal for a number with an account and one without is byte-identical; changing `codesPerNumber` to 1 in settings applies to the very next request without a restart; `dailyCap: 1` → the next request from any number returns `paused` with the WhatsApp contact, and the `otp:day:` row shows the count to an admin; `sendingPaused: true` → the same; a failed delivery (`+971509990001`) still counts against every limit
+- [ ] T040 [P] [US2] E2E in `apps/web/tests/e2e/po-us2-codes.spec.ts` (PO-US2-S2, S9, S11) `@smoke`: on `/login` request a code for a fresh number, type three wrong codes and read "2 tries left", "1 try left", then the lock message as text inside `role="alert"` (axe clean); as admin open the user in `/admin` and press "Clear lock"; a new request works; the `lock-cleared` row appears in the `account-events` list
+
+### Implementation
+
+- [ ] T041 [US2] Implement `requestCode`, `resendCode`, `switchChannel` and `changeNumber` in `web/modules/auth/otp/actions.ts`: `phoneSchema` → `parsePhone` with `allowedCountries` → `otpAllowance` → `createRequest` → `getSender().send` with the rendered template → `recordDelivery` → cookies → redirect to the code screen of the purpose (`/login/code`, `/match/{ref}/{key}/code`, `/account/number/code`); error codes exactly as `contracts/routes-and-actions.md`; the in-progress guard: a `pending` row for the same number and device younger than 5 s is reused instead of sending again (FR-015, double tap); pass T037, T039
+- [ ] T042 [US2] Implement the `verifyCode` core in `web/modules/auth/otp/actions.ts`: `codeSchema` → `judge` → `markUsed` on success → outcome by purpose through `signin-flow.nextStep` (the `standalone`, `add-number`/`change-number` and `brief` handlers land in T056, T086 and T067); wrong/expired/locked/used results with their message keys and `remaining`; expired → automatic resend when `otpAllowance` allows, else `expiredWait`; pass T038
+- [ ] T043 [US2] Admin "Clear lock": `web/modules/auth/admin/ClearLockButton.tsx` (a UI field on Users shown to admins when an `otp:lock:` row exists) calling `clearLock(userId)` in `actions.ts` (deletes the lock row, writes `lock-cleared` with the acting admin); admin list views for `sign-in-codes` (columns `number`, `channel`, `state`, `deliveryStatus`, `createdAt`, filter on `deliveryStatus: failed`) and `account-events`; pass T040
+
+**Checkpoint**: the engine is complete and tested without screens; limits, locks and resend verified against injected clocks.
+
+---
+
+## Phase 4: User Story 3 — Choose SMS or WhatsApp (Priority: P1)
+
+**Goal**: the channel line, the other channel offered on failure, templates from the CMS, the choice remembered on the device.
+
+**Independent test**: request a code by SMS and by WhatsApp for one number; make SMS fail with the reserved number and accept the WhatsApp offer; edit the SMS template and see the new text in the outbox.
+
+### Tests first
+
+- [ ] T044 [P] [US3] Integration tests in `apps/web/tests/integration/otp-delivery.int.test.ts` (PO-US3-S3, PO-US3-S5): `+971509990001` on SMS → `deliveryFailed` with `otherChannel: 'whatsapp'` and the business WhatsApp link from site settings; the row has `deliveryStatus: 'failed'` and a `deliveryError` without the number; the attempt counted against the limits; `+971509990003` on WhatsApp → `channelUnsupported` and SMS offered; the outbox body equals `smsTemplate[locale]` rendered with brand, code and minutes, in Arabic for an `ar` request; a template edited in settings is used by the next send; the body contains no URL; WhatsApp sends carry `whatsappTemplateRef[locale]` and no body
+- [ ] T045 [P] [US3] Component tests in `web/modules/auth/otp/components/ChannelLine.test.tsx` (PO-US3-S1) and the channel assertions of `web/modules/auth/otp/components/CodeScreen.test.tsx` (PO-US3-S2): the `meta` line "We'll send a 6-digit code by SMS. Prefer WhatsApp?" with a 44 px quiet button that swaps the line to WhatsApp and a hidden `channel` input (a plain form button without scripting); the line is absent when `whatsappEnabled` is false; the code screen shows "Sent by SMS" / "Sent on WhatsApp" and the resend keeps the channel
+- [ ] T046 [P] [US3] E2E in `apps/web/tests/e2e/po-us3-channel.spec.ts` (PO-US3-S4): choose WhatsApp, complete the sign-in, sign out, start again on the same device → WhatsApp preselected; in a fresh context → SMS
+
+### Implementation
+
+- [ ] T047 [US3] Implement `web/modules/auth/otp/components/ChannelLine.tsx` (server-renderable, progressive enhancement), the delivery-failure state of the number screen (message, the other channel's button bound to `switchChannel`, the WhatsApp contact from `site-settings`), template rendering in `actions.ts` (`renderTemplate(smsTemplate[locale], { brand: siteName, code, minutes })`, `whatsappTemplateRef[locale]`), `whatsappEnabled` from `readSignIn`; pass T044–T046
+
+**Checkpoint**: both channels, failures and templates verified; the switch is hidden until WhatsApp is configured.
+
+---
+
+## Phase 5: User Story 4 — Standalone sign-in from the header (Priority: P1)
+
+**Goal**: `/login` (number), `/login/code` (code, confirm identity), the field components every flow reuses, old addresses redirected, `next` honoured, no password field.
+
+**Independent test**: from the header icon, sign in with a known number in two screens and land on `/account` (or `next`); a new number reaches the welcome step (Phase 6); `/register` redirects; keyboard, RTL and no-JS all work.
+
+### Tests first
+
+- [ ] T048 [P] [US4] Component tests in `web/modules/auth/otp/components/PhoneField.test.tsx` (PO-US4-S4): `type="tel"`, `inputmode="numeric"`, `autocomplete="tel-national"`, `dir="ltr"`, the +971 segment as a 44 px quiet button at the inline start, formatting as typed (`50 123 4567`), Arabic-Indic digits shown Western, an invalid number → message text inside `role="alert"` next to the field and no submit, label present, visible focus style class
+- [ ] T049 [P] [US4] Component tests in `web/modules/auth/otp/components/CountrySheet.test.tsx` (PO-US4-S5): the UAE first, search by localised name and by dial code, choosing changes the prefix and keeps typed digits, arrow keys and Escape work, the sheet does not animate under `prefers-reduced-motion`, without scripting a native `<select name="dial">` is rendered
+- [ ] T050 [P] [US4] Component tests in `web/modules/auth/otp/components/CodeBoxes.test.tsx` (PO-US4-S11, PO-US4-S12): one real `<input autocomplete="one-time-code" inputmode="numeric" maxlength="6">` with a label; six `aria-hidden` presentational boxes 44×52; pasting `123456` fills all six and enables "Continue"; an input event with six digits (device autofill) submits the form; the active box changes its border, not only its colour; without scripting the single field is visible and the boxes absent; tab order field → resend → change number
+- [ ] T051 [P] [US4] Component tests in `web/modules/auth/otp/components/NumberScreen.test.tsx` (PO-US1-S2, PO-US4-S1: purpose line, SMS preselected, "Send code" the one primary, an optional summary slot rendered above the field), `web/modules/auth/otp/components/CodeScreen.test.tsx` (PO-US1-S3, PO-US2-S1, PO-US2-S11, PO-US3-S2: masked number with a quiet "Change number", the boxes, countdown `meta` then "Resend code", the name field and the acceptance line only with `firstVisit`, errors as text in `role="alert"` above the primary with "2 tries left") and `web/modules/auth/otp/components/ResendCountdown.test.tsx` (PO-US2-S4: counts down from `resendAllowedAt` with fake timers to "Resend code", no transition under reduced motion, the plain "Resend code" form without scripting)
+- [ ] T052 [P] [US4] Integration tests in `apps/web/tests/integration/otp-standalone.int.test.ts` (PO-US4-S1, S2, S3, S9, PO-FR-020): number → redirect to `/login/code` with no number in the path or cookies in clear; a known number → the `payload-token` cookie (HttpOnly, SameSite, `tokenExpiration` 7 d), `lastSignInAt` updated, redirect to a safe `next` or `/account`; a new number → redirect `/login/welcome` and no user created; a signed-in member on `/login` → `/account`; a dormant account (`lastSignInAt` 13 months ago through `E2E_CLOCK`) → the `confirm-identity` state with the first name only; `confirmIdentity('yes')` signs in and writes `dormant-confirmed`; `'no'` detaches the number (`username` null, `number-detached`) and continues to the welcome step
+- [ ] T053 [P] [US4] E2E in `apps/web/tests/e2e/po-us4-standalone.spec.ts` (PO-US4-S1, S7, S8, S10, S11, S13) `@smoke`: the header account icon and the account menu lead to `/login` with no password field; `/register` and `/register?next=/account/bookings` redirect to `/login` keeping `next`; `/account/bookings` signed out → sign in → back there; number → code (read with the helper `readLastCode(number)` from `apps/web/tests/e2e/otp.ts`) → `/account`; `ar-mobile`: RTL copy, the field LTR with +971 at the inline start, no horizontal scroll at 360 px; `nojs`: plain fields complete the flow; axe clean; keyboard order country button → field → channel button → Send code
+
+### Implementation
+
+- [ ] T054 [P] [US4] Implement `web/modules/auth/otp/components/{PhoneField,CountrySheet,CodeBoxes,ResendCountdown}.tsx` (client islands totalling ≤ 6 KB gzipped, progressive enhancement over plain inputs, tokens only, 44 px targets, `dir="ltr"` on the number and code fields) to pass T048–T051
+- [ ] T055 [US4] Implement `web/modules/auth/otp/components/NumberScreen.tsx`, `CodeScreen.tsx` and `ConfirmIdentity.tsx` (server components composing the islands; props `purpose`, `summary` slot, `firstVisit`, `channel`, `whatsappEnabled`, `error`, `resendAllowedAt`, `maskedNumber`, `legal` links), the e2e helper `apps/web/tests/e2e/otp.ts` (`readLastCode`, `resetOutbox`), and export the screens from `web/modules/auth/otp/index.ts`
+- [ ] T056 [US4] Pages and the standalone outcome: rewrite `web/app/(site)/[locale]/login/page.tsx` (`NumberScreen` with purpose `standalone`; signed-in → `/account` or `next` via `safeNext`), create `web/app/(site)/[locale]/login/code/page.tsx` (reads `shoot-signin`; missing or expired → `/login`; dormant → `ConfirmIdentity`), change `web/app/(site)/[locale]/register/page.tsx` to `permanentRedirect` to `/login` keeping `next`; add `noindex` metadata and `Referrer-Policy: no-referrer` for `/login/:path*`, `/ar/login/:path*`, `/account/number/:path*`, `/ar/account/number/:path*` in `web/next.config.ts`; implement the `standalone` outcome of `verifyCode` (`findByVerifiedNumber` → dormant check → `signInAs` → locale-preference redirect, or `/login/welcome`) and `confirmIdentity` in `actions.ts`; header `AccountLink` uses `nav.login` ("Sign in"); update `apps/web/tests/e2e/us4-auth.spec.ts` for the new `/login` (never delete a test); pass T052, T053
+- [ ] T057 [US4] Make T048–T053 pass; run the impeccable detector on `/login` and `/login/code` in en/ar, light/dark, 360/768/1024/1440 and fix findings
+
+**Checkpoint**: a returning member signs in from the header in two screens; the field components are ready for the brief flow.
+
+---
+
+## Phase 6: User Story 5 — First visit: your name, and who you are (Priority: P1)
+
+**Goal**: the welcome step after a new number on the standalone flow: role rows from the active audiences, name, legal acceptance, "Done"; professionals go to onboarding.
+
+**Independent test**: verify a new number from the header, pick the professional row, enter a name, accept → `/account/profile` with an account whose role cannot be changed by re-entering the flow.
+
+### Tests first
+
+- [ ] T058 [P] [US5] Component tests in `web/modules/auth/otp/components/WelcomeStep.test.tsx` (PO-US5-S1, PO-US5-S6): two `ResultRow`s with the seeker and provider labels from props, the name field, the acceptance line linking Terms and Privacy (plus Professional Terms when the provider row is chosen), one primary "Done"; an empty or one-character name → a message as text; no email or password field anywhere
+- [ ] T059 [P] [US5] Integration tests in `apps/web/tests/integration/otp-standalone.int.test.ts` extend (PO-US5-S1, S2, S3, S5, S7, S8) and `apps/web/tests/integration/legal-acceptance.int.test.ts` extend (PO-US5-S2): `completeWelcome` with the client row → a user with `accountType: 'seeker'`, `roles: ['member']`, the name, `username` verified, a random password, and acceptance rows for the current Terms and Privacy versions; the provider row → Professional Terms accepted too and redirect `/account/profile`; the labels come from `siteSettings.labels` composed from the active personas (renaming a persona changes the label on the next render); leaving the welcome step → no user, and the next verification of that number shows the welcome again; an existing account never sees the welcome and its `accountType` cannot be changed through either flow
+- [ ] T060 [P] [US5] E2E in `apps/web/tests/e2e/po-us5-welcome.spec.ts` (PO-US5-S3): a new number → welcome → the professional row → `/account/profile` onboarding; sign out and sign in again → straight to `/account`, no welcome
+
+### Implementation
+
+- [ ] T061 [US5] Implement `web/modules/auth/otp/components/WelcomeStep.tsx`, `web/app/(site)/[locale]/login/welcome/page.tsx` (requires a `shoot-signin` row in state `used` without a user; otherwise `/login`), `completeWelcome` in `actions.ts` (`welcomeSchema` → `createAccountFromNumber` → `recordAcceptances` from `@/modules/legal` with `accountType` → `signInAs` → redirect `next` / `/account` / `/account/profile`); reuse the role-label composition of `RegisterForm`, then delete `web/modules/auth/components/RegisterForm.tsx` and the `auth.register.*` messages the welcome does not reuse; update `web/modules/auth/components/forms.test.tsx`; pass T058–T060; impeccable detector on `/login/welcome`
+
+**Checkpoint**: a new number becomes a client or professional account through the standalone flow; the role is asked here and nowhere else.
+
+---
+
+## Phase 7: User Story 1 — Sign in at the end of the brief and save the booking (Priority: P1) 🎯 MVP
+
+**Goal**: step 3 saves a booking draft; 3b asks for the number under the booking summary; 3c takes the code (and a name on a first visit), signs in, books from the draft and ends on "Open WhatsApp"; signed-in members skip 3b/3c; a left brief resumes.
+
+**Independent test**: brief → creator → details (no personal fields) → number → code + name → "Your booking is saved" with one "Open WhatsApp" action, the booking on `/account`; repeat with the same number: no name; repeat signed in: no number or code.
+
+### Tests first
+
+- [ ] T062 [P] [US1] Component tests in `web/modules/booking/components/DetailsForm.test.tsx` edit (PO-US1-S1): no name or WhatsApp field; date (when missing), add-ons and promo kept; "Continue · {price}" the one primary action; update the existing 003 assertions in place; extend `domain/contact/whatsapp.test.ts` (PO-US1-S5): the WhatsApp link text built for the saved state carries the brief sentence and the booking reference, and nothing else personal
+- [ ] T063 [P] [US1] Integration tests in `apps/web/tests/integration/otp-brief-flow.int.test.ts` (PO-US1-S2, S3, S4, S6, S7, S8, S12, PO-US5-S4): `saveBookingDraft` writes `briefs.draft` (`picks`, `date`, `addOnIds`, `promo`, `savedAt`, `expiresAt = savedAt + quotationValidDays`), creates no booking and no user, and redirects to `/match/{ref}/{key}/number`; the number and code pages need the brief's key (a wrong key renders the same 404); `verifyCodeAndBook` with a new number and a name → a `seeker` account, acceptances recorded, a booking with `member`, `client.whatsapp` = the E.164 and `client.name` = the account name, a quotation, the draft cleared, `shoot-resume` cleared, the result `{ status: 'saved', whatsappUrl, quotePath }` whose WhatsApp text holds the brief sentence and the booking reference; a known number → no name required, nothing asked twice; a signed-in member → `saveBookingDraft` books at once and redirects to `/q/{ref}/{key}?saved=1`; a provider booking as a client keeps `accountType: 'provider'`; an expired draft → redirect to step 2 with `match.draftExpired`; a brief left at 3b resumes with the draft intact and nothing else saved; the quotation opens from the account and the private link still works signed out
+- [ ] T064 [P] [US1] Integration tests in `apps/web/tests/integration/otp-limits.int.test.ts` extend (PO-US1-S9): with `sendingPaused` or the cap reached, the brief flow result still carries the WhatsApp link with the brief prefilled, the brief stays a lead as feature 001 records it, and no booking or account is created
+- [ ] T065 [P] [US1] Component tests in `web/modules/booking/components/BookingSummary.test.tsx` and `web/modules/booking/components/SavedBooking.test.tsx`: summary rows (the sentence, one creator row per professional type, the price) as `set` rows above the field; the saved state replaces the boxes with a `success` message, the one Top Hit "Open WhatsApp" (`data-testid="open-whatsapp"`, WhatsApp ink, `wa.me` href with the sentence and reference) and a quiet "See your quotation" link; RTL with logical classes only
+- [ ] T066 [P] [US1] E2E in `apps/web/tests/e2e/po-us1-brief-signin.spec.ts` (PO-US1-S1, S4, S5, S6, S8, S10, S11, S12, PO-US4-S13) `@smoke`: on the demo seed build a brief, pick a creator, see no personal fields on step 3, land on 3b with the summary, request the code, type it (outbox helper) plus a name, see `booking-saved` and `open-whatsapp` (href contains the sentence and the reference), still signed in on `/account` with the booking and its quotation link; a signed-in run skips 3b/3c; leave at 3b, open `/` → "Continue your booking" row → 3b; the landing page, directory, a profile, a specialty page and the guides show no sign-in prompt; `ar-mobile`: RTL copy, LTR fields, 360 px; `nojs`: the plain fields end on `/q/…?saved=1` in saved mode; axe clean
+
+### Implementation
+
+- [ ] T067 [US1] Implement `web/modules/booking/draft.ts` (`writeDraft`, `readDraft`, `clearDraft`, `draftExpired(draft, now)`) and split `requestQuotation` in `web/modules/booking/actions.ts` into `saveBookingDraft` (validation as today; signed-in → `bookFromDraft` at once → `/q/{ref}/{key}?saved=1`; else write the draft, set `shoot-resume`, redirect to 3b; paused/cap → the WhatsApp fallback of FR-006) and `bookFromDraft(brief, user, draft, now)` (003's booking and quotation creation unchanged, `client` from the account); add `verifyCodeAndBook` (the `brief` outcome: `verifyCode` core → new number: `nameSchema` + `createAccountFromNumber` + `recordAcceptances` → `signInAs` → `bookFromDraft` → clear draft and `shoot-resume` → the saved result or the `?saved=1` redirect); update `apps/web/tests/integration/booking-quote.int.test.ts` and `booking-brief.int.test.ts` for the split (never delete a test); pass T063, T064
+- [ ] T068 [US1] Screens: edit `web/modules/booking/components/DetailsForm.tsx` (remove name and WhatsApp, primary "Continue · {price}") and `web/app/(site)/[locale]/match/[ref]/[key]/details/page.tsx`; create `web/modules/booking/components/BookingSummary.tsx` and `SavedBooking.tsx`; create `web/app/(site)/[locale]/match/[ref]/[key]/number/page.tsx` (`getBriefByKey`; signed-in → `bookFromDraft` redirect; expired draft → step 2; `NumberScreen` with the summary slot and the brief-flow purpose line) and `web/app/(site)/[locale]/match/[ref]/[key]/code/page.tsx` (`CodeScreen` with `firstVisit` when the number has no account; the saved state swapped in place with scripting); add the `saved` mode to `web/modules/booking/quote-page.tsx` and `web/app/(site)/[locale]/q/[ref]/[key]/page.tsx` (`?saved=1`: success message and "Open WhatsApp" first, then the quotation); messages `signin.brief.*`, `quote.saved.*`; update `apps/web/tests/e2e/qm-us2-quote.spec.ts` for the new step 3; pass T062, T065
+- [ ] T069 [US1] "Continue your booking": a client island in `web/modules/brief/components/BriefBuilder.tsx` (≤ 1 KB) reads `shoot-resume` after hydration and renders one result row linking to the 3b path; the landing page stays static; test in `web/modules/brief/components/BriefBuilder.test.tsx`
+- [ ] T070 [US1] Make T062–T066 pass; impeccable detector on 3b, 3c and the saved state; confirm the landing JS budget in the `pnpm --filter web build` output (`/` ≤ 200 KB, ≤ 3 KB added)
+
+**Checkpoint**: MVP — the owner's journey works end to end in both languages, with and without scripting; the number is never asked twice.
+
+---
+
+## Phase 8: User Story 6 — The first visit on a device: splash and learning steps (Priority: P2)
+
+**Goal**: splash as the first paint, three learning steps from the CMS with real components as illustrations, once per device, `/how-it-works` from the footer, the landing page still static and within budget.
+
+**Independent test**: a fresh context on `/` shows the splash then step 1 of 3; Skip; reload shows nothing; the footer link shows the steps again; a deep address never shows them.
+
+### Tests first
+
+- [ ] T071 [P] [US6] Component tests in `web/modules/landing/components/LearningSteps.test.tsx` (PO-US6-S3: three steps with a stage, "1 of 3", an `h2`, one paragraph, progress dots, "Next"/"Next"/"Start a brief", a quiet "Skip" in the header, `aria-modal` while shown, focus moves to the Brief Bar on close, `localStorage["shoot.seen"]` written, no transition classes under reduced motion) and `web/modules/landing/components/StepStage.test.tsx` (PO-US6-S6: `brief-bar` renders a mini Brief Bar from the active audiences and option sets passed in, with one filled slot, one open slot and an occasion group; `price-and-creators` renders two creator rows, one selected, under a Top Hit with a price; `number-and-code` renders the phone field, six boxes and an "Open WhatsApp" Top Hit; no `<img>` anywhere)
+- [ ] T072 [P] [US6] Integration tests in `apps/web/tests/integration/first-visit.int.test.ts` (PO-US6-S5, PO-US6-S6, PO-US7-S6): `getFirstVisit('ar')` returns the seeded Arabic copy with English fallback for an empty field; updating the global revalidates the `first-visit` and `landing` tags (the cache pattern of 001's tests); `/how-it-works` renders the three steps as a page; the landing HTML contains the splash and steps markup hidden by default, the inline script in `<head>` after the theme script, and no image; the checklist title and facts change with the global
+- [ ] T073 [P] [US6] E2E in `apps/web/tests/e2e/po-us6-first-visit.spec.ts` (PO-US6-S1, S2, S4, S5, S7, S8): a fresh context on `/` → `first-visit-splash` visible at `domcontentloaded` with nothing focusable, replaced within 1 s by `first-visit-steps`; "Skip" → the landing page, `shoot.seen` set; reload → neither; "Next", "Next", "Start a brief" in a second fresh context → focus on the Brief Bar; the footer "How it works" → `/how-it-works`; `ar-mobile` and `dark` projects; `reducedMotion: 'reduce'` → no animation on the splash or the steps; `/creators/{code}` and `/q/…` in fresh contexts → no splash, no steps
+- [ ] T074 [P] [US6] Lighthouse: add `/` in first-visit mode (fresh storage), `/` returning (`shoot.seen` preset through a setup script) and `/login` to `lighthouserc.json` and `lighthouserc.dark.json` with the existing budgets (performance ≥ 90, accessibility ≥ 95, LCP ≤ 2.5 s, CLS ≤ 0.1) (PO-US6-S1, PO-SC-008)
+
+### Implementation
+
+- [ ] T075 [P] [US6] Implement `web/shared/components/FirstVisitScript.tsx` (an inline `<script>` of ≤ 300 bytes: when `localStorage["shoot.seen"]` is absent add `first-visit` to `<html>` and set it, inside try/catch) rendered in `web/app/(site)/[locale]/layout.tsx` right after the theme script; CSS in `web/app/globals.css`: splash and steps hidden unless `html.first-visit`, the splash fade keyframes (900 ms) with a `prefers-reduced-motion` override that replaces without animation, the pulsing dots in `ink` at 25–80 %
+- [ ] T076 [P] [US6] Implement `web/modules/landing/components/{Splash,LearningSteps,StepStage}.tsx` (server-rendered from `getFirstVisit`, the stage built from live content through `getBlockContext`, one client island for Next/Skip/focus/`shoot.seen` ≤ 2 KB), `web/app/(site)/[locale]/how-it-works/page.tsx`, the "How it works" footer link in `web/shared/components/Footer.tsx` (`howItWorksLabel` from the global), and render `Splash` + `LearningSteps` in `web/app/(site)/[locale]/page.tsx` when the global has its three steps; messages `firstVisit.*`
+- [ ] T077 [US6] Make T071–T074 pass; impeccable detector on the splash and the three steps in en/ar, light/dark, four widths; confirm LCP and CLS with the overlay from the Lighthouse run
+
+**Checkpoint**: the first visit explains the site once per device; the landing page is still static and within budget.
+
+---
+
+## Phase 9: User Story 7 — Finish your account (Priority: P2)
+
+**Goal**: the one-time checklist on the account page after the first booking: optional email, language and theme applied on every device, "Later" per device, gone everywhere when complete.
+
+**Independent test**: after a first booking `/account` shows "2 of 4"; add an email (3 of 4); set Arabic and dark (4 of 4, site at `/ar`, dark on this device); a second device signs in in Arabic and dark; the panel is gone.
+
+### Tests first
+
+- [ ] T078 [P] [US7] Component tests in `web/modules/auth/components/AccountChecklist.test.tsx` (PO-US7-S1): a 4 px progress bar with "2 of 4" as `meta`, four rows with ticks on the number and name rows, the formatted number LTR inside `bdi`, "Add email" the one primary action, "Later" quiet in the header, three facts from props, the email and preferences rows as plain forms; RTL fills from the inline start
+- [ ] T079 [P] [US7] Integration tests in `apps/web/tests/integration/account-checklist.int.test.ts` (PO-US7-S1, S2, S3, S4, S5, S7): the panel is due only after the first booking; `setAccountEmail` stores a unique email case-insensitively and refuses a duplicate with `emailTaken` as a plain message; `setAccountPreferences('ar', 'dark')` sets `NEXT_LOCALE`, the one-shot `shoot-apply-theme`, and redirects into `/ar/account`; a sign-in on another device redirects into the preferred locale and sets the theme cookie; all four rows done → `checklistCompletedAt` set and the panel gone; `dismissChecklist` → `shoot-checklist-later` and the panel hidden on this device only, nothing else changed; an account created standalone without a booking shows no panel
+- [ ] T080 [P] [US7] E2E in `apps/web/tests/e2e/po-us7-checklist.spec.ts` (PO-US7-S3, PO-US7-S5): after the first booking add an email, set Arabic + dark → the site at `/ar` with `html.dark`; a second browser context signs in with the same number → Arabic and dark applied; "Later" hides the panel in a third context
+
+### Implementation
+
+- [ ] T081 [US7] Implement `web/modules/auth/account-actions.ts` (`setAccountEmail`, `setAccountPreferences`, `dismissChecklist`), `web/modules/auth/components/AccountChecklist.tsx` and `ThemeSync.tsx` (a client island the layout mounts only when `shoot-apply-theme` is present; it calls next-themes `setTheme` once and the server clears the cookie), the panel in `web/app/(site)/[locale]/account/page.tsx` above "Up next" when `checklistDue` (with `hasBooking` from `getMyBookings`), the locale-preference redirect in `web/modules/auth/session.ts` for both sign-in kinds; messages `account.checklist.*`; pass T078–T080; impeccable detector on the panel
+
+**Checkpoint**: the account completes itself without requiring anything beyond the number and the name.
+
+---
+
+## Phase 10: User Story 8 — Editors and existing accounts keep a way in (Priority: P2)
+
+**Goal**: the email-and-password form behind the quiet footer link, admin sign-in untouched, legacy members asked once to verify a number, passwords retired after verification, admin corrections recorded.
+
+**Independent test**: an editor signs in through the footer link and opens `/admin`; a legacy member signs in with a password, is asked to add a number, declines and is let in; verifies later and the password stops working.
+
+### Tests first
+
+- [ ] T082 [P] [US8] Component tests in `web/shared/components/Footer.test.tsx` (PO-US8-S1): a quiet "Editor sign-in" link (`data-testid="editor-signin-link"`) to `/login/editor` and the "How it works" link; `web/modules/auth/components/EditorLoginForm.tsx` renders email and password only
+- [ ] T083 [P] [US8] Integration tests in `apps/web/tests/integration/otp-accounts.int.test.ts` (PO-US2-S9, PO-US5-S9, PO-US8-S2, S3, S4, S5, S6, PO-US9-S1, S2, S3, PO-US10-S1, S2): an editor's password login is unchanged and `verifyNumberOn(editor)` keeps the password usable; a legacy member fixture (password, `phone`, no `phoneVerifiedAt`) → `login` redirects to `/account/number?first=1` pre-filled from `phone`; declining → `/account` with the reminder row and nothing blocked; after verification `passwordRetiredAt` is set, the password login is refused with the wrong-password message and the number signs them in; a code sign-in with another account's unverified `phone` creates a separate account and never opens the old one; an admin setting `username` → `phoneVerifiedBy: 'admin'` and a `number-set` event with the actor; a number verified elsewhere → refused with the readable message; `clearLock` writes `lock-cleared`; no flow or action can set `roles`; changing a number verifies the new one, the old one no longer signs in, a `sendText` notice to the old number appears in the outbox with `numberChangedTemplate`, a number verified on another account → `numberTaken` revealing nothing; the account page shows the formatted number; pre-feature bookings and briefs whose `client.whatsapp` / `contact.whatsapp` equal the username are listed by `getMyBookings` / `getMyBriefs`; a provider sees only those where they are the client
+- [ ] T084 [P] [US8] Integration tests in `apps/web/tests/integration/auth.int.test.ts` extend (PO-US8-S7): five wrong passwords on the editor form lock the account for 15 minutes with the same message as an unknown email; the `/admin` login works with the email in the "Email or Username" field
+- [ ] T085 [P] [US8] E2E in `apps/web/tests/e2e/po-us8-fallback.spec.ts` (PO-US8-S1, S2, S3): footer link → editor form → `/admin` for the editor; a legacy member (created with a password by the e2e global setup in `apps/web/tests/fixtures/accounts.ts`) → the add-number prompt → verify → the password refused, the number signs in
+
+### Implementation
+
+- [ ] T086 [US8] Move `web/modules/auth/components/LoginForm.tsx` to `EditorLoginForm.tsx`, create `web/app/(site)/[locale]/login/editor/page.tsx`, add the footer links; edit `login` in `web/modules/auth/actions.ts` (refuse when `passwordRetiredAt` is set with the wrong-password message; a member without `phoneVerifiedAt` → `/account/number?first=1&next=…`); add the quiet reminder row to `web/app/(site)/[locale]/account/page.tsx`; create `web/app/(site)/[locale]/account/number/page.tsx` (`?first=1` add mode pre-filled from `phone` with "Skip for now"; otherwise the current number and "Change number") and `web/app/(site)/[locale]/account/number/code/page.tsx`; implement the `add-number` and `change-number` outcomes of `verifyCode` (`verifyNumberOn`, the notice through `sendText` with `numberChangedTemplate`, redirect `/account/number`); messages `account.number.*`, `footer.editorSignIn`; pass T082–T085; impeccable detector on the editor form and the number pages
+
+**Checkpoint**: nobody who could sign in before loses access; passwords retire only after a verified number exists.
+
+---
+
+## Phase 11: User Story 9 — See and change your number, sign out (Priority: P3)
+
+**Goal**: the verified number on the account page, change by verifying a new number, sign-out unchanged, privacy proven end to end.
+
+**Independent test**: change the number to a new one and sign in with it; the old one no longer works; sign out and a protected page asks to sign in; the address bar never held a number or a code.
+
+### Tests first
+
+- [ ] T087 [P] [US9] Component tests in `web/modules/auth/components/AccountSummary.test.tsx` extend (PO-US9-S1): the number formatted `+971 50 123 4567` LTR inside `bdi` with a "Change number" link; without a verified number an "Add your number" row
+- [ ] T088 [P] [US9] E2E in `apps/web/tests/e2e/po-us9-number.spec.ts` (PO-US9-S2, S4, S6): change the number end to end and sign in with the new one; sign out → `/account/bookings` → `/login`; every navigation URL collected during the run and the console output contain neither the numbers nor the codes
+
+### Implementation
+
+- [ ] T089 [US9] Edit `web/modules/auth/components/AccountSummary.tsx`, finish the change mode of `web/app/(site)/[locale]/account/number/page.tsx` (`NumberScreen` with purpose `change-number`), confirm the `logout` action and `SessionNav` unchanged; pass T087, T088
+
+---
+
+## Phase 12: User Story 10 — A client finds the bookings they made before this feature (Priority: P3)
+
+**Goal**: briefs and bookings recorded with the same WhatsApp number before this feature appear on the account page, only where the member is the client.
+
+**Independent test**: a fixture booking with `client.whatsapp` equal to the test number and no member is listed on `/account/bookings` after a code sign-in and its quotation opens.
+
+### Tests first
+
+- [ ] T090 [P] [US10] E2E in `apps/web/tests/e2e/po-us10-history.spec.ts` (PO-US10-S1): the e2e global setup records a brief and a booking through the Local API with `contact.whatsapp` / `client.whatsapp` = the test number and no member; after a code sign-in both are listed on `/account` and `/account/bookings`, and the quotation link opens
+
+### Implementation
+
+- [ ] T091 [US10] Edit `getMyBookings` in `web/modules/booking/queries.ts` and `getMyBriefs` in `web/modules/brief/queries.ts`: add `or: [{ member: user.id }, { 'client.whatsapp': user.username }]` (briefs: `contact.whatsapp`) only when `username` is set, for the client views only (the provider's assigned-jobs view unchanged); pass the US10 rows of T083 and T090
+
+**Checkpoint**: all ten stories independently green.
+
+---
+
+## Phase 13: Polish & Cross-Cutting Concerns
+
+- [ ] T092 [P] Operations view (FR-047): a UI field `web/modules/auth/admin/SendingToday.tsx` on the Sign-in settings tab showing today's `otp:day:` count against `dailyCap`, the last 24 h of failed deliveries (link to the filtered `sign-in-codes` list) and lock events; admin-only; a component test `SendingToday.test.tsx`
+- [ ] T093 [P] Localisation sweep: Arabic labels for every new collection, global, tab, field and select option (payload-cms skill: `labels` with en/ar); `apps/web/messages/ar.json` reviewed for every `signin.*`, `firstVisit.*`, `account.*` key; the number and code fields render `dir="ltr"` with Western digits in both locales (assert in the `ar-mobile` specs of T053, T066)
+- [ ] T094 [P] Privacy sweep: extend `apps/web/tests/integration/otp-privacy.int.test.ts` to run the full brief flow and the full standalone flow under the logger and console spies and over every redirect path and rendered page of the flow (PO-US9-S6, SC-007); a `grep` in CI for `code` or `number` in `console.` calls under `web/modules/auth/otp` fails the build
+- [ ] T095 [P] Full browser matrix: `pnpm build && pnpm test:e2e` across `mobile`, `desktop`, `nojs`, `ar-mobile`, `dark`; `pnpm lhci` with `lighthouserc.json` and `lighthouserc.dark.json` (`/` first visit, `/` returning, `/login`); fix any budget miss; verify 360/768/1024/1440 in en/ar, light/dark for every new screen
+- [ ] T096 Impeccable finish review for `phone-otp`, `first-visit`, `account-checklist`: production-build captures in `.impeccable/review/po/` (every state × en/ar × light/dark × four widths, focus states, reduced motion), fixes until the verdict is `ship` on all three, DESIGN.md recorded with `impeccable-documenter`; the One Blue Row rule checked on 3c (the saved state has exactly one Top Hit)
+- [ ] T097 [P] Documentation: `CLAUDE.md` feature 006 line (implemented, open items), `specs/ROADMAP.md` status, `apps/web/.env.example` and `README.md` for the sender variables, `specs/006-otp-signin/quickstart.md` corrections found while implementing, and `specs/006-otp-signin/usability.md` with the SC-001/SC-002 manual timing study template (like 001's T106)
+- [ ] T098 Final gate: `pnpm typecheck && pnpm lint && pnpm test:coverage && pnpm check:scenarios && pnpm --filter web build`; e2e smoke where Docker and browsers are available; tick tasks; record anything not run in the PR, including the launch checklist of `quickstart.md` (Twilio account, UAE sender id, WhatsApp sender and both template refs)
+
+---
+
+## Dependencies & Execution Order
+
+- **Phase 1** → **Phase 2** → stories. Within Phase 2: T021–T023 after T007–T014; T024 after T015; T025–T029 after T017; T030 after T025–T029; T031 after T030; T032 after T016 and T004; T033 after T022, T024, T026, T030; T034 after T025, T030; T035 after T004; T036 after T026, T033–T035.
+- **US2 (Phase 3)** needs Phase 2. **US3 (Phase 4)** needs T041. **US4 (Phase 5)** needs T042, T047. **US5 (Phase 6)** needs T055, T056. **US1 (Phase 7)** needs T055 (screens), T061 (`createAccountFromNumber` + acceptances pattern). **US6 (Phase 8)** needs only Phase 2 (T029, T031) and can run alongside Phases 3–7. **US7 (Phase 9)** needs US1 (a first booking). **US8 (Phase 10)** needs T042, T055. **US9 (Phase 11)** needs T086. **US10 (Phase 12)** needs T034.
+- T096–T098 last; T092–T095 after every story.
+
+## Parallel Examples
+
+- Phase 2 tests: T007–T020 all [P] (separate files).
+- Phase 2 domain: T021, T022, T023 together; T026, T027, T028, T029 together after T025's field-access pattern exists.
+- US2: T037, T038, T039, T040 together; T043 alongside T042.
+- US4: T048–T053 together; T054 alongside T055.
+- US1: T062–T066 together; T069 alongside T068.
+- US6 (T071–T077) in parallel with Phases 3–7 (different modules: `landing` and `shared`).
+- US7, US8 tests (T078–T080, T082–T085) together once US1 is green.
+
+## Implementation Strategy
+
+1. **MVP** = Phases 1–7 (US2 + US3 + US4 + US5 + US1): the sign-in engine, the standalone screens and the brief flow ending on "Open WhatsApp"; the first visit, the checklist and the editor fallback can follow in the same PR or the next.
+2. Add US6 (first visit) at any time after Phase 2; US7–US10 as the next increment; each phase ends green and demoable.
+3. Polish last; do not ship a surface before its finish review returns `ship`; the launch checklist (Twilio, UAE sender id, WhatsApp templates) is the owner's and gates production, not the merge.

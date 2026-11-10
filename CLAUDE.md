@@ -45,7 +45,7 @@ only as an editor fallback; first-visit splash, learning steps and "Finish your 
 spec, clarifications and plan written 2026-11-09 (plan, research, data-model, contracts, quickstart),
 test-id prefix `PO-`; module folder `apps/web/src/modules/auth/otp/`, rules in `packages/domain/src/auth/`
 and `packages/domain/src/contact/`; the SMS/WhatsApp vendor is Twilio over REST behind a `CodeSender`
-seam with a `log` sender for local and tests; not yet tasked or implemented).
+seam with a `log` sender for local and tests; tasked 2026-11-10 in `tasks.md` (98 tasks, T001–T098, Phases 1–13; MVP = Phases 1–7); not yet implemented).
 
 ## Stack (binding, see constitution "Technology Stack & Constraints")
 
