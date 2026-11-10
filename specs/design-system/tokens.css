@@ -1,0 +1,240 @@
+/*
+ * Shoot Design System — tokens (direction A, "The Brief Bar", 2026-11-09)
+ * Source of truth: https://claude.ai/artifact/JRVi8Z5AuEPujeFgE4Lqjk (project/tokens.json)
+ *
+ * Drop-in for apps/web/src/app/(site)/globals.css. Existing role names keep their
+ * names; new roles are added. `--selected-ink` is kept as an alias for one release.
+ */
+
+:root {
+  /* colour, light */
+  --ground: #efe9e3;
+  --panel: rgba(255, 255, 255, 0.86);
+  --panel-solid: #fcfbfa;
+  --ink: #1d1d1f;
+  --mute: #6b6560;
+  --hair: rgba(0, 0, 0, 0.08);
+  --control-border: rgba(0, 0, 0, 0.32);
+  --tile: #f1eeea;
+  --tile-ink: #5c5752;
+  --accent: #0a60ff;
+  --on-accent: #ffffff;
+  --accent-ink: #0848c2;
+  --selected-ink: var(--accent-ink); /* alias, remove after one release */
+  --selected: rgba(10, 96, 255, 0.12);
+  --selected-hover: rgba(10, 96, 255, 0.18);
+  --selection-wash: rgba(10, 96, 255, 0.1);
+  --focus: #0a60ff;
+  --attention: #ffe3d6;
+  --on-attention: #6a1f00;
+  --success: #e3f3e8;
+  --on-success: #0f5a2e;
+  --danger: #fde3e1;
+  --on-danger: #9b1c1c;
+  --photo-scrim: rgba(255, 255, 255, 0.25);
+  --sweep-top: #cbb39c;
+  --sweep-bottom: #8e6d52;
+  --sweep-key: rgba(255, 246, 234, 0.9);
+
+  /* graphics, light: the golden-hour scene, the scene tile, the corner glow.
+     Graphic only: never a control, border or text colour, except --scene-ink on a scene tile. */
+  --scene-sky-top: #f6eadb;
+  --scene-sky-mid: #ecd2b3;
+  --scene-sky-low: #cfa27a;
+  --scene-light: #fffaf2;
+  --scene-halo: #ffe9cf;
+  --scene-dune-far: #c0906a;
+  --scene-dune-mid: #a47452;
+  --scene-dune-near: #84583d;
+  --scene-tile-top: #ecd6bd;
+  --scene-tile-bottom: #caa07c;
+  --scene-tile-key: rgba(255, 246, 232, 0.92);
+  --scene-ink: #4a2e20; /* 5.2:1 on --scene-tile-bottom; keep text off the low dune (3.1:1) */
+  --corner-glow: rgba(255, 244, 228, 0.95);
+  --glint-sheen: rgba(255, 255, 255, 0.34);
+  --pulse-ring: rgba(255, 140, 90, 0.35);
+  --whatsapp-ink: #0f6e3f;
+
+  /* shadow, light */
+  --shadow-panel: 0 24px 60px rgba(40, 25, 12, 0.22);
+  --shadow-sheet: 0 -8px 32px rgba(40, 25, 12, 0.14);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.06); /* = shadow-lift */
+
+  /* type */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui,
+    'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* spacing and sizes */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --row-height: 44px;
+  --row-block: 7px;
+  --tile-size: 30px;
+  --photo-tile-size: 44px;
+  --top-hit-height: 50px;
+  --icon-button: 44px;
+  --column: 680px;
+  --form-column: 480px;
+  --account-column: 560px;
+  --pane: 1080px;
+
+  /* radius */
+  --radius-key-hint: 5px;
+  --radius-message: 6px;
+  --radius-tile: 8px;
+  --radius-row: 9px;
+  --radius-photo-tile: 10px;
+  --radius-photo-lg: 12px;
+  --radius-panel: 14px;
+  --radius-sheet: 20px;
+  --radius-pill: 999px;
+
+  /* motion, react: answers the person */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 260ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* motion, arrive: plays once when a thing first appears */
+  --duration-rise: 500ms;
+  --stagger-step: 70ms;
+  --duration-focus: 700ms;
+  --duration-roll: 700ms;
+  --duration-draw: 500ms;
+  --duration-grow: 900ms;
+  --duration-write: 1100ms;
+  --duration-deal: 600ms;
+  --duration-shake: 450ms;
+
+  /* motion, ambient: rationed. Loops on the landing only (under its Pause control);
+     every other screen keeps self-started motion under 5s. */
+  --duration-glint: 7s;
+  --duration-keylight: 14s;
+  --duration-settle: 5s;
+  --duration-drift: 44s;
+  --duration-pulse: 2.4s;
+  --ease-ambient: ease-in-out;
+  --ease-drift: linear;
+}
+
+.dark,
+[data-theme='dark'] {
+  --ground: #141416;
+  --panel: rgba(40, 40, 44, 0.82);
+  --panel-solid: #28282c;
+  --ink: #f5f5f7;
+  --mute: #a29d98;
+  --hair: rgba(255, 255, 255, 0.1);
+  --control-border: rgba(255, 255, 255, 0.36);
+  --tile: #3a3a3f;
+  --tile-ink: #d6d2cd;
+  --accent: #2b6beb;
+  --on-accent: #ffffff;
+  --accent-ink: #b7d0ff;
+  --selected: rgba(77, 141, 255, 0.24);
+  --selected-hover: rgba(77, 141, 255, 0.32);
+  --selection-wash: rgba(43, 107, 235, 0.14);
+  --focus: #7aa7ff;
+  --attention: #4a2416;
+  --on-attention: #ffd9c7;
+  --success: #15301f;
+  --on-success: #a6e6bd;
+  --danger: #44181a;
+  --on-danger: #ffb4b0;
+  --photo-scrim: rgba(0, 0, 0, 0.35);
+  --sweep-top: #4a3a2f;
+  --sweep-bottom: #1d1612;
+  --sweep-key: rgba(255, 206, 160, 0.42);
+
+  --scene-sky-top: #141416;
+  --scene-sky-mid: #2a211c;
+  --scene-sky-low: #4a3a2f;
+  --scene-light: #ffe2bf;
+  --scene-halo: #ffcea0;
+  --scene-dune-far: #3a2b25;
+  --scene-dune-mid: #2a1f1a;
+  --scene-dune-near: #1a1310;
+  --scene-tile-top: #4a3a2f;
+  --scene-tile-bottom: #2a211c;
+  --scene-tile-key: rgba(255, 226, 196, 0.28);
+  --scene-ink: #e6d3c0; /* 7.4:1 on --scene-tile-top; keep text off the key highlight (3.6:1) */
+  --corner-glow: rgba(110, 78, 54, 0.4);
+  --glint-sheen: rgba(255, 255, 255, 0.3);
+  --whatsapp-ink: #7fd49a;
+
+  --shadow-panel: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --shadow-sheet: 0 -8px 32px rgba(0, 0, 0, 0.5);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+
+  /* Every keyframe declares only `from`, so with animations off each element
+     is already in its finished state. */
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Tailwind v4 mapping: role utilities only, never a palette colour. */
+@theme inline {
+  --color-ground: var(--ground);
+  --color-panel: var(--panel);
+  --color-panel-solid: var(--panel-solid);
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-hair: var(--hair);
+  --color-control-border: var(--control-border);
+  --color-tile: var(--tile);
+  --color-tile-ink: var(--tile-ink);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-selected: var(--selected);
+  --color-selected-hover: var(--selected-hover);
+  --color-selected-ink: var(--selected-ink);
+  --color-selection-wash: var(--selection-wash);
+  --color-focus: var(--focus);
+  --color-attention: var(--attention);
+  --color-on-attention: var(--on-attention);
+  --color-success: var(--success);
+  --color-on-success: var(--on-success);
+  --color-danger: var(--danger);
+  --color-on-danger: var(--on-danger);
+  --color-whatsapp-ink: var(--whatsapp-ink);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --radius-key-hint: var(--radius-key-hint);
+  --radius-message: var(--radius-message);
+  --radius-tile: var(--radius-tile);
+  --radius-row: var(--radius-row);
+  --radius-photo-tile: var(--radius-photo-tile);
+  --radius-photo-lg: var(--radius-photo-lg);
+  --radius-panel: var(--radius-panel);
+  --radius-sheet: var(--radius-sheet);
+  --radius-pill: var(--radius-pill);
+
+  --shadow-panel: var(--shadow-panel);
+  --shadow-sheet: var(--shadow-sheet);
+  --shadow-lift: var(--shadow);
+}

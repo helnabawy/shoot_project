@@ -27,6 +27,23 @@
   --selected-ink: #0848c2;
   --wash: rgb(10 96 255 / 0.1);
   --shadow: 0 18px 40px -22px rgb(29 29 31 / 0.35);
+  /* Design system 2026-11-09 (direction A, specs/design-system/tokens.css). accent-ink is the accent
+     as text (links, filled slots); control-border outlines fields and chips at 3:1 where hair cannot. */
+  --accent-ink: #0848c2;
+  --control-border: rgb(0 0 0 / 0.32);
+  --success: #e3f3e8;
+  --on-success: #0f5a2e;
+  --danger: #fde3e1;
+  --on-danger: #9b1c1c;
+  --whatsapp-ink: #0f6e3f;
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.06);
+  --shadow-sheet: 0 -8px 32px rgb(40 25 12 / 0.14);
+  /* Motion: short, and only in reaction to the person. Zeroed under reduced motion below. */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 260ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
   /* The hero's empty-studio backdrop, shown until the CMS has a photo: seamless paper under a key light. */
   --sweep-top: #cbb39c;
   --sweep-bottom: #8e6d52;
@@ -69,6 +86,15 @@
     --selected-ink: #b7d0ff;
     --wash: rgb(43 107 235 / 0.12);
     --shadow: 0 18px 40px -20px rgb(0 0 0 / 0.7);
+    --accent-ink: #b7d0ff;
+    --control-border: rgb(255 255 255 / 0.36);
+    --success: #15301f;
+    --on-success: #a6e6bd;
+    --danger: #44181a;
+    --on-danger: #ffb4b0;
+    --whatsapp-ink: #7fd49a;
+    --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.5);
     --sweep-top: #4a3a2f;
     --sweep-bottom: #1d1612;
     --sweep-key: rgb(255 206 160 / 0.42);
@@ -108,6 +134,15 @@
   --selected-ink: #b7d0ff;
   --wash: rgb(43 107 235 / 0.12);
   --shadow: 0 18px 40px -20px rgb(0 0 0 / 0.7);
+  --accent-ink: #b7d0ff;
+  --control-border: rgb(255 255 255 / 0.36);
+  --success: #15301f;
+  --on-success: #a6e6bd;
+  --danger: #44181a;
+  --on-danger: #ffb4b0;
+  --whatsapp-ink: #7fd49a;
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.5);
   --sweep-top: #4a3a2f;
   --sweep-bottom: #1d1612;
   --sweep-key: rgb(255 206 160 / 0.42);
@@ -190,13 +225,39 @@
   --color-selected-ink: var(--selected-ink);
   --color-attention: var(--attention);
   --color-on-attention: var(--on-attention);
+  --color-accent-ink: var(--accent-ink);
+  --color-control-border: var(--control-border);
+  --color-selection-wash: var(--wash);
+  --color-focus: var(--focus);
+  --color-success: var(--success);
+  --color-on-success: var(--on-success);
+  --color-danger: var(--danger);
+  --color-on-danger: var(--on-danger);
+  --color-whatsapp-ink: var(--whatsapp-ink);
   --font-sans:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic',
     'Geeza Pro', 'Segoe UI Arabic', sans-serif;
   --radius-panel: 14px;
   --radius-row: 9px;
   --radius-tile: 8px;
+  --radius-message: 6px;
+  --radius-key-hint: 5px;
+  --radius-photo-tile: 10px;
+  --radius-photo-lg: 12px;
+  --radius-sheet: 20px;
   --shadow-panel: var(--shadow);
+  --shadow-lift: var(--shadow-lift);
+  --shadow-sheet: var(--shadow-sheet);
+  --ease-standard: var(--ease-standard);
+  --ease-exit: var(--ease-exit);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
 }
 
 @layer base {
@@ -718,7 +779,13 @@ html.js .native-picker::-webkit-calendar-picker-indicator {
   .network-strip[data-runs='true'] .network-strip-viewport {
     overflow: hidden;
     scroll-snap-type: none;
-    mask-image: linear-gradient(90deg, transparent, #000 min(9%, 120px), #000 calc(100% - min(9%, 120px)), transparent);
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 min(9%, 120px),
+      #000 calc(100% - min(9%, 120px)),
+      transparent
+    );
   }
   .network-strip[data-runs='true'] .network-strip-track {
     padding-inline: 0;
@@ -730,7 +797,11 @@ html.js .native-picker::-webkit-calendar-picker-indicator {
   .network-strip[data-runs='true'] .network-strip-toggle {
     display: grid;
   }
-  .network-strip[data-runs='true']:is([data-paused='true'], :has(.network-strip-viewport:hover), :has(.network-strip-viewport :focus-visible))
+  .network-strip[data-runs='true']:is(
+      [data-paused='true'],
+      :has(.network-strip-viewport:hover),
+      :has(.network-strip-viewport :focus-visible)
+    )
     .network-strip-track {
     animation-play-state: paused;
   }
@@ -775,7 +846,13 @@ html.js .native-picker::-webkit-calendar-picker-indicator {
     --tile-ink: #222222;
     --attention: #f2f2f2;
     --on-attention: #000000;
+    --success: #f2f2f2;
+    --on-success: #000000;
+    --danger: #f2f2f2;
+    --on-danger: #000000;
+    --accent-ink: #000000;
     --shadow: none;
+    --shadow-lift: none;
     color-scheme: light;
   }
   body {

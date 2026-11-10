@@ -40,6 +40,13 @@ const PAIRS: [fg: string, bg: string, min: number][] = [
   ['tile-ink', 'tile', 4.5],
   ['on-attention', 'attention', 4.5],
   ['ground', 'ink', 4.5],
+  // Design system 2026-11-09 (direction A): accent as text, and the success / danger tints.
+  ['accent-ink', 'ground', 4.5],
+  ['accent-ink', 'panel-solid', 4.5],
+  ['on-success', 'success', 4.5],
+  ['on-danger', 'danger', 4.5],
+  ['on-danger', 'ground', 4.5],
+  ['whatsapp-ink', 'ground', 4.5],
 ]
 
 describe.each(Object.entries(themes))('%s theme contrast', (_name, tokens) => {
