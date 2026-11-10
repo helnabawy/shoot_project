@@ -44,24 +44,24 @@
   --duration-slow: 260ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
-  /* The hero's empty-studio backdrop, shown until the CMS has a photo: seamless paper under a key light. */
-  --sweep-top: #cbb39c;
-  --sweep-bottom: #8e6d52;
-  --sweep-key: rgb(255 246 234 / 0.9);
-  --sweep-floor: rgb(92 62 42 / 0.45);
-  --sweep-rim: rgb(168 196 236 / 0.6);
+  /* The golden-hour scene behind the hero until the CMS has a photo (design system, scene tokens).
+     Graphic only: never a control, border or text colour, except --scene-ink on a scene tile. */
+  --scene-sky-top: #f6eadb;
+  --scene-sky-mid: #ecd2b3;
+  --scene-sky-low: #cfa27a;
+  --scene-light: #fffaf2;
+  --scene-halo: #ffe9cf;
+  --scene-dune-far: #c0906a;
+  --scene-dune-mid: #a47452;
+  --scene-dune-near: #84583d;
+  --scene-figure: #5a3a29;
+  --scene-ray-opacity: 0.2;
+  --scene-tile-top: #ecd6bd;
+  --scene-tile-bottom: #caa07c;
+  --scene-tile-key: rgb(255 246 232 / 0.92);
+  /* 5.2:1 on --scene-tile-bottom. */
+  --scene-ink: #4a2e20;
   --photo-scrim: rgb(255 255 255 / 0.25);
-  /* The empty set drawn on the sweep (StudioSet): silhouettes in umber, the softbox face lit. */
-  --set-ink: #3a291c;
-  --set-ink-opacity: 0.26;
-  --set-glow: #fff8ee;
-  --set-glow-opacity: 0.62;
-  --set-flash-opacity: 0.55;
-  --set-flash-peak: 1;
-  --set-tally: #e0382d;
-  --set-tally-opacity: 0.8;
-  --set-beam-opacity: 0.3;
-  --set-mote-opacity: 0.9;
   color-scheme: light;
 }
 
@@ -95,22 +95,22 @@
     --whatsapp-ink: #7fd49a;
     --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4);
     --shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.5);
-    --sweep-top: #4a3a2f;
-    --sweep-bottom: #1d1612;
-    --sweep-key: rgb(255 206 160 / 0.42);
-    --sweep-floor: rgb(0 0 0 / 0.5);
-    --sweep-rim: rgb(86 124 200 / 0.34);
+    --scene-sky-top: #141416;
+    --scene-sky-mid: #2a211c;
+    --scene-sky-low: #4a3a2f;
+    --scene-light: #ffe2bf;
+    --scene-halo: #ffcea0;
+    --scene-dune-far: #3a2b25;
+    --scene-dune-mid: #2a1f1a;
+    --scene-dune-near: #1a1310;
+    --scene-figure: #0e0a08;
+    --scene-ray-opacity: 0.08;
+    --scene-tile-top: #4a3a2f;
+    --scene-tile-bottom: #2a211c;
+    --scene-tile-key: rgb(255 226 196 / 0.28);
+    /* 7.4:1 on --scene-tile-top. */
+    --scene-ink: #e6d3c0;
     --photo-scrim: rgb(0 0 0 / 0.35);
-    --set-ink: #000000;
-    --set-ink-opacity: 0.42;
-    --set-glow: #ffd2a8;
-    --set-glow-opacity: 0.2;
-    --set-flash-opacity: 0.3;
-    --set-flash-peak: 0.55;
-    --set-tally: #ff5a4f;
-    --set-tally-opacity: 0.85;
-    --set-beam-opacity: 0.14;
-    --set-mote-opacity: 0.55;
     color-scheme: dark;
   }
 }
@@ -143,22 +143,22 @@
   --whatsapp-ink: #7fd49a;
   --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4);
   --shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.5);
-  --sweep-top: #4a3a2f;
-  --sweep-bottom: #1d1612;
-  --sweep-key: rgb(255 206 160 / 0.42);
-  --sweep-floor: rgb(0 0 0 / 0.5);
-  --sweep-rim: rgb(86 124 200 / 0.34);
+  --scene-sky-top: #141416;
+  --scene-sky-mid: #2a211c;
+  --scene-sky-low: #4a3a2f;
+  --scene-light: #ffe2bf;
+  --scene-halo: #ffcea0;
+  --scene-dune-far: #3a2b25;
+  --scene-dune-mid: #2a1f1a;
+  --scene-dune-near: #1a1310;
+  --scene-figure: #0e0a08;
+  --scene-ray-opacity: 0.08;
+  --scene-tile-top: #4a3a2f;
+  --scene-tile-bottom: #2a211c;
+  --scene-tile-key: rgb(255 226 196 / 0.28);
+  /* 7.4:1 on --scene-tile-top. */
+  --scene-ink: #e6d3c0;
   --photo-scrim: rgb(0 0 0 / 0.35);
-  --set-ink: #000000;
-  --set-ink-opacity: 0.42;
-  --set-glow: #ffd2a8;
-  --set-glow-opacity: 0.2;
-  --set-flash-opacity: 0.3;
-  --set-flash-peak: 0.55;
-  --set-tally: #ff5a4f;
-  --set-tally-opacity: 0.85;
-  --set-beam-opacity: 0.14;
-  --set-mote-opacity: 0.55;
   color-scheme: dark;
 }
 
@@ -441,7 +441,7 @@ html.js .no-js-only {
   field-sizing: content;
 }
 
-/* The hero stage: the bar floats over a CMS photo, or over an empty studio sweep until there is one. */
+/* The hero stage: the bar floats over a CMS photo, or over the golden-hour scene until there is one. */
 /* Hero overlay (CMS): the uploaded shape is a mask over the text colour, centred and contained. */
 .hero-overlay {
   -webkit-mask: var(--overlay-src) center / contain no-repeat;
@@ -449,215 +449,118 @@ html.js .no-js-only {
   pointer-events: none;
 }
 
-.studio-sweep {
+/* Golden hour: the hero scene (GoldenHourScene) and the creator columns (HeroCreators), design 41.
+   Fills come from the scene tokens. Motion is ambient and runs only from 1024 px, where the bar does
+   not have to re-blur a moving phone screen; the page's Pause control and reduced motion stop it. */
+.scene-stop-top { stop-color: var(--scene-sky-top); }
+.scene-stop-mid { stop-color: var(--scene-sky-mid); }
+.scene-stop-low { stop-color: var(--scene-sky-low); }
+.scene-stop-light { stop-color: var(--scene-light); }
+.scene-stop-halo { stop-color: var(--scene-halo); stop-opacity: 0.85; }
+.scene-stop-fade { stop-color: var(--scene-halo); stop-opacity: 0; }
+.scene-disc { fill: var(--scene-light); }
+.scene-rays { fill: var(--scene-light); opacity: var(--scene-ray-opacity); }
+.scene-skyline { fill: var(--scene-dune-far); opacity: 0.55; }
+.scene-dune-far { fill: var(--scene-dune-far); }
+.scene-dune-mid > path { fill: var(--scene-dune-mid); }
+.scene-dune-near { fill: var(--scene-dune-near); }
+.scene-figure { fill: var(--scene-figure); stroke: var(--scene-figure); }
+.scene-figure > :not(.scene-figure-line) { stroke: none; }
+.scene-figure-line { fill: none; }
+.scene-dust { fill: var(--scene-light); opacity: 0; }
+.scene-tile {
   background:
-    radial-gradient(55% 75% at var(--sweep-key-x, 24%) 0%, var(--sweep-key), transparent 72%),
-    radial-gradient(40% 65% at var(--sweep-rim-x, 84%) 38%, var(--sweep-rim), transparent 70%),
-    radial-gradient(130% 55% at 50% 118%, var(--sweep-floor), transparent 72%),
-    linear-gradient(180deg, var(--sweep-top), var(--sweep-bottom));
+    radial-gradient(circle at 72% 26%, var(--scene-tile-key) 0, transparent 48%),
+    linear-gradient(160deg, var(--scene-tile-top), var(--scene-tile-bottom));
 }
-/* The key light sits on the start side with the drawn softbox, so it mirrors in Arabic. */
-[dir='rtl'] .studio-sweep {
-  --sweep-key-x: 76%;
-  --sweep-rim-x: 16%;
+
+.hero-creators {
+  mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 86%, transparent);
 }
-.studio-set {
-  --set-dir: 1;
+.hero-creators-col {
+  width: 220px;
+  overflow: hidden;
 }
-[dir='rtl'] .studio-set {
-  --set-dir: -1;
-}
-.studio-set-ink {
-  fill: var(--set-ink);
-  stroke: var(--set-ink);
-  opacity: var(--set-ink-opacity);
-}
-.studio-set-glow {
-  fill: var(--set-glow);
-  opacity: var(--set-glow-opacity);
-}
-.studio-set-beam {
-  opacity: var(--set-beam-opacity);
-}
-.studio-set-mote {
-  fill: var(--set-glow);
-  opacity: calc(var(--set-mote-opacity) * 0.5);
-}
-.studio-set-flash {
-  opacity: 0;
-}
-.studio-set-tally {
-  fill: var(--set-tally);
-  opacity: var(--set-tally-opacity);
-}
-.studio-set-head {
-  transform-box: fill-box;
-  transform-origin: 50% 50%;
-}
-/* Set Motion. Arrival: the rigs glide in from their own sides (expo out) and the modelling lamp
-   strikes on with a short flicker. Then one 8 s loop: the light and its beam breathe, and at 30 %
-   the flash fires through both (one flash per loop, far under WCAG 2.3.1's three a second). Dust
-   drifts in the beam on its own slow periods; the camera pans a few degrees and back. Opacity and
-   transform only. Nothing moves under reduced motion. */
-@media (prefers-reduced-motion: no-preference) {
-  .studio-set-rig {
-    animation: set-rig-in 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+@media (width >= 64rem) and (prefers-reduced-motion: no-preference) {
+  .golden-hour .scene-sun {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: scene-keylight 14s ease-in-out infinite;
   }
-  .studio-set-rig-light {
-    --set-from: -1;
-    animation-delay: 120ms;
+  .golden-hour .scene-rays {
+    transform-box: view-box;
+    transform-origin: 820px 560px;
+    animation: scene-rays 18s ease-in-out infinite alternate;
   }
-  .studio-set-rig-camera {
-    --set-from: 1;
-    animation-delay: 300ms;
+  .golden-hour .scene-dune-far {
+    animation: scene-dune 22s ease-in-out infinite alternate;
   }
-  .studio-set-glow {
-    animation:
-      set-modelling 8s ease-in-out 1.6s infinite,
-      set-strike 1.3s linear 0.5s backwards;
+  .golden-hour .scene-dune-mid {
+    animation: scene-dune 16s ease-in-out infinite alternate-reverse;
   }
-  .studio-set-beam {
-    animation:
-      set-beam 8s ease-in-out 1.6s infinite,
-      set-beam-on 1.6s ease-out 0.9s backwards;
+  .golden-hour .scene-dust {
+    opacity: 1;
   }
-  .studio-set-flash {
-    animation: set-flash 8s linear 1.6s infinite;
+  .golden-hour .scene-dust circle {
+    animation: scene-dust 9s linear infinite;
   }
-  .studio-set-mote {
-    animation: set-mote var(--mote-t) linear var(--mote-d) infinite;
+  .golden-hour .scene-dust circle:nth-child(2) { animation-delay: -2s; }
+  .golden-hour .scene-dust circle:nth-child(3) { animation-delay: -4.5s; }
+  .golden-hour .scene-dust circle:nth-child(4) { animation-delay: -6s; }
+  .golden-hour .scene-dust circle:nth-child(5) { animation-delay: -7.5s; }
+  .golden-hour .scene-dust circle:nth-child(6) { animation-delay: -3.2s; }
+  .hero-creators-track {
+    animation: hero-creators-up 46s linear infinite;
   }
-  .studio-set-head {
-    animation: set-pan 18s ease-in-out 1.6s infinite alternate;
+  .hero-creators-col-down .hero-creators-track {
+    animation-direction: reverse;
+    animation-duration: 54s;
   }
-  .studio-set-tally {
-    animation: set-tally 2.4s ease-in-out infinite;
+  .hero-creators:hover .hero-creators-track,
+  .hero-creators:focus-within .hero-creators-track {
+    animation-play-state: paused;
   }
 }
-@keyframes set-rig-in {
-  from {
-    opacity: 0;
-    translate: calc(40px * var(--set-from) * var(--set-dir)) 0;
-  }
-}
-@keyframes set-strike {
-  0% {
-    opacity: 0;
-  }
-  18% {
-    opacity: calc(var(--set-glow-opacity) * 0.55);
-  }
-  24% {
-    opacity: calc(var(--set-glow-opacity) * 0.12);
-  }
-  34% {
-    opacity: calc(var(--set-glow-opacity) * 0.75);
-  }
-  40% {
-    opacity: calc(var(--set-glow-opacity) * 0.35);
-  }
-  100% {
-    opacity: var(--set-glow-opacity);
-  }
-}
-@keyframes set-modelling {
+@keyframes scene-keylight {
   0%,
   100% {
-    opacity: var(--set-glow-opacity);
-  }
-  29% {
-    opacity: calc(var(--set-glow-opacity) * 0.95);
-  }
-  30% {
-    opacity: var(--set-flash-peak);
-  }
-  38% {
-    opacity: var(--set-glow-opacity);
-  }
-  70% {
-    opacity: calc(var(--set-glow-opacity) * 0.72);
-  }
-}
-@keyframes set-beam-on {
-  from {
-    opacity: 0;
-  }
-}
-@keyframes set-beam {
-  0%,
-  100% {
-    opacity: var(--set-beam-opacity);
-  }
-  29% {
-    opacity: calc(var(--set-beam-opacity) * 0.95);
-  }
-  30% {
-    opacity: calc(var(--set-beam-opacity) * 2.2);
-  }
-  40% {
-    opacity: var(--set-beam-opacity);
-  }
-  70% {
-    opacity: calc(var(--set-beam-opacity) * 0.7);
-  }
-}
-@keyframes set-flash {
-  0%,
-  29.5% {
-    opacity: 0;
-  }
-  30% {
-    opacity: var(--set-flash-opacity);
-  }
-  40%,
-  100% {
-    opacity: 0;
-  }
-}
-@keyframes set-mote {
-  0% {
-    transform: translate(0, 0);
-    opacity: 0;
-  }
-  15%,
-  85% {
-    opacity: var(--set-mote-opacity);
-  }
-  100% {
-    transform: translate(36px, -64px);
-    opacity: 0;
-  }
-}
-@keyframes set-pan {
-  from {
-    transform: rotate(-1.5deg);
-  }
-  to {
-    transform: rotate(2deg);
-  }
-}
-@keyframes set-tally {
-  0%,
-  100% {
-    opacity: var(--set-tally-opacity);
+    transform: translate(0, 12px) scale(0.96);
+    opacity: 0.86;
   }
   50% {
-    opacity: calc(var(--set-tally-opacity) * 0.2);
+    transform: translate(-30px, -14px) scale(1.05);
+    opacity: 1;
   }
+}
+@keyframes scene-rays {
+  from { transform: rotate(-5deg); }
+  to { transform: rotate(6deg); }
+}
+@keyframes scene-dune {
+  from { transform: translateX(0); }
+  to { transform: translateX(-28px); }
+}
+@keyframes scene-dust {
+  0% { transform: translateY(0); opacity: 0; }
+  30% { opacity: 0.8; }
+  100% { transform: translateY(-110px); opacity: 0; }
+}
+@keyframes hero-creators-up {
+  to { transform: translateY(-50%); }
+}
+
+/* The landing's one Pause control (MotionToggle) holds every loop on the page (WCAG 2.2.2). */
+html[data-motion='paused'] *,
+html[data-motion='paused'] *::before,
+html[data-motion='paused'] *::after {
+  animation-play-state: paused !important;
 }
 .photo-scrim::after {
   content: '';
   position: absolute;
   inset: 0;
   background: var(--photo-scrim);
-}
-.studio-sweep::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.22;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* Date and number rows: with JavaScript the native control lies invisibly over the row so a tap

@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react'
+import { fireEvent, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { briefBuilderFixture } from '../../../../tests/fixtures/brief-builder'
 import { testBriefLabels } from '../../../../tests/fixtures/labels'
@@ -8,6 +8,7 @@ import {
   settingsFixture,
 } from '../../../../tests/fixtures/landing'
 import type { LandingPage, Media } from '@/payload-types'
+import { creatorSummary } from '../../../../tests/fixtures/creators'
 import { renderWithLocale } from '../../../../tests/setup/render'
 import { Hero } from './Hero'
 import { RenderBlocks } from './RenderBlocks'
@@ -63,9 +64,9 @@ describe('US1 hero', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'You brief. We shoot.' }),
     ).toBeInTheDocument()
-    // The stage carries the title and the bar; the subheadline is not shown.
+    // The stage carries the title, the CMS subheadline under it and the bar (design 41 · Landing · 1440).
     expect(screen.getByRole('heading', { level: 1 })).not.toHaveClass('sr-only')
-    expect(screen.queryByText('One line.')).toBeNull()
+    expect(screen.getByText('One line.')).toBeInTheDocument()
     expect(screen.getByTestId('brief-builder')).toBeInTheDocument()
     // The stage holds only the title and the bar: trust chips are not shown (owner, 2026-11-07).
     expect(screen.queryByText('No account needed')).toBeNull()
@@ -104,7 +105,15 @@ describe('US1 hero', () => {
 
   const media = (id: number, name: string, width = 1600, height = 900) =>
     ({ id, alt: name, url: `/api/media/file/${name}`, width, height, updatedAt: '', createdAt: '' }) as Media
-  const renderStage = (hero: Partial<NonNullable<LandingPage['hero']>>) =>
+  const heroCreator = (n: number) => {
+    const creator = creatorSummary({ id: String(n), code: `C${n}`, displayName: `Creator ${n}`, photo: n % 2 ? null : creatorSummary().photo })
+    return {
+      creator,
+      href: `/creators/C${n}`,
+      view: { name: creator.displayName, displayCode: `SH-C${n}`, initials: `C${n}`, types: 'Photographer', place: 'Dubai', specialties: '' },
+    }
+  }
+  const renderStage = (hero: Partial<NonNullable<LandingPage['hero']>>, creators: ReturnType<typeof heroCreator>[] = []) =>
     renderWithLocale(
       <Hero
         hero={{ headline: 'You brief. We shoot.', layout: 'briefBuilder', ...hero }}
@@ -114,8 +123,44 @@ describe('US1 hero', () => {
         personas={personasFixture}
         contact={contact}
         locale="en"
+        creators={creators}
       />,
     )
+
+  it('draws the golden-hour scene behind the bar until the CMS has a photo', () => {
+    renderStage({})
+    expect(screen.getByTestId('hero-scene')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('sets real creators in columns at the end of the stage, each card a link to the profile', () => {
+    renderStage({}, [1, 2, 3, 4, 5].map(heroCreator))
+    const list = screen.getByRole('list', { name: 'Creators' })
+    const links = within(list).getAllByRole('link')
+    expect(links).toHaveLength(5)
+    expect(links[0]).toHaveAttribute('href', '/creators/C1')
+    expect(links[0]).toHaveTextContent('Creator 1')
+    expect(links[0]).toHaveTextContent('SH-C1')
+    // The loop's copies are hidden from assistive tech and out of the tab order.
+    const copies = screen.getByTestId('hero-creators').querySelectorAll('[aria-hidden="true"] a')
+    expect(copies.length).toBeGreaterThan(0)
+  })
+
+  it('shows no creator columns until there are enough real creators to fill them (no invented cards)', () => {
+    renderStage({}, [1, 2, 3].map(heroCreator))
+    expect(screen.queryByTestId('hero-creators')).toBeNull()
+    expect(screen.queryByRole('list', { name: 'Creators' })).toBeNull()
+  })
+
+  it('one Pause control stops every loop on the page (WCAG 2.2.2)', () => {
+    renderStage({})
+    const pause = screen.getByRole('button', { name: 'Pause the motion on this page' })
+    expect(pause).toHaveAttribute('aria-pressed', 'false')
+    fireEvent.click(pause)
+    expect(pause).toHaveAttribute('aria-pressed', 'true')
+    expect(document.documentElement).toHaveAttribute('data-motion', 'paused')
+    fireEvent.click(pause)
+    expect(document.documentElement).not.toHaveAttribute('data-motion')
+  })
 
   it('draws the CMS overlay (the UAE outline) faintly over the backdrop, at the CMS opacity', () => {
     renderStage({ overlay: media(9, 'uae-map.svg'), overlayOpacity: 12 })

@@ -5,7 +5,14 @@ import { setRequestLocale } from 'next-intl/server'
 import { lexicalToText } from '@shoot/domain/content'
 import { faqJsonLd, jsonLdScript } from '@shoot/domain/pages'
 import { getBriefBuilderConfig } from '@/modules/brief/queries'
-import { getSpecialtyCounts } from '@/modules/creators'
+import { networkSelection } from '@shoot/domain/creators'
+import {
+  creatorPath,
+  describeCreator,
+  getDirectoryContext,
+  getPublicCreators,
+  getSpecialtyCounts,
+} from '@/modules/creators'
 import { Hero } from '@/modules/landing/components/Hero'
 import { RenderBlocks } from '@/modules/landing/components/RenderBlocks'
 import { getLandingPage } from '@/modules/landing/queries'
@@ -53,7 +60,7 @@ export default async function HomePage({ params }: Props) {
   if (!isLocale(locale)) notFound()
   setRequestLocale(locale)
   const { isEnabled: draft } = await draftMode()
-  const [landing, settings, builder, personas, categories, labels, specialtyCounts] = await Promise.all([
+  const [landing, settings, builder, personas, categories, labels, specialtyCounts, publicCreators, directory] = await Promise.all([
     getLandingPage({ locale, draft }),
     getSiteSettings(locale),
     getBriefBuilderConfig(locale, { draft }),
@@ -61,7 +68,15 @@ export default async function HomePage({ params }: Props) {
     getCategoriesForAudience(locale),
     briefLabels(locale),
     getSpecialtyCounts(locale),
+    getPublicCreators(locale),
+    getDirectoryContext(locale),
   ])
+  // The hero's creator columns (design 41): the same rule as the network block, creators with work only.
+  const heroCreators = networkSelection(publicCreators, 'featuredThenNewest', 8).map((creator) => ({
+    creator,
+    view: describeCreator(creator, directory.lookups, directory.prefix, locale),
+    href: creatorPath(creator.code, locale),
+  }))
   const contact = {
     whatsappNumber: settings.whatsappNumber,
     whatsappMessage: settings.whatsappDefaultMessage,
@@ -93,6 +108,7 @@ export default async function HomePage({ params }: Props) {
         personas={personas}
         contact={contact}
         locale={locale}
+        creators={heroCreators}
       />
       <RenderBlocks
         sections={landing.sections}

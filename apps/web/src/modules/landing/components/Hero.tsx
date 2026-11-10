@@ -1,8 +1,10 @@
 import { interpolatePersonaCopy } from '@shoot/domain/personas'
+import { useTranslations } from 'next-intl'
 import type { LandingPage, SiteSetting } from '@/payload-types'
 import { BriefBuilder } from '@/modules/brief/components/BriefBuilder'
 import type { BriefLabels } from '@/modules/brief/labels'
 import type { BriefBuilderConfig } from '@/modules/brief/types'
+import type { CreatorListItem } from '@/modules/creators'
 import { whatsappHref } from '@/modules/contact/whatsapp'
 import type { AudiencePersona } from '@/modules/personas/queries'
 import { getImageProps } from 'next/image'
@@ -11,7 +13,9 @@ import { CmsImage, mediaSource } from '@/shared/components/CmsImage'
 import { CtaLink, type ContactDetails } from '@/shared/components/CtaLink'
 import { cx } from '@/shared/ui/bar'
 import type { Locale } from '@/shared/lib/locale'
-import { StudioSet } from './StudioSet'
+import { GoldenHourScene } from './GoldenHourScene'
+import { HERO_CREATORS_MIN, HeroCreators } from './HeroCreators'
+import { MotionToggle } from './MotionToggle'
 
 /** Phones (below `sm`) get the portrait crop when the CMS has one. */
 const PHONE_MEDIA = '(max-width: 639px)'
@@ -43,8 +47,10 @@ function StagePhoto({ photo, phone }: { photo: Media; phone: Media | null }) {
 }
 
 /**
- * First viewport: a full-screen stage with the CMS headline as its title and the glass brief bar
- * beneath it, over the hero photo.
+ * First viewport (design 41 · Landing · 1440): a full-screen stage with the CMS headline as its title,
+ * the subheadline under it and the glass brief bar beneath, over the hero photo or the golden-hour
+ * scene. On phones the column is centred; from 1024 px it holds to the start side, and from 1280 px
+ * real creators pass in two columns on the end side. One Pause control stops every loop on the page.
  * The bar's Top Hit stays above the fold on a 360 × 640 phone (FR-057).
  */
 export function Hero({
@@ -55,6 +61,7 @@ export function Hero({
   personas,
   contact,
   locale,
+  creators = [],
 }: {
   hero: LandingPage['hero']
   builder: BriefBuilderConfig | null
@@ -63,7 +70,10 @@ export function Hero({
   personas: AudiencePersona[]
   contact: ContactDetails
   locale: Locale
+  /** Listed creators for the hero columns; the columns show only with enough of them. */
+  creators?: CreatorListItem[]
 }) {
+  const t = useTranslations('home.hero')
   const firstPersona = personas[0]
   const providerLabel = firstPersona
     ? interpolatePersonaCopy(
@@ -91,15 +101,23 @@ export function Hero({
   const overlay = asMedia(hero?.overlay)
   const overlayOpacity = Math.min(100, Math.max(0, hero?.overlayOpacity ?? 8)) / 100
   // The title sits on the stage above the bar, aligned to its edge. A soft halo in the ground colour
-  // keeps it legible over a busy photo; on the studio sweep it is invisible.
+  // keeps it legible over a busy photo; on the golden-hour scene it is invisible.
   const title = (
     <h1
       id="hero-heading"
-      className="px-1 text-[38px] font-bold leading-[1.02] tracking-[-0.03em] text-balance text-ink [text-shadow:0_0_28px_var(--ground)] sm:px-0 sm:text-[52px]"
+      className="px-1 text-[38px] font-bold leading-[1.02] tracking-[-0.03em] text-balance text-ink [text-shadow:0_0_28px_var(--ground)] sm:px-0 sm:text-[52px] lg:text-[76px] lg:leading-[0.98] xl:text-[96px] xl:tracking-[-0.04em]"
     >
       {hero?.headline}
     </h1>
   )
+  const subheadline = hero?.subheadline ? (
+    <p className="mt-3 max-w-[460px] px-1 text-[16px] leading-[1.45] text-pretty text-ink/80 [text-shadow:0_0_20px_var(--ground)] sm:px-0 sm:text-[18px] lg:mt-5 lg:text-[20px]">
+      {hero.subheadline}
+    </p>
+  ) : null
+  const showCreators = creators.length >= HERO_CREATORS_MIN
+  // Something loops on the stage (the key light, the creator columns), so it carries the Pause control.
+  const loops = !photo || showCreators
 
   return (
     <section id="brief" aria-labelledby="hero-heading">
@@ -114,14 +132,7 @@ export function Hero({
               photo && 'photo-scrim',
             )}
           >
-            {photo ? (
-              <StagePhoto photo={photo} phone={phonePhoto} />
-            ) : (
-              <>
-                <div className="studio-sweep absolute inset-0" />
-                <StudioSet />
-              </>
-            )}
+            {photo ? <StagePhoto photo={photo} phone={phonePhoto} /> : <GoldenHourScene />}
             {/* The CMS overlay (e.g. the UAE outline): its shape masks a fill in the text colour,
                 so one file reads in light and dark. Decorative. */}
             {overlay?.url ? (
@@ -133,12 +144,29 @@ export function Hero({
               />
             ) : null}
           </div>
-          <div className="mx-auto max-w-[680px] px-3 pt-[max(2rem,calc(50svh-200px))] pb-8 sm:px-4">
-            {title}
-            <div className="mt-5 sm:mt-6" data-floating-hide>
-              {builderNode}
+          <div className="mx-auto grid max-w-[1440px] px-3 sm:px-4 lg:px-12 xl:grid-cols-[minmax(0,640px)_456px] xl:justify-between xl:gap-8 xl:px-16 min-[1440px]:px-24">
+            <div className="mx-auto w-full max-w-[680px] pt-[max(1.5rem,calc(50svh-260px))] pb-8 lg:mx-0 lg:max-w-[640px] lg:pt-14">
+              {title}
+              {subheadline}
+              <div className="mt-5 sm:mt-6 lg:mt-9 lg:max-w-[620px]" data-floating-hide>
+                {builderNode}
+              </div>
             </div>
+            {showCreators ? (
+              <HeroCreators
+                items={creators}
+                label={t('creators')}
+                className="hidden h-[calc(100svh-60px)] self-start xl:flex"
+              />
+            ) : null}
           </div>
+          {loops ? (
+            <MotionToggle
+              pauseLabel={t('pauseMotion')}
+              playLabel={t('playMotion')}
+              className="absolute bottom-6 inset-e-6 z-10 hidden lg:grid xl:inset-e-3 min-[1440px]:inset-e-6"
+            />
+          ) : null}
         </div>
       ) : (
         <div className="mx-auto max-w-[680px] px-3 pt-5 sm:px-4 sm:pt-10">

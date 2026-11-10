@@ -170,7 +170,12 @@
   },
   "home": {
     "howItWorks": "How it works",
-    "faq": "Questions"
+    "faq": "Questions",
+    "hero": {
+      "creators": "Creators",
+      "pauseMotion": "Pause the motion on this page",
+      "playMotion": "Play the motion on this page"
+    }
   },
   "preview": {
     "active": "Preview mode: you are seeing unpublished changes.",
