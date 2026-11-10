@@ -550,6 +550,105 @@ html.js .no-js-only {
   to { transform: translateY(-50%); }
 }
 
+/* Specialty tiles (CategoriesGrid, SpecialtyScene), design 05 Landing. The drawings keep their warm
+   palette like photographs; at night they are dimmed a little so they do not glare. The names ticker
+   and the drawings' ambient loops run from 1024 px, where the page's Pause control is; phones keep them
+   still. Hover zooms the picture slightly. */
+.kd-art {
+  transition: transform var(--duration-slow) var(--ease-standard);
+}
+.dark .kd-art {
+  filter: brightness(0.82);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) .kd-art {
+    filter: brightness(0.82);
+  }
+}
+.kd:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.kd-key,
+.kd-beam,
+.kd-sheen {
+  transform-box: fill-box;
+}
+.kd-key {
+  transform-origin: center;
+}
+.kd-beam {
+  transform-origin: 50% 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .kd:hover .kd-art {
+    transform: scale(1.05);
+  }
+}
+@media (width >= 64rem) and (prefers-reduced-motion: no-preference) {
+  .kinds-ticker-track {
+    animation: kinds-drift 44s linear infinite;
+  }
+  [dir='rtl'] .kinds-ticker-track {
+    animation-name: kinds-drift-rtl;
+  }
+  .kd-key {
+    animation: kd-breathe 6s ease-in-out infinite;
+  }
+  .kd-beam {
+    animation: kd-sway 5s ease-in-out infinite alternate;
+  }
+  .kd-beam-2 {
+    animation-duration: 6.4s;
+    animation-direction: alternate-reverse;
+  }
+  .kd-beam-3 {
+    animation-duration: 4.2s;
+  }
+  .kd-windows rect {
+    animation: kd-lit 7s ease-in-out infinite both;
+  }
+  .kd-windows rect:nth-child(2n) { animation-delay: -2.2s; }
+  .kd-windows rect:nth-child(3n) { animation-delay: -4.1s; }
+  .kd-windows rect:nth-child(5n) { animation-delay: -5.6s; }
+  .kd-steam path {
+    animation: kd-steam 3.4s ease-out infinite both;
+  }
+  .kd-steam path:nth-child(2) { animation-delay: 0.9s; }
+  .kd-steam path:nth-child(3) { animation-delay: 1.8s; }
+  .kd-sheen {
+    animation: kd-sheen 5s ease-in-out infinite;
+  }
+}
+@keyframes kinds-drift {
+  to { transform: translateX(-50%); }
+}
+@keyframes kinds-drift-rtl {
+  to { transform: translateX(50%); }
+}
+@keyframes kd-breathe {
+  0%, 100% { transform: scale(0.94); opacity: 0.7; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+@keyframes kd-sway {
+  from { transform: rotate(-7deg); }
+  to { transform: rotate(7deg); }
+}
+@keyframes kd-lit {
+  0%, 12% { opacity: 0.16; }
+  24%, 78% { opacity: 1; }
+  100% { opacity: 0.16; }
+}
+@keyframes kd-steam {
+  0% { transform: translateY(8px); opacity: 0; }
+  40% { opacity: 0.9; }
+  100% { transform: translateY(-16px); opacity: 0; }
+}
+@keyframes kd-sheen {
+  0%, 55% { transform: translateX(-14px); }
+  85%, 100% { transform: translateX(22px); }
+}
+
 /* The landing's one Pause control (MotionToggle) holds every loop on the page (WCAG 2.2.2). */
 html[data-motion='paused'] *,
 html[data-motion='paused'] *::before,

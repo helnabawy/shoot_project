@@ -1,6 +1,7 @@
 import 'server-only'
 import { categoriesForPersonas, resolveActivePersonas, type Category as DomainCategory, type Persona as DomainPersona } from '@shoot/domain/personas'
 import type { Category, Persona } from '@/payload-types'
+import { mediaSource } from '@/shared/components/CmsImage'
 import { cachedQuery } from '@/shared/lib/cache'
 import type { Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
@@ -10,6 +11,10 @@ export type AudiencePersona = DomainPersona & { glyph?: string | null; descripti
 export type AudienceCategory = DomainCategory & {
   glyph?: string | null
   description?: string | null
+  /** The drawing on the landing tile (CMS choice), until the specialty has an image. */
+  scene?: string | null
+  /** The specialty's own image at card size, when the CMS has one. */
+  image?: { url: string; width: number; height: number; alt?: string | null } | null
   /** The specialty page's own text (`/work/{slug}`), in the requested language. */
   seo?: { title?: string | null; description?: string | null; intro?: string | null }
 }
@@ -35,6 +40,8 @@ const toCategory = (c: Category): AudienceCategory => ({
   personas: (c.personas ?? []).map((p) => String(typeof p === 'object' ? p.id : p)),
   glyph: c.glyph,
   description: c.description,
+  scene: c.scene ?? null,
+  image: c.image && typeof c.image === 'object' ? mediaSource(c.image, 'card') : null,
   seo: { title: c.seo?.title, description: c.seo?.description, intro: c.seo?.intro },
 })
 
@@ -57,7 +64,7 @@ export async function getCategoriesForAudience(locale: Locale): Promise<Audience
   const personas = await getActivePersonas(locale)
   const categories = await cachedQuery(['categories'], ['categories', locale], async () => {
     const payload = await getPayloadClient()
-    const { docs } = await payload.find({ collection: 'categories', locale, fallbackLocale: 'en', limit: 200, depth: 0 })
+    const { docs } = await payload.find({ collection: 'categories', locale, fallbackLocale: 'en', limit: 200, depth: 1 })
     return docs.map(toCategory)
   })
   return categoriesForPersonas(categories, personas) as AudienceCategory[]

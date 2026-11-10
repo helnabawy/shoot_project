@@ -319,7 +319,14 @@ export interface Category {
    * Up to 3 characters shown in the small tile at the start of the row, e.g. "W" or "DXB".
    */
   glyph?: string | null;
+  /**
+   * Shown on the landing tile in place of the drawing. Use real work only.
+   */
   image?: (number | null) | Media;
+  /**
+   * The drawing on this specialty’s landing tile until it has an image.
+   */
+  scene?: ('none' | 'wedding' | 'events' | 'portrait' | 'product' | 'property' | 'office' | 'food') | null;
   /**
    * Title, description and introduction of this specialty’s public page (/work/…).
    */
@@ -1772,6 +1779,7 @@ export interface CategoriesSelect<T extends boolean = true> {
   description?: T;
   glyph?: T;
   image?: T;
+  scene?: T;
   seo?:
     | T
     | {

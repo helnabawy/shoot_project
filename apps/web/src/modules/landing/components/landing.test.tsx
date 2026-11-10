@@ -214,8 +214,9 @@ describe('US1 sections', () => {
     renderSections()
     const steps = within(screen.getByTestId('section-how-it-works')).getAllByRole('listitem')
     expect(steps.map((s) => s.textContent)).toEqual(['1BriefOne line.', '2Match'])
+    // Tiles are the list; the names ticker above them is decorative.
     expect(
-      within(screen.getByTestId('section-specialties')).getByText('Portrait'),
+      within(within(screen.getByTestId('section-specialties')).getByRole('list')).getByText('Portrait'),
     ).toBeInTheDocument()
   })
 
