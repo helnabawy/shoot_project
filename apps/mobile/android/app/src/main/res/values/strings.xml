@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launcher label. Native resource: the OS reads it before Flutter starts. -->
+    <string name="app_name">Shoot</string>
+</resources>

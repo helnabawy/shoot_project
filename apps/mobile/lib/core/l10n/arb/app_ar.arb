@@ -1,0 +1,26 @@
+{
+  "@@locale": "ar",
+
+  "appTitle": "شوت",
+  "languageSwitchAction": "English",
+  "languageSwitchTooltip": "التبديل إلى الإنجليزية",
+
+  "themeMenuTooltip": "المظهر",
+  "themeSystem": "حسب الجهاز",
+  "themeLight": "فاتح",
+  "themeDark": "داكن",
+
+  "serviceHealthTitle": "حالة الخدمة",
+  "serviceHealthChecking": "جارٍ فحص الخدمة…",
+  "serviceHealthHealthy": "كل شيء يعمل.",
+  "serviceHealthDegraded": "الخدمة تعمل، لكن قاعدة البيانات لا تستجيب.",
+  "serviceHealthRetry": "افحص مرة أخرى",
+
+  "failureNetwork": "تعذّر الوصول إلى الخدمة. تحقّق من اتصالك وحاول مرة أخرى.",
+  "failureServer": "ردّت الخدمة بخطأ. حاول مرة أخرى بعد قليل.",
+  "failureUnexpected": "حدث خطأ ما. حاول مرة أخرى.",
+
+  "notFoundTitle": "الصفحة غير موجودة",
+  "notFoundBody": "هذا الرابط لا يؤدي إلى أي مكان في التطبيق.",
+  "notFoundAction": "العودة إلى البداية"
+}

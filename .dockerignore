@@ -11,3 +11,5 @@
 **/*.log
 .impeccable
 specs
+# Flutter app: not part of the web image
+apps/mobile

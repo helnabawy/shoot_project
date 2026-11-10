@@ -1,0 +1,9 @@
+# flutter gen-l10n: English is the template (default), Arabic mirrors it (RTL).
+# Adding a language is a new ARB file here, never a code change.
+arb-dir: lib/core/l10n/arb
+template-arb-file: app_en.arb
+output-dir: lib/core/l10n/generated
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false
+required-resource-attributes: true

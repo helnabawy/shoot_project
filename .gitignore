@@ -37,3 +37,23 @@ Thumbs.db
 npm-debug.log*
 pnpm-debug.log*
 *.log
+
+# flutter (apps/mobile; its own .gitignore files cover the native folders)
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+apps/mobile/build/
+apps/mobile/coverage/
+apps/mobile/lib/core/l10n/generated/
+apps/mobile/ios/Pods/
+apps/mobile/ios/.symlinks/
+apps/mobile/ios/Flutter/ephemeral/
+apps/mobile/android/.gradle/
+apps/mobile/android/local.properties
+apps/mobile/android/key.properties
+*.iml
+*.jks
+*.keystore
+app.*.symbols
+app.*.map.json

@@ -9,3 +9,5 @@ apps/web/src/app/(payload)/admin/importMap.js
 .specify
 specs
 .impeccable
+# Flutter app: formatted by `dart format`, not Prettier
+apps/mobile

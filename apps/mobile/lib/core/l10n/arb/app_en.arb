@@ -1,0 +1,81 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Shoot",
+  "@appTitle": {
+    "description": "Brand name: app bar title, task switcher and accessibility label."
+  },
+
+  "languageSwitchAction": "العربية",
+  "@languageSwitchAction": {
+    "description": "Language button label: the OTHER language's name, written in that language."
+  },
+  "languageSwitchTooltip": "Switch to Arabic",
+  "@languageSwitchTooltip": {
+    "description": "Tooltip and screen-reader label for the language button."
+  },
+
+  "themeMenuTooltip": "Theme",
+  "@themeMenuTooltip": {
+    "description": "Tooltip and screen-reader label for the theme menu button."
+  },
+  "themeSystem": "Match device",
+  "@themeSystem": {
+    "description": "Theme menu option: follow the device's light/dark setting."
+  },
+  "themeLight": "Light",
+  "@themeLight": {
+    "description": "Theme menu option: always light."
+  },
+  "themeDark": "Dark",
+  "@themeDark": {
+    "description": "Theme menu option: always dark."
+  },
+
+  "serviceHealthTitle": "Service status",
+  "@serviceHealthTitle": {
+    "description": "Heading of the example screen that checks the Shoot web API."
+  },
+  "serviceHealthChecking": "Checking the service…",
+  "@serviceHealthChecking": {
+    "description": "Shown while the health check is running."
+  },
+  "serviceHealthHealthy": "Everything is running.",
+  "@serviceHealthHealthy": {
+    "description": "The API and its database both answered."
+  },
+  "serviceHealthDegraded": "The service is up, but its database isn't answering.",
+  "@serviceHealthDegraded": {
+    "description": "The API answered but reported its database as unreachable."
+  },
+  "serviceHealthRetry": "Check again",
+  "@serviceHealthRetry": {
+    "description": "The screen's one primary action: run the health check again."
+  },
+
+  "failureNetwork": "We can't reach the service. Check your connection and try again.",
+  "@failureNetwork": {
+    "description": "Generic message when the device cannot reach the server."
+  },
+  "failureServer": "The service answered with an error. Try again in a moment.",
+  "@failureServer": {
+    "description": "Generic message when the server returns an error."
+  },
+  "failureUnexpected": "Something went wrong. Try again.",
+  "@failureUnexpected": {
+    "description": "Generic message for any other failure."
+  },
+
+  "notFoundTitle": "Page not found",
+  "@notFoundTitle": {
+    "description": "Title of the screen shown for an unknown route or deep link."
+  },
+  "notFoundBody": "This link doesn't lead anywhere in the app.",
+  "@notFoundBody": {
+    "description": "Body of the not-found screen."
+  },
+  "notFoundAction": "Go to the start",
+  "@notFoundAction": {
+    "description": "Button on the not-found screen that returns to the first screen."
+  }
+}
