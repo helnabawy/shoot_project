@@ -103,7 +103,7 @@ packages/domain/src/auth/             # 100 % covered
 ├── otp.ts            # newCode, hashInput, judgeAttempt, resendAllowedAt, isDormant
 ├── limits.ts         # limitKeys, limitWindows
 ├── checklist.ts      # checklistProgress
-├── signin-flow.ts    # nextStep for the brief flow and the standalone flow
+├── signin-flow.ts    # nextStep for the brief flow and the standalone flow (+ .test.ts, not scenario-bound)
 ├── schemas.ts (edit) # phoneSchema, codeSchema, welcomeSchema; loginSchema kept for editors
 └── index.ts
 packages/domain/src/contact/
@@ -137,7 +137,7 @@ apps/web/src/
 │   │   ├── limits.ts       # otpAllowance(): lock → paused/cap → device → number
 │   │   ├── session.ts      # signInAs(user): addSessionToUser + getFieldsToSign + jwtSign + cookie
 │   │   ├── accounts.ts     # createAccountFromNumber, verifyNumberOn(user), detachNumber, retirePassword
-│   │   ├── state-cookie.ts # shoot-signin (signed), shoot-device, shoot-otp-channel
+│   │   ├── state-cookie.ts # shoot-signin (signed), shoot-device, shoot-otp-channel (+ state-cookie.test.ts)
 │   │   ├── sender.ts       # CodeSender type + getSender() from env
 │   │   ├── senders/{twilio,log}.ts
 │   │   ├── settings.ts     # readSignIn(payload) with defaults
@@ -151,12 +151,13 @@ apps/web/src/
 │   ├── components/RegisterForm.tsx (removed; register redirects)
 │   ├── actions.ts (edit)   # loginWithPassword: retired password, verify-number prompt
 │   ├── session.ts (edit)   # lastSignInAt, locale preference redirect
-│   └── admin/ClearLockButton.tsx                # admin UI field component
+│   ├── admin/ClearLockButton.tsx                # admin UI field component
+│   └── admin/SendingToday.tsx                   # admin UI field: today's sends vs cap, failures, locks (FR-047)
 ├── modules/booking/
 │   ├── actions.ts (edit)   # saveBookingDraft, bookFromDraft, verifyCodeAndBook
 │   ├── draft.ts            # read/write/expire briefs.draft
 │   ├── components/DetailsForm.tsx (edit)        # no name/WhatsApp
-│   ├── components/{BookingSummary,SavedBooking}.tsx
+│   ├── components/{BookingSummary,SavedBooking}.tsx (+ .test.tsx)
 │   ├── queries.ts (edit)   # getMyBookings matches client.whatsapp
 │   └── quote-page.tsx (edit)                    # saved mode
 ├── modules/brief/
@@ -173,7 +174,7 @@ apps/web/src/
 ├── shared/components/FirstVisitScript.tsx       # the inline head script
 ├── shared/payload/rate-limit.ts (edit)          # windowMs parameter
 ├── shared/lib/env.ts (edit)                     # OTP_SENDER, TWILIO_*, OTP_OUTBOX_FILE
-├── shared/payload/seed/{sign-in,first-visit}.ts
+├── shared/payload/seed/{sign-in,first-visit,demo-accounts}.ts  # demo-accounts: opt-in e2e fixtures (legacy member, pre-feature booking)
 ├── migrations/<ts>_otp_signin.{ts,json}
 └── payload.config.ts (edit)
 
