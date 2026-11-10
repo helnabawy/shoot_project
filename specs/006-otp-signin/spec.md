@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-09
 
-**Status**: Planned 2026-11-09 (clarified the same day from the owner's redesign decisions and the design handoff in `specs/design-system/README.md`; plan, research, data model, contracts and quickstart written; the code-delivery provider is decided in `plan.md` Complexity Tracking, not here; tasks next)
+**Status**: Tasked 2026-11-10 (specified and clarified 2026-11-09 from the owner's redesign decisions and the design handoff in `specs/design-system/README.md`; plan, research, data model, contracts and quickstart written; the code-delivery provider is decided in `plan.md` Complexity Tracking, not here; `tasks.md` written, 98 tasks; analyze then implement)
 
 **Amended**: 2026-11-09 (same day) — owner decision: sign-in happens at the **end of the brief flow**, never as a gate before it (User Story 1); the standalone sign-in stays for the header's account icon and for professionals and is the only place the role question is asked (User Stories 4 and 5); the first-visit experience (splash and three learning steps, User Story 6) and the one-time "Finish your account" checklist (User Story 7) are in scope.
 
