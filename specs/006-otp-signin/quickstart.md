@@ -95,7 +95,7 @@ pnpm --filter domain test:coverage           # 100 % on auth/otp, limits, checkl
 pnpm --filter web test                       # unit + component + integration (Docker)
 pnpm check:scenarios                         # every PO- id below has its test
 pnpm build && pnpm test:e2e                  # mobile, desktop, nojs, ar-mobile, dark
-pnpm lhci                                    # / first visit, / returning, /login
+npx --yes @lhci/cli@0.16.0 autorun --config=lighthouserc.json        # / first visit, / returning, /login (and lighthouserc.dark.json)
 ```
 
 ## Scenario → test mapping (Principle III)
