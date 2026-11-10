@@ -37,6 +37,9 @@ const PAIRS: [fg: string, bg: string, min: number][] = [
   ['ink', 'panel-solid', 4.5],
   ['mute', 'panel-solid', 4.5],
   ['on-accent', 'accent', 4.5],
+  // Owner decision 2026-11-10: primary buttons and the Top Hit are red; accent stays for selection.
+  ['on-primary', 'primary', 4.5],
+  ['on-primary', 'primary-hover', 4.5],
   ['tile-ink', 'tile', 4.5],
   ['on-attention', 'attention', 4.5],
   ['ground', 'ink', 4.5],

@@ -3,7 +3,8 @@
 /* The Brief Bar. Tokens are roles, not colours; values live here once (DESIGN.md records them).
    Contrast pairs (WCAG, checked by tests/unit/contrast.test.ts):
    light  ink/ground 15.2   mute/ground 5.0   on-accent/accent 5.1   ink/panel 16.4
-   dark   ink/ground 17.5   mute/ground 7.1   on-accent/accent 4.6   ink/panel 13.6 */
+   dark   ink/ground 17.5   mute/ground 7.1   on-accent/accent 4.6   ink/panel 13.6
+   both   on-primary/primary 4.9   on-primary/primary-hover 6.2 */
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -18,6 +19,11 @@
   --tile-ink: #5c5752;
   --accent: #0a60ff;
   --on-accent: #ffffff;
+  /* Primary (owner decision 2026-11-10): the Top Hit and every primary button are red; accent stays
+     for selection. #ff1414 was asked for; #e01414 is the nearest red that keeps white text at AA. */
+  --primary: #e01414;
+  --primary-hover: #c00f0f;
+  --on-primary: #ffffff;
   --attention: #ffe3d6;
   --on-attention: #6a1f00;
   --focus: #0a60ff;
@@ -44,18 +50,11 @@
   --duration-slow: 260ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
-  /* The golden-hour scene behind the hero until the CMS has a photo (design system, scene tokens).
-     Graphic only: never a control, border or text colour, except --scene-ink on a scene tile. */
+  /* The hero scene's sky and the scene tiles (design system, scene tokens). Graphic only: never a
+     control, border or text colour, except --scene-ink on a scene tile. */
   --scene-sky-top: #f6eadb;
   --scene-sky-mid: #ecd2b3;
   --scene-sky-low: #cfa27a;
-  --scene-light: #fffaf2;
-  --scene-halo: #ffe9cf;
-  --scene-dune-far: #c0906a;
-  --scene-dune-mid: #a47452;
-  --scene-dune-near: #84583d;
-  --scene-figure: #5a3a29;
-  --scene-ray-opacity: 0.2;
   --scene-tile-top: #ecd6bd;
   --scene-tile-bottom: #caa07c;
   --scene-tile-key: rgb(255 246 232 / 0.92);
@@ -78,6 +77,9 @@
     --tile-ink: #d6d2cd;
     --accent: #2b6beb;
     --on-accent: #ffffff;
+    --primary: #e01414;
+    --primary-hover: #c00f0f;
+    --on-primary: #ffffff;
     --attention: #4a2416;
     --on-attention: #ffd9c7;
     --focus: #7aa7ff;
@@ -98,13 +100,6 @@
     --scene-sky-top: #141416;
     --scene-sky-mid: #2a211c;
     --scene-sky-low: #4a3a2f;
-    --scene-light: #ffe2bf;
-    --scene-halo: #ffcea0;
-    --scene-dune-far: #3a2b25;
-    --scene-dune-mid: #2a1f1a;
-    --scene-dune-near: #1a1310;
-    --scene-figure: #0e0a08;
-    --scene-ray-opacity: 0.08;
     --scene-tile-top: #4a3a2f;
     --scene-tile-bottom: #2a211c;
     --scene-tile-key: rgb(255 226 196 / 0.28);
@@ -126,6 +121,9 @@
   --tile-ink: #d6d2cd;
   --accent: #2b6beb;
   --on-accent: #ffffff;
+  --primary: #e01414;
+  --primary-hover: #c00f0f;
+  --on-primary: #ffffff;
   --attention: #4a2416;
   --on-attention: #ffd9c7;
   --focus: #7aa7ff;
@@ -146,13 +144,6 @@
   --scene-sky-top: #141416;
   --scene-sky-mid: #2a211c;
   --scene-sky-low: #4a3a2f;
-  --scene-light: #ffe2bf;
-  --scene-halo: #ffcea0;
-  --scene-dune-far: #3a2b25;
-  --scene-dune-mid: #2a1f1a;
-  --scene-dune-near: #1a1310;
-  --scene-figure: #0e0a08;
-  --scene-ray-opacity: 0.08;
   --scene-tile-top: #4a3a2f;
   --scene-tile-bottom: #2a211c;
   --scene-tile-key: rgb(255 226 196 / 0.28);
@@ -220,6 +211,9 @@
   --color-tile-ink: var(--tile-ink);
   --color-accent: var(--accent);
   --color-on-accent: var(--on-accent);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-on-primary: var(--on-primary);
   --color-selected: var(--selected);
   --color-selected-hover: var(--selected-hover);
   --color-selected-ink: var(--selected-ink);
@@ -441,7 +435,7 @@ html.js .no-js-only {
   field-sizing: content;
 }
 
-/* The hero stage: the bar floats over a CMS photo, or over the golden-hour scene until there is one. */
+/* The hero stage: the bar floats over a CMS photo, or over the lens scene until there is one. */
 /* Hero overlay (CMS): the uploaded shape is a mask over the text colour, centred and contained. */
 .hero-overlay {
   -webkit-mask: var(--overlay-src) center / contain no-repeat;
@@ -449,30 +443,148 @@ html.js .no-js-only {
   pointer-events: none;
 }
 
-/* Golden hour: the hero scene (GoldenHourScene) and the creator columns (HeroCreators), design 41.
-   Fills come from the scene tokens. Motion is ambient and runs only from 1024 px, where the bar does
-   not have to re-blur a moving phone screen; the page's Pause control and reduced motion stop it. */
+/* Lens scene: the hero backdrop (LensScene), design 03 · Landing, and the creator columns
+   (HeroCreators). Fills come from the scene and lens tokens. The iris opens and the viewfinder corners
+   settle once on arrival (under 2 s); the loops (glow, focus ring, bokeh, playhead, the REC dot) run
+   only from 1024 px, where the bar does not have to re-blur a moving phone screen, and the page's
+   Pause control and reduced motion stop them. */
 .scene-stop-top { stop-color: var(--scene-sky-top); }
 .scene-stop-mid { stop-color: var(--scene-sky-mid); }
 .scene-stop-low { stop-color: var(--scene-sky-low); }
-.scene-stop-light { stop-color: var(--scene-light); }
-.scene-stop-halo { stop-color: var(--scene-halo); stop-opacity: 0.85; }
-.scene-stop-fade { stop-color: var(--scene-halo); stop-opacity: 0; }
-.scene-disc { fill: var(--scene-light); }
-.scene-rays { fill: var(--scene-light); opacity: var(--scene-ray-opacity); }
-.scene-skyline { fill: var(--scene-dune-far); opacity: 0.55; }
-.scene-dune-far { fill: var(--scene-dune-far); }
-.scene-dune-mid > path { fill: var(--scene-dune-mid); }
-.scene-dune-near { fill: var(--scene-dune-near); }
-.scene-figure { fill: var(--scene-figure); stroke: var(--scene-figure); }
-.scene-figure > :not(.scene-figure-line) { stroke: none; }
-.scene-figure-line { fill: none; }
-.scene-dust { fill: var(--scene-light); opacity: 0; }
 .scene-tile {
   background:
     radial-gradient(circle at 72% 26%, var(--scene-tile-key) 0, transparent 48%),
     linear-gradient(160deg, var(--scene-tile-top), var(--scene-tile-bottom));
 }
+
+.lens-scene {
+  --lens-glow-a: #fffaf2;
+  --lens-glow-a-op: 1;
+  --lens-glow-b: #fff1dc;
+  --lens-glow-b-op: 0.85;
+  --lens-glow-c: #ffe9cf;
+  --lens-bokeh: #fffaf2;
+  --lens-bokeh-fill: 0.5;
+  --lens-bokeh-stroke: 0.8;
+  --lens-ring: #84583d;
+  --lens-ring-op: 0.55;
+  --lens-disc: #b98a66;
+  --lens-disc-op: 0.78;
+  --lens-iris: #fffaf2;
+  --lens-frame: #5a3a29;
+  --lens-frame-op: 0.55;
+  --lens-bed: #84583d;
+  --lens-bed-op: 0.16;
+  --lens-rule: #84583d;
+  --lens-clip: #a47452;
+  --lens-thumb-a: #f1dcc4;
+  --lens-thumb-b: #e6c8a8;
+  --lens-hill: #c0906a;
+  --lens-sun: #fffaf2;
+  --lens-audio: #84583d;
+  --lens-wave: #f6eadb;
+  --lens-label: #5a3a29;
+  --lens-head: #3a2418;
+}
+.lens-hud {
+  /* About 8.9:1 on --scene-sky-top. */
+  color: #5a3a29;
+  --lens-rec: #84583d;
+}
+.dark .lens-scene,
+.dark .lens-hud {
+  --lens-glow-a: #ffcea0;
+  --lens-glow-a-op: 0.6;
+  --lens-glow-b: #ffcea0;
+  --lens-glow-b-op: 0.3;
+  --lens-glow-c: #ffcea0;
+  --lens-bokeh: #ffcea0;
+  --lens-bokeh-fill: 0.12;
+  --lens-bokeh-stroke: 0.24;
+  --lens-ring: #8a6f5a;
+  --lens-ring-op: 0.62;
+  --lens-disc: #2a1f1a;
+  --lens-disc-op: 0.92;
+  --lens-iris: #ffe2bf;
+  --lens-frame: #f5f5f7;
+  --lens-frame-op: 0.45;
+  --lens-bed: #000000;
+  --lens-bed-op: 0.24;
+  --lens-rule: #a08670;
+  --lens-clip: #4a3a2f;
+  --lens-thumb-a: #6b5546;
+  --lens-thumb-b: #5c4739;
+  --lens-hill: #2a1f1a;
+  --lens-sun: #ffcea0;
+  --lens-audio: #2a1f1a;
+  --lens-wave: #a08670;
+  --lens-label: #1a1310;
+  --lens-head: #ffcea0;
+  --lens-rec: #ffcea0;
+}
+.dark .lens-hud {
+  /* About 10:1 on --scene-sky-top at night. */
+  color: #c9c3bd;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) :is(.lens-scene, .lens-hud) {
+    --lens-glow-a: #ffcea0;
+    --lens-glow-a-op: 0.6;
+    --lens-glow-b: #ffcea0;
+    --lens-glow-b-op: 0.3;
+    --lens-glow-c: #ffcea0;
+    --lens-bokeh: #ffcea0;
+    --lens-bokeh-fill: 0.12;
+    --lens-bokeh-stroke: 0.24;
+    --lens-ring: #8a6f5a;
+    --lens-ring-op: 0.62;
+    --lens-disc: #2a1f1a;
+    --lens-disc-op: 0.92;
+    --lens-iris: #ffe2bf;
+    --lens-frame: #f5f5f7;
+    --lens-frame-op: 0.45;
+    --lens-bed: #000000;
+    --lens-bed-op: 0.24;
+    --lens-rule: #a08670;
+    --lens-clip: #4a3a2f;
+    --lens-thumb-a: #6b5546;
+    --lens-thumb-b: #5c4739;
+    --lens-hill: #2a1f1a;
+    --lens-sun: #ffcea0;
+    --lens-audio: #2a1f1a;
+    --lens-wave: #a08670;
+    --lens-label: #1a1310;
+    --lens-head: #ffcea0;
+    --lens-rec: #ffcea0;
+  }
+  :root:not(.light) .lens-hud {
+    color: #c9c3bd;
+  }
+}
+.lens-glow-a { stop-color: var(--lens-glow-a); stop-opacity: var(--lens-glow-a-op); }
+.lens-glow-b { stop-color: var(--lens-glow-b); stop-opacity: var(--lens-glow-b-op); }
+.lens-glow-c { stop-color: var(--lens-glow-c); stop-opacity: 0; }
+.lens-bokeh { fill: var(--lens-bokeh); fill-opacity: var(--lens-bokeh-fill); stroke: var(--lens-bokeh); stroke-opacity: var(--lens-bokeh-stroke); }
+.lens-ring { stroke: var(--lens-ring); stroke-opacity: var(--lens-ring-op); transform-box: view-box; }
+.lens-disc { fill: var(--lens-disc); fill-opacity: var(--lens-disc-op); }
+.lens-iris { stroke: var(--lens-ring); stroke-opacity: calc(var(--lens-ring-op) + 0.08); transform-box: view-box; }
+.lens-iris polygon { fill: var(--lens-iris); }
+.lens-rim { stroke: var(--lens-ring); stroke-opacity: var(--lens-ring-op); }
+.lens-highlight { stroke: var(--lens-iris); stroke-opacity: 0.6; }
+.lens-frame { stroke: var(--lens-frame); stroke-opacity: var(--lens-frame-op); }
+.lens-track-bed { fill: var(--lens-bed); fill-opacity: var(--lens-bed-op); }
+.lens-rule { stroke: var(--lens-rule); stroke-opacity: 0.4; }
+.lens-ticks { stroke: var(--lens-rule); stroke-opacity: 0.65; }
+.lens-clip { fill: var(--lens-clip); }
+.lens-thumb-a { fill: var(--lens-thumb-a); }
+.lens-thumb-b { fill: var(--lens-thumb-b); }
+.lens-hill { fill: var(--lens-hill); }
+.lens-sun { fill: var(--lens-sun); }
+.lens-audio { fill: var(--lens-audio); fill-opacity: 0.86; }
+.lens-wave { stroke: var(--lens-wave); stroke-opacity: 0.75; }
+.lens-label { fill: var(--lens-label); fill-opacity: 0.5; }
+.lens-head { fill: var(--lens-head); transform-box: view-box; }
+.lens-rec { background: var(--lens-rec); }
 
 .hero-creators {
   mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 86%, transparent);
@@ -482,34 +594,44 @@ html.js .no-js-only {
   overflow: hidden;
 }
 
-@media (width >= 64rem) and (prefers-reduced-motion: no-preference) {
-  .golden-hour .scene-sun {
+@media (prefers-reduced-motion: no-preference) {
+  .lens-iris {
+    animation: lens-iris 1.2s var(--ease-standard) 0.3s both;
+  }
+  .lens-frame {
     transform-box: fill-box;
     transform-origin: center;
-    animation: scene-keylight 14s ease-in-out infinite;
+    animation: lens-frame 0.7s var(--ease-standard) 0.5s both;
   }
-  .golden-hour .scene-rays {
-    transform-box: view-box;
-    transform-origin: 820px 560px;
-    animation: scene-rays 18s ease-in-out infinite alternate;
+}
+@media (width >= 64rem) and (prefers-reduced-motion: no-preference) {
+  .lens-glow {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: lens-glow 12s ease-in-out infinite;
   }
-  .golden-hour .scene-dune-far {
-    animation: scene-dune 22s ease-in-out infinite alternate;
+  .lens-ring {
+    animation: lens-turn 18s ease-in-out infinite alternate;
   }
-  .golden-hour .scene-dune-mid {
-    animation: scene-dune 16s ease-in-out infinite alternate-reverse;
+  .lens-bokeh circle {
+    animation: lens-bokeh 14s linear infinite;
   }
-  .golden-hour .scene-dust {
-    opacity: 1;
+  .lens-bokeh circle:nth-child(2) { animation-delay: -2.5s; }
+  .lens-bokeh circle:nth-child(3) { animation-delay: -5s; }
+  .lens-bokeh circle:nth-child(4) { animation-delay: -7.5s; }
+  .lens-bokeh circle:nth-child(5) { animation-delay: -10s; }
+  .lens-bokeh circle:nth-child(6) { animation-delay: -12s; }
+  .lens-bokeh circle:nth-child(7) { animation-delay: -3.8s; }
+  .lens-bokeh circle:nth-child(8) { animation-delay: -8.6s; }
+  .lens-scene-wide .lens-head {
+    animation: lens-play-wide 40s linear infinite;
   }
-  .golden-hour .scene-dust circle {
-    animation: scene-dust 9s linear infinite;
+  .lens-scene-phone .lens-head {
+    animation: lens-play-phone 22s linear infinite;
   }
-  .golden-hour .scene-dust circle:nth-child(2) { animation-delay: -2s; }
-  .golden-hour .scene-dust circle:nth-child(3) { animation-delay: -4.5s; }
-  .golden-hour .scene-dust circle:nth-child(4) { animation-delay: -6s; }
-  .golden-hour .scene-dust circle:nth-child(5) { animation-delay: -7.5s; }
-  .golden-hour .scene-dust circle:nth-child(6) { animation-delay: -3.2s; }
+  .lens-rec {
+    animation: lens-rec 2s ease-in-out infinite;
+  }
   .hero-creators-track {
     animation: hero-creators-up 46s linear infinite;
   }
@@ -522,29 +644,36 @@ html.js .no-js-only {
     animation-play-state: paused;
   }
 }
-@keyframes scene-keylight {
-  0%,
-  100% {
-    transform: translate(0, 12px) scale(0.96);
-    opacity: 0.86;
-  }
-  50% {
-    transform: translate(-30px, -14px) scale(1.05);
-    opacity: 1;
-  }
+@keyframes lens-iris {
+  from { transform: scale(0.14) rotate(-64deg); }
 }
-@keyframes scene-rays {
-  from { transform: rotate(-5deg); }
-  to { transform: rotate(6deg); }
+@keyframes lens-frame {
+  from { opacity: 0; transform: scale(1.04); }
 }
-@keyframes scene-dune {
-  from { transform: translateX(0); }
-  to { transform: translateX(-28px); }
+@keyframes lens-glow {
+  0%, 100% { transform: scale(0.94); opacity: 0.82; }
+  50% { transform: scale(1.06); opacity: 1; }
 }
-@keyframes scene-dust {
+@keyframes lens-turn {
+  from { transform: rotate(-8deg); }
+  to { transform: rotate(8deg); }
+}
+@keyframes lens-bokeh {
   0% { transform: translateY(0); opacity: 0; }
-  30% { opacity: 0.8; }
-  100% { transform: translateY(-110px); opacity: 0; }
+  20%, 70% { opacity: 1; }
+  100% { transform: translateY(-70px); opacity: 0; }
+}
+/* translateX in % of the viewBox (transform-box: view-box): the head enters and leaves the frame. */
+@keyframes lens-play-wide {
+  from { transform: translateX(-29%); }
+  to { transform: translateX(74%); }
+}
+@keyframes lens-play-phone {
+  from { transform: translateX(-42%); }
+  to { transform: translateX(69%); }
+}
+@keyframes lens-rec {
+  50% { opacity: 0.25; }
 }
 @keyframes hero-creators-up {
   to { transform: translateY(-50%); }

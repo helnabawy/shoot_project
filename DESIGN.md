@@ -12,6 +12,9 @@ colors:
   tile-ink: "#5c5752"
   selection-blue: "#0a60ff"
   on-accent: "#ffffff"
+  action-red: "#e01414"
+  action-red-hover: "#c00f0f"
+  on-primary: "#ffffff"
   attention-peach: "#ffe3d6"
   on-attention: "#6a1f00"
   focus-ring: "#0a60ff"
@@ -29,6 +32,8 @@ colors:
   night-tile-ink: "#d6d2cd"
   night-selection-blue: "#2b6beb"
   night-on-accent: "#ffffff"
+  night-action-red: "#e01414"
+  night-action-red-hover: "#c00f0f"
   night-attention: "#4a2416"
   night-on-attention: "#ffd9c7"
   night-selected-row: "rgb(77 141 255 / 0.24)"
@@ -185,8 +190,8 @@ components:
     padding: "7px 16px"
     height: "44px"
   top-hit:
-    backgroundColor: "{colors.selection-blue}"
-    textColor: "{colors.on-accent}"
+    backgroundColor: "{colors.action-red}"
+    textColor: "{colors.on-primary}"
     typography: "{typography.top-hit}"
     rounded: "{rounded.row}"
     padding: "10px 12px"
@@ -223,7 +228,7 @@ components:
     size: "44px"
   photo-tile-accent:
     backgroundColor: "{colors.photo-tile-accent-fill}"
-    textColor: "{colors.on-accent}"
+    textColor: "{colors.on-primary}"
     rounded: "{rounded.photo-tile}"
     size: "44px"
   creator-row:
@@ -232,8 +237,8 @@ components:
     padding: "7px 10px"
     height: "64px"
   creator-top-hit:
-    backgroundColor: "{colors.selection-blue}"
-    textColor: "{colors.on-accent}"
+    backgroundColor: "{colors.action-red}"
+    textColor: "{colors.on-primary}"
     typography: "{typography.top-hit}"
     rounded: "{rounded.row}"
     padding: "10px 12px"
@@ -346,7 +351,7 @@ components:
 
 **Creative North Star: "The Brief Bar"**
 
-The page is one panel the audience already knows how to use: a macOS Spotlight / Quick Actions bar. A single frosted panel floats on a warm stone ground; the brief is the search field, the asked step's options list beneath it as grouped result rows, and the Top Hit, the one selection-blue row, is the shoot. The one place a picture sits behind the interface is the landing hero: a full-screen stage, the CMS hero photograph under a theme scrim (or an empty studio sweep until one exists), with the bar floating over it as glass. Everywhere else nothing is painted onto the page to signal "photography", and nowhere is there a serif headline, a booking widget, or a ticket or signage costume. The world is the interface.
+The page is one panel the audience already knows how to use: a macOS Spotlight / Quick Actions bar. A single frosted panel floats on a warm stone ground; the brief is the search field, the asked step's options list beneath it as grouped result rows, and the Top Hit, the one red row, is the shoot. The one place a picture sits behind the interface is the landing hero: a full-screen stage, the CMS hero photograph under a theme scrim (or an empty studio sweep until one exists), with the bar floating over it as glass. Everywhere else nothing is painted onto the page to signal "photography", and nowhere is there a serif headline, a booking widget, or a ticket or signage costume. The world is the interface.
 
 Density is Spotlight density: identical 44 px row rhythm so the whole brief reads in one sweep, a 30 px glyph tile leading every row (a 44 px photo tile where the row is a person), quiet state text or a key hint trailing it. Below the fold the same grammar continues on the bare ground: rows separated by hairlines, without a panel. Warmth comes from the stone ground and warm greys, premium from restraint: system type at zero font bytes, one accent, and outside the hero stage one shadow and one gradient. Dark ("the phone at night") is a first-class rendering, not an inversion.
 
@@ -354,7 +359,7 @@ The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingu
 
 **Key Characteristics:**
 - One floating frosted panel per primary task, 14 px corners, 1 px hairline, the system's only shadow.
-- Selection blue reserved for the Top Hit, the caret, `::selection` and focus; never body text or decoration.
+- Action red reserved for the Top Hit; selection blue for the caret, `::selection`, focus and set rows; never body text or decoration.
 - Every row is glyph tile, label, trailing slot, on a single 44 px minimum rhythm; a creator row leads with a 44 px photo tile and runs two lines at a 64 px minimum.
 - System UI type in both scripts, tabular figures, zero webfont bytes.
 - Logical CSS only; Arabic is a designed rendering, not a mirrored afterthought.
@@ -386,7 +391,7 @@ The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingu
 A warm-neutral, near-monochrome palette with exactly one saturated voice, selection blue, and one warning tint, peach. Every value lives once in `apps/web/src/app/(site)/globals.css` as a role (`--ground`, `--ink`, `--mute`, …); components consume roles, never hex.
 
 ### Primary
-- **Selection Blue** (`selection-blue`; night `night-selection-blue`): fills the Top Hit row, the text caret, the input caret colour and `::selection`. It is the macOS selection highlight, so it means "this is the action". In dark it is deepened, not brightened, so white text holds AA (4.6:1).
+- **Selection Blue** (`selection-blue`; night `night-selection-blue`): fills the text caret, the input caret colour, `::selection` and set rows (the Top Hit moved to Action Red on 2026-11-10). It is the macOS selection highlight, so it means "this is chosen". In dark it is deepened, not brightened, so white text holds AA (4.6:1).
 
 ### Secondary
 - **Attention Peach** (`attention-peach` / `on-attention`; night `night-attention` / `night-on-attention`): the only status colour. It carries a row's one-sentence problem in its trailing slot, field errors, form errors and an invalid sentence part. There is no success green; a set row is shown by a selection-blue tint, weight and a filled blue tile.
@@ -398,7 +403,8 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 - **Frosted Panel** (`frosted-panel`, opaque fallback `panel-solid`; night `night-panel` / `night-panel-solid`): the bar surface.
 - **Hairline** (`hairline`; night `night-hairline`): panel border, the rule under the field, rules between groups and between rows on the ground, input strokes.
 - **Tile Stone / Tile Ink** (`tile-stone` / `tile-ink`; night `night-tile` / `night-tile-ink`): the resting glyph tile.
-- **Focus Ring** (`focus-ring`; night `night-focus-ring`): a separate role from the accent. Light uses the accent itself; dark uses a lighter blue so the ring reads on both the dark ground and the blue Top Hit.
+- **Focus Ring** (`focus-ring`; night `night-focus-ring`): a separate role from the accent. Light uses the accent itself; dark uses a lighter blue so the ring reads on both the dark ground and the red Top Hit.
+- **Action Red** (`action-red`, hover `action-red-hover`, label `on-primary`; CSS `--primary`, `--primary-hover`, `--on-primary`): the fill of the Top Hit and every primary button, and nothing else. Owner decision 2026-11-10: #FF1414 was asked for; #E01414 is the nearest red that keeps white text at AA (4.9:1; hover 6.2:1), the same value in both themes. Selection Blue stays for selection only.
 - **Selection Wash** (`selection-wash`; night `night-selection-wash`): the single radial wash at the top of the ground.
 
 ### Hero Stage
@@ -409,7 +415,7 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 - **Glass** (`glass-panel` with opaque fallback `glass-panel-solid`, `glass-ink`, `glass-mute`, `glass-hairline`, `glass-tile` / `glass-tile-ink`, `glass-edge`, `glass-sheen`; night `night-glass-*`): the bar's glass tone re-scopes the panel roles inside the bar: light glass with dark text in light, smoked glass with white text in dark. Text pairs are checked against the glass over mid grey (a blurred photo's typical average) and over the worst photo after the scrim (black under light glass, white under smoked).
 
 ### Named Rules
-**The One Blue Row Rule.** A panel has exactly one selection-blue row, its Top Hit. If a second action is needed, it is an ordinary row in an "Actions" group.
+**The One Red Row Rule.** A panel has exactly one action-red row, its Top Hit. If a second action is needed, it is an ordinary row in an "Actions" group.
 
 **The Roles Not Colours Rule.** No component names a hex. Every colour is a role token with a light value, a `.dark` value and an identical `prefers-color-scheme` fallback; new roles are added to all three blocks and to the contrast test, or not at all. The glass tone is the one scoped override: it redefines the panel roles inside the glass bar, in the same three blocks, and its text pairs are tested over mid grey and over the worst photo after the scrim.
 
@@ -502,7 +508,7 @@ The search magnifier (22 px, 2.25 stroke, ink) beside the composed sentence at F
 ### Result Rows
 - **Grammar:** three columns, glyph tile (30 px), label (flexible, wraps), trailing slot (auto, end-aligned, 13 px).
 - **Open:** regular weight, resting tile, empty or mute trailing slot. An unset row reads as an invitation ("pick a date").
-- **Set:** the row is tinted selection blue (`--selected`, 12% light / 24% dark), semibold label, tile filled with selection blue holding a white drawn check, trailing "set" in `--selected-ink`. The owner asked on 2026-11-07 that chosen options be visible in colour at a glance; the tint stays distinct from the solid blue Top Hit.
+- **Set:** the row is tinted selection blue (`--selected`, 12% light / 24% dark), semibold label, tile filled with selection blue holding a white drawn check, trailing "set" in `--selected-ink`. The owner asked on 2026-11-07 that chosen options be visible in colour at a glance; the tint stays distinct from the solid red Top Hit.
 - **Attention:** the trailing slot becomes a peach chip with the one-sentence message.
 - **Shape:** rows sit inset 6 px from the panel edge with 9 px corners (`--radius-row`), so a tint or hover reads as a Spotlight selection; text stays 16 px from the edge.
 - **Interaction:** hover tints an open row with ink at 4.5%, active 8%, keyboard focus 6% plus a 2 px inset focus outline; a set row deepens to `--selected-hover`. Rows are labels over visually hidden radios (checkboxes where a slot takes several choices), so the no-JavaScript form works unchanged.
@@ -512,7 +518,7 @@ The search magnifier (22 px, 2.25 stroke, ink) beside the composed sentence at F
 44 px, 10 px corners, the lead of a creator row. The `lg` size is 64 px with 12 px corners and 20 px bold initials (requested at 128 px), the lead of the profile identity panel. The photograph is cover-cropped (requested at 88 px for density, sized 44 px) on the resting tile fill; with no photo the creator's initials sit centred in 15 px bold on the resting tile (tile stone / tile ink). On the Top Hit the accent variant takes white at 20% with white initials. Decorative and `aria-hidden`: the name beside it carries the meaning, and the alt text is empty.
 
 ### Creator Row
-A result row whose lead is the Photo Tile: grid of 44 px tile, flexible text, auto trailing slot, 64 px minimum height, same inset, 9 px corners, 12 px gap and hover tint as any row. Line one is the name (semibold, ink, wraps); line two is professional types and place joined by a middle dot (13 px mute). In the directory a third line prints up to three specialties as plain text (13 px mute), never as chips. The creator's code trails in the slot (13 px, tabular figures), wrapped in an isolated left-to-right run so it reads the same in Arabic. As a Top Hit the row takes the shared Top Hit base (selection blue, 9 px corners, 17 px semibold, inset 8 px), the accent Photo Tile, 64 px minimum height, secondary lines in full white for AA on selection blue, and the Return key hint after the code. A Top Hit and its list rows are the same component in two tones, so the One Blue Row Rule holds.
+A result row whose lead is the Photo Tile: grid of 44 px tile, flexible text, auto trailing slot, 64 px minimum height, same inset, 9 px corners, 12 px gap and hover tint as any row. Line one is the name (semibold, ink, wraps); line two is professional types and place joined by a middle dot (13 px mute). In the directory a third line prints up to three specialties as plain text (13 px mute), never as chips. The creator's code trails in the slot (13 px, tabular figures), wrapped in an isolated left-to-right run so it reads the same in Arabic. As a Top Hit the row takes the shared Top Hit base (action red, 9 px corners, 17 px semibold, inset 8 px), the accent Photo Tile, 64 px minimum height, secondary lines in full white for AA on action red, and the Return key hint after the code. A Top Hit and its list rows are the same component in two tones, so the One Red Row Rule holds.
 
 ### Creator Card
 A creator as a Spotlight preview pane, used only in the Network Strip. 288 px wide on phones, 320 px from 640 px (a 16 px gap trails each), 14 px corners, 1 px hairline, panel-solid fill, 20 px inset, no shadow. Top: the `lg` Photo Tile (64 px), then the name (17 px semibold ink, one line, truncated) with a 16 px ink disc carrying a drawn check (accessible name "Verified", the same claim the profile makes for every listed creator), the code under it (13 px mute, tabular, isolated run), and a forward arrow in the end column that darkens and nudges forward on hover. Then up to two lines of the bio excerpt (14 px, ink at 80%, `dir="auto"`, two lines reserved so every card aligns). At the foot, under a hairline, glyph lines in 13 px mute with 16 px tile-ink icons: types (user), place (pin), specialties (tag) as plain text, never chips. Hover darkens the hairline to ink at 18%; the focus ring follows the 14 px corner, inset. The whole card is one link whose accessible name is its visible text in order.
@@ -536,7 +542,7 @@ Section Title "Recent work", then up to 24 samples on the ground in the Portfoli
 On the landing page each Specialties row whose category the audience offers is an open Result Row linking to `/work/{slug}`, with the glyph tile and name, and a trailing counts line in the trailing slot ("428 samples · 43 pros", tabular). Each part shows only above zero, the whole line is absent when both are zero, and the Arabic text uses the six plural forms. A hand-picked category the audience does not offer has no page: it is a quiet row of tile and mute 16 px name, not a link, with no hover, no chevron and no counts.
 
 ### Profile Identity Panel
-The Brief Bar as a person. A header of the 64 px Photo Tile (`lg`) beside the creator's name, which is the page h1 at Section Title size, with the code under it in Meta (tabular, isolated left-to-right). A hairline, then fact rows: each is a single 44 px row with a glyph tile, the value on the start side and what it is in the trailing slot ("Works in", "Speaks"). Only the Verified row has a second line, a plain Meta sentence of what verified means, never a badge. After a hairline the "Top Hit" group holds the one blue row, which books the creator by full display name (a creator who cannot be booked gets "ask on WhatsApp" as the Top Hit instead). An "Actions" group of ordinary rows follows: the WhatsApp row (when booking is the Top Hit) and one row per social link, each opening a new tab with `rel="noopener nofollow ugc"`. Only the facts that decide a booking come before the Top Hit: Verified, Professional, Shoots and Works in. Who the creator is rather than what they do (Speaks, Experience, Nationality) follows under a hairline in an "About" group of the same fact rows, so the Top Hit stays above the fold on a 360 × 640 phone however many facts a creator fills in. The bio sits under the panel on the ground, 15 px, 60ch.
+The Brief Bar as a person. A header of the 64 px Photo Tile (`lg`) beside the creator's name, which is the page h1 at Section Title size, with the code under it in Meta (tabular, isolated left-to-right). A hairline, then fact rows: each is a single 44 px row with a glyph tile, the value on the start side and what it is in the trailing slot ("Works in", "Speaks"). Only the Verified row has a second line, a plain Meta sentence of what verified means, never a badge. After a hairline the "Top Hit" group holds the one red row, which books the creator by full display name (a creator who cannot be booked gets "ask on WhatsApp" as the Top Hit instead). An "Actions" group of ordinary rows follows: the WhatsApp row (when booking is the Top Hit) and one row per social link, each opening a new tab with `rel="noopener nofollow ugc"`. Only the facts that decide a booking come before the Top Hit: Verified, Professional, Shoots and Works in. Who the creator is rather than what they do (Speaks, Experience, Nationality) follows under a hairline in an "About" group of the same fact rows, so the Top Hit stays above the fold on a 360 × 640 phone however many facts a creator fills in. The bio sits under the panel on the ground, 15 px, 60ch.
 
 ### Portfolio Grid
 Work samples as a grid on the bare ground: two columns on phones, three from 640 px, two from 1024 px in the profile's wide end column (12 px gaps there), 8 px gaps, every sample cropped to a uniform 4:5 and cornered at 8 px (the tile radius). No captions, no hover zoom, no overlays on images. A video sample is its poster with a drawn play tile (32 px, 8 px corners, at the end-bottom corner) and the host name in Meta beneath; it opens the host in a new tab. Image links point at the large file so the grid works without JavaScript; with it they open the viewer. With no samples the section is one plain row, not an empty frame.
@@ -566,7 +572,7 @@ A choice as a Result Row over a visually hidden checkbox (a plain form without J
 A list item in the Samples block, hairline-divided, 12 px of block padding. Top line: the 44 px Photo Tile (the sample's image, or its number as initials), "Sample n" in 16 px semibold over a Meta line naming image or video, then three 44 px icon buttons on the end side, move up, move down and remove, each a drawn 18 px icon (chevrons rotated and mirrored so up stays up in Arabic, and a close mark), 9 px corners, an ink tint at 6% on hover, the focus outline, 40% opacity when disabled. The first row's up and the last row's down are `invisible` so the column holds still. Each button is its own one-button form (`ActionForm`) with an accessible name, never a shared form, so it works without JavaScript; when sent it says what it did through one visually hidden `role="status"` live region owned by the section ("Moved to position 2", "Sample removed"). A failure prints one peach sentence beside the button. Below the top line sit the caption pair and the specialty select (13 px mute label, 44 px select, specialties limited to the types the provider chose), which belong to the single profile form through the HTML `form` attribute, not to the row: the closing action saves them. Adding, moving and removing save at once; captions and specialties wait for the closing action. "Add a sample" is the separate form beneath the list: an image/video choice, the file or URL controls, its own caption pair, the select and one tile-filled 44 px "Add" button (not blue), and an empty list is one plain row, not a frame.
 
 ### Closing Bar
-The editor's second `sm` panel, last on the page. A feedback line first (14 px, mute; peach text on error; `aria-live="polite"`) that says what is missing ("Add a city and a language to send for review."), what just happened ("Saved", "Sent for review") or "Please fix the fields marked below". Then a "Top Hit" group with exactly one blue row, chosen by state: "Save and send for review" when the profile is complete and either a draft or live with changes; "Save and publish" when the site publishes a verified creator's edits at once; "Save" otherwise. When the blue row sends for review, "Save without sending" follows as an ordinary row with a tick tile. The Top Hit and its twin submit the profile form from outside it with the `form` attribute and carry `name="intent"`. While pending the Top Hit label changes to a pending word. On a failed save, focus moves to the first field with `aria-invalid="true"` (or its error sentence is scrolled to centre when none is focusable), and the page does not move otherwise: success confirms in the feedback line, never a toast.
+The editor's second `sm` panel, last on the page. A feedback line first (14 px, mute; peach text on error; `aria-live="polite"`) that says what is missing ("Add a city and a language to send for review."), what just happened ("Saved", "Sent for review") or "Please fix the fields marked below". Then a "Top Hit" group with exactly one red row, chosen by state: "Save and send for review" when the profile is complete and either a draft or live with changes; "Save and publish" when the site publishes a verified creator's edits at once; "Save" otherwise. When the blue row sends for review, "Save without sending" follows as an ordinary row with a tick tile. The Top Hit and its twin submit the profile form from outside it with the `form` attribute and carry `name="intent"`. While pending the Top Hit label changes to a pending word. On a failed save, focus moves to the first field with `aria-invalid="true"` (or its error sentence is scrolled to centre when none is focusable), and the page does not move otherwise: success confirms in the feedback line, never a toast.
 
 ### Price Group Label
 A result group in the match step is named by what it offers and what it costs, in one Group Label: "{types} free on {date} · AED 800, VAT included" ("{types}, any date" when no date was asked). The price is joined by a middle dot and isolated left-to-right; VAT is said once, in the label, not per row. What the price includes sits under the label as one Meta line of deliverables joined by middle dots. Without a price rule the group opens with a "price on request" row (help tile) and WhatsApp becomes the step's Top Hit. With no one free that day a plain row with a minus tile says so, and a "Free on" group of nearby dates follows. Every group is named by its label through `aria-labelledby` (see Result Groups).
@@ -596,7 +602,7 @@ Unread notices open the bookings panel as an "Updates" group: a bell tile, the n
 The quotation prints as itself on A4 (16 mm block, 14 mm inline margins), always light whatever the theme: the roles are reset to white ground and panel, black ink, #4a4a4a mute, a 20% black hairline, a light grey tile and attention fill, and no shadow, with `color-scheme: light`. Only the site chrome is hidden (header, footer, floating WhatsApp); the quotation's own header stays. The panel loses its shadow, blur and border. The status and the end actions are not printed. Groups never split across a page.
 
 ### Top Hit
-The one selection-blue row: 50 px minimum, 9 px corners, inset 8 px, 17 px semibold white text, an accent tile (white at 20%) holding a drawn forward arrow, and a Return key hint trailing it. Hover brightens it by 10%; it is a submit button in the brief and a link elsewhere. A "Top Hit" group label precedes it, as in Spotlight.
+The one red row (`action-red`): 50 px minimum, 9 px corners, inset 8 px, 17 px semibold white text, an accent tile (white at 20%) holding a drawn forward arrow, and a Return key hint trailing it. Hover deepens it to `action-red-hover`; it is a submit button in the brief and a link elsewhere. A "Top Hit" group label precedes it, as in Spotlight.
 
 ### Glyph Tiles
 30 px, 8 px corners, 11 px bold, centred. Content is either localised CMS text of up to three characters ("W", "AUH", "2h") or a drawn icon from the authored set. Tones: resting (tile stone / tile ink), set (selection blue / white), accent (white at 20% on blue), ink (graphite ink / ground) for an order that carries meaning, the step numbers. Step numbers never use selection blue. Tiles are `aria-hidden`; the label carries the meaning.
@@ -663,7 +669,7 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 
 ### Don't:
 - **Don't** load a webfont or a second type family.
-- **Don't** use selection blue for text, links, borders, icons or decoration. Its uses are the Top Hit, the caret, focus, and the tint and tile of a set row.
+- **Don't** use selection blue for text, links, borders, icons or decoration. Its uses are the caret, focus, and the tint and tile of a set row; the Top Hit is Action Red, which is never used for anything else.
 - **Don't** add a shadow, a gradient or a panel style beyond the panel and its glass tone, their shadows, the one top wash and the hero stage's sweep, sheen and halo.
 - **Don't** put more than two bar panels on a page.
 - **Don't** use uppercase or letter-spacing on Arabic text.

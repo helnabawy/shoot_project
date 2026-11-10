@@ -57,7 +57,7 @@ describe('CP-US2-S1 profile', () => {
     const book = screen.getByTestId('profile-book')
     expect(book).toHaveTextContent('Book with Sara Khan')
     expect(book).toHaveAttribute('href', '/book/7k4q2')
-    expect(book.className).toContain('bg-accent')
+    expect(book.className).toContain('bg-primary')
   })
 
   it('offers WhatsApp and the creator\'s own links as plain rows, links opened safely', () => {
@@ -77,7 +77,7 @@ describe('CP-US2-S1 profile', () => {
     expect(screen.queryByTestId('profile-book')).toBeNull()
     const ask = screen.getAllByTestId('profile-ask-whatsapp')
     expect(ask).toHaveLength(1)
-    expect(ask[0]!.className).toContain('bg-accent')
+    expect(ask[0]!.className).toContain('bg-primary')
   })
 
   it('keeps the bio\'s line breaks and shows the work', () => {

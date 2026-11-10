@@ -26,7 +26,7 @@ export function CreatorRow({
 }) {
   const meta = [view.types, view.place].filter(Boolean).join(' · ')
   const hit = tone === 'hit'
-  const text = hit ? 'text-on-accent' : 'text-mute'
+  const text = hit ? 'text-on-primary' : 'text-mute'
   return (
     <Link
       href={href}

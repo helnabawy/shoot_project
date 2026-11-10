@@ -19,6 +19,9 @@
   --tile-ink: #5c5752;
   --accent: #0a60ff;
   --on-accent: #ffffff;
+  --primary: #e01414; /* the Top Hit and primary buttons; #ff1414 asked, deepened for white text at AA */
+  --primary-hover: #c00f0f;
+  --on-primary: #ffffff;
   --accent-ink: #0848c2;
   --selected-ink: var(--accent-ink); /* alias, remove after one release */
   --selected: rgba(10, 96, 255, 0.12);
@@ -140,6 +143,9 @@
   --tile-ink: #d6d2cd;
   --accent: #2b6beb;
   --on-accent: #ffffff;
+  --primary: #e01414;
+  --primary-hover: #c00f0f;
+  --on-primary: #ffffff;
   --accent-ink: #b7d0ff;
   --selected: rgba(77, 141, 255, 0.24);
   --selected-hover: rgba(77, 141, 255, 0.32);
@@ -207,6 +213,9 @@
   --color-tile-ink: var(--tile-ink);
   --color-accent: var(--accent);
   --color-on-accent: var(--on-accent);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-on-primary: var(--on-primary);
   --color-accent-ink: var(--accent-ink);
   --color-selected: var(--selected);
   --color-selected-hover: var(--selected-hover);

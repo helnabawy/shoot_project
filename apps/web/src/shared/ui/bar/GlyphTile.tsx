@@ -18,7 +18,7 @@ export function GlyphTile({
       className={cx(
         'grid size-[30px] shrink-0 place-items-center rounded-[var(--radius-tile)] text-[11px] font-bold leading-none tracking-tight',
         tone === 'accent'
-          ? 'bg-white/20 text-on-accent'
+          ? 'bg-white/20 text-on-primary'
           : tone === 'set'
             ? 'bg-accent text-on-accent'
             : tone === 'ink'

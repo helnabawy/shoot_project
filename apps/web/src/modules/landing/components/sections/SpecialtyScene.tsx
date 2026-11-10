@@ -5,7 +5,7 @@ import type { CSSProperties, ReactNode } from 'react'
  * one a specialty shows is a CMS choice (`categories.scene`), never inferred from its name, so a new
  * profession gets a drawing, or the plain scene with its glyph, without code (persona-extensibility).
  *
- * Shapes only, in the warm golden-hour palette, so they read as light and place, never as proof of
+ * Shapes only, in the warm scene palette, so they read as light and place, never as proof of
  * work; a specialty image from the CMS replaces them. Each draws on a 132 × 236 frame that the tile
  * crops from the centre. Ambient motion (globals.css, "Specialty tiles") runs from 1024 px under the
  * page's Pause control and stops under reduced motion.

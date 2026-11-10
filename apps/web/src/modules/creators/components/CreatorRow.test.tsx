@@ -49,11 +49,11 @@ describe('CP-US1-S1/S2 creator row', () => {
     expect(screen.getByText('SK')).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it('the Top Hit is the blue row with the same content and a Return hint', () => {
+  it('the Top Hit is the primary (red) row with the same content and a Return hint', () => {
     renderWithLocale(<CreatorRow creator={creatorSummary()} view={view} href="/creators/7k4q2" tone="hit" showSpecialties />)
     const hit = screen.getByTestId('creator-top-hit')
     expect(hit).toHaveAttribute('href', '/creators/7k4q2')
-    expect(hit.className).toContain('bg-accent')
+    expect(hit.className).toContain('bg-primary')
     expect(hit).toHaveTextContent('Portrait, Events')
     expect(hit.querySelector('kbd')).not.toBeNull()
   })

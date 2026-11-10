@@ -127,9 +127,22 @@ describe('US1 hero', () => {
       />,
     )
 
-  it('draws the golden-hour scene behind the bar until the CMS has a photo', () => {
+  it('draws the lens-and-timeline scene behind the bar until the CMS has a photo (design 03 · Landing)', () => {
     renderStage({})
-    expect(screen.getByTestId('hero-scene')).toHaveAttribute('aria-hidden', 'true')
+    const scene = screen.getByTestId('hero-scene')
+    expect(scene).toHaveAttribute('aria-hidden', 'true')
+    // One composition for phones, one for wide screens; CSS shows the one that fits.
+    expect(scene.querySelectorAll('svg')).toHaveLength(2)
+    // The camera readout is part of the picture: hidden from assistive tech, digits kept left to right.
+    const hud = screen.getByTestId('hero-hud')
+    expect(hud).toHaveAttribute('aria-hidden', 'true')
+    expect(hud.querySelector('[dir="ltr"]')).not.toBeNull()
+  })
+
+  it('shows neither scene nor readout over a CMS photo', () => {
+    renderStage({ image: media(1, 'wide.jpg') })
+    expect(screen.queryByTestId('hero-scene')).toBeNull()
+    expect(screen.queryByTestId('hero-hud')).toBeNull()
   })
 
   it('sets real creators in columns at the end of the stage, each card a link to the profile', () => {

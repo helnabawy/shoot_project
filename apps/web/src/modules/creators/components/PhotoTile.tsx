@@ -38,7 +38,7 @@ export function PhotoTile({
         base,
         'grid place-items-center font-bold leading-none',
         size === 'lg' ? 'text-[20px]' : 'text-[15px]',
-        tone === 'accent' ? 'bg-white/20 text-on-accent' : 'bg-tile text-tile-ink',
+        tone === 'accent' ? 'bg-white/20 text-on-primary' : 'bg-tile text-tile-ink',
         className,
       )}
     >

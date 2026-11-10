@@ -55,7 +55,7 @@ Star ratings, review counts, "top rated", response-time claims, availability, pr
 
 ## RTL and dark
 
-Rows mirror by logical properties only: photo tile on the start side, code on the end side, chevrons flip. The code and counts are isolated LTR runs with tabular figures. Group labels in Arabic: 12 px, no tracking, no uppercase. Dark: the Top Hit uses the night selection blue under white text; the photo tile gets no border in either theme (the photo is its own edge); the initials tile uses night tile / night tile ink.
+Rows mirror by logical properties only: photo tile on the start side, code on the end side, chevrons flip. The code and counts are isolated LTR runs with tabular figures. Group labels in Arabic: 12 px, no tracking, no uppercase. Dark: the Top Hit uses action red under white text; the photo tile gets no border in either theme (the photo is its own edge); the initials tile uses night tile / night tile ink.
 
 ## Constraints and open decisions
 
