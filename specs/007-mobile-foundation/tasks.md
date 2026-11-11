@@ -548,10 +548,10 @@ variants.
   with the calibrated thresholds from T034 and T042, and any `tokenise.overrides.json` entries.
 - [x] T071 (screen 37 on iPhone 17 in English and Arabic; screen 39 is release-only on device, covered by goldens and fidelity; notes in `.impeccable/review/mobile/ios-check.md`) [P] Make the iOS check from quickstart manual check 9: screens 37 and 39 against their
   boards in the iPhone simulator. Record notes in `.impeccable/review/mobile/`.
-- [ ] T072 Run the impeccable finish review on screens 37 and 39 and the gallery, using the four
+- [x] T072 (2026-11-11: two review rounds; every app finding fixed after the second, the board findings raised in `designer-request.md`; DESIGN.md and its sidecar record the mobile catalogue. A third round was not run, per impeccable's bounded passes) Run the impeccable finish review on screens 37 and 39 and the gallery, using the four
   variant goldens and the review images, until it returns `ship`. Then run the documenter to
   record the mobile components in `DESIGN.md`.
-- [ ] T073 Run the full quickstart: `dart format`, `flutter analyze`, `flutter test`,
+- [x] T073 (2026-11-11: format, analyze, 318 tests, 162 goldens, fidelity twice with identical results, changed-line coverage 94.7 %; open: MF-US2-S2 and the Arabic variants wait for the designer, and the manual checks on iPad, Android and with VoiceOver and TalkBack are not done) Run the full quickstart: `dart format`, `flutter analyze`, `flutter test`,
   `tool/goldens.sh`, `pnpm fidelity` twice (with identical results, SC-004) and
   `pnpm check:scenarios`, plus the manual checks 1–10. Tick SC-001 to SC-008.
 
