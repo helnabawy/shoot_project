@@ -1,0 +1,45 @@
+import { z } from 'zod'
+
+/**
+ * `application/problem+json` (research R6). Codes are message keys: the client owns the words, in
+ * the person's language, so a problem never carries a title or detail.
+ */
+
+/** A message key: `api.errors.notFound`, `contact.errors.whatsappFormat`. */
+export const MESSAGE_KEY = /^[a-z][a-zA-Z]*(\.[a-zA-Z-]+)+$/
+
+/** Every problem code v1 can answer. Adding one is additive; removing one is breaking (R11). */
+export const PROBLEM_CODES = [
+  'api.errors.invalidInput',
+  'api.errors.invalidField',
+  'api.errors.localeUnsupported',
+  'api.errors.notFound',
+  'api.errors.unauthorized',
+  'api.errors.tokenInvalid',
+  'api.errors.rateLimited',
+  'api.errors.unexpected',
+] as const
+export type ProblemCode = (typeof PROBLEM_CODES)[number]
+
+/** The statuses a problem can carry in 008; 009 adds 403, 409 and 503 additively. */
+export const PROBLEM_STATUSES = [401, 404, 422, 429, 500] as const
+export const problemStatusV1 = z.literal(PROBLEM_STATUSES)
+export type ProblemStatus = z.infer<typeof problemStatusV1>
+
+/** One field that failed: `query.page` and the message key that explains it. */
+export const problemFieldV1 = z.object({ path: z.string(), code: z.string().regex(MESSAGE_KEY) })
+export type ProblemField = z.infer<typeof problemFieldV1>
+
+export const problemV1 = z
+  .object({
+    type: z.literal('about:blank'),
+    status: problemStatusV1,
+    code: z.enum(PROBLEM_CODES),
+    /** Present on 422 only. */
+    fields: z.array(problemFieldV1).optional(),
+    /** Seconds to wait; present on 429 only. */
+    retryAfter: z.int().nonnegative().optional(),
+  })
+  .refine((p) => p.fields === undefined || p.status === 422, { message: 'fields belong to a 422', path: ['fields'] })
+  .refine((p) => p.retryAfter === undefined || p.status === 429, { message: 'retryAfter belongs to a 429', path: ['retryAfter'] })
+export type ProblemV1 = z.infer<typeof problemV1>

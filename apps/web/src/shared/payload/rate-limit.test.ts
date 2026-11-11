@@ -39,6 +39,17 @@ describe('CP-FR-008 consumeAllowance', () => {
     expect(rows[0]?.count).toBe(2)
   })
 
+  it('MR-US2-S8 the 429 carries the seconds to the end of the hourly window', async () => {
+    const { req } = fakeReq([{ id: 1, key: 'k', count: 2, windowStart: new Date(now).toISOString() }])
+    await expect(consumeAllowance(req, 'k', 2, 'api.errors.rateLimited', now + 1000)).rejects.toMatchObject({
+      status: 429,
+      data: { retryAfter: RATE_WINDOW_MS / 1000 - 1 },
+    })
+    await expect(consumeAllowance(req, 'k', 2, 'api.errors.rateLimited', now + RATE_WINDOW_MS - 1)).rejects.toMatchObject({
+      data: { retryAfter: 1 },
+    })
+  })
+
   it('starts a fresh window once the old one has expired', async () => {
     const { req, rows } = fakeReq([{ id: 1, key: 'k', count: 9, windowStart: new Date(now).toISOString() }])
     await consumeAllowance(req, 'k', 2, 'media.upload.tooMany', now + RATE_WINDOW_MS + 1)

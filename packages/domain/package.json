@@ -17,13 +17,15 @@
     "./brief/options": "./src/brief/options.ts",
     "./brief/message": "./src/brief/message.ts",
     "./pricing": "./src/pricing/index.ts",
-    "./booking": "./src/booking/index.ts"
+    "./booking": "./src/booking/index.ts",
+    "./api/v1": "./src/api/v1/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint src",
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "api:snapshot": "UPDATE_API_SNAPSHOT=1 vitest run src/api/v1/snapshot.test.ts"
   },
   "dependencies": {
     "zod": "4.6.7"

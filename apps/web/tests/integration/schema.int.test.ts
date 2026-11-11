@@ -104,4 +104,10 @@ describe('CMS schema rules', () => {
     const by = live.publishedBy
     expect(typeof by === 'object' && by ? by.id : by).toBe(editor.id)
   })
+
+  it('MR-US2-S7 no collection or global uses the slug "mobile" (it would shadow /api/mobile)', async () => {
+    const payload = await getTestPayload()
+    expect(payload.config.collections.map((c) => c.slug)).not.toContain('mobile')
+    expect(payload.config.globals.map((g) => g.slug)).not.toContain('mobile')
+  })
 })
