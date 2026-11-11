@@ -26,7 +26,11 @@ class DrawCheck extends StatelessWidget {
     child: Arrive(
       duration: ShootArrive.draw,
       delay: Duration(milliseconds: 500 + 80 * index),
-      child: const SizedBox.shrink(),
+      // The finished tick is the child, so motion off draws it whole.
+      child: CustomPaint(
+        size: Size.square(size),
+        painter: _TickPainter(1, color, strokeWidth),
+      ),
       builder: (context, t, _) => CustomPaint(
         size: Size.square(size),
         painter: _TickPainter(t, color, strokeWidth),

@@ -208,3 +208,42 @@ Future<void> pumpSelfBaselines(
     }
   }
 }
+
+/// A catalogue component at 360 wide, as tall as it needs, in [variant], 2x, animations off:
+/// `goldens/<name>/<variant>.png` next to the calling test.
+Future<void> pumpComponent(
+  WidgetTester tester, {
+  required String name,
+  required Variant variant,
+  required Widget child,
+}) async {
+  _prepare(tester, const Size(360, 1200));
+  try {
+    await tester.pumpWidget(
+      goldenShell(
+        Scaffold(
+          body: SingleChildScrollView(
+            child: Align(
+              alignment: AlignmentDirectional.topStart,
+              child: RepaintBoundary(
+                key: const ValueKey('golden'),
+                // On the theme's ground, as on a screen.
+                child: Builder(
+                  builder: (context) => ColoredBox(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: SizedBox(width: 360, child: child),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        variant,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _matchAt2x(tester, 'goldens/$name/${variant.id}.png');
+  } finally {
+    _restore();
+  }
+}

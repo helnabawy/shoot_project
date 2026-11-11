@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shoot_mobile/core/l10n/bidi.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
@@ -63,6 +64,10 @@ class ShootRow extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: selected ? c.selected : null,
+          // `.row.sel` sits on the board's `.row{padding:7px 8px;border-radius:9px}`.
+          borderRadius: selected && divider == RowDivider.none
+              ? BorderRadius.circular(ShootRadius.row)
+              : null,
           border: Border(
             top: divider == RowDivider.none ? BorderSide.none : hair,
             bottom: divider == RowDivider.topAndBottom ? hair : BorderSide.none,
@@ -82,6 +87,8 @@ class ShootRow extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: minHeight),
                 child: Padding(
+                  // The padding belongs to the row family, never to the selection: the boards that
+                  // select rows (`.row{padding:7px 8px}`) pass it for every row.
                   padding: padding,
                   child: Row(
                     children: [
@@ -89,7 +96,9 @@ class ShootRow extends StatelessWidget {
                         l,
                         const SizedBox(width: ShootSpace.s3),
                       ],
-                      Expanded(child: Text(label, style: style)),
+                      Expanded(
+                        child: Text(isolate(context, label), style: style),
+                      ),
                       if (trailing case final t?) ...[
                         const SizedBox(width: ShootSpace.s3),
                         t,

@@ -49,3 +49,15 @@ renders each board with Playwright and diffs it against the app's golden for the
   2. `CANVAS_VERSION=<version> EXPORTED_AT=<now> node specs/design-system/canvas/build-manifest.mjs`.
      Boards whose sha256 changed are flagged `changedSinceLastExport`; their goldens must be
      re-checked.
+
+## Fidelity calibration (feature 007, 2026-11-11)
+
+- Thresholds stay at the manifest defaults: 1 % of pixels (2 % on the text-heavy boards 33–36) and
+  ±1 px on every key element. Measured on macOS goldens against Chromium references: screen 37
+  0.12 % (light) and 0.115 % (dark), screen 39 0.30 % and 0.31 %, every box within 0.5 px.
+- `tools/design-fidelity/tokenise.overrides.json` is empty: the property heuristic resolves every
+  shared value on the shipped boards.
+- The reference renderer hides the Top Hit glint (`.top::after`), which the boards leave visible
+  under reduced motion; the fix is a canvas change (see `specs/007-mobile-foundation/designer-request.md`).
+- About 40 colours on boards of features not shipped yet have no role; `pnpm fidelity` attaches the
+  list (`readiness`). Each feature adds roles for its boards before they can be derived.

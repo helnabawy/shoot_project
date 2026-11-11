@@ -22,6 +22,7 @@ void main() {
         ),
       ),
     );
+    await tester.pumpAndSettle();
     final tile = tester.getRect(find.byType(IconTile));
     final meta = tester.getRect(find.text('404'));
     final title = tester.getRect(find.byKey(const ValueKey('fidelity:h1')));
@@ -46,12 +47,16 @@ void main() {
   ) async {
     await tester.pumpApp(
       const Center(
-        child: EmptyState(mark: SizedBox.square(dimension: 44), title: 'T'),
+        child: EmptyState(
+          mark: SizedBox.square(key: Key('mark'), dimension: 44),
+          title: 'T',
+        ),
       ),
     );
+    await tester.pumpAndSettle();
     expect(
       tester.getRect(find.text('T')).top -
-          tester.getRect(find.byType(SizedBox).first).bottom,
+          tester.getRect(find.byKey(const Key('mark'))).bottom,
       16,
     );
   });

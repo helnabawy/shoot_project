@@ -34,6 +34,7 @@ class PickerField extends StatelessWidget {
       label: label,
       error: error,
       child: Semantics(
+        container: true,
         button: true,
         label: label,
         value: value,

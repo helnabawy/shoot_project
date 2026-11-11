@@ -115,7 +115,7 @@ Only English light exists for 01–40. The other three references are derived, n
 
 - **Pixel diff.** `maxDiffPixelRatio` comes from `defaults.threshold` (0.01), or the screen's own
   `threshold`: 0.02 for the text-heavy boards 33–36, because long running text has more anti-aliased
-  edges. The defaults are calibrated on boards 37 and 39 in feature 007.
+  edges. The defaults are calibrated on boards 37 and 39 in feature 007: 0.12–0.31 %, every box within 0.5 px.
 - **Geometry gate.** Every manifest box must match the golden's keyed widget within
   `geometryTolerancePx` (±1 logical px) on x, y, width and height, in every variant. Pixel ratios can
   hide a layout that is 3 px off; the gate does not.

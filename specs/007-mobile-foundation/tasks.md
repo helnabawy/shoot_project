@@ -298,14 +298,14 @@ and name `h1`.
 
 ### Tests first
 
-- [ ] T035 [P] [US2] Write `fid/tests/derivation.spec.ts`:
+- [ ] T035 (MF-US2-S1 for the shipped screens and MF-US2-S4 done; MF-US2-S2 waits for the designer's boards, research R6) [P] [US2] Write `fid/tests/derivation.spec.ts`:
   - **`MF-US2-S1`**: for every board, the tokenised `en-light` render is pixel-identical to the
     raw render (`maxDiffPixels: 0`);
   - **`MF-US2-S2`**: the derived `ar-dark` of 21 vs board 42, and of 13 vs board 43, at the
     default threshold;
   - **`MF-US2-S4`**: a board copy with an unmapped colour (`#123456` on `.h1`) makes `tokenise`
     throw a message naming the board, selector, property and colour.
-- [ ] T036 [P] [US2] Extend `fid/tests/compare.spec.ts` with **`MF-US2-S3`**: screen 37 is
+- [ ] T036 (en-dark done for 37 and 39; Arabic waits for the designer) [P] [US2] Extend `fid/tests/compare.spec.ts` with **`MF-US2-S3`**: screen 37 is
   compared in `en-dark`, `ar-light` and `ar-dark`.
 - [ ] T037 [P] [US2] Write `mobile/test/core/l10n/board_strings_test.dart`. Every Arabic value in
   `canvas/strings.ar/S10-not-found.json` and `S10c-error.json` equals the ARB value for the same
@@ -313,7 +313,7 @@ and name `h1`.
 
 ### Implementation
 
-- [ ] T038 [US2] Create `fid/src/tokenise.ts` (research R5).
+- [x] T038 (2026-11-11; it rewrites the live CSSOM after load rather than the HTML text, so only rules that style an element are tokenised) [US2] Create `fid/src/tokenise.ts` (research R5).
   - Parse `specs/design-system/tokens.css` `:root` into a map from value to roles.
   - Normalise `#rgb`, `#rrggbb` and `rgba()` with spacing variants.
   - Rewrite the board's `<style>` text and `style=""` attributes to `var(--role)`, choosing by
@@ -356,28 +356,28 @@ and has component goldens.
 
 ### Tests first
 
-- [ ] T043 [P] [US3] Write `mobile/test/core/widgets/rtl_test.dart` (**`MF-US3-S2`**).
+- [x] T043 [P] [US3] Write `mobile/test/core/widgets/rtl_test.dart` (**`MF-US3-S2`**).
   - For every catalogue widget, pump it in Arabic and assert that its start and end children
     swap sides.
   - Direction icons (back, chevron, carousel arrows) are mirrored.
   - No `EdgeInsets.only(left|right)` and no `Alignment.centerLeft|Right` appear in
     `lib/core/widgets/`, and no widget there holds a user-visible string literal (FR-015). Use a
     source scan in the test.
-- [ ] T044 [P] [US3] Write `mobile/test/core/widgets/large_text_test.dart` (**`MF-US3-S3`**). For
+- [x] T044 [P] [US3] Write `mobile/test/core/widgets/large_text_test.dart` (**`MF-US3-S3`**). For
   every catalogue widget at `TextScaler.linear(2.0)`:
   - no overflow error;
   - every tappable target is at least 44 × 44 (`tester.getSize` on the semantics node's rect).
-- [ ] T045 [P] [US3] Write `mobile/test/core/widgets/semantics_test.dart` (**`MF-US3-S4`**).
+- [x] T045 [P] [US3] Write `mobile/test/core/widgets/semantics_test.dart` (**`MF-US3-S4`**).
   Every interactive catalogue widget exposes:
   - a label in the current locale;
   - its role (button, link, toggle, textField, slider/adjustable for the carousel);
   - its state (selected, enabled, checked).
 
   Use `tester.getSemantics` and `matchesSemantics`.
-- [ ] T046 [P] [US3] Write `mobile/test/core/gallery/gallery_page_test.dart` (**`MF-US3-S1`**):
+- [x] T046 [P] [US3] Write `mobile/test/core/gallery/gallery_page_test.dart` (**`MF-US3-S1`**):
   - the gallery lists one section per catalogue entry;
   - each section shows every state the catalogue names.
-- [ ] T047 [P] [US3] Write `mobile/test/goldens/components/components_golden_test.dart`
+- [x] T047 [P] [US3] Write `mobile/test/goldens/components/components_golden_test.dart`
   (`golden`): each component in its states, in four variants, at 360 wide. These are
   self-baselines that sit alongside the board comparison of the screens that use them.
 
@@ -386,7 +386,7 @@ and has component goldens.
 Each widget gets its own widget test file with size and states, written first, in
 `mobile/test/core/widgets/<file>_test.dart`.
 
-- [ ] T048 [P] [US3] Actions and surfaces in `mobile/lib/core/widgets/`:
+- [x] T048 (widget tests are grouped by the US3 checks over one catalogue registry, `lib/core/gallery/catalogue.dart`, plus the US1 per-widget tests) [P] [US3] Actions and surfaces in `mobile/lib/core/widgets/`:
   - `secondary_button.dart` (`.btn2`: 44 high, radius 9, 1 px `controlBorder`, 16/500);
   - `text_link.dart`;
   - `shoot_panel.dart` (`.panel` / `.sum`);
@@ -395,7 +395,7 @@ Each widget gets its own widget test file with size and states, written first, i
   - `group_label.dart`;
   - `summary_row.dart`;
   - `photo_tile.dart`.
-- [ ] T049 [P] [US3] Inputs in `mobile/lib/core/widgets/`:
+- [x] T049 [P] [US3] Inputs in `mobile/lib/core/widgets/`:
   - `shoot_field.dart` (44 high, radius 9, error and focus states, label above);
   - `shoot_text_area.dart` (min 92);
   - `picker_field.dart` (chevron, opens a `ShootSheet`);
@@ -405,7 +405,7 @@ Each widget gets its own widget test file with size and states, written first, i
   - `phone_field.dart` (52 high, +971 segment, 20 px number at 0.02em, tabular);
   - `otp_code_input.dart` (6 equal cells × 56 high, digits 26/500, one `TextField` underneath with
     `autofillHints: [AutofillHints.oneTimeCode]`, error shake from US4).
-- [ ] T050 [P] [US3] Status and data in `mobile/lib/core/widgets/`:
+- [x] T050 [P] [US3] Status and data in `mobile/lib/core/widgets/`:
   - `status_badge.dart` (24 high, pill, 13/500, tones);
   - `money.dart` (`AED 950`, locale digits, tabular);
   - `quote_lines.dart`;
@@ -414,7 +414,7 @@ Each widget gets its own widget test file with size and states, written first, i
   - `message_banner.dart` (`warn`/`msg` tones, live region);
   - `calendar_month.dart` (7-column grid, 44 cells, free/blocked/booked/today, the first weekday
     from the locale).
-- [ ] T051 [P] [US3] Content and graphics in `mobile/lib/core/widgets/`:
+- [x] T051 (2026-11-11: `GoldenHourScene` is the landing board's SVG, verbatim, recoloured from `ShootScene`; three colours in it have no role yet and stay literal until feature 010) [P] [US3] Content and graphics in `mobile/lib/core/widgets/`:
   - `creator_card.dart` (width `carouselRatio × screen width`, chosen = 2 px `accent`);
   - `snap_carousel.dart` (`PageView` with `viewportFraction = 296/360`, padding 32, dots that
     widen, "n of m" announced through `SemanticsService.announce`);
@@ -422,13 +422,13 @@ Each widget gets its own widget test file with size and states, written first, i
   - `scene_tile.dart` (three gradient variants by index, from `ShootScene` via `css_gradient`);
   - `golden_hour_scene.dart` (`SvgPicture.string` from the board's scene SVG with colours from
     `ShootScene`).
-- [ ] T052 [US3] Create `mobile/lib/core/gallery/gallery_page.dart`:
+- [x] T052 [US3] Create `mobile/lib/core/gallery/gallery_page.dart`:
   - one section per catalogue entry, every state, using placeholder data from
     `mobile/test/fixtures/` copied into `lib/core/gallery/gallery_fixtures.dart`;
   - language and theme switches at the top.
 
   Register `/_gallery` only under `kDebugMode`, in `mobile/lib/core/routing/app_router.dart`.
-- [ ] T053 [US3] Run the impeccable detector on the boards that use catalogue components (the
+- [x] T053 (2026-11-11: `.impeccable/review/mobile/detector-boards.md`; the material findings are in `designer-request.md` section 4) [US3] Run the impeccable detector on the boards that use catalogue components (the
   detector reads HTML, not Dart). Raise anything it flags with the owner as a canvas change, never as
   a silent app deviation. Then review the gallery's component goldens (T047) against the boards by eye
   and fix any widget that differs.
@@ -446,34 +446,34 @@ variants.
 
 ### Tests first
 
-- [ ] T054 [P] [US4] Write `mobile/test/core/motion/motion_policy_test.dart`:
+- [x] T054 [P] [US4] Write `mobile/test/core/motion/motion_policy_test.dart`:
   - **`MF-US4-S1`**: pump the error page (and each arrive widget) and `pump(5s)`; then
     `tester.binding.hasScheduledFrame` is false and no `Ticker` is active;
   - **`MF-US4-S2`**: with `disableAnimations: true`, the first frame's render tree equals the
     tree after `pumpAndSettle`. Compare the golden of frame 0 with the settled one.
-- [ ] T055 [P] [US4] Write `mobile/test/core/motion/ambient_pause_test.dart`
+- [x] T055 [P] [US4] Write `mobile/test/core/motion/ambient_pause_test.dart`
   (**`MF-US4-S3`**): two ambient children under `AmbientPause`. Pressing Pause stops both tickers;
   pressing it again restarts them. With reduced motion they never start.
 
 ### Implementation
 
-- [ ] T056 [US4] Create `mobile/lib/core/motion/motion_policy.dart`: `MotionPolicy.of(context)`
+- [x] T056 [US4] Create `mobile/lib/core/motion/motion_policy.dart`: `MotionPolicy.of(context)`
   returns `reduced` (from `MediaQuery.disableAnimationsOf`) and `selfStartedBudget`. The README
   notes that every self-started animation must finish inside the budget.
-- [ ] T057 [P] [US4] Create the arrive widgets in `mobile/lib/core/motion/`: `rise.dart` (with a
+- [x] T057 [P] [US4] Create the arrive widgets in `mobile/lib/core/motion/`: `rise.dart` (with a
   `Stagger` wrapper: 70 ms steps, first at 60), `focus_in.dart`, `roll.dart`, `draw_check.dart`,
   `grow.dart`, `deal.dart`, `write_in.dart` and `shake.dart`.
   - Each plays once per mount.
   - Each uses the durations and curves in `ShootArrive`.
   - Each builds its end state directly when `reduced` is set.
-- [ ] T058 [P] [US4] Create `mobile/lib/core/motion/glint.dart`: a sheen at 26 % width crosses
+- [x] T058 [P] [US4] Create `mobile/lib/core/motion/glint.dart`: a sheen at 26 % width crosses
   once, 1.1 s at 2.4 s, reversed in RTL. Add it to `TopHit` (the `glint: false` parameter turns it
   off).
-- [ ] T059 [P] [US4] Create `mobile/lib/core/motion/ambient_pause.dart`: an `AmbientPause`
+- [x] T059 [P] [US4] Create `mobile/lib/core/motion/ambient_pause.dart`: an `AmbientPause`
   inherited notifier plus a pause button widget, and `ambient.dart`, a base for looping children
   that stop when paused or reduced. Without an `AmbientPause` ancestor they assert in debug builds
   (FR-021).
-- [ ] T060 [US4] Apply `Stagger`/`Rise` to the content of screen 37 and the error page, and
+- [x] T060 [US4] Apply `Stagger`/`Rise` to the content of screen 37 and the error page, and
   `FocusIn` to `SceneTile` and `PhotoTile`. Confirm the goldens are unchanged, since they render
   with animations off.
 
@@ -538,15 +538,15 @@ variants.
 
 ## Phase 8: Polish & Cross-Cutting Concerns
 
-- [ ] T069 [P] Update `mobile/README.md`:
+- [x] T069 [P] Update `mobile/README.md`:
   - Themes: the type scale, the new roles and `ShootScene`;
   - a new "Design fidelity" section (commands, macOS-only goldens, the fonts);
   - "Add a feature" gains "build to the board, add the fidelity keys, add the screen to
     `fid/shipped.json`";
   - "Not done yet" loses the motion and scene lines.
-- [ ] T070 [P] Update `specs/design-system/README.md` and `.claude/skills/design-fidelity/SKILL.md`
+- [x] T070 [P] Update `specs/design-system/README.md` and `.claude/skills/design-fidelity/SKILL.md`
   with the calibrated thresholds from T034 and T042, and any `tokenise.overrides.json` entries.
-- [ ] T071 [P] Make the iOS check from quickstart manual check 9: screens 37 and 39 against their
+- [x] T071 (screen 37 on iPhone 17 in English and Arabic; screen 39 is release-only on device, covered by goldens and fidelity; notes in `.impeccable/review/mobile/ios-check.md`) [P] Make the iOS check from quickstart manual check 9: screens 37 and 39 against their
   boards in the iPhone simulator. Record notes in `.impeccable/review/mobile/`.
 - [ ] T072 Run the impeccable finish review on screens 37 and 39 and the gallery, using the four
   variant goldens and the review images, until it returns `ship`. Then run the documenter to

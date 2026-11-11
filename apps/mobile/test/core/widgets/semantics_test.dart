@@ -206,14 +206,15 @@ void main() {
           .getSemantics(find.byType(TextField))
           .getSemanticsData();
       expect(text.flagsCollection.isTextField, isTrue);
-      check(
-        tester,
-        find.byType(PickerField),
+      // The picker is its own button node, under the field frame's column.
+      expect(
+        find.semantics.byLabel('Emirate').evaluate().single,
         isSemantics(
           label: 'Emirate',
           value: 'Dubai',
           hint: 'opens a list',
           isButton: true,
+          hasTapAction: true,
         ),
       );
       semantics.dispose();

@@ -88,9 +88,8 @@ class CalendarMonth extends StatelessWidget {
           decoration: BoxDecoration(
             color: bg,
             borderRadius: BorderRadius.circular(ShootRadius.row),
-            border: isToday && state == DayState.free
-                ? Border.all(color: c.controlBorder)
-                : null,
+            // Today is marked on every state: an outline in the day's own ink.
+            border: isToday ? Border.all(color: ink, width: 1.5) : null,
           ),
           child: Text(
             '${day.day}',

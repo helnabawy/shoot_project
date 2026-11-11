@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shoot_mobile/core/motion/focus_in.dart';
+import 'package:shoot_mobile/core/motion/rise.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
@@ -32,8 +34,9 @@ class EmptyState extends StatelessWidget {
     const gap = SizedBox(height: ShootSpace.s2);
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: [
-        mark,
+      // The board's `main.mx`: the mark comes into focus, the rest rise in turn.
+      children: stagger([
+        FocusIn(child: mark),
         gap,
         if (meta case final m?) ...[
           gap,
@@ -64,7 +67,7 @@ class EmptyState extends StatelessWidget {
             ),
           ),
         ],
-      ],
+      ]),
     );
   }
 }

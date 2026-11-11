@@ -42,6 +42,21 @@ for every Arabic screen. Please confirm or correct:
 - **Dark corner glow.** Boards 42 and 43 use `rgba(74, 58, 47, 0.22)` at 36 % for the glow's middle
   stop. Is that the dark value to use everywhere? (The light one is `rgba(255, 233, 207, 0.6)` at 34 %.)
 
+## 4. From the design check of the boards
+
+The impeccable detector ran on every board (`.impeccable/review/mobile/detector-boards.md`):
+
+- **Price on the Top Hit** (boards 08, 17, 18, 19, 35: `S02b`, `S05b`, `S05c`, `S06b`, `S12`): the
+  price is `#fadcdc` on the red, 3.8:1, under AA's 4.5:1. Please use white (`on-primary`), as the
+  app does.
+- **Screens 37 and 39** stack an icon tile above the heading, a pattern the design check flags as
+  template-like. Keep or change?
+- **Screen 37's `404` line** above the heading reads as a kicker and is jargon for a client. Drop it,
+  or say it in words?
+- **Selected rows** (`.row.sel`) are shown by colour only (a blue wash and a blue label). Please add
+  a second cue, such as weight 500 or a trailing check.
+- **Links turn blue on hover**, including the label of the red Top Hit on the web (1.0:1).
+
 ## After the update
 
 Re-export the canvas into `specs/design-system/canvas/` and run `node build-manifest.mjs`. The changed

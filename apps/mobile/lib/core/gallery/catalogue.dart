@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shoot_mobile/core/l10n/bidi.dart';
 import 'package:shoot_mobile/core/motion/ambient_pause.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/widgets/calendar_month.dart';
@@ -26,6 +27,7 @@ import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon_button.dart';
 import 'package:shoot_mobile/core/widgets/shoot_panel.dart';
 import 'package:shoot_mobile/core/widgets/shoot_row.dart';
+import 'package:shoot_mobile/core/widgets/shoot_scaffold.dart';
 import 'package:shoot_mobile/core/widgets/snap_carousel.dart';
 import 'package:shoot_mobile/core/widgets/status_badge.dart';
 import 'package:shoot_mobile/core/widgets/step_strip.dart';
@@ -182,12 +184,24 @@ final List<CatalogueEntry> catalogue = [
       leading: IconTile(ShootIcons.person),
       onTap: _none,
     ),
-    'selected': (_) => const ShootRow(
-      label: 'Weddings',
-      leading: IconTile(ShootIcons.calendar),
-      selected: true,
-      onTap: _none,
-      divider: RowDivider.topAndBottom,
+    'option list, one selected': (_) => const Column(
+      children: [
+        ShootRow(
+          label: 'Portraits',
+          leading: IconTile(ShootIcons.person),
+          minHeight: 44,
+          padding: EdgeInsetsDirectional.symmetric(horizontal: 8, vertical: 7),
+          onTap: _none,
+        ),
+        ShootRow(
+          label: 'Weddings',
+          leading: IconTile(ShootIcons.calendar),
+          minHeight: 44,
+          padding: EdgeInsetsDirectional.symmetric(horizontal: 8, vertical: 7),
+          selected: true,
+          onTap: _none,
+        ),
+      ],
     ),
   }),
   CatalogueEntry('SummaryRow', {
@@ -299,6 +313,14 @@ final List<CatalogueEntry> catalogue = [
       selected: 1,
       onSelect: (_) {},
     ),
+    'selected without a state line': (_) => StepStrip(
+      tabs: const [
+        (label: 'Details', state: 'Done', tone: StepTone.done),
+        (label: 'Payout', state: null, tone: StepTone.neutral),
+      ],
+      selected: 1,
+      onSelect: (_) {},
+    ),
   }),
   CatalogueEntry('MessageBanner', {
     'attention': (_) => const MessageBanner(
@@ -311,7 +333,18 @@ final List<CatalogueEntry> catalogue = [
     ),
   }),
   CatalogueEntry('CalendarMonth', {
-    'December': (_) => CalendarMonth(
+    'today free': (_) => CalendarMonth(
+      month: DateTime(2026, 12),
+      today: DateTime(2026, 12, 9),
+      stateOf: (d) => d.day == 14
+          ? DayState.booked
+          : d.day >= 20 && d.day <= 22
+          ? DayState.blocked
+          : DayState.free,
+      dayLabel: (d, s) => '${d.day} December, ${s.name}',
+      onDayTap: (_) {},
+    ),
+    'today booked': (_) => CalendarMonth(
       month: DateTime(2026, 12),
       today: DateTime(2026, 12, 14),
       stateOf: (d) => d.day == 14
@@ -324,21 +357,21 @@ final List<CatalogueEntry> catalogue = [
     ),
   }, mirrors: false),
   CatalogueEntry('CreatorCard', {
-    'chosen': (_) => const CreatorCard(
+    'chosen': (_) => CreatorCard(
       label: 'Omar K., wedding photographer, AED 950',
       chosen: true,
       onTap: _none,
       children: [
-        SizedBox(height: 120, child: SceneTile()),
-        Text('Omar K.'),
+        const SizedBox(height: 120, child: SceneTile()),
+        Builder(builder: (context) => Text(isolate(context, 'Omar K.'))),
       ],
     ),
-    'not chosen': (_) => const CreatorCard(
+    'not chosen': (_) => CreatorCard(
       label: 'Sara M., wedding photographer, AED 1,100',
       onTap: _none,
       children: [
-        SizedBox(height: 120, child: SceneTile(variant: 1)),
-        Text('Sara M.'),
+        const SizedBox(height: 120, child: SceneTile(variant: 1)),
+        Builder(builder: (context) => Text(isolate(context, 'Sara M.'))),
       ],
     ),
   }),
@@ -346,24 +379,68 @@ final List<CatalogueEntry> catalogue = [
     'three cards': (_) => SnapCarousel(
       height: 60,
       positionLabel: (n, m) => '${n + 1} of $m',
-      children: const [
+      children: [
         CreatorCard(
           label: 'Omar K.',
           onTap: _none,
           chosen: true,
-          children: [Text('Omar K.')],
+          children: [
+            Builder(builder: (context) => Text(isolate(context, 'Omar K.'))),
+          ],
         ),
         CreatorCard(
           label: 'Sara M.',
           onTap: _none,
-          children: [Text('Sara M.')],
+          children: [
+            Builder(builder: (context) => Text(isolate(context, 'Sara M.'))),
+          ],
         ),
         CreatorCard(
           label: 'Lina R.',
           onTap: _none,
-          children: [Text('Lina R.')],
+          children: [
+            Builder(builder: (context) => Text(isolate(context, 'Lina R.'))),
+          ],
         ),
       ],
+    ),
+  }),
+  CatalogueEntry('ShootIcon', {
+    'set': (_) => Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      children: [
+        for (final icon in ShootIcons.values)
+          ShootIcon(
+            icon,
+            size: 20,
+            strokeWidth: 2,
+            color: const Color(0xFF5C5752),
+          ),
+      ],
+    ),
+  }),
+  CatalogueEntry('ChipGroup', {
+    'wrapping': (_) => ChipGroup(
+      children: [
+        for (final label in [
+          'Weddings',
+          'Engagements',
+          'Portraits',
+          'Family',
+          'Products',
+          'Food and drinks',
+          'Property',
+        ])
+          ShootChip(label: label, on: label == 'Portraits', onTap: _none),
+      ],
+    ),
+  }),
+  CatalogueEntry('ShootScaffold', {
+    'with corner glow': (_) => const SizedBox(
+      width: 320,
+      height: 200,
+      child: ShootScaffold(child: Center(child: GroupLabel('Content'))),
     ),
   }),
   CatalogueEntry('EmptyState', {

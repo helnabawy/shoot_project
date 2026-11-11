@@ -149,6 +149,21 @@ colors:
   night-accent-graphite-wash: "rgb(255 255 255 / 0.12)"
   night-accent-graphite-focus: "#e8e6e3"
   night-accent-blue-wash: "rgb(43 107 235 / 0.14)"
+  body-ink: "#3a342f"
+  surface-sunk: "#e6e0d9"
+  corner-glow-mid: "rgb(255 233 207 / 0.6)"
+  scene-tile-top: "#ecd6bd"
+  scene-tile-bottom: "#caa07c"
+  scene-tile-key: "rgb(255 246 232 / 0.92)"
+  scene-tile-alt-top: "#f1dcc4"
+  scene-tile-alt-bottom: "#e6c8a8"
+  scene-tile-deep: "#b98a66"
+  scene-tile-2-top: "#e6cdb4"
+  scene-tile-2-bottom: "#c0946f"
+  scene-tile-3-top: "#f1e3d3"
+  scene-tile-3-bottom: "#d0a886"
+  scene-tile-key-2: "rgb(255 246 232 / 0.85)"
+  scene-tile-key-3: "rgb(255 246 232 / 0.9)"
 typography:
   display:
     fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif"
@@ -467,6 +482,8 @@ The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingu
 
 **2026-11-11 (feature 006, mobile accent colour).** The Flutter app's Appearance sheet and its five accents were recorded from the shipped build (`lib/core/theme/shoot_accent.dart`, `lib/core/widgets/appearance_sheet.dart`, `app_bar_actions.dart`). The web has no accent setting and is unchanged. No new radius, shadow or type step; the sheet is the existing Result Row grammar.
 
+**2026-11-11 (feature 007, mobile foundation).** The Flutter app's component catalogue was recorded from the shipped build (`lib/core/widgets/`, `lib/core/motion/`, `lib/core/theme/`, `lib/core/l10n/bidi.dart`): see Mobile Component Catalogue under Components. The roles `body-ink`, `surface-sunk`, `corner-glow-mid` and the scene-tile shades join the frontmatter at their light values; their dark values (in that section) are proposals awaiting the owner, except the settled dark scene-tile top, bottom and key. The web is unchanged.
+
 ## Colors
 
 A warm-neutral, near-monochrome palette with exactly one saturated voice, selection blue, and one warning tint, peach. Every value lives once in `apps/web/src/app/(site)/globals.css` as a role (`--ground`, `--ink`, `--mute`, …); components consume roles, never hex.
@@ -733,6 +750,98 @@ The theme and accent chooser, a modal bottom sheet opened from the contrast icon
 - **Tile:** 30 px, 8 px corners. A theme row holds an 18 px outlined icon in tile ink on the resting tile (auto, light, dark); an accent row holds the accent's fill for the current theme as a flat swatch with a 1 px hairline border, so the tile previews the colour it will apply.
 - **Current choice, three signals:** the row takes the `selected` fill; the label turns semibold in `accentInk`; a 20 px check in `accentInk` fills the trailing slot (empty on other rows). The screen reader reads it too: each row is one checked, mutually exclusive radio-style node named by its label. Colour is never the only signal.
 - **Not here:** no switch, slider or segmented control; no red (the sheet has no primary action); the swatch is not drawn as a ring or a dot.
+
+### Mobile Component Catalogue (Flutter app)
+Flutter app only (feature 007), recorded from the shipped widgets in `apps/mobile/lib/core/widgets/` and `lib/core/motion/`. Each widget is one file that implements one board CSS class from the design canvas (`specs/design-system/canvas/`); when the board's markup changes, the widget follows. 1 CSS px is 1 logical px. Colours are roles read through `context.colors` and `context.scene`, never hex; text arrives through parameters, so no component holds copy of its own. Every component has a widget test (states, RTL, large text, semantics), a golden in four variants (English and Arabic, light and dark, `test/goldens/components/goldens/<Component>/`) and an entry in the gallery (`lib/core/gallery/catalogue.dart`). For the app the boards are the authority; where a board differs from the web, the difference is named in place and the web rules above stay web rules.
+
+#### Roles the app adds
+- **Body Ink** (`body-ink`; dark #D9D3CD, proposed): running text in the Body role and Rich Content paragraphs. Holds 4.5:1 or more on ground, panel, panel-solid and tile.
+- **Surface Sunk** (`surface-sunk`; dark #2C2C31, proposed): a step below the ground; the fill of the app's Icon Tile (the web's glyph tile stays tile stone).
+- **Corner Glow Mid** (`corner-glow-mid`; dark rgb(110 78 54 / 0.24), proposed): the Corner Glow's 34 % stop, between `corner-glow` at the centre and transparent at 68 %.
+- **Scene Tile shades** (graphic only, never a control, border or text colour): `scene-tile-top`, `-bottom` and `-key` paint the first Scene Tile variant, `scene-tile-2-top`, `-2-bottom` and `-key-2` the second, `scene-tile-3-top`, `-3-bottom` and `-key-3` the third; `scene-tile-alt-top`, `scene-tile-alt-bottom` and `scene-tile-deep` are drawn by the Golden Hour Scene. Dark values for the alt, deep, 2 and 3 shades and for key-2 and key-3 are proposals awaiting the owner; the dark top, bottom and key are settled in `tokens.css`.
+- The widgets also read `control-border` (the 1 px stroke of buttons, fields, chips and the segmented control), `success` / `on-success` and `danger` / `on-danger` (badges, field errors, the error banner) and the scene roles `scene-dune`, `scene-ink`, `corner-glow` and `glint-sheen`, all defined in `specs/design-system/tokens.css`.
+
+#### Type scale
+`ShootType`, mirrored from the `--text-*` tokens. No family is named: the platform face (SF on iOS, Roboto on Android) with Noto Sans Arabic as the fallback. Line-height is the CSS line-height with the half-leading split evenly; letter-spacing is em times size. Colour is set where the role is used. `ShootType.num` adds tabular figures for prices, codes, counts and dates.
+- **Wordmark** (700, 22 px, 1, −0.03em): the brand name in the header.
+- **Display** (700, 34 px, 1.2, −0.03em): a screen's h1; **Display Sign-in** is the same at 30 px on the sign-in boards.
+- **Title** (700, 26 px, 1.25, −0.025em): the empty-state title and level-2 rich-content headings.
+- **Heading** (600, 20 px, 1.3, −0.01em): level-3 rich-content headings.
+- **Action** (600, 17 px, 1.2): the Top Hit label.
+- **Row** (400, 16 px, 1.3): row labels, field text (1.25 in a field, 1.375 in a text area and on quotation lines) and calendar days.
+- **Button** (500, 16 px, 1.2): secondary buttons; the Top Hit price uses it at 15 px.
+- **Body** (400, 15 px, 1.6): running text in body ink; mute in an empty state.
+- **Chip** (400, 15 px, 1.2; 500 when on): chips, segments, step tabs (500) and summary rows (1.3).
+- **Meta** (400, 13 px, 1.4): field labels in mute, field errors in on-danger, step state lines.
+- **Badge** (500, 13 px, 1.2): status badges.
+- **Group Label** (600, 11 px, 1.3, 0.06em, uppercase, mute): group headers. Arabic has no case and is never uppercased; The Arabic Label Rule applies.
+
+#### Shapes and depth
+Radii are the web's steps plus two: key hint 5, message 6, tile 8, row 9, photo tile 10, large photo 12, panel 14, sheet 20 (top corners only) and pill. The app has three shadows, each converted from its CSS value so the blur matches (`cssShadow`): **panel** (0 24 60, warm brown at 22 %; black at 50 % in dark) under the Floating Panel; **sheet** (0 −8 32, warm brown at 14 %; black at 50 % in dark) cast upward by a sheet; **lift** (0 1 2, black at 6 %; 40 % in dark) under the solid panel and the creator card. The web's One Shadow Rule governs the web; the app's boards carry these three.
+
+#### Shell
+- **ShootScaffold** (`.root`): the ground, the Corner Glow behind everything, the safe areas, and the content centred in a column no wider than 600 px on tablets.
+- **ShootHeader** (`.hd`): 58 px tall; inline padding 20 at the start (12 when it leads with a 44 px back button) and 12 at the end; the wordmark or back button and title at the start, a row of actions at the end. The back chevron mirrors in Arabic.
+- **Wordmark** (`.wm`): the brand name in Wordmark type, ink; a link home, announced with the name.
+- **ShootIconButton** (`.ib`): 44 × 44, transparent, a 20 px ink icon (stroke 2), pressed ink well at 9 px corners; `label` is required and is what a screen reader says; without a handler it is disabled. **ShootTextAction** is its text form (at least 44 × 44, 10 px inline padding, 15 px medium ink), used by the header's language action, which shows the other language's name in that language.
+
+#### Actions
+- **TopHit** (`.top`): the screen's one primary action. Full width, at least 50 px tall (it grows with the text size instead of clipping), 9 px corners, `primary` fill, `on-primary` label in Action type; padding 10 12, gap 12; an optional 20 px leading icon, a trailing price (15 px medium, tabular) and a 16 px chevron. The `centered` form (boards 37, 38) is the label alone, centred. States: pressed deepens to `primary-hover` (120 ms); disabled is `primary` at 45 %; loading swaps the chevron for a 16 px progress indicator and ignores taps. One button node whose label includes the price. One glint (see Motion), off with `glint: false` and never while disabled or loading. It never takes the accent (The Fixed Red Rule).
+- **SecondaryButton** (`.btn2`): 44 px tall, 9 px corners, 1 px `control-border`, padding 0 14, an optional 16 px icon 8 px before the label, Button type in ink; pressed `selected-hover`; disabled text and icon turn mute.
+- **TextLink** (`a`): `accent-ink` at 500 over the surrounding type, a link node, with a 44 px minimum target height however small the text.
+
+#### Surfaces and rows
+- **ShootPanel** (`.panel`; `.sum` with 8 px padding): `panel-solid`, 1 px hairline, 14 px corners, the lift shadow.
+- **FloatingPanel** (`.bar`): the translucent `panel` over a 20 px backdrop blur, 1 px hairline, 14 px corners, the panel shadow.
+- **ShootSheet**: `panel-solid`, 20 px top corners, the sheet shadow; it scopes a route and is named by its label.
+- **GroupLabel** (`.gl`): Group Label type in mute, marked as a header.
+- **ShootRow** (`.row`): at least 48 px, padding 4 0, gap 12, Row type in ink; an optional leading Icon Tile or Photo Tile, an optional trailing value and a 16 px mute chevron that mirrors in Arabic. Denser boards (37) pass 44 px, 15 px and hairlines (top, or top and bottom, drawn outside the minimum height). Selected: the `selected` wash at 9 px corners with 8 px more inline padding and an `accent-ink` label; pressed `selected-hover`. A link node by default, a button when it does not navigate.
+- **SummaryRow** (`.srow`): at least 44 px, padding 4 8, gap 12, Chip type at 1.3 in ink, the value at the end in tabular figures; read-only, one node.
+- **IconTile** (`.t30`): 30 px, 8 px corners, `surface-sunk`, a 16 px `tile-ink` icon (stroke 2.2). `IconTile.large` (`.tile`) is 44 px, 10 px corners, 20 px icon (stroke 2), the mark above an empty state; `IconTile.big` (`.big`) is 56 px, 14 px corners, 26 px icon (stroke 1.8), the mark above an error state. Decorative.
+- **PhotoTile** (`.photo`): 44 px, 10 px corners; the photograph cover-cropped, or a Scene Tile while there is none, never an invented photo. It comes into focus on arrival. Decorative unless labelled.
+
+#### Inputs
+- **ShootField** (`.field`): the label above in Meta mute (6 px gap), then a 44 px box: 9 px corners, 1 px `control-border`, `panel-solid`, padding 12, Row text in ink, an accent caret, the hint in mute. Focus: a 2 px `focus` stroke. Error: an `on-danger` stroke and the message 6 px below in Meta `on-danger`, a live region. Disabled: a hairline stroke and mute text.
+- **ShootTextArea** (`textarea.field`): the same, at least 92 px tall and three lines, padding 10 12, growing with its text.
+- **PickerField** (`button.field`): the field's look with the value in ink (or the placeholder in mute) on one line and a 16 px mute chevron-down; it opens a list in a sheet. One button node carrying its label, value and the hint "opens a list".
+- **ShootChip** and **ChipGroup** (`.chip`, `.chips`): at least 40 × 44, 9 px corners, 1 px `control-border`, padding 0 14, Chip type in ink. On: `accent` fill and border, `on-accent` label at 500 (120 ms). A toggle with its state. The group wraps with 8 px gaps.
+- **SegmentedControl** (`.seg`): a 1 px `control-border` box, 9 px corners, clipped; equal segments at least 40 px, Chip type; the chosen segment is ink with ground text at 500. A radio group (each segment checked or not, mutually exclusive). The web header's theme control is a raised chip on a track instead; the app's boards keep the solid ink segment.
+- **PhoneField** (`.ph`): 52 px, 9 px corners, `panel-solid`, 1 px `control-border` (`on-danger` on error), laid out left to right in both languages. The country-code segment (at least 44 px, 12 px inline padding, 18 px tabular, a hairline at its inline end) is a button named in full ("Country code, United Arab Emirates, +971"); the number is 20 px, 0.02em, tabular, digits and spaces only, with national-number autofill.
+- **OtpCodeInput** (`.boxes`, `.box`; boards 11, 21, 22): six equal cells, 8 px apart, 56 px tall, 9 px corners, `panel-solid`, 1 px `control-border`, digits 26 px medium tabular, left to right in both languages. While focused the next cell takes a 2 px `focus` stroke; an error turns the strokes `on-danger` and shakes once per new error. One hidden real text field carries focus, the keyboard, paste and one-time-code autofill, so assistive technology meets a single field.
+
+#### Status and data
+- **StatusBadge** (`.badge`): at least 24 px, pill, padding 0 10, gap 6, a 6 px dot in the badge's ink, Badge type. Tones: attention (`attention` / `on-attention`), success (`success` / `on-success`), danger (`danger` / `on-danger`), neutral (`tile` / `tile-ink`) and accent (`selected` / `accent-ink`). The words always name the state; colour is never the only signal. App only: the web has no success green and no coloured badges (The Material Not Icons Rule); the app's boards carry the badge.
+- **QuoteLines** (`.ln`, `.tot`): each line at least 44 px, padding 8 0, gap 12, Row type at 1.375; the label with an optional Meta detail under it, the amount at the end through Money; hairlines between lines. A 2 px ink rule sits 4 px under the last line; the total follows it (12 px above, 8 below), both sides at 500, with an optional note under the word Total. Each line is read as one sentence.
+- **Money** (`.num`): "AED 950" with English grouping, tabular figures, set left to right and never wrapped; Western digits in Arabic too, as on the Arabic boards.
+- **ProgressBar** (`.track`): 6 px tall, 3 px corners, a track of ink at 8 %, the `accent` fill from the inline start; it grows in once. Read as its label and a percentage.
+- **StepStrip** (`.tabs`, `.tab`): a horizontal scroller over a hairline; tabs 4 px apart, at least 44 × 44, padding 12 12 4, label in Chip type at 500 in mute; the selected tab is ink with a 2 px ink underline. An optional state line under the label (Meta, 1.25, 2 px above): done in `accent-ink`, attention in `on-attention` on a peach chip (5 px corners, 4 px inline padding), otherwise mute. Each tab is read with its state; the selected one is announced.
+- **MessageBanner** (`.warn`, `.msg`): attention is 9 px corners, padding 12 14, 14 px at 1.5, `attention` / `on-attention`; error is 6 px corners, padding 12 16, 15 px at 1.8, `danger` / `on-danger`, led by a 16 px alert icon 10 px before the text, and a live region.
+- **CalendarMonth** (`.grid`, `.cell`; board 31): seven columns 2 px apart, cells 44 px tall, 9 px corners, Row type tabular; the week starts on the locale's first day. Free: plain ink. Blocked: an ink cell with white text (ground in dark) at 600. Booked: the `selected` fill with `accent-ink` at 600, fixed and not tappable. Today: a 1.5 px outline in that day's own ink, on any state. Every day is read with its state.
+
+#### Content
+- **CreatorCard** (`.card`): a creator in the Quick Match rail. 296/360 of the screen width, `panel-solid`, 1 px hairline (2 px `accent` when chosen, with the padding dropping from 10 to 9 so the content holds still), 14 px corners, padding 10, gap 10, the lift shadow; the border change takes 180 ms. A button with its selected state. It is not the web's Network Strip card.
+- **SnapCarousel** (`.rail`, `.dots`): cards snap to the centre, 12 px apart, 4 px above and 8 below; the rail's height grows with the text size (up to 3×). Dots 6 px, 6 px apart, the current one 18 px wide in full ink, the rest ink at 20 % (180 ms). It announces "n of m" on every change and is adjustable for screen readers; a programmatic move takes 260 ms.
+- **EmptyState** (boards 08, 37–40): a centred column: the mark (usually `IconTile.large`), an optional Meta line, the Title in ink (a header), the body in Body type, mute, at most 260 px wide; 8 px between parts with 8 more under the mark. The mark comes into focus and the rest rise in turn.
+- **RichContent** (boards 34–36): CMS text as a plain node list from the API, never HTML. Paragraphs in Body type and body ink; level-2 headings in Title, level-3 in Heading (headers); lists with a 24 px marker column at the inline start; links as TextLink; quotes in italic with a 3 px hairline rule at the inline start and 16 px padding. 16 px between blocks.
+
+#### Graphics
+- **SceneTile** (`.sc`): the honest placeholder where a photo will go. Three layers clipped to its corners (10 px by default): a linear sweep, the low dune ellipse (`scene-dune`) and a radial key light. Three variants cycle by position as the board's CSS picks them (first, every second, every third), each with its own sweep angle (160°, 200°, 140°), key position and shades. An optional glyph or initials sit centred in `scene-ink`. Decorative.
+- **GoldenHourScene**: the boards' inline hero and splash SVG with every role placeholder filled from the scene roles of the current theme, cover-cropped and anchored at the bottom. Decorative. Its key-light loop belongs to the landing, under the pause control.
+- **CornerGlow** (`.root::before`): a 400 px circle at top −130 and inline end −100, a radial `corner-glow` to `corner-glow-mid` at 34 % to transparent at 68 %; it ignores the pointer and mirrors in Arabic.
+- **ShootIcon**: the boards' line icons copied verbatim from their inline SVG (24 px view box, round caps and joins), recoloured in place; stroke 2.2 at 16 px and 2 at 20 px. The set: search-question, person, calendar, chevron, back, chevron-down, whatsapp, home, refresh, alert, pause, play. Chevron and back mirror in Arabic; decorative unless labelled.
+
+#### Motion
+Three tiers (`ShootMotion`, `ShootArrive`, `ShootAmbient` in `shoot_tokens.dart`). `MotionPolicy` reads reduced motion from the platform setting.
+- **React** answers the person: fast 120 ms, base 180 ms, slow 260 ms on `ease-standard` (cubic-bezier(0.2, 0, 0, 1)), exits on cubic-bezier(0.4, 0, 1, 1). The Top Hit press and a chip toggle take fast; the creator card border and the carousel dots base; a carousel move slow. Under reduced motion each is zero and the carousel jumps.
+- **Arrive** plays once when a thing first appears, its delay part of the same animation. Rise: opacity and 14 px up, 500 ms; `stagger` starts the first child at 60 ms and each next 70 ms later. FocusIn: opacity, blur 10 to 0, scale 1.06 to 1, 700 ms after 250 ms. Roll: a number slides up from 110 %, clipped, 700 ms after 550 ms. DrawCheck: the tick draws in, 500 ms after 500 ms plus 80 ms per item. Grow: scales in from the inline start, 900 ms after 350 ms. Glint: a 26 %-wide sheen skewed 18° crosses the Top Hit once, 1.1 s after 2.4 s, from the inline start (reversed in Arabic), clipped to the button only while it crosses. WriteIn: reveals from the inline start, 1.1 s, linear. Deal: fades in from 56 px toward the inline end, 600 ms, cards 70 ms apart. Shake: −6, 6, −4, 3 px over 450 ms each time the error count grows, never on first build.
+- **Ambient** is rationed: loops run only on the landing, under `AmbientPause` with its 44 px Pause / Play icon button on screen (an ambient loop without that scope above it fails an assertion). Periods: glint 7 s, key light 14 s, settle 5 s, drift 44 s, pulse 2.4 s.
+
+**The Five Second Rule.** Motion the person did not start ends within 5 s on every screen but the landing's paused loops (WCAG 2.2.2). Arrive sequences are designed inside it: the longest, the Top Hit glint, ends at 3.5 s.
+
+**The Finished State Rule.** With reduced motion an arrive widget builds its finished state on the first frame, with no ticker and no layers around it: the finished state is the child itself. The glint never shows, a shake does not move (the error text says what happened) and ambient loops never start.
+
+#### Direction isolation
+**The Isolated Data Rule.** Latin data inside Arabic is direction-isolated. `isolate(context, text)` in `lib/core/l10n/bidi.dart` wraps a data string in first-strong isolates (U+2068 to U+2069) when its first strong character runs against the screen's direction, so "Omar K." never becomes ".Omar K" and "4 hours, Dubai" never "hours, Dubai 4". Every data string a widget shows goes through it, because the English fallback brings Latin text into the Arabic interface; today Shoot Row labels, Summary Row labels and quotation labels and details do. Figures that must read left to right are set left to right outright instead: Money, the Phone Field and the one-time code.
 
 ## Do's and Don'ts
 

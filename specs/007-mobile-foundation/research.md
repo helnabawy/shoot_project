@@ -124,6 +124,12 @@ Decisions for feature 007. Each entry gives the **Decision**, then the **Rationa
   same content and state as the English boards, and to confirm the Arabic type rules. The Arabic
   derivation (T038–T042) waits for them. Request: [designer-request.md](designer-request.md).
 
+- **Decision (2026-11-11, finish review)**: digits and Latin data stay in their own direction inside
+  Arabic. The phone field, the one-time code and prices (`AED 950`) stay left to right, as on the
+  designer's Arabic boards (board 42 sets `.boxes{direction:ltr}`; board 43 keeps `AED 700`); names
+  and phrases supplied as data are wrapped in a first-strong isolate when their direction differs
+  from the screen's (`lib/core/l10n/bidi.dart`).
+
 ## R7. Fonts and determinism
 
 - **Decision**:

@@ -12,8 +12,9 @@ typedef ArriveBuilder = Widget Function(
 );
 
 /// The base of every arrive widget: plays once per mount, after [delay], over [duration] with
-/// [curve]. With reduced motion it builds the finished state (t = 1) on the first frame and never
-/// starts a ticker.
+/// [curve]. The delay is part of the animation (an interval), so it runs on frames like the rest.
+/// With reduced motion it builds the finished state on the first frame and never starts a ticker;
+/// the finished state is always [child] itself, with no layers around it.
 class Arrive extends StatefulWidget {
   const Arrive({
     super.key,
@@ -36,7 +37,7 @@ class Arrive extends StatefulWidget {
 
 class _ArriveState extends State<Arrive> with SingleTickerProviderStateMixin {
   AnimationController? _controller;
-  Timer? _timer;
+  late Curve _curve;
   bool _decided = false;
 
   @override
@@ -45,20 +46,18 @@ class _ArriveState extends State<Arrive> with SingleTickerProviderStateMixin {
     if (_decided) return;
     _decided = true;
     if (MotionPolicy.of(context).reduced) return; // finished state, no ticker
-    final c = AnimationController(vsync: this, duration: widget.duration);
+    final total = widget.delay + widget.duration;
+    final start = total.inMicroseconds == 0
+        ? 0.0
+        : widget.delay.inMicroseconds / total.inMicroseconds;
+    _curve = Interval(start, 1, curve: widget.curve);
+    final c = AnimationController(vsync: this, duration: total);
     _controller = c;
-    if (widget.delay == Duration.zero) {
-      unawaited(c.forward());
-    } else {
-      _timer = Timer(widget.delay, () {
-        if (mounted) unawaited(c.forward());
-      });
-    }
+    unawaited(c.forward());
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
     _controller?.dispose();
     super.dispose();
   }
@@ -66,12 +65,13 @@ class _ArriveState extends State<Arrive> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final c = _controller;
-    if (c == null) return widget.builder(context, 1, widget.child);
+    if (c == null) return widget.child;
     return AnimatedBuilder(
       animation: c,
       child: widget.child,
-      builder: (context, child) =>
-          widget.builder(context, widget.curve.transform(c.value), child!),
+      builder: (context, child) => c.isCompleted
+          ? child!
+          : widget.builder(context, _curve.transform(c.value), child!),
     );
   }
 }

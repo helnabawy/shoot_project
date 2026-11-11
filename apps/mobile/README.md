@@ -186,8 +186,44 @@ Light and dark are both first-class. The app follows the device until the person
   surface in either theme; `accent_palette_test.dart` does the same for every accent (text 4.5:1,
   focus ring 3:1) and checks no accent is close to the primary red or the danger state.
 - When a token changes on the web, change it here in the same pull request.
-- Not mirrored yet: the graphic-only scene, sweep and glow colours, the shadows and the "arrive"
-  and "ambient" motion tiers. Add them with the spec that first uses them.
+- Type (feature 007): `shoot_type.dart` holds the board roles (wordmark, display, title, heading,
+  action, row, button, body, chip, meta, badge, group label) with CSS letter-spacing converted to
+  pixels and even half-leading, as CSS draws it. `ShootType.num` adds tabular figures.
+- Graphic colours (scene, sweep, corner glow, glint, pulse) are the `ShootScene` theme extension
+  (`context.scene`); shadows are `ShootShadows` built with `cssShadow`, which converts a CSS blur to
+  Flutter's; `css_gradient.dart` paints CSS linear and radial gradients on any box.
+  `tokens_parity_test.dart` fails if any colour in `tokens.css` differs from its Dart role.
+- Motion (`lib/core/motion/`): the react tier in `shoot_tokens.dart`; the arrive tier (`Rise`,
+  `stagger`, `FocusIn`, `Roll`, `DrawCheck`, `Grow`, `Deal`, `WriteIn`, `Shake`, the Top Hit
+  `Glint`) plays once; the ambient tier (`Ambient`) loops only under an `AmbientPause` with its
+  Pause control. Every self-started animation ends within 5 s (`MotionPolicy.selfStartedBudget`),
+  and with reduced motion every widget shows its finished state on the first frame.
+
+## Widgets and the gallery
+
+Every screen is built from `lib/core/widgets/`, one widget per board class (the catalogue is
+`specs/007-mobile-foundation/contracts/component-catalogue.md`). `lib/core/gallery/catalogue.dart`
+lists each component with its states; the debug-only gallery at `/_gallery` shows them with
+language and theme switches, and the RTL, large-text, semantics and component-golden tests walk
+the same list. A widget holds no copy: text comes in through parameters.
+
+## Design fidelity
+
+Each screen is proven against its canvas board (`specs/design-system/canvas/`), pixel by pixel.
+
+```bash
+tool/goldens.sh             # golden tests (macOS with Flutter 3.47.9 only); fails on any change
+tool/goldens.sh --update    # rewrite the app's goldens after a deliberate change
+pnpm fidelity               # (repo root) render the boards, compare every shipped screen's goldens
+pnpm fidelity:report        # open the report: side-by-side and overlay per screen and variant
+```
+
+- Goldens are made and checked on macOS only, with the pinned Flutter, by `tool/goldens.sh` and
+  the macOS CI job; a plain `flutter test` skips them.
+- Text is drawn with the vendored test fonts (`test/fonts/`, Roboto and Noto Sans Arabic); the app
+  itself ships no font.
+- The gates: at most 1 % of pixels differ (2 % on text-heavy boards) and every key element is
+  within 1 px. Calibration on screens 37 and 39: 0.12 % to 0.31 %.
 
 ## Add a feature
 
@@ -206,8 +242,12 @@ its shape, not its content.
 5. **Strings.** Add every string to both ARB files, with a description in `app_en.arb`.
 6. **Wire it.** Add `<feature>_injection.dart`, call it from `core/di/injection.dart`, and add the
    route in `core/routing/app_router.dart`.
-7. **Check.** `flutter analyze` and `flutter test` pass, and the screen is verified in English and
-   Arabic, light and dark, on a small phone.
+7. **Build to the board.** Assemble the screen from catalogue widgets, add a
+   `ValueKey('fidelity:<box>')` for every box the manifest names, write
+   `test/goldens/screens/<id>_<name>_golden_test.dart` (four variants and self-baselines), run
+   `tool/goldens.sh --update`, and add the feature to `tools/design-fidelity/shipped.json`.
+8. **Check.** `flutter analyze`, `flutter test`, `tool/goldens.sh` and `pnpm fidelity` pass, and
+   the screen is verified in English and Arabic, light and dark, on a small phone.
 
 Remove `service_health` once the first real feature has replaced it as the home route.
 
@@ -217,5 +257,7 @@ Remove `service_health` once the first real feature has replaced it as the home 
 - The home-screen name is "Shoot" on iOS in every language (Android shows "شوت" in Arabic). The
   Arabic name on iOS needs an `InfoPlist.strings` added in Xcode.
 - App icon and launch screen are the Flutter defaults.
-- No CI job runs `flutter analyze` and `flutter test` yet.
+- The CI job `mobile` exists; branch protection must require it.
+- Arabic references for the fidelity check wait for the designer's Arabic dark boards
+  (`specs/007-mobile-foundation/designer-request.md`).
 - No flavors (separate dev/staging/production apps); `APP_ENV` is a build-time value only.

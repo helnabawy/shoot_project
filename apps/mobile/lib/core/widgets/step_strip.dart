@@ -34,53 +34,61 @@ class StepStrip extends StatelessWidget {
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(
-          spacing: ShootSpace.s1,
-          children: [
-            for (final (i, tab) in tabs.indexed)
-              Semantics(
-                selected: i == selected,
-                button: true,
-                label: [tab.label, ?tab.state].join(', '),
-                onTap: () => onSelect(i),
-                excludeSemantics: true,
-                child: GestureDetector(
+        // Every tab takes the strip's full height, so labels share a top line and each
+        // underline sits on the hair rule, with or without a state line.
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: ShootSpace.s1,
+            children: [
+              for (final (i, tab) in tabs.indexed)
+                Semantics(
+                  selected: i == selected,
+                  button: true,
+                  label: [tab.label, ?tab.state].join(', '),
                   onTap: () => onSelect(i),
-                  child: Container(
-                    constraints: const BoxConstraints(
-                      minHeight: 44,
-                      minWidth: 44,
-                    ),
-                    padding: const EdgeInsetsDirectional.symmetric(
-                      horizontal: 12,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: i == selected ? c.ink : Colors.transparent,
-                          width: 2,
-                        ),
+                  excludeSemantics: true,
+                  child: GestureDetector(
+                    onTap: () => onSelect(i),
+                    child: Container(
+                      constraints: const BoxConstraints(
+                        minHeight: 44,
+                        minWidth: 44,
                       ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          tab.label,
-                          style: ShootType.chip.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: i == selected ? c.ink : c.mute,
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                        12,
+                        12,
+                        12,
+                        4,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: i == selected ? c.ink : Colors.transparent,
+                            width: 2,
                           ),
                         ),
-                        if (tab.state case final s?) _StateLine(s, tab.tone),
-                      ],
+                      ),
+                      child: Column(
+                        // Labels share a line whether or not a tab has a state line.
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            tab.label,
+                            style: ShootType.chip.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: i == selected ? c.ink : c.mute,
+                            ),
+                          ),
+                          if (tab.state case final s?) _StateLine(s, tab.tone),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

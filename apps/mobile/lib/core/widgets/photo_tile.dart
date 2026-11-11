@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:shoot_mobile/core/motion/focus_in.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/widgets/scene_tile.dart';
 
@@ -32,7 +33,10 @@ class PhotoTile extends StatelessWidget {
       image: label != null,
       label: label,
       excludeSemantics: true,
-      child: SizedBox.square(dimension: size, child: tile),
+      child: SizedBox.square(
+        dimension: size,
+        child: FocusIn(child: tile),
+      ),
     );
   }
 }

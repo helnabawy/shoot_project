@@ -92,7 +92,10 @@ class _SnapCarouselState extends State<SnapCarousel> {
           child: Padding(
             padding: const EdgeInsetsDirectional.only(top: 4, bottom: 8),
             child: SizedBox(
-              height: widget.height,
+              // Grows with the text size, so cards never clip at large text.
+              height:
+                  widget.height *
+                  (MediaQuery.textScalerOf(context).scale(16) / 16).clamp(1, 3),
               child: PageView(
                 controller: _controller,
                 onPageChanged: _changed,

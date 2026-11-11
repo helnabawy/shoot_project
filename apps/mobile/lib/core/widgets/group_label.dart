@@ -12,9 +12,9 @@ class GroupLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final upper = Localizations.localeOf(context).languageCode == 'ar'
-        ? text
-        : text.toUpperCase();
+    // Arabic has no letter case, and tracking pulls its joined letters apart.
+    final arabic = Localizations.localeOf(context).languageCode == 'ar';
+    final upper = arabic ? text : text.toUpperCase();
     return Semantics(
       header: true,
       label: text,
@@ -23,7 +23,10 @@ class GroupLabel extends StatelessWidget {
         padding: padding ?? EdgeInsets.zero,
         child: Text(
           upper,
-          style: ShootType.groupLabel.copyWith(color: context.colors.mute),
+          style: ShootType.groupLabel.copyWith(
+            color: context.colors.mute,
+            letterSpacing: arabic ? 0 : null,
+          ),
         ),
       ),
     );

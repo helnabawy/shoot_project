@@ -24,7 +24,7 @@ board's markup changes, the widget follows.
 
 | Widget | Board | Measurements | States and semantics |
 |---|---|---|---|
-| `TopHit` | `.top` | height 50, radius 9, `primary` fill, `onPrimary` text in type `action` (17/600); padding 10 12; gap 12; optional trailing price (15/500, tabular) and chevron 16; full width; one glint 1.1 s at 2.4 s after first build (`off` disables it) | enabled, pressed (`primaryHover`), disabled, loading; button role; the label includes the price for screen readers |
+| `TopHit` | `.top` | min-height 50 (grows with large text), radius 9, `primary` fill, `onPrimary` text in type `action` (17/600); padding 10 12; gap 12; optional trailing price (15/500, tabular) and chevron 16; full width; one glint 1.1 s at 2.4 s after first build (`off` disables it) | enabled, pressed (`primaryHover`), disabled, loading; button role; the label includes the price for screen readers |
 | `SecondaryButton` | `.btn2` | height 44, radius 9, 1 px `controlBorder`, padding 0 14, gap 8, type `button` (16/500) | enabled, pressed, disabled |
 | `TextLink` | `a` | `accentInk` | link role |
 
@@ -61,7 +61,7 @@ board's markup changes, the widget follows.
 | `QuoteLines` | quotation boards | label and amount rows, total in 500, tabular, `hair` dividers | table semantics |
 | `Money` | `.num` | `AED 950`, tabular figures, locale-aware digits | none |
 | `ProgressBar` | `.track` | height 6, radius 3, track `ink` at 8 %, fill `accent`; grows in once (900 ms) | progress semantics with a value |
-| `StepStrip` | `.tabs` / `.tab` | horizontal scroll, gap 4, padding 8, tabs 44 high, 15/500, `mute`; current tab has a 2 px `accent` underline; per-tab state line (peach `onAttention`, grey, blue) | tab semantics; the selected tab is announced |
+| `StepStrip` | `.tabs` / `.tab` | horizontal scroll, gap 4, padding 8, tabs 44 high, 15/500, `mute`; current tab is `ink` with a 2 px `ink` underline (as board `.tab[aria-selected]`; corrected 2026-11-11); per-tab state line (peach `onAttention`, grey, blue) | tab semantics; the selected tab is announced |
 | `MessageBanner` | `.warn`, `.msg` | `.warn`: radius 9, padding 12 14, 14/1.5, `attention`/`onAttention`; `.msg`: radius 6, padding 12 16, 15/1.8, `danger`/`onDanger` | live region for errors |
 | `CalendarMonth` | `.cell` (availability board 31) | 7 columns, cells 44, radius 9, 16 px tabular; states free, blocked, booked (fixed), today | grid semantics; each day announces its state |
 

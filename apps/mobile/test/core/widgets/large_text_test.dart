@@ -19,16 +19,19 @@ void main() {
             find.byKey(const ValueKey('sample')),
           );
           final small = <String>[];
-          void visit(SemanticsNode n) {
+          void visit(SemanticsNode n, {bool scrolls = false}) {
             final d = n.getSemanticsData();
             if (d.hasAction(SemanticsAction.tap) && !n.isInvisible) {
               final r = n.rect;
-              if (r.width < 44 - .5 || r.height < 44 - .5) {
+              // Inside a horizontal scroller a target can sit half off the edge; scrolling brings
+              // the rest in, so only its height is checked there.
+              if ((!scrolls && r.width < 44 - .5) || r.height < 44 - .5) {
                 small.add('"${d.label}" ${r.size}');
               }
             }
+            final inScroll = scrolls || d.flagsCollection.hasImplicitScrolling;
             n.visitChildren((c) {
-              visit(c);
+              visit(c, scrolls: inScroll);
               return true;
             });
           }

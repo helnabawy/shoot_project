@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shoot_mobile/core/motion/glint.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
@@ -20,6 +21,7 @@ class TopHit extends StatefulWidget {
     this.chevron = false,
     this.centered = false,
     this.loading = false,
+    this.glint = true,
   });
 
   final String label;
@@ -35,6 +37,9 @@ class TopHit extends StatefulWidget {
 
   /// Shows a progress indicator and ignores taps.
   final bool loading;
+
+  /// The one glint across the button after 2.4 s (`glint: false` turns it off).
+  final bool glint;
 
   @override
   State<TopHit> createState() => _TopHitState();
@@ -57,7 +62,13 @@ class _TopHitState extends State<TopHit> {
 
     final Widget content;
     if (widget.centered && widget.leading == null && widget.price == null) {
-      content = Center(child: text);
+      content = Padding(
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: ShootSpace.s3,
+          vertical: 10,
+        ),
+        child: Center(widthFactor: 1, heightFactor: 1, child: text),
+      );
     } else {
       content = Padding(
         padding: const EdgeInsetsDirectional.symmetric(
@@ -121,12 +132,15 @@ class _TopHitState extends State<TopHit> {
           duration: MediaQuery.disableAnimationsOf(context)
               ? Duration.zero
               : ShootMotion.fast,
-          height: ShootSize.topHitHeight,
+          // A minimum, not a height: the label grows with the text size instead of clipping.
+          // `.top` is full width; the height grows with the text size instead of clipping.
+          width: double.infinity,
+          constraints: const BoxConstraints(minHeight: ShootSize.topHitHeight),
           decoration: BoxDecoration(
             color: fill,
             borderRadius: BorderRadius.circular(ShootRadius.row),
           ),
-          child: content,
+          child: widget.glint && _enabled ? Glint(child: content) : content,
         ),
       ),
     );

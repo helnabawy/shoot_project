@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shoot_mobile/core/l10n/bidi.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
@@ -30,7 +31,7 @@ class SummaryRow extends StatelessWidget {
                 l,
                 const SizedBox(width: ShootSpace.s3),
               ],
-              Expanded(child: Text(label, style: style)),
+              Expanded(child: Text(isolate(context, label), style: style)),
               if (value case final v?) ...[
                 const SizedBox(width: ShootSpace.s3),
                 Text(v, style: ShootType.num(style)),

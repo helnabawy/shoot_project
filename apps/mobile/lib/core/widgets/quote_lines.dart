@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shoot_mobile/core/l10n/bidi.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
@@ -54,12 +55,13 @@ class QuoteLines extends StatelessWidget {
                 spacing: 2,
                 children: [
                   Text(
-                    label,
+                    isolate(context, label),
                     style: total
                         ? text.copyWith(fontWeight: FontWeight.w500)
                         : text,
                   ),
-                  if (detail case final d?) Text(d, style: meta),
+                  if (detail case final d?)
+                    Text(isolate(context, d), style: meta),
                 ],
               ),
             ),
