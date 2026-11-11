@@ -18,9 +18,18 @@ const appDir = join(import.meta.dirname, '../../src/app/(payload)')
 const routeDir = (e: Endpoint) => e.path.replace(/^\//, '').replace(/\{([^}]+)\}/g, '[$1]')
 
 /** Path params for endpoints that take them, valid against the seed (later stories add rows). */
-const SAMPLE_PARAMS: Record<string, Record<string, string>> = {}
+const SAMPLE_PARAMS: Record<string, Record<string, string>> = {
+  // US3: the seeded specialty; no creator or hire page is seeded.
+  specialty: { specialty: 'portrait' },
+  creatorProfile: { code: 'ZZZZZ' },
+  hirePage: { slug: 'not-seeded' },
+}
 /** Endpoints whose sample params name nothing in the seed: a 404 problem is the declared answer. */
-const NOT_IN_SEED = new Set<string>()
+const NOT_IN_SEED = new Set<string>([
+  // US3
+  'creatorProfile',
+  'hirePage',
+])
 
 async function handlerOf(e: Endpoint): Promise<RouteHandler | undefined> {
   const mod = (await import(/* @vite-ignore */ join(appDir, routeDir(e), 'route.ts'))) as Record<string, RouteHandler | undefined>

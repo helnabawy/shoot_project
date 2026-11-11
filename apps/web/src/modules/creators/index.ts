@@ -28,4 +28,6 @@ export { DirectoryResults } from './components/DirectoryResults'
 export { buildDirectory, type DirectoryParams } from './directory'
 export { ProfileView } from './components/ProfileView'
 export { getMyProfileView } from './my-profile'
-export { toWireCreatorCard } from './wire'
+export { toWireCreatorCard, toWireCreatorList, toWireCreatorProfile, toWireSpecialtyPage } from './wire'
+// The mobile API (008 US3): directory, profile and specialty endpoints.
+export { getCreatorProfileV1, getCreatorsV1, getSpecialtyV1 } from './api'
