@@ -1,0 +1,120 @@
+{
+  "locale": "ar",
+  "personas": [
+    {
+      "id": "1",
+      "slug": "photographer",
+      "singular": "مصوّر",
+      "plural": "مصوّرون",
+      "glyph": "ص",
+      "description": "صور للفعاليات والأشخاص والمنتجات والأماكن."
+    },
+    {
+      "id": "2",
+      "slug": "videographer",
+      "singular": "مصوّر فيديو",
+      "plural": "مصوّرو فيديو",
+      "glyph": "ف",
+      "description": "أفلام ومقاطع قصيرة وتغطية فعاليات."
+    }
+  ],
+  "categories": [
+    {
+      "id": "11",
+      "slug": "weddings",
+      "name": "أعراس",
+      "glyph": "ز",
+      "description": null,
+      "scene": "wedding",
+      "image": {
+        "alt": "",
+        "width": 1600,
+        "height": 1200,
+        "sizes": [
+          {
+            "url": "https://shoot.example/api/media/file/category-weddings-400.webp",
+            "width": 400,
+            "height": 300
+          },
+          {
+            "url": "https://shoot.example/api/media/file/category-weddings-800.webp",
+            "width": 800,
+            "height": 600
+          },
+          {
+            "url": "https://shoot.example/api/media/file/category-weddings-1600.webp",
+            "width": 1600,
+            "height": 1200
+          }
+        ]
+      },
+      "personaIds": [
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "12",
+      "slug": "events",
+      "name": "فعاليات",
+      "glyph": "ف",
+      "description": null,
+      "scene": "events",
+      "image": null,
+      "personaIds": [
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "13",
+      "slug": "portraits",
+      "name": "بورتريه",
+      "glyph": "ب",
+      "description": null,
+      "scene": "portrait",
+      "image": null,
+      "personaIds": [
+        "1"
+      ]
+    },
+    {
+      "id": "14",
+      "slug": "products",
+      "name": "منتجات",
+      "glyph": "م",
+      "description": null,
+      "scene": "product",
+      "image": null,
+      "personaIds": [
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "15",
+      "slug": "real-estate",
+      "name": "عقارات",
+      "glyph": "ع",
+      "description": null,
+      "scene": "property",
+      "image": null,
+      "personaIds": [
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "16",
+      "slug": "food",
+      "name": "طعام",
+      "glyph": "ط",
+      "description": null,
+      "scene": "food",
+      "image": null,
+      "personaIds": [
+        "1"
+      ]
+    }
+  ]
+}

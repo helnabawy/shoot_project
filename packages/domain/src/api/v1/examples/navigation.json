@@ -1,0 +1,47 @@
+{
+  "locale": "en",
+  "header": [
+    {
+      "label": "Creators",
+      "path": "/creators"
+    },
+    {
+      "label": "Guides",
+      "path": "/guides"
+    },
+    {
+      "label": "How it works",
+      "path": "/how-it-works"
+    }
+  ],
+  "footerGroups": [
+    {
+      "key": "company",
+      "label": "Company",
+      "links": [
+        {
+          "label": "How it works",
+          "path": "/how-it-works"
+        },
+        {
+          "label": "Join as a creator",
+          "path": "/register?type=provider"
+        }
+      ]
+    }
+  ],
+  "legal": [
+    {
+      "label": "Terms",
+      "path": "/terms"
+    },
+    {
+      "label": "Professional terms",
+      "path": "/terms/professional"
+    },
+    {
+      "label": "Privacy",
+      "path": "/privacy"
+    }
+  ]
+}

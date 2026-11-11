@@ -1,0 +1,57 @@
+{
+  "locale": "en",
+  "siteName": "Shoot",
+  "logo": {
+    "alt": "Shoot",
+    "width": 480,
+    "height": 120,
+    "sizes": [
+      {
+        "url": "https://shoot.example/api/media/file/wordmark-en-240.webp",
+        "width": 240,
+        "height": 60
+      },
+      {
+        "url": "https://shoot.example/api/media/file/wordmark-en-480.webp",
+        "width": 480,
+        "height": 120
+      }
+    ]
+  },
+  "logoDark": {
+    "alt": "Shoot",
+    "width": 480,
+    "height": 120,
+    "sizes": [
+      {
+        "url": "https://shoot.example/api/media/file/wordmark-en-dark-240.webp",
+        "width": 240,
+        "height": 60
+      },
+      {
+        "url": "https://shoot.example/api/media/file/wordmark-en-dark-480.webp",
+        "width": 480,
+        "height": 120
+      }
+    ]
+  },
+  "whatsapp": {
+    "number": "+971500000000",
+    "defaultMessage": "Hi! I'd like to book a shoot.",
+    "expectedReplyTime": "shortly"
+  },
+  "phone": "+971500000000",
+  "contactEmail": "hello@shoot.example",
+  "social": [
+    {
+      "label": "instagram",
+      "url": "https://www.instagram.com/shoot.example"
+    }
+  ],
+  "labels": {
+    "seeker": "I need a photographer or videographer",
+    "provider": "I'm a photographer or videographer"
+  },
+  "creatorCodePrefix": "SH",
+  "quickMatchEnabled": true
+}

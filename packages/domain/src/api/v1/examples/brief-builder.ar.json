@@ -1,0 +1,135 @@
+{
+  "locale": "ar",
+  "builder": {
+    "sentence": "أحتاج {persona} من أجل {occasion} في {location} بتاريخ {date}.",
+    "slots": [
+      {
+        "token": "persona",
+        "kind": "persona",
+        "groupLabel": "المحترف",
+        "placeholder": "أي محترف",
+        "defaultValue": "photographer",
+        "required": true,
+        "allowCustom": false,
+        "multiple": false,
+        "options": [
+          {
+            "value": "photographer",
+            "label": "مصوّر",
+            "sentenceLabel": "مصوّرًا",
+            "glyph": "ص",
+            "personaSlugs": []
+          },
+          {
+            "value": "videographer",
+            "label": "مصوّر فيديو",
+            "sentenceLabel": "مصوّر فيديو",
+            "glyph": "ف",
+            "personaSlugs": []
+          }
+        ]
+      },
+      {
+        "token": "occasion",
+        "kind": "options",
+        "groupLabel": "المناسبة",
+        "placeholder": "أي مناسبة",
+        "defaultValue": "wedding",
+        "required": true,
+        "allowCustom": true,
+        "multiple": false,
+        "options": [
+          {
+            "value": "wedding",
+            "label": "أعراس",
+            "sentenceLabel": "حفل زفاف",
+            "glyph": "ز",
+            "personaSlugs": []
+          },
+          {
+            "value": "event",
+            "label": "فعاليات",
+            "sentenceLabel": "فعالية",
+            "glyph": "ف",
+            "personaSlugs": []
+          },
+          {
+            "value": "portrait",
+            "label": "بورتريه",
+            "sentenceLabel": "جلسة بورتريه",
+            "glyph": "ب",
+            "personaSlugs": [
+              "photographer"
+            ]
+          }
+        ]
+      },
+      {
+        "token": "location",
+        "kind": "options",
+        "groupLabel": "الإمارة",
+        "placeholder": "أي إمارة",
+        "defaultValue": "dubai",
+        "required": true,
+        "allowCustom": false,
+        "multiple": false,
+        "options": [
+          {
+            "value": "dubai",
+            "label": "دبي",
+            "sentenceLabel": "دبي",
+            "glyph": "د",
+            "personaSlugs": []
+          },
+          {
+            "value": "abu-dhabi",
+            "label": "أبوظبي",
+            "sentenceLabel": "أبوظبي",
+            "glyph": "أظ",
+            "personaSlugs": []
+          },
+          {
+            "value": "sharjah",
+            "label": "الشارقة",
+            "sentenceLabel": "الشارقة",
+            "glyph": "ش",
+            "personaSlugs": []
+          }
+        ]
+      },
+      {
+        "token": "date",
+        "kind": "date",
+        "groupLabel": "متى",
+        "placeholder": "أي تاريخ",
+        "defaultValue": "",
+        "required": false,
+        "allowCustom": false,
+        "multiple": false,
+        "options": []
+      }
+    ],
+    "submitLabel": "اعرف من المتاح لهذا",
+    "helperText": "السؤال مجاني. اضغط على أي جزء لتغييره، أو اكتب بكلماتك.",
+    "whatsappTemplate": "مرحباً! أحتاج {persona} من أجل {occasion} في {location} بتاريخ {date}.",
+    "successMessage": "استلمنا طلبك وسنبحث عمّن هو متاح.",
+    "steps": [
+      {
+        "title": "التصوير",
+        "description": "صِفه في سطر واحد."
+      },
+      {
+        "title": "المحترف",
+        "description": "نجد من هو متاح في ذلك اليوم."
+      },
+      {
+        "title": "بياناتك",
+        "description": "نؤكد معك عبر واتساب."
+      },
+      {
+        "title": "العرض",
+        "description": "سعر واضح واحد قبل الحجز."
+      }
+    ]
+  }
+}

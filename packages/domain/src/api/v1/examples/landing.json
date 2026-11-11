@@ -1,0 +1,589 @@
+{
+  "locale": "en",
+  "hero": {
+    "eyebrow": null,
+    "headline": "You brief. We shoot.",
+    "subheadline": "Say what you need in one line. See one fixed price before you book.",
+    "trustChips": [
+      "No account needed",
+      "Price shown next"
+    ],
+    "layout": "briefBuilder",
+    "primaryCta": null,
+    "secondaryCta": null,
+    "image": {
+      "alt": "",
+      "width": 1600,
+      "height": 1200,
+      "sizes": [
+        {
+          "url": "https://shoot.example/api/media/file/hero-400.webp",
+          "width": 400,
+          "height": 300
+        },
+        {
+          "url": "https://shoot.example/api/media/file/hero-800.webp",
+          "width": 800,
+          "height": 600
+        },
+        {
+          "url": "https://shoot.example/api/media/file/hero-1600.webp",
+          "width": 1600,
+          "height": 1200
+        }
+      ]
+    },
+    "imageMobile": {
+      "alt": "",
+      "width": 720,
+      "height": 1280,
+      "sizes": [
+        {
+          "url": "https://shoot.example/api/media/file/hero-mobile-360.webp",
+          "width": 360,
+          "height": 640
+        },
+        {
+          "url": "https://shoot.example/api/media/file/hero-mobile-720.webp",
+          "width": 720,
+          "height": 1280
+        }
+      ]
+    },
+    "overlay": null,
+    "overlayOpacity": null
+  },
+  "navigation": [
+    {
+      "label": "Specialties",
+      "target": "specialties"
+    },
+    {
+      "label": "How it works",
+      "target": "how-it-works"
+    }
+  ],
+  "sections": [
+    {
+      "type": "categoriesGrid",
+      "anchor": "specialties",
+      "heading": "What do you need shot?",
+      "subheading": "Start from the shoot",
+      "tiles": [
+        {
+          "category": {
+            "id": "11",
+            "slug": "weddings",
+            "name": "Weddings",
+            "glyph": "W",
+            "description": null,
+            "scene": "wedding",
+            "image": {
+              "alt": "",
+              "width": 1600,
+              "height": 1200,
+              "sizes": [
+                {
+                  "url": "https://shoot.example/api/media/file/category-weddings-400.webp",
+                  "width": 400,
+                  "height": 300
+                },
+                {
+                  "url": "https://shoot.example/api/media/file/category-weddings-800.webp",
+                  "width": 800,
+                  "height": 600
+                },
+                {
+                  "url": "https://shoot.example/api/media/file/category-weddings-1600.webp",
+                  "width": 1600,
+                  "height": 1200
+                }
+              ]
+            },
+            "personaIds": [
+              "1",
+              "2"
+            ]
+          },
+          "counts": {
+            "samples": 24,
+            "professionals": 12
+          },
+          "hasPage": true
+        },
+        {
+          "category": {
+            "id": "12",
+            "slug": "events",
+            "name": "Events",
+            "glyph": "E",
+            "description": null,
+            "scene": "events",
+            "image": null,
+            "personaIds": [
+              "1",
+              "2"
+            ]
+          },
+          "counts": {
+            "samples": 18,
+            "professionals": 9
+          },
+          "hasPage": true
+        },
+        {
+          "category": {
+            "id": "13",
+            "slug": "portraits",
+            "name": "Portraits",
+            "glyph": "P",
+            "description": null,
+            "scene": "portrait",
+            "image": null,
+            "personaIds": [
+              "1"
+            ]
+          },
+          "counts": {
+            "samples": 15,
+            "professionals": 7
+          },
+          "hasPage": true
+        },
+        {
+          "category": {
+            "id": "14",
+            "slug": "products",
+            "name": "Products",
+            "glyph": "PR",
+            "description": null,
+            "scene": "product",
+            "image": null,
+            "personaIds": [
+              "1",
+              "2"
+            ]
+          },
+          "counts": {
+            "samples": 9,
+            "professionals": 4
+          },
+          "hasPage": true
+        },
+        {
+          "category": {
+            "id": "15",
+            "slug": "real-estate",
+            "name": "Real estate",
+            "glyph": "R",
+            "description": null,
+            "scene": "property",
+            "image": null,
+            "personaIds": [
+              "1",
+              "2"
+            ]
+          },
+          "counts": {
+            "samples": 6,
+            "professionals": 3
+          },
+          "hasPage": true
+        },
+        {
+          "category": {
+            "id": "16",
+            "slug": "food",
+            "name": "Food",
+            "glyph": "FD",
+            "description": null,
+            "scene": "food",
+            "image": null,
+            "personaIds": [
+              "1"
+            ]
+          },
+          "counts": {
+            "samples": 0,
+            "professionals": 0
+          },
+          "hasPage": false
+        }
+      ],
+      "cta": {
+        "label": "Or pick your own",
+        "kind": "link",
+        "path": "/#brief",
+        "url": null
+      }
+    },
+    {
+      "type": "creatorNetwork",
+      "anchor": "creators",
+      "heading": "Meet the creators",
+      "subheading": "Each cover is the creator's own photo once they upload one.",
+      "creators": [
+        {
+          "code": "0087",
+          "displayCode": "SH-0087",
+          "name": "Omar K.",
+          "initials": "OK",
+          "photo": {
+            "alt": "Omar K.",
+            "width": 800,
+            "height": 1000,
+            "sizes": [
+              {
+                "url": "https://shoot.example/api/media/file/creator-0087-400.webp",
+                "width": 400,
+                "height": 500
+              },
+              {
+                "url": "https://shoot.example/api/media/file/creator-0087-800.webp",
+                "width": 800,
+                "height": 1000
+              }
+            ]
+          },
+          "types": "Photographer and videographer",
+          "places": [
+            "Sharjah",
+            "Dubai"
+          ],
+          "specialties": [
+            "Weddings",
+            "Events",
+            "Portraits"
+          ],
+          "languages": [
+            "Arabic",
+            "English"
+          ],
+          "yearsExperience": 6,
+          "sampleCount": 8,
+          "featured": true
+        },
+        {
+          "code": "0421",
+          "displayCode": "SH-0421",
+          "name": "Mariam A.",
+          "initials": "MA",
+          "photo": null,
+          "types": "Photographer",
+          "places": [
+            "Dubai"
+          ],
+          "specialties": [
+            "Weddings",
+            "Family",
+            "Newborn"
+          ],
+          "languages": [
+            "Arabic",
+            "English",
+            "Urdu"
+          ],
+          "yearsExperience": 4,
+          "sampleCount": 6,
+          "featured": false
+        },
+        {
+          "code": "0233",
+          "displayCode": "SH-0233",
+          "name": "Yusuf R.",
+          "initials": "YR",
+          "photo": null,
+          "types": "Videographer",
+          "places": [
+            "Abu Dhabi"
+          ],
+          "specialties": [
+            "Weddings",
+            "Engagements"
+          ],
+          "languages": [
+            "English",
+            "Hindi"
+          ],
+          "yearsExperience": null,
+          "sampleCount": 0,
+          "featured": false
+        }
+      ],
+      "cta": {
+        "label": "See all",
+        "kind": "link",
+        "path": "/creators",
+        "url": null
+      }
+    },
+    {
+      "type": "howItWorks",
+      "anchor": "how-it-works",
+      "heading": "How it works",
+      "subheading": "Three steps, one conversation.",
+      "steps": [
+        {
+          "title": "Brief",
+          "body": "Tell us what you need in one line, in English or Arabic.",
+          "visual": "brief"
+        },
+        {
+          "title": "Match",
+          "body": "We find a professional who is free on your date.",
+          "visual": "match"
+        },
+        {
+          "title": "Shoot",
+          "body": "They show up and shoot. You get the finished work.",
+          "visual": "work"
+        }
+      ],
+      "cta": null
+    },
+    {
+      "type": "features",
+      "anchor": "why-us",
+      "heading": "Why book this way",
+      "subheading": null,
+      "items": [
+        {
+          "title": "One sentence, no forms",
+          "body": "Pick the words that fit. Nothing else to fill in.",
+          "glyph": "Aa",
+          "pointsAt": "sentence"
+        },
+        {
+          "title": "A person replies",
+          "body": "Your brief reaches our team on WhatsApp.",
+          "glyph": "WA",
+          "pointsAt": "whatsapp"
+        },
+        {
+          "title": "Arabic and English",
+          "body": "Use the site and talk to us in either language.",
+          "glyph": "ع",
+          "pointsAt": "language"
+        },
+        {
+          "title": "No account needed",
+          "body": null,
+          "glyph": null,
+          "pointsAt": "none"
+        }
+      ]
+    },
+    {
+      "type": "personaBand",
+      "anchor": "for-creators",
+      "heading": "Shoot for a living?",
+      "body": "Make a profile, set the days you're free, and get briefs that fit what you do.",
+      "layout": "combined",
+      "personas": [
+        {
+          "id": "1",
+          "slug": "photographer",
+          "singular": "Photographer",
+          "plural": "Photographers",
+          "glyph": "PH",
+          "description": "Photos for events, people, products and places."
+        },
+        {
+          "id": "2",
+          "slug": "videographer",
+          "singular": "Videographer",
+          "plural": "Videographers",
+          "glyph": "VI",
+          "description": "Films, reels and event coverage."
+        }
+      ],
+      "cta": {
+        "label": "Join as a creator",
+        "kind": "link",
+        "path": "/register?type=provider",
+        "url": null
+      }
+    },
+    {
+      "type": "faq",
+      "anchor": "faq",
+      "heading": "Questions",
+      "items": [
+        {
+          "question": "Do I need an account?",
+          "answer": {
+            "nodes": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "type": "text",
+                    "text": "No. Send a brief and we reply on WhatsApp. An account only keeps your briefs in one place.",
+                    "bold": false,
+                    "italic": false,
+                    "underline": false,
+                    "code": false
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "question": "Which emirates do you cover?",
+          "answer": {
+            "nodes": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "type": "text",
+                    "text": "Pick any emirate in the brief. If we cannot cover it, we will tell you straight away.",
+                    "bold": false,
+                    "italic": false,
+                    "underline": false,
+                    "code": false
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "logoCloud",
+      "anchor": null,
+      "heading": "Talk to us where you already are",
+      "logos": [
+        {
+          "name": "WhatsApp",
+          "image": {
+            "alt": "WhatsApp",
+            "width": 240,
+            "height": 80,
+            "sizes": [
+              {
+                "url": "https://shoot.example/api/media/file/logo-whatsapp-240.webp",
+                "width": 240,
+                "height": 80
+              }
+            ]
+          },
+          "imageDark": null
+        }
+      ]
+    },
+    {
+      "type": "richText",
+      "anchor": "studios",
+      "content": {
+        "nodes": [
+          {
+            "type": "heading",
+            "level": 2,
+            "children": [
+              {
+                "type": "text",
+                "text": "Need a studio?",
+                "bold": false,
+                "italic": false,
+                "underline": false,
+                "code": false
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "text": "Some shoots need a studio: product work, portraits, a podcast or a small set. ",
+                "bold": false,
+                "italic": false,
+                "underline": false,
+                "code": false
+              },
+              {
+                "type": "link",
+                "href": "/guides",
+                "children": [
+                  {
+                    "type": "text",
+                    "text": "Read the guides",
+                    "bold": true,
+                    "italic": false,
+                    "underline": false,
+                    "code": false
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": ".",
+                "bold": false,
+                "italic": false,
+                "underline": false,
+                "code": false
+              }
+            ]
+          },
+          {
+            "type": "list",
+            "ordered": false,
+            "items": [
+              [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "text": "Tell us what you are shooting.",
+                      "bold": false,
+                      "italic": false,
+                      "underline": false,
+                      "code": false
+                    }
+                  ]
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "text": "Say how many people will be there.",
+                      "bold": false,
+                      "italic": false,
+                      "underline": false,
+                      "code": false
+                    }
+                  ]
+                }
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "callToAction",
+      "anchor": "start",
+      "heading": "Ready when you are.",
+      "body": "One line is enough to start.",
+      "primary": {
+        "label": "Start your brief",
+        "kind": "link",
+        "path": "/#brief",
+        "url": null
+      },
+      "secondary": {
+        "label": "Ask us on WhatsApp",
+        "kind": "whatsapp",
+        "path": null,
+        "url": "https://wa.me/971500000000?text=Hi!%20I%27d%20like%20to%20book%20a%20shoot."
+      }
+    }
+  ]
+}

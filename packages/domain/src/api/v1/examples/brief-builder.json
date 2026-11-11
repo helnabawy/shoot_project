@@ -1,0 +1,135 @@
+{
+  "locale": "en",
+  "builder": {
+    "sentence": "I need {persona} for {occasion} in {location} on {date}.",
+    "slots": [
+      {
+        "token": "persona",
+        "kind": "persona",
+        "groupLabel": "who",
+        "placeholder": "which professional",
+        "defaultValue": "photographer",
+        "required": true,
+        "allowCustom": false,
+        "multiple": false,
+        "options": [
+          {
+            "value": "photographer",
+            "label": "Photographer",
+            "sentenceLabel": "a photographer",
+            "glyph": "PH",
+            "personaSlugs": []
+          },
+          {
+            "value": "videographer",
+            "label": "Videographer",
+            "sentenceLabel": "a videographer",
+            "glyph": "VI",
+            "personaSlugs": []
+          }
+        ]
+      },
+      {
+        "token": "occasion",
+        "kind": "options",
+        "groupLabel": "what",
+        "placeholder": "what occasion",
+        "defaultValue": "wedding",
+        "required": true,
+        "allowCustom": true,
+        "multiple": false,
+        "options": [
+          {
+            "value": "wedding",
+            "label": "Weddings",
+            "sentenceLabel": "a wedding",
+            "glyph": "W",
+            "personaSlugs": []
+          },
+          {
+            "value": "event",
+            "label": "Events",
+            "sentenceLabel": "an event",
+            "glyph": "E",
+            "personaSlugs": []
+          },
+          {
+            "value": "portrait",
+            "label": "Portraits",
+            "sentenceLabel": "a portrait session",
+            "glyph": "P",
+            "personaSlugs": [
+              "photographer"
+            ]
+          }
+        ]
+      },
+      {
+        "token": "location",
+        "kind": "options",
+        "groupLabel": "where",
+        "placeholder": "which emirate",
+        "defaultValue": "dubai",
+        "required": true,
+        "allowCustom": false,
+        "multiple": false,
+        "options": [
+          {
+            "value": "dubai",
+            "label": "Dubai",
+            "sentenceLabel": "Dubai",
+            "glyph": "DXB",
+            "personaSlugs": []
+          },
+          {
+            "value": "abu-dhabi",
+            "label": "Abu Dhabi",
+            "sentenceLabel": "Abu Dhabi",
+            "glyph": "AUH",
+            "personaSlugs": []
+          },
+          {
+            "value": "sharjah",
+            "label": "Sharjah",
+            "sentenceLabel": "Sharjah",
+            "glyph": "SHJ",
+            "personaSlugs": []
+          }
+        ]
+      },
+      {
+        "token": "date",
+        "kind": "date",
+        "groupLabel": "when",
+        "placeholder": "any date",
+        "defaultValue": "",
+        "required": false,
+        "allowCustom": false,
+        "multiple": false,
+        "options": []
+      }
+    ],
+    "submitLabel": "See price and who's free",
+    "helperText": "No account needed. Price shown next.",
+    "whatsappTemplate": "Hi! I need {persona} for {occasion} in {location} on {date}.",
+    "successMessage": "We have your brief and will find who is free.",
+    "steps": [
+      {
+        "title": "Your shoot",
+        "description": "Describe it in one line."
+      },
+      {
+        "title": "Your professional",
+        "description": "We find who is free that day."
+      },
+      {
+        "title": "Your details",
+        "description": "We confirm on WhatsApp."
+      },
+      {
+        "title": "Your quote",
+        "description": "One clear price before you book."
+      }
+    ]
+  }
+}

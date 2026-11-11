@@ -1,0 +1,120 @@
+{
+  "locale": "en",
+  "personas": [
+    {
+      "id": "1",
+      "slug": "photographer",
+      "singular": "Photographer",
+      "plural": "Photographers",
+      "glyph": "PH",
+      "description": "Photos for events, people, products and places."
+    },
+    {
+      "id": "2",
+      "slug": "videographer",
+      "singular": "Videographer",
+      "plural": "Videographers",
+      "glyph": "VI",
+      "description": "Films, reels and event coverage."
+    }
+  ],
+  "categories": [
+    {
+      "id": "11",
+      "slug": "weddings",
+      "name": "Weddings",
+      "glyph": "W",
+      "description": null,
+      "scene": "wedding",
+      "image": {
+        "alt": "",
+        "width": 1600,
+        "height": 1200,
+        "sizes": [
+          {
+            "url": "https://shoot.example/api/media/file/category-weddings-400.webp",
+            "width": 400,
+            "height": 300
+          },
+          {
+            "url": "https://shoot.example/api/media/file/category-weddings-800.webp",
+            "width": 800,
+            "height": 600
+          },
+          {
+            "url": "https://shoot.example/api/media/file/category-weddings-1600.webp",
+            "width": 1600,
+            "height": 1200
+          }
+        ]
+      },
+      "personaIds": [
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "12",
+      "slug": "events",
+      "name": "Events",
+      "glyph": "E",
+      "description": null,
+      "scene": "events",
+      "image": null,
+      "personaIds": [
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "13",
+      "slug": "portraits",
+      "name": "Portraits",
+      "glyph": "P",
+      "description": null,
+      "scene": "portrait",
+      "image": null,
+      "personaIds": [
+        "1"
+      ]
+    },
+    {
+      "id": "14",
+      "slug": "products",
+      "name": "Products",
+      "glyph": "PR",
+      "description": null,
+      "scene": "product",
+      "image": null,
+      "personaIds": [
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "15",
+      "slug": "real-estate",
+      "name": "Real estate",
+      "glyph": "R",
+      "description": null,
+      "scene": "property",
+      "image": null,
+      "personaIds": [
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "16",
+      "slug": "food",
+      "name": "Food",
+      "glyph": "FD",
+      "description": null,
+      "scene": "food",
+      "image": null,
+      "personaIds": [
+        "1"
+      ]
+    }
+  ]
+}

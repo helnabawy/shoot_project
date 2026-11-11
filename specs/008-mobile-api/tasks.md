@@ -295,12 +295,12 @@ Arabic, are decoded by the app, and send nothing internal.
 
 ### Tests first
 
-- [ ] T028 [P] [US1] Write `v1/site.test.ts` and `v1/landing.test.ts`.
+- [x] T028 [P] [US1] Write `v1/site.test.ts` and `v1/landing.test.ts`.
   - Each schema accepts its examples (English and Arabic) and refuses a missing required field.
   - **`MR-US1-S5`**: `sectionV1` accepts each of the nine types; an unknown `type` is refused
     server-side.
   - `briefBuilderV1` accepts `builder: null`.
-- [ ] T029 [P] [US1] Write the mapper unit tests. Each feeds a document that also contains
+- [x] T029 [P] [US1] Write the mapper unit tests. Each feeds a document that also contains
   internal fields.
   - `web/modules/site-settings/wire.test.ts` (**`MR-US1-S6`**): `briefLimitPerHour`,
     `autoPublishEdits`, `translationStatus`, `quickMatch.templates` and `quickMatch.channels` are
@@ -314,7 +314,7 @@ Arabic, are decoded by the app, and send nothing internal.
     - `creatorNetwork` carries the cards;
     - an unknown block is skipped.
   - `web/modules/pages/wire.test.ts`: navigation.
-- [ ] T030 [P] [US1] Write `wtest/integration/mobile-api-site.int.test.ts` against the seed. Every
+- [x] T030 [P] [US1] Write `wtest/integration/mobile-api-site.int.test.ts` against the seed. Every
   answer is parsed with its schema.
   - **`MR-US1-S1`**:
     - `GET site` returns the seeded WhatsApp number, message and reply time;
@@ -349,38 +349,38 @@ Arabic, are decoded by the app, and send nothing internal.
 
 ### Implementation
 
-- [ ] T032 [US1] Create `v1/site.ts` and `v1/landing.ts` per data-model.md. Register `site`,
+- [x] T032 [US1] Create `v1/site.ts` and `v1/landing.ts` per data-model.md. Register `site`,
   `navigation`, `personas`, `briefBuilder` and `landing` in `v1/endpoints.ts` with `auth: 'none'`
   and `cache: 'public'`.
-- [ ] T033 [P] [US1] Write the examples in `v1/examples/`:
+- [x] T033 [P] [US1] Write the examples in `v1/examples/`:
   - `site.json` and `site.ar.json`, `navigation.json` and `.ar.json`, `personas.json` and
     `.ar.json`, `brief-builder.json` and `.ar.json`, and `landing.json`;
   - the content comes from the canvas boards (the landing board's copy and the "Omar K." card in
     `creatorNetwork`), and the Arabic is the boards' written Arabic.
 
   T028 passes.
-- [ ] T034 [P] [US1] In `web/modules/site-settings/`:
+- [x] T034 [P] [US1] In `web/modules/site-settings/`:
   - `wire.ts` (`toWireSite`);
   - `api.ts` (`getSiteV1`, reading `getSiteSettings(ctx.locale)`);
   - a new `index.ts` exporting `getSiteV1`.
-- [ ] T035 [P] [US1] In `web/modules/personas/`:
+- [x] T035 [P] [US1] In `web/modules/personas/`:
   - `wire.ts` (`toWirePersona`, `toWireCategory`);
   - `api.ts` (`getPersonasV1`, reading `getActivePersonas` and `getCategoriesForAudience`);
   - a new `index.ts`.
-- [ ] T036 [P] [US1] In `web/modules/brief/`:
+- [x] T036 [P] [US1] In `web/modules/brief/`:
   - `wire.ts` (`toWireBriefBuilder`);
   - `api.ts` (`getBriefBuilderV1`, reading `getBriefBuilderConfig`, with `null` when off);
   - a new `index.ts`.
-- [ ] T037 [US1] In `web/modules/landing/`:
+- [x] T037 [US1] In `web/modules/landing/`:
   - `wire.ts`: `toWireHero` and `toWireSection`, for the nine block types, using the data
     `getBlockContext` resolves. `toWireSection` is exported for `pages`.
   - `api.ts`: `getLandingV1`.
   - Export both from `index.ts`.
-- [ ] T038 [P] [US1] In `web/modules/pages/`:
+- [x] T038 [P] [US1] In `web/modules/pages/`:
   - `wire.ts` (`toWireNavigation`);
   - `api.ts` (`getNavigationV1`);
   - export from `index.ts`.
-- [ ] T039 [US1] Create the route files under `web/app/(payload)/api/mobile/v1/`: `site/`,
+- [x] T039 [US1] Create the route files under `web/app/(payload)/api/mobile/v1/`: `site/`,
   `navigation/`, `personas/`, `brief-builder/` and `landing/` `route.ts`, each a one-line re-export.
   T029 and T030 pass.
 - [ ] T040 [P] [US1] Create `mobile/lib/core/content/rich_text.dart` (sealed `RichBlock` and

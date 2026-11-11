@@ -1,6 +1,6 @@
 import 'server-only'
 import { categoriesForPersonas, resolveActivePersonas, type Category as DomainCategory, type Persona as DomainPersona } from '@shoot/domain/personas'
-import type { Category, Persona } from '@/payload-types'
+import type { Category, Media, Persona } from '@/payload-types'
 import { mediaSource } from '@/shared/components/CmsImage'
 import { cachedQuery } from '@/shared/lib/cache'
 import type { Locale } from '@/shared/lib/locale'
@@ -15,6 +15,8 @@ export type AudienceCategory = DomainCategory & {
   scene?: string | null
   /** The specialty's own image at card size, when the CMS has one. */
   image?: { url: string; width: number; height: number; alt?: string | null } | null
+  /** The image's media document with every stored size, for the mobile API (008). */
+  media?: Media | null
   /** The specialty page's own text (`/work/{slug}`), in the requested language. */
   seo?: { title?: string | null; description?: string | null; intro?: string | null }
 }
@@ -42,6 +44,7 @@ const toCategory = (c: Category): AudienceCategory => ({
   description: c.description,
   scene: c.scene ?? null,
   image: c.image && typeof c.image === 'object' ? mediaSource(c.image, 'card') : null,
+  media: c.image && typeof c.image === 'object' ? c.image : null,
   seo: { title: c.seo?.title, description: c.seo?.description, intro: c.seo?.intro },
 })
 

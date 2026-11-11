@@ -1,0 +1,47 @@
+{
+  "locale": "ar",
+  "header": [
+    {
+      "label": "المبدعون",
+      "path": "/creators"
+    },
+    {
+      "label": "الأدلة",
+      "path": "/guides"
+    },
+    {
+      "label": "كيف نعمل",
+      "path": "/how-it-works"
+    }
+  ],
+  "footerGroups": [
+    {
+      "key": "company",
+      "label": "الشركة",
+      "links": [
+        {
+          "label": "كيف نعمل",
+          "path": "/how-it-works"
+        },
+        {
+          "label": "انضم كمحترف",
+          "path": "/register?type=provider"
+        }
+      ]
+    }
+  ],
+  "legal": [
+    {
+      "label": "الشروط والأحكام",
+      "path": "/terms"
+    },
+    {
+      "label": "شروط المحترفين",
+      "path": "/terms/professional"
+    },
+    {
+      "label": "سياسة الخصوصية",
+      "path": "/privacy"
+    }
+  ]
+}

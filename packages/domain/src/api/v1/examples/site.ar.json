@@ -1,0 +1,57 @@
+{
+  "locale": "ar",
+  "siteName": "شوت",
+  "logo": {
+    "alt": "شوت",
+    "width": 480,
+    "height": 120,
+    "sizes": [
+      {
+        "url": "https://shoot.example/api/media/file/wordmark-ar-240.webp",
+        "width": 240,
+        "height": 60
+      },
+      {
+        "url": "https://shoot.example/api/media/file/wordmark-ar-480.webp",
+        "width": 480,
+        "height": 120
+      }
+    ]
+  },
+  "logoDark": {
+    "alt": "شوت",
+    "width": 480,
+    "height": 120,
+    "sizes": [
+      {
+        "url": "https://shoot.example/api/media/file/wordmark-ar-dark-240.webp",
+        "width": 240,
+        "height": 60
+      },
+      {
+        "url": "https://shoot.example/api/media/file/wordmark-ar-dark-480.webp",
+        "width": 480,
+        "height": 120
+      }
+    ]
+  },
+  "whatsapp": {
+    "number": "+971500000000",
+    "defaultMessage": "مرحباً! أرغب في حجز جلسة تصوير.",
+    "expectedReplyTime": "قريباً"
+  },
+  "phone": "+971500000000",
+  "contactEmail": "hello@shoot.example",
+  "social": [
+    {
+      "label": "instagram",
+      "url": "https://www.instagram.com/shoot.example"
+    }
+  ],
+  "labels": {
+    "seeker": "أحتاج مصوّرًا أو مصوّر فيديو",
+    "provider": "أنا مصوّر أو مصوّر فيديو"
+  },
+  "creatorCodePrefix": "SH",
+  "quickMatchEnabled": true
+}
