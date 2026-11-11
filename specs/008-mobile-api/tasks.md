@@ -275,7 +275,8 @@ wrapper and the app's network core. These are used by every story.
     stand-ins in `mobile/test/fixtures/api/v1/` (`problem-422.json`, `problem-404.json`,
     `image.json`) through `mobile/test/helpers/api_fixture.dart`. **After the merge**, point
     `apiFixture` at `packages/domain/src/api/v1/examples/` (the image becomes the logo in
-    `site.json`) and delete the local folder.
+    `site.json`) and delete the local folder. Done in US1: the tests read the shared examples,
+    `api_fixture.dart` and the local folder are gone.
   - Also added: `PreferenceKeys.installId` (in `PreferenceKeys.all`, so the device store keeps it),
     `readNullableObject` and `asObject` in `json_read.dart`, and `NotFoundFailure` words
     (`notFoundTitle`) in `failure_message.dart`.
@@ -334,7 +335,7 @@ Arabic, are decoded by the app, and send nothing internal.
     `GET landing` returns the sections in CMS order.
   - **`MR-US1-S6`**: the serialised bodies of all five contain none of the internal names in
     contracts/mobile-api.md.
-- [ ] T031 [P] [US1] Write the Dart tests.
+- [x] T031 [P] [US1] Write the Dart tests.
   - `mobile/test/features/site/data/models/site_models_test.dart` (**`MR-US1-S2`**): `site`,
     `navigation`, `personas` and `brief-builder` in English and Arabic decode, map to entities, and
     the Arabic strings come through.
@@ -383,16 +384,20 @@ Arabic, are decoded by the app, and send nothing internal.
 - [x] T039 [US1] Create the route files under `web/app/(payload)/api/mobile/v1/`: `site/`,
   `navigation/`, `personas/`, `brief-builder/` and `landing/` `route.ts`, each a one-line re-export.
   T029 and T030 pass.
-- [ ] T040 [P] [US1] Create `mobile/lib/core/content/rich_text.dart` (sealed `RichBlock` and
+- [x] T040 [P] [US1] Create `mobile/lib/core/content/rich_text.dart` (sealed `RichBlock` and
   `RichInline` with `Unknown*` cases, plus models) and `mobile/lib/core/content/sections.dart`
   (sealed `Section` with `UnknownSection`, plus models).
-- [ ] T041 [US1] Create `mobile/lib/features/site/`:
+- [x] T041 [US1] Create `mobile/lib/features/site/`:
   - `domain/entities/` (`SiteInfo`, `Navigation`, `Audience`, `BriefBuilder`);
   - `domain/repositories/site_repository.dart`;
   - `data/models/`, `data/datasources/site_remote_data_source.dart` (via `apiGet`) and
     `data/repositories/site_repository_impl.dart`;
   - `site_injection.dart`, registered in `core/di/injection.dart`.
-- [ ] T042 [US1] Create `mobile/lib/features/landing/` with the same layers (`Landing`, `Hero`;
+  - Done as: the shapes sections share (`Cta`, `Persona`, `Category`, `CreatorCard`, links) live in
+    `mobile/lib/core/content/`, so no feature imports another's data layer; repositories map
+    exceptions through `core/error/api_result.dart`. Names that would clash with Flutter widgets:
+    `RichTextDocument`, `LandingHero`, `ParagraphBlock`/`TextInline` and so on.
+- [x] T042 [US1] Create `mobile/lib/features/landing/` with the same layers (`Landing`, `Hero`;
   `LandingRepository`) and `landing_injection.dart`. T031 passes.
 
 **Checkpoint**: MR-US1-S1 to S6 pass. The app can read every site basic in both languages.
@@ -459,7 +464,7 @@ scratch copy fails with the endpoint and pointer. `flutter test test/core` passe
   - `GET /api/mobile/v1/nope` and `/api/mobile/v2/site` answer a 404 problem;
   - `POST` to a GET endpoint is Next's 405 with no body (the documented exception in
     contracts/handler.md).
-- [ ] T048 [P] [US2] Write the Dart tests.
+- [x] T048 [P] [US2] Write the Dart tests.
   - `mobile/test/core/l10n/failure_message_test.dart` (**`MR-US2-S4`**):
     - every code in `specs/contracts/mobile-api/v1.schema.json` `problems` maps to a specific
       message in English and Arabic;
@@ -480,7 +485,7 @@ scratch copy fails with the endpoint and pointer. `flutter test test/core` passe
   `z.toJSONSchema` (input `io: 'input'`, output `io: 'output'`, `target: 'draft-2020-12'`), with
   keys sorted. Run `pnpm --filter @shoot/domain api:snapshot` and commit the first
   `specs/contracts/mobile-api/v1.schema.json` (the US1 endpoints). T044 and T045 pass.
-- [ ] T051 [US2] Map the problem codes in the app.
+- [x] T051 [US2] Map the problem codes in the app.
   - In `mobile/lib/core/l10n/failure_message.dart`, map `ServerFailure.code` and `NotFoundFailure`
     to ARB strings with an exhaustive switch over the known codes, and fall back to
     `failureServer`.
