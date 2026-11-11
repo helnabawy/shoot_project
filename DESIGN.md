@@ -92,6 +92,63 @@ colors:
   night-glass-edge: "rgb(255 255 255 / 0.18)"
   night-glass-sheen: "rgb(255 255 255 / 0.1)"
   photo-tile-accent-fill: "rgb(255 255 255 / 0.2)"
+  accent-teal-fill: "#00756a"
+  accent-teal-on-fill: "#ffffff"
+  accent-teal-ink: "#005f56"
+  accent-teal-row: "rgb(0 117 106 / 0.12)"
+  accent-teal-row-hover: "rgb(0 117 106 / 0.18)"
+  accent-teal-wash: "rgb(0 117 106 / 0.1)"
+  accent-teal-focus: "#00756a"
+  night-accent-teal-fill: "#00796d"
+  night-accent-teal-on-fill: "#ffffff"
+  night-accent-teal-ink: "#8fe3d4"
+  night-accent-teal-row: "rgb(46 196 173 / 0.22)"
+  night-accent-teal-row-hover: "rgb(46 196 173 / 0.3)"
+  night-accent-teal-wash: "rgb(0 121 109 / 0.16)"
+  night-accent-teal-focus: "#4fd1bd"
+  accent-violet-fill: "#6b3fd6"
+  accent-violet-on-fill: "#ffffff"
+  accent-violet-ink: "#5a2fc2"
+  accent-violet-row: "rgb(107 63 214 / 0.12)"
+  accent-violet-row-hover: "rgb(107 63 214 / 0.18)"
+  accent-violet-wash: "rgb(107 63 214 / 0.1)"
+  accent-violet-focus: "#6b3fd6"
+  night-accent-violet-fill: "#7048e0"
+  night-accent-violet-on-fill: "#ffffff"
+  night-accent-violet-ink: "#d2c3ff"
+  night-accent-violet-row: "rgb(157 128 255 / 0.24)"
+  night-accent-violet-row-hover: "rgb(157 128 255 / 0.32)"
+  night-accent-violet-wash: "rgb(112 72 224 / 0.16)"
+  night-accent-violet-focus: "#b39bff"
+  accent-magenta-fill: "#b0287a"
+  accent-magenta-on-fill: "#ffffff"
+  accent-magenta-ink: "#981f68"
+  accent-magenta-row: "rgb(176 40 122 / 0.12)"
+  accent-magenta-row-hover: "rgb(176 40 122 / 0.18)"
+  accent-magenta-wash: "rgb(176 40 122 / 0.1)"
+  accent-magenta-focus: "#b0287a"
+  night-accent-magenta-fill: "#b62e80"
+  night-accent-magenta-on-fill: "#ffffff"
+  night-accent-magenta-ink: "#ffb6df"
+  night-accent-magenta-row: "rgb(255 111 191 / 0.22)"
+  night-accent-magenta-row-hover: "rgb(255 111 191 / 0.3)"
+  night-accent-magenta-wash: "rgb(182 46 128 / 0.16)"
+  night-accent-magenta-focus: "#ff8ccc"
+  accent-graphite-fill: "#1d1d1f"
+  accent-graphite-on-fill: "#ffffff"
+  accent-graphite-ink: "#1d1d1f"
+  accent-graphite-row: "rgb(29 29 31 / 0.09)"
+  accent-graphite-row-hover: "rgb(29 29 31 / 0.14)"
+  accent-graphite-wash: "rgb(29 29 31 / 0.08)"
+  accent-graphite-focus: "#1d1d1f"
+  night-accent-graphite-fill: "#e8e6e3"
+  night-accent-graphite-on-fill: "#1d1d1f"
+  night-accent-graphite-ink: "#f5f5f7"
+  night-accent-graphite-row: "rgb(255 255 255 / 0.16)"
+  night-accent-graphite-row-hover: "rgb(255 255 255 / 0.22)"
+  night-accent-graphite-wash: "rgb(255 255 255 / 0.12)"
+  night-accent-graphite-focus: "#e8e6e3"
+  night-accent-blue-wash: "rgb(43 107 235 / 0.14)"
 typography:
   display:
     fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif"
@@ -343,6 +400,26 @@ components:
   step-meta:
     textColor: "{colors.warm-mute}"
     typography: "{typography.meta}"
+  appearance-row:
+    textColor: "{colors.graphite-ink}"
+    rounded: "{rounded.row}"
+    padding: "8px 12px"
+    height: "44px"
+  appearance-row-selected:
+    backgroundColor: "{colors.selected-row}"
+    textColor: "{colors.selected-ink}"
+    rounded: "{rounded.row}"
+    padding: "8px 12px"
+    height: "44px"
+  appearance-tile:
+    backgroundColor: "{colors.tile-stone}"
+    textColor: "{colors.tile-ink}"
+    rounded: "{rounded.tile}"
+    size: "30px"
+  appearance-sheet:
+    backgroundColor: "{colors.panel-solid}"
+    textColor: "{colors.graphite-ink}"
+    width: "{spacing.auth-column}"
 ---
 
 # Design System: Shoot Project
@@ -367,6 +444,8 @@ The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingu
 - On the landing hero the primary bar wears its glass tone over a full-screen photo stage; everywhere else it floats on the ground.
 - With JavaScript the bar is a step-by-step search (FR-067): one field and only the asked step's list; a choice prints into the sentence as a token and the next list appears, and the Top Hit appears only once every part is answered.
 
+**Platform note.** This file also records the Flutter app (`apps/mobile`), which speaks the same roles. The app alone has the per-device accent setting (Mobile Accents under Colors, Appearance Sheet under Components); the web has no accent setting and stays selection blue.
+
 ### Direction history
 **2026-11-07 (owner-directed).** The owner asked for three changes explicitly. (1) The landing hero became a full-screen stage: the CMS photograph under a theme scrim, or a CSS studio sweep until a photo exists, with the CMS headline as the only visible title above the bar; the other-language headline line and the subheadline are no longer shown. This retires "no moody photo hero" and "nothing painted on the page" for the hero only. (2) The bar gained a glass tone for that stage, which brings its own sheen, inset highlight, edge and deeper shadow; the One Shadow and One Gradient rules now name these as hero-only exceptions. (3) The brief builder's options folded into a drawer under the Top Hit; the same day the owner replaced the drawer with the step-by-step search of FR-067 (nothing pre-filled, one list per step).
 
@@ -385,6 +464,8 @@ The owner rejected the ticket ("The Shoot Pass") and municipal signage ("Bilingu
 **2026-11-07 (owner-directed).** The owner asked for "Our network" to sit directly under the hero as a moving strip of creator cards, after a reference with that pattern. It is the first section under the stage (CMS order; the default seed follows). Its creators are Creator Cards in a Network Strip that runs the full width of the window, the one place below the fold where cards replace rows, because the strip is a showcase of people rather than a list to scan. The reference's eyebrow label, serif display headline, navy ground and orange button were not taken: the heading stays the section heading, and the cards use only existing roles (panel solid, hairline, ink, mute, tile ink). No new colour role, shadow, radius or type step.
 
 **2026-11-08 (owner-directed).** The account page (`/account`) was redesigned as a settings window (surface brief `account-home`): from 1024 px a 300 px sticky start column (initials tile, the name as the h1, profession, email, the "In your account" place rows with a one-line status and a chevron, Log out last) beside the end column (Up next, the page's one panel holding its one Top Hit, chosen by what needs the member now, then "Your briefs" as rows on the ground). On phones it is one column: name, Up next, places, briefs, Log out. The identity no longer shows as a selection-blue row, and the account's links are no longer blue text. No new colour, shadow, radius or type step.
+
+**2026-11-11 (feature 006, mobile accent colour).** The Flutter app's Appearance sheet and its five accents were recorded from the shipped build (`lib/core/theme/shoot_accent.dart`, `lib/core/widgets/appearance_sheet.dart`, `app_bar_actions.dart`). The web has no accent setting and is unchanged. No new radius, shadow or type step; the sheet is the existing Result Row grammar.
 
 ## Colors
 
@@ -413,6 +494,14 @@ A warm-neutral, near-monochrome palette with exactly one saturated voice, select
 - **Studio Set** (`set-ink` at `set-ink-opacity`, `set-glow` at `set-glow-opacity`; night variants): drawn over the sweep, an empty set in faded silhouette: a softbox with a lit face on the start side (the source of the sweep's key light) and a camera on its tripod on the end side, lens toward the light across the bar. Owner-requested 2026-11-07 so the hero carries the studio identity without inventing photography. Both pieces anchor with logical insets and mirror in Arabic, and the sweep's key and rim lights mirror with them (`--sweep-key-x`, `--sweep-rim-x`). Below 1024 px the softbox sits above the headline and the camera below the bar. A CMS hero photograph replaces both sweep and set. Decorative and hidden from assistive technology.
   - **Set Motion** (owner-requested 2026-11-07, refined the same day for a more modern, professional feel). CSS only, opacity and transform only, and nothing moves under `prefers-reduced-motion: reduce`. **Arrival:** each rig glides 40 px in from its own side and fades up (1.4 s, expo out, the camera 180 ms after the light; the direction follows the page so Arabic mirrors), and the modelling lamp strikes on with a short flicker before settling. **Loop (8 s):** the light breathes down to 72 % of `set-glow-opacity`; at 30 % of the loop the flash fires: the face jumps to `set-flash-peak`, a radial bloom (`set-flash-opacity`) fades out over 0.8 s and the beam briefly doubles. One flash per loop is far under WCAG 2.3.1. **Air (from 1024 px only):** a soft elliptical beam (`set-beam-opacity`, a radial gradient focused on the face, no hard edges) falls from the softbox across the stage, and eight dust motes (`set-mote-opacity`) drift up and out of it on their own 17–25 s periods. Phones skip the beam and dust so the glass bar is not re-blurred every frame. **Camera:** the head pans between -1.5° and 2° on an 18 s ease, and the tally light (`set-tally`, the only red in the system, hero only) pulses softly every 2.4 s.
 - **Glass** (`glass-panel` with opaque fallback `glass-panel-solid`, `glass-ink`, `glass-mute`, `glass-hairline`, `glass-tile` / `glass-tile-ink`, `glass-edge`, `glass-sheen`; night `night-glass-*`): the bar's glass tone re-scopes the panel roles inside the bar: light glass with dark text in light, smoked glass with white text in dark. Text pairs are checked against the glass over mid grey (a blurred photo's typical average) and over the worst photo after the scrim (black under light glass, white under smoked).
+
+### Mobile Accents
+Flutter app only. A person picks one of five accents per device in the Appearance sheet (Blue first and the fallback); the choice swaps exactly seven roles, in both themes, and nothing else. The roles: fill (`accent`), the label on it (`onAccent`), the accent as text (`accentInk`), the selected row and its hover (`selected`, `selectedHover`), the text-selection wash (`selectionWash`) and the focus ring (`focus`). Values live in the frontmatter as `accent-<name>-fill`, `-on-fill`, `-ink`, `-row`, `-row-hover`, `-wash` and `-focus`, with `night-` for dark; each is the shipped value in `ShootAccent`.
+- **Blue** (fill #0A60FF light, #2B6BEB dark): the web's Selection Blue roles, so it adds no tokens: `selection-blue`, `on-accent`, `selected-ink`, `selected-row`, `selected-row-hover`, `selection-wash` and `focus-ring`, with their `night-` pairs. One divergence: the app's dark selection wash is 14% (`night-accent-blue-wash`), the web's 12%.
+- **Teal** (#00756A light, #00796D dark), **Violet** (#6B3FD6, #7048E0), **Magenta** (#B0287A, #B62E80): saturated fills with white `onAccent` in both themes; dark `accentInk` is a pale tint of the hue so it reads on the dark panel.
+- **Graphite** (#1D1D1F light, #E8E6E3 dark): the monochrome choice. In dark the fill is light, so `onAccent` flips to #1D1D1F; `accentInk` is ink itself.
+
+**The Fixed Red Rule.** The accent never changes Action Red. `action-red`, its hover and `on-primary` are the same in every accent and both themes; the Top Hit stays red whatever is chosen. The accent decides selection (set rows, caret, focus, text selection) only, as Selection Blue does on the web.
 
 ### Named Rules
 **The One Red Row Rule.** A panel has exactly one action-red row, its Top Hit. If a second action is needed, it is an ordinary row in an "Actions" group.
@@ -636,6 +725,15 @@ The phone-only circle steps aside while any `data-floating-hide` element (the he
 ### Theme
 Light under `:root`, dark under `.dark` (next-themes, set before paint, so no flash), and the same dark values under `prefers-color-scheme: dark` for `:root:not(.light)` so a visitor without JavaScript follows the device. `color-scheme` is set per theme so native pickers and scrollbars follow.
 
+### Appearance Sheet (Flutter app)
+The theme and accent chooser, a modal bottom sheet opened from the contrast icon in the app bar (`AppearanceButton`, next to the language button). It is the Result Row grammar on a sheet: a title, then two groups, "Theme" (System, Light, Dark) and "Accent colour" (the five accents, in order). A choice applies on tap and the sheet stays open so the person can compare.
+- **Sheet:** drag handle, content capped at 480 px (`ShootSize.formColumn`, the auth column) and centred on wider screens, 16 px inline padding. Safe area guards the top and sides through the sheet; the bottom is the content's own 24 px plus the system bottom inset (home indicator, Android navigation bar), so the last row always clears it. Scrolls when short.
+- **Title and group labels:** the title is Material `titleLarge` at semibold, marked as a header; each group label is `labelLarge`, semibold, mute, 20 px above and 4 px below, also a header. Mixed case, no tracking (the web's uppercase Group Label is not used here).
+- **Row:** 44 px minimum, 9 px corners, 12 px inline and 8 px block padding with 1 px between rows, a 30 px leading tile, 12 px gap, label, and a 24 px trailing slot. The whole row is the target. Pressed or hovered it takes `selectedHover`.
+- **Tile:** 30 px, 8 px corners. A theme row holds an 18 px outlined icon in tile ink on the resting tile (auto, light, dark); an accent row holds the accent's fill for the current theme as a flat swatch with a 1 px hairline border, so the tile previews the colour it will apply.
+- **Current choice, three signals:** the row takes the `selected` fill; the label turns semibold in `accentInk`; a 20 px check in `accentInk` fills the trailing slot (empty on other rows). The screen reader reads it too: each row is one checked, mutually exclusive radio-style node named by its label. Colour is never the only signal.
+- **Not here:** no switch, slider or segmented control; no red (the sheet has no primary action); the swatch is not drawn as a ring or a dot.
+
 ## Do's and Don'ts
 
 ### Do:
@@ -666,6 +764,8 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Do** say a step's position in a Meta line under the h1.
 - **Do** print documents on A4, light, without site chrome, and keep each group on one page.
 - **Do** give account pages 96 px of bottom padding on phones so the floating WhatsApp button never covers the last row.
+- **Do** (Flutter app) consume the accent only through the seven accent roles, so a new surface follows the chosen accent in both themes; a new accent needs a light and a dark value for all seven and its contrast pairs proven in the accent palette test.
+- **Do** (Flutter app) make a chosen option read three ways: selected fill, semibold accent-ink label, trailing check.
 
 ### Don't:
 - **Don't** load a webfont or a second type family.
@@ -684,3 +784,5 @@ Light under `:root`, dark under `.dark` (next-themes, set before paint, so no fl
 - **Don't** invent proof: no testimonials, logos, counts or ratings that do not exist.
 - **Don't** place cancel or any destructive action beside the primary action, and don't make it blue.
 - **Don't** recalculate a quotation's lines on render; show what was issued.
+- **Don't** (Flutter app) let an accent recolour the primary action; Action Red is fixed.
+- **Don't** (Flutter app) change a saved accent id once shipped, or let an unknown saved id throw: it falls back to Blue.

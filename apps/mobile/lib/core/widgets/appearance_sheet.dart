@@ -54,11 +54,13 @@ class AppearanceSheet extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(
+        // `useSafeArea` guards the top and sides only, so the last row clears
+        // the system bar (home indicator, Android navigation bar) here.
+        padding: EdgeInsetsDirectional.fromSTEB(
           ShootSpace.s4,
           0,
           ShootSpace.s4,
-          ShootSpace.s6,
+          ShootSpace.s6 + MediaQuery.viewPaddingOf(context).bottom,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

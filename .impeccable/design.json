@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-07T23:30:00Z",
+  "generatedAt": "2026-11-11T12:00:00Z",
   "title": "Design System: Shoot Project",
   "extensions": {
     "colorMeta": {
@@ -608,6 +608,142 @@
           "rgb(255 255 255 / 0.65)",
           "rgb(255 255 255 / 0.9)"
         ]
+      },
+      "accent-teal-fill": {
+        "role": "accent",
+        "displayName": "Teal accent fill",
+        "theme": "light",
+        "canonical": "#00756a",
+        "tonalRamp": [
+          "#00130e",
+          "#00322a",
+          "#00534a",
+          "#0a766b",
+          "#419a8f",
+          "#6ebfb3",
+          "#91dfd3",
+          "#b5fff4"
+        ],
+        "oklch": "oklch(50.5% 0.090 184)"
+      },
+      "night-accent-teal-fill": {
+        "role": "accent",
+        "displayName": "Teal accent fill",
+        "theme": "dark",
+        "canonical": "#00796d",
+        "tonalRamp": [
+          "#00140e",
+          "#00322a",
+          "#005349",
+          "#01776b",
+          "#3f9b8e",
+          "#6bc0b3",
+          "#8fe0d3",
+          "#b3fff3"
+        ],
+        "oklch": "oklch(51.7% 0.092 183)"
+      },
+      "accent-violet-fill": {
+        "role": "accent",
+        "displayName": "Violet accent fill",
+        "theme": "light",
+        "canonical": "#6b3fd6",
+        "tonalRamp": [
+          "#190050",
+          "#30007a",
+          "#4b16a6",
+          "#6b40d4",
+          "#8c69fc",
+          "#af92ff",
+          "#cdb5ff",
+          "#edd8ff"
+        ],
+        "oklch": "oklch(51.1% 0.216 290)"
+      },
+      "night-accent-violet-fill": {
+        "role": "accent",
+        "displayName": "Violet accent fill",
+        "theme": "dark",
+        "canonical": "#7048e0",
+        "tonalRamp": [
+          "#190051",
+          "#2f007b",
+          "#4a16a7",
+          "#6940d5",
+          "#8a69fd",
+          "#ad93ff",
+          "#ccb5ff",
+          "#ebd8ff"
+        ],
+        "oklch": "oklch(53.6% 0.217 289)"
+      },
+      "accent-magenta-fill": {
+        "role": "accent",
+        "displayName": "Magenta accent fill",
+        "theme": "light",
+        "canonical": "#b0287a",
+        "tonalRamp": [
+          "#2f0015",
+          "#570033",
+          "#800054",
+          "#ac2677",
+          "#d4519b",
+          "#fb7bbf",
+          "#ff9edf",
+          "#ffc1ff"
+        ],
+        "oklch": "oklch(52.0% 0.187 349)"
+      },
+      "night-accent-magenta-fill": {
+        "role": "accent",
+        "displayName": "Magenta accent fill",
+        "theme": "dark",
+        "canonical": "#b62e80",
+        "tonalRamp": [
+          "#2f0015",
+          "#570034",
+          "#800054",
+          "#ac2678",
+          "#d4519b",
+          "#fb7bc0",
+          "#ff9ee0",
+          "#ffc1ff"
+        ],
+        "oklch": "oklch(53.7% 0.188 348)"
+      },
+      "accent-graphite-fill": {
+        "role": "accent",
+        "displayName": "Graphite accent fill",
+        "theme": "light",
+        "canonical": "#1d1d1f",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#262628",
+          "#454547",
+          "#666668",
+          "#89898b",
+          "#adaeb0",
+          "#cdcdd0",
+          "#eeeef0"
+        ],
+        "oklch": "oklch(23.2% 0.004 286)"
+      },
+      "night-accent-graphite-fill": {
+        "role": "accent",
+        "displayName": "Graphite accent fill",
+        "theme": "dark",
+        "canonical": "#e8e6e3",
+        "tonalRamp": [
+          "#0c0b09",
+          "#272624",
+          "#464542",
+          "#676663",
+          "#8b8986",
+          "#afaeab",
+          "#cfcdcb",
+          "#f0eeec"
+        ],
+        "oklch": "oklch(92.6% 0.005 78)"
       }
     },
     "typographyMeta": {
@@ -966,6 +1102,14 @@
       "description": "A result group named by what it offers and costs, VAT said once in the label; deliverables as one meta line beneath.",
       "html": "<div class=\"ds-pgroup\" role=\"group\" aria-labelledby=\"ds-pg-l\"><span id=\"ds-pg-l\" class=\"ds-pgroup-label\">Photographers free on 12 Dec · <span dir=\"ltr\">AED 800</span>, VAT included</span><p class=\"ds-pgroup-meta\">60 edited photos · 2 hours</p></div>",
       "css": ".ds-pgroup { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; } .ds-pgroup-label { display: block; padding: 10px 16px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute, #6b6560); } :lang(ar) .ds-pgroup-label { letter-spacing: 0; text-transform: none; font-size: 12px; } .ds-pgroup-meta { margin: 0; padding: 0 16px 6px; font-size: 13px; color: var(--mute, #6b6560); }"
+    },
+    {
+      "name": "Appearance Sheet row (Flutter app)",
+      "kind": "custom",
+      "refersTo": "appearance-row-selected",
+      "description": "Flutter app only. Theme and accent chooser row: 30 px tile, label, trailing check; the current choice reads as selected fill, semibold accent-ink label and a check.",
+      "html": "<div class=\"ds-ap-sheet\"><div class=\"ds-ap-label\">Accent colour</div><div class=\"ds-ap-row\" role=\"radio\" aria-checked=\"false\" tabindex=\"0\"><span class=\"ds-ap-tile\" style=\"background:#00756a\"></span><span class=\"ds-ap-name\">Teal</span><span class=\"ds-ap-slot\"></span></div><div class=\"ds-ap-row ds-ap-row-on\" role=\"radio\" aria-checked=\"true\" tabindex=\"0\"><span class=\"ds-ap-tile\" style=\"background:#0a60ff\"></span><span class=\"ds-ap-name\">Blue</span><span class=\"ds-ap-slot\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 10.5l4 4 8-9\"/></svg></span></div></div>",
+      "css": ".ds-ap-sheet { max-width: 480px; padding: 0 16px 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; background: var(--panel-solid, #fcfbfa); color: var(--ink, #1d1d1f); } .ds-ap-label { padding: 20px 0 4px; font-size: 14px; font-weight: 600; color: var(--mute, #6b6560); } .ds-ap-row { display: flex; align-items: center; gap: 12px; min-height: 44px; margin: 1px 0; padding: 8px 12px; border-radius: 9px; box-sizing: border-box; cursor: pointer; } .ds-ap-row:hover { background: rgb(10 96 255 / 0.18); } .ds-ap-row:focus-visible { outline: 2px solid var(--focus-ring, #0a60ff); outline-offset: -2px; } .ds-ap-row-on { background: rgb(10 96 255 / 0.12); color: #0848c2; font-weight: 600; } .ds-ap-tile { width: 30px; height: 30px; border-radius: 8px; border: 1px solid rgb(0 0 0 / 0.08); box-sizing: border-box; flex: none; } .ds-ap-name { flex: 1; font-size: 16px; } .ds-ap-slot { width: 24px; display: flex; justify-content: center; }"
     }
   ],
   "narrative": {
@@ -1036,6 +1180,11 @@
         "name": "The Step Meta Rule",
         "body": "A step in a flow says where it is in one Meta line (13 px mute) directly under the h1, 4 px below it (\"Step 2 of 3\"), never in a kicker or label above the heading. The quotation does the same with its issued and valid-until dates (tabular) under its title.",
         "section": "typography"
+      },
+      {
+        "name": "The Fixed Red Rule",
+        "body": "The accent never changes Action Red. `action-red`, its hover and `on-primary` are the same in every accent and both themes; the Top Hit stays red whatever is chosen. The accent decides selection (set rows, caret, focus, text selection) only, as Selection Blue does on the web.",
+        "section": "colors"
       }
     ],
     "dos": [
@@ -1065,7 +1214,9 @@
       "Do give each booking state at most one Top Hit and put PDF, WhatsApp and cancel as ordinary rows at the end of the document.",
       "Do say a step's position in a Meta line under the h1.",
       "Do print documents on A4, light, without site chrome, and keep each group on one page.",
-      "Do give account pages 96 px of bottom padding on phones so the floating WhatsApp button never covers the last row."
+      "Do give account pages 96 px of bottom padding on phones so the floating WhatsApp button never covers the last row.",
+      "Do (Flutter app) consume the accent only through the seven accent roles, so a new surface follows the chosen accent in both themes; a new accent needs a light and a dark value for all seven and its contrast pairs proven in the accent palette test.",
+      "Do (Flutter app) make a chosen option read three ways: selected fill, semibold accent-ink label, trailing check."
     ],
     "donts": [
       "Don't load a webfont or a second type family.",
@@ -1083,7 +1234,9 @@
       "Don't use a modal, a toast, a progress ring, a completion percentage or a stepper in the editor; the feedback line and the status bar say where the profile stands.",
       "Don't show a zero, a placeholder or a rounded-up count, and don't show a sample without a way to its creator.",
       "Don't place cancel or any destructive action beside the primary action, and don't make it blue.",
-      "Don't recalculate a quotation's lines on render; show what was issued."
+      "Don't recalculate a quotation's lines on render; show what was issued.",
+      "Don't (Flutter app) let an accent recolour the primary action; Action Red is fixed.",
+      "Don't (Flutter app) change a saved accent id once shipped, or let an unknown saved id throw: it falls back to Blue."
     ],
     "directionHistory": [
       {
@@ -1105,6 +1258,10 @@
       {
         "date": "2026-11-07",
         "note": "Feature 003, Quick Match: The match and details steps (`/match/...`), the quotation (`/q/...`, `/account/bookings/{ref}`) and the account's bookings and availability pages were recorded from the shipped build: Price Group Label, Creator Pick Row, Quotation Panel, Booking Status, Quiet End Actions, Creator Booking Row, Availability Day Row, Update Row and the quotation's print rendering. No new colour, shadow, radius or type step on screen; the one addition is a print rendering of the existing roles."
+      },
+      {
+        "date": "2026-11-11",
+        "note": "Feature 006, mobile accent colour: the Flutter app's Appearance sheet and its five accents (Blue, Teal, Violet, Magenta, Graphite) were recorded from the shipped build. Web has no accent setting and is unchanged. No new radius, shadow or type step."
       }
     ]
   }

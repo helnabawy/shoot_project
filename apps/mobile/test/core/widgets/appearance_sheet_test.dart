@@ -262,6 +262,23 @@ void main() {
     },
   );
 
+  testWidgets('the last row clears the system bar at the bottom', (
+    tester,
+  ) async {
+    _setSize(tester, const Size(360, 900));
+    // An Android navigation bar (or the iPhone home indicator area).
+    const bar = FakeViewPadding(bottom: 48);
+    tester.view.padding = bar;
+    tester.view.viewPadding = bar;
+    await tester.pumpApp(_screen(), themeMode: ThemeMode.system);
+    await _open(tester);
+
+    expect(
+      tester.getRect(_accent('graphite')).bottom,
+      lessThanOrEqualTo(900 - 48),
+    );
+  });
+
   testWidgets('the swatch tile shows the accent for the theme on screen', (
     tester,
   ) async {

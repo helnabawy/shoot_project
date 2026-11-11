@@ -39,7 +39,7 @@ Pairs checked (FR-007): onAccent on accent ≥ 4.5; accentInk on ground and on p
 
 **Alternatives considered**: six accents including Green or Orange (rejected: confusable with success / attention, FR-008); a free colour picker with run-time contrast correction (out of scope in the spec, and it would compute roles at run time, against FR-006); generating tints from one seed colour with Material's `ColorScheme.fromSeed` (rejected: values are not hand-checked and drift between Flutter versions).
 
-**Owner check**: names and values are a proposal for the owner to approve at the start of implementation (spec Assumptions). The Arabic names need review by someone who writes Arabic (FR-015).
+**Owner check**: approved by the owner on 2026-11-11, values and names unchanged (originally a proposal to approve at the start of implementation, spec Assumptions). The Arabic names need review by someone who writes Arabic (FR-015).
 
 ## R2. Saving preferences on the device
 
