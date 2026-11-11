@@ -8,8 +8,8 @@ import 'package:shoot_mobile/core/theme/shoot_accent.dart';
 /// (`context.colors.ink`), never a raw colour. When a token changes on the
 /// web, change it here too.
 ///
-/// Not mirrored yet: the graphic-only scene, sweep and glow colours and the
-/// shadows. Add them with the spec that first needs them.
+/// The graphic-only scene, sweep and glow colours are in `ShootScene`; the shadows in
+/// `ShootShadows`.
 @immutable
 final class ShootColors extends ThemeExtension<ShootColors> {
   const ShootColors({
@@ -22,6 +22,8 @@ final class ShootColors extends ThemeExtension<ShootColors> {
     required this.controlBorder,
     required this.tile,
     required this.tileInk,
+    required this.bodyInk,
+    required this.surfaceSunk,
     required this.accent,
     required this.onAccent,
     required this.primary,
@@ -53,6 +55,8 @@ final class ShootColors extends ThemeExtension<ShootColors> {
     controlBorder: Color.fromRGBO(0, 0, 0, 0.32),
     tile: Color(0xFFF1EEEA),
     tileInk: Color(0xFF5C5752),
+    bodyInk: Color(0xFF3A342F),
+    surfaceSunk: Color(0xFFE6E0D9),
     accent: Color(0xFF0A60FF),
     onAccent: Color(0xFFFFFFFF),
     primary: Color(0xFFE01414),
@@ -84,6 +88,8 @@ final class ShootColors extends ThemeExtension<ShootColors> {
     controlBorder: Color.fromRGBO(255, 255, 255, 0.36),
     tile: Color(0xFF3A3A3F),
     tileInk: Color(0xFFD6D2CD),
+    bodyInk: Color(0xFFD9D3CD),
+    surfaceSunk: Color(0xFF2C2C31),
     accent: Color(0xFF2B6BEB),
     onAccent: Color(0xFFFFFFFF),
     primary: Color(0xFFE01414),
@@ -131,6 +137,12 @@ final class ShootColors extends ThemeExtension<ShootColors> {
   /// Icon colour on a [tile].
   final Color tileInk;
 
+  /// Running text (`.body`); at least 4.5:1 on ground, panel, panel-solid and tile.
+  final Color bodyInk;
+
+  /// A step below the ground: 44 px tiles, progress tracks, dividers on tiles.
+  final Color surfaceSunk;
+
   /// Selection fill (progress, checked controls, the caret). Set by the
   /// chosen accent; not the primary action, see [primary].
   final Color accent;
@@ -175,6 +187,39 @@ final class ShootColors extends ThemeExtension<ShootColors> {
   /// WhatsApp action text.
   final Color whatsappInk;
 
+  /// Every role by its `tokens.css` name, for the token parity test and the gallery.
+  Map<String, Color> get roles => {
+    'ground': ground,
+    'panel': panel,
+    'panel-solid': panelSolid,
+    'ink': ink,
+    'mute': mute,
+    'hair': hair,
+    'control-border': controlBorder,
+    'tile': tile,
+    'tile-ink': tileInk,
+    'body-ink': bodyInk,
+    'surface-sunk': surfaceSunk,
+    'accent': accent,
+    'on-accent': onAccent,
+    'primary': primary,
+    'primary-hover': primaryHover,
+    'on-primary': onPrimary,
+    'accent-ink': accentInk,
+    'selected': selected,
+    'selected-hover': selectedHover,
+    'selection-wash': selectionWash,
+    'focus': focus,
+    'attention': attention,
+    'on-attention': onAttention,
+    'success': success,
+    'on-success': onSuccess,
+    'danger': danger,
+    'on-danger': onDanger,
+    'photo-scrim': photoScrim,
+    'whatsapp-ink': whatsappInk,
+  };
+
   /// These roles with the seven accent roles replaced by [roles]. Everything
   /// else, the `primary` roles included, is kept.
   ShootColors withAccent(AccentRoles roles) {
@@ -200,6 +245,8 @@ final class ShootColors extends ThemeExtension<ShootColors> {
     Color? controlBorder,
     Color? tile,
     Color? tileInk,
+    Color? bodyInk,
+    Color? surfaceSunk,
     Color? accent,
     Color? onAccent,
     Color? primary,
@@ -229,6 +276,8 @@ final class ShootColors extends ThemeExtension<ShootColors> {
       controlBorder: controlBorder ?? this.controlBorder,
       tile: tile ?? this.tile,
       tileInk: tileInk ?? this.tileInk,
+      bodyInk: bodyInk ?? this.bodyInk,
+      surfaceSunk: surfaceSunk ?? this.surfaceSunk,
       accent: accent ?? this.accent,
       onAccent: onAccent ?? this.onAccent,
       primary: primary ?? this.primary,
@@ -264,6 +313,8 @@ final class ShootColors extends ThemeExtension<ShootColors> {
       controlBorder: mix(controlBorder, other.controlBorder),
       tile: mix(tile, other.tile),
       tileInk: mix(tileInk, other.tileInk),
+      bodyInk: mix(bodyInk, other.bodyInk),
+      surfaceSunk: mix(surfaceSunk, other.surfaceSunk),
       accent: mix(accent, other.accent),
       onAccent: mix(onAccent, other.onAccent),
       primary: mix(primary, other.primary),

@@ -42,7 +42,7 @@ the website later. One flow logs in and registers.
 
 **Language/Version**:
 - TypeScript strict on Node 24 LTS (web and domain).
-- Dart 3.13.2 and Flutter 3.47.2 (stable), as pinned in `apps/mobile/README.md`.
+- Dart 3.13.7 and Flutter 3.47.9 (stable), as pinned in `apps/mobile/README.md`.
 
 **Primary Dependencies**:
 - Existing web: `payload` 3.93.0 (`jwtSign`, `getFieldsToSign`, `refreshOperation`,

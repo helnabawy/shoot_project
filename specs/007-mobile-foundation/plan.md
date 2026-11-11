@@ -31,7 +31,7 @@ to prove each screen matches its canvas board.
 ## Technical Context
 
 **Language/Version**:
-- Dart 3.13.2 and Flutter 3.47.2 (stable), as pinned in `apps/mobile/README.md`.
+- Dart 3.13.7 and Flutter 3.47.9 (stable), as pinned in `apps/mobile/README.md`.
 - TypeScript strict on Node 24 for `tools/design-fidelity/`.
 
 **Primary Dependencies**:
@@ -51,8 +51,10 @@ to prove each screen matches its canvas board.
 
 **Target Platform**:
 - iOS (iPhone and iPad) and Android phones.
-- Goldens and fidelity run on Linux only: in CI, or locally through Docker with
-  `ghcr.io/cirruslabs/flutter:3.47.2`.
+- Goldens are made and checked on macOS only, with the pinned Flutter 3.47.9: on the owner's Mac
+  through `tool/goldens.sh`, and in CI on a macOS runner. (Amended 2026-11-11: the plan first named a
+  Linux image, `ghcr.io/cirruslabs/flutter`, which is not published for this Flutter version; the
+  owner chose macOS.)
 
 **Project Type**: mobile app (`apps/mobile`, clean architecture with a shared `core/`), plus a
 repository tool workspace.
@@ -139,7 +141,7 @@ tools/design-fidelity/               # new pnpm workspace (pnpm-workspace.yaml g
 apps/mobile/
 ├── pubspec.yaml                     # + flutter_svg (exact pin)
 ├── dart_test.yaml                   # tags: golden
-├── tool/goldens.sh                  # runs goldens in the pinned Linux image; --update
+├── tool/goldens.sh                  # runs goldens on macOS with the pinned Flutter; --update
 ├── assets/icons/*.svg               # icon paths copied from the boards
 ├── lib/core/
 │   ├── theme/
@@ -196,6 +198,6 @@ dependency is justified below. The gate passes.
 |---|---|---|
 | `flutter_svg` package | The boards draw about 30 icons and the golden-hour scene as inline SVG (stroke 2.2, round caps). Copying the paths verbatim is the only way to be pixel-exact. | Material icons have a different geometry and would fail the diff. Hand-porting arcs into `Path` code drifts and is slow to review. `vector_graphics` needs a compile step and the `vector_graphics_compiler` package. |
 | `tools/design-fidelity` workspace | FR-041 to FR-045 need a browser render of each board. Playwright already renders and image-diffs in this repo. | Putting it in `apps/web` would couple the app's checks to the web's build. A Dart image-diff would need an `image` package plus a headless browser anyway. |
-| Vendored test fonts (Roboto, Noto Sans Arabic; Apache 2.0 and OFL) | Flutter tests draw text with the Ahem box font by default. Both sides of the diff must draw the same glyphs (FR-048). | Using system fonts is not deterministic across machines. SF Pro may not be redistributed. |
-| Linux-only goldens with a Docker wrapper | Rasterisation differs across operating systems. One platform makes the result repeatable (SC-004). | Per-OS goldens triple the baselines and still disagree with the reference renderer. |
+| Vendored test fonts (Roboto, Noto Sans Arabic; both OFL) | Flutter tests draw text with the Ahem box font by default. Both sides of the diff must draw the same glyphs (FR-048). | Using system fonts is not deterministic across machines. SF Pro may not be redistributed. |
+| macOS-only goldens (amended 2026-11-11 from Linux in Docker) | Rasterisation differs across operating systems. One platform makes the result repeatable (SC-004); the owner works on a Mac, and a macOS CI runner checks the same rasteriser. | Per-OS goldens triple the baselines and still disagree with the reference renderer. A local Linux image costs a 2 GB build and runs under emulation on Apple silicon. |
 | Derived dark and Arabic references | Only English light boards exist for 01–40. FR-042 needs all four variants. | Asking the designer for about 120 more boards delays every feature. The derivation is validated against boards 42 and 43 instead. If it fails validation, the fallback is to ask the designer (research R5). |

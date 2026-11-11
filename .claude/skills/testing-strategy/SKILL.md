@@ -41,8 +41,8 @@ feature 007 (mobile-foundation) and the `design-fidelity` skill describes them i
 
 - Gate: 80 % line coverage of the code a feature adds or changes, from
   `flutter test --coverage` (`coverage/lcov.info`).
-- Goldens run only on Linux, through `apps/mobile/tool/goldens.sh` (Docker); a plain
-  `flutter test` on macOS skips the `golden` tag. Never update the canvas references from Flutter
+- Goldens are made and checked on macOS with the pinned Flutter, through
+  `apps/mobile/tool/goldens.sh` and the macOS CI job; a plain `flutter test` skips the `golden` tag. Never update the canvas references from Flutter
   output (see `design-fidelity`).
 - Determinism: inject the `Clock` (`core/time/clock.dart`, *planned*) instead of `DateTime.now()`,
   stub Dio with a fake adapter (no real network), turn animations off in goldens, and build state

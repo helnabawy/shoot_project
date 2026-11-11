@@ -4,7 +4,7 @@
 
 | Command | Where | What it does |
 |---|---|---|
-| `apps/mobile/tool/goldens.sh` | repo root or `apps/mobile` | Runs `flutter test --tags golden` inside `ghcr.io/cirruslabs/flutter:3.47.2` with `GOLDENS=1`. Fails when an app render differs from its committed golden. |
+| `apps/mobile/tool/goldens.sh` | repo root or `apps/mobile` | Runs `flutter test --tags golden` with `GOLDENS=1` on macOS with the pinned Flutter 3.47.9 (refuses another OS or version). Fails when an app render differs from its committed golden. |
 | `apps/mobile/tool/goldens.sh --update` | same | Rewrites the app goldens (`--update-goldens`). Used only when a screen is deliberately changed. Never touches references. |
 | `pnpm fidelity` | repo root | `pnpm --filter design-fidelity exec playwright test`: the `refs` project renders the references, then the `compare` project checks the committed app goldens against them. |
 | `pnpm fidelity --grep 37` | repo root | One screen. |
@@ -73,4 +73,4 @@
 
 - Never write a reference from app output, and never run `-u` on the `compare` project.
 - Never commit `tools/design-fidelity/build/`.
-- Never compare renders made on a machine other than the pinned Linux image.
+- Never commit goldens made on another platform than macOS with the pinned Flutter.

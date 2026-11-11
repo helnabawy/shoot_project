@@ -1,6 +1,6 @@
 ---
 name: design-fidelity
-description: The pixel-perfect gate between the approved design canvas and the Flutter app — the canvas boards in specs/design-system/canvas/ and their manifest.json (screen id, board file, w, h, variants, geometry boxes, threshold and reason, sha256), how the en-dark, ar-light and ar-dark references are derived (tokenise.ts, class="dark", dir="rtl" plus strings.ar.json, validated against designer boards 42 and 43), font and determinism rules (vendored Roboto and Noto Sans Arabic, never SF Pro, debugDisableShadows = false, goldens on Linux only through apps/mobile/tool/goldens.sh in Docker), thresholds (0.01, 0.02 for text-heavy boards) and the ±1 px geometry gate, the override policy, reading the review images, and the pnpm fidelity commands. Use this skill whenever a task builds or changes a mobile screen or core widget, adds or updates a Flutter golden, re-exports the canvas, touches tools/design-fidelity, asks whether the app "matches the design", or a fidelity or golden test fails.
+description: The pixel-perfect gate between the approved design canvas and the Flutter app — the canvas boards in specs/design-system/canvas/ and their manifest.json (screen id, board file, w, h, variants, geometry boxes, threshold and reason, sha256), how the en-dark, ar-light and ar-dark references are derived (tokenise.ts, class="dark", dir="rtl" plus strings.ar.json, validated against designer boards 42 and 43), font and determinism rules (vendored Roboto and Noto Sans Arabic, never SF Pro, debugDisableShadows = false, goldens on macOS only, with the pinned Flutter, through apps/mobile/tool/goldens.sh), thresholds (0.01, 0.02 for text-heavy boards) and the ±1 px geometry gate, the override policy, reading the review images, and the pnpm fidelity commands. Use this skill whenever a task builds or changes a mobile screen or core widget, adds or updates a Flutter golden, re-exports the canvas, touches tools/design-fidelity, asks whether the app "matches the design", or a fidelity or golden test fails.
 ---
 
 # Design fidelity: the app matches the canvas, pixel for pixel
@@ -94,9 +94,10 @@ Only English light exists for 01–40. The other three references are derived, n
   is Roboto, and iOS is checked by eye in the simulator. The app itself bundles no font.
 - **Shadows.** `flutter_test` replaces shadows with outlines by default; `flutter_test_config.dart`
   sets `debugDisableShadows = false` so goldens show real shadows.
-- **Linux only.** Goldens depend on the platform's rasteriser, so they are made and checked only on
-  Linux, through `apps/mobile/tool/goldens.sh`, which runs the `golden`-tagged tests in Docker
-  (`ghcr.io/cirruslabs/flutter:3.47.2`, the pinned SDK). A plain `flutter test` on macOS skips them.
+- **macOS only.** Goldens depend on the platform's rasteriser, so they are made and checked on one
+  platform: macOS with the pinned Flutter (3.47.9), through `apps/mobile/tool/goldens.sh` (it refuses
+  another OS or Flutter version) and the macOS CI job. A plain `flutter test` skips them (no
+  `GOLDENS=1`). Decided 2026-11-11, replacing the Linux image the plan first named.
 - **Screen goldens** (`apps/mobile/test/goldens/screens/<id>_<name>_golden_test.dart`, tag
   `golden`, through `test/helpers/golden.dart`'s `pumpBoard(id, variant)`): each variant renders
   at the board's w × h with device pixel ratio 2, a fixed `Clock`, animations off (the arrive end
@@ -126,7 +127,7 @@ Only English light exists for 01–40. The other three references are derived, n
 ## Review images and commands (*planned*)
 
 ```bash
-apps/mobile/tool/goldens.sh            # run the golden tests in Docker; fail on any change
+apps/mobile/tool/goldens.sh            # run the golden tests (macOS, pinned Flutter); fail on any change
 apps/mobile/tool/goldens.sh --update   # rewrite the Flutter goldens after an intended change
 pnpm fidelity                          # render the references, diff every golden, run the geometry gate
 pnpm fidelity:report                   # open the report: side-by-side and overlay per screen and variant
@@ -157,7 +158,7 @@ golden in the diff → `pnpm fidelity` → fix and repeat until it passes in all
 - **Every screen scenario has a fidelity test** for en-light, en-dark, ar-light and ar-dark, named
   with its scenario id (for example `MF-US1-S1`) so `pnpm check:scenarios` finds it.
 - **CI.** The `mobile` job runs `dart format`, `flutter analyze`, `flutter test --coverage`, the
-  goldens, then `pnpm fidelity`. The authoritative result is that Linux run.
+  goldens, then `pnpm fidelity`, on a macOS runner. The authoritative result is that run.
 
 ## Reference files
 

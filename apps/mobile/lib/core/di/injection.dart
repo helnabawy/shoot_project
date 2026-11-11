@@ -9,6 +9,7 @@ import 'package:shoot_mobile/core/network/dio_client.dart';
 import 'package:shoot_mobile/core/preferences/preferences_store.dart';
 import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
+import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/features/service_health/service_health_injection.dart';
 
 /// The service locator. Only the composition root (this file, `main.dart`
@@ -20,6 +21,7 @@ void configureDependencies(AppConfig config, PreferencesStore store) {
   getIt
     ..registerSingleton<AppConfig>(config)
     ..registerSingleton<PreferencesStore>(store)
+    ..registerSingleton<Clock>(const SystemClock())
     ..registerSingleton<LocaleCubit>(LocaleCubit(store))
     ..registerSingleton<ThemeModeCubit>(ThemeModeCubit(store))
     ..registerSingleton<AccentCubit>(AccentCubit(store))

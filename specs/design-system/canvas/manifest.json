@@ -810,7 +810,8 @@
       "boxes": {
         "header": ".hd",
         "wordmark": ".wm",
-        "topHit": ".top"
+        "topHit": ".top",
+        "h1": "main h1"
       },
       "sha256": "e5900ed3dc12967ab3c8035286858bc0c8f26752897b87c9280b3477b433d3bb"
     },
@@ -852,7 +853,8 @@
       "boxes": {
         "header": ".hd",
         "wordmark": ".wm",
-        "topHit": ".top"
+        "topHit": ".top",
+        "h1": "main h1"
       },
       "sha256": "0b4536a5c70b04635339b34eb366440bcba9d54142c3392860156191f2c635ef"
     },

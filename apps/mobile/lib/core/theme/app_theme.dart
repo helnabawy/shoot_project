@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shoot_mobile/core/theme/shoot_accent.dart';
 import 'package:shoot_mobile/core/theme/shoot_colors.dart';
+import 'package:shoot_mobile/core/theme/shoot_scene.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
+import 'package:shoot_mobile/core/theme/shoot_type.dart';
 
 /// Builds the Material themes from the semantic roles in [ShootColors], so
 /// stock widgets pick up the tokens and custom widgets read the roles
@@ -48,16 +50,36 @@ abstract final class AppTheme {
       outlineVariant: c.hair,
     );
 
-    // No fontFamily: system fonts, like the web stack (SF / Roboto; Arabic
-    // falls back to the platform Arabic face). No font package until the
-    // brand needs one.
+    // No fontFamily: the platform face, like the web stack (SF / Roboto). Arabic falls back to
+    // Noto Sans Arabic (ShootType). The app bundles no font.
     final base = ThemeData(
       useMaterial3: true,
       brightness: brightness,
       colorScheme: scheme,
     );
 
-    final text = base.textTheme.apply(bodyColor: c.ink, displayColor: c.ink);
+    // The board roles (research R3) fill Material's text theme so stock widgets match too.
+    final text = base.textTheme
+        .merge(
+          TextTheme(
+            displayLarge: ShootType.display,
+            displayMedium: ShootType.display,
+            displaySmall: ShootType.display,
+            headlineLarge: ShootType.display,
+            headlineMedium: ShootType.title,
+            headlineSmall: ShootType.title,
+            titleLarge: ShootType.heading,
+            titleMedium: ShootType.action,
+            titleSmall: ShootType.button,
+            bodyLarge: ShootType.row,
+            bodyMedium: ShootType.body,
+            bodySmall: ShootType.meta,
+            labelLarge: ShootType.button,
+            labelMedium: ShootType.badge,
+            labelSmall: ShootType.groupLabel,
+          ),
+        )
+        .apply(bodyColor: c.ink, displayColor: c.ink);
 
     return base.copyWith(
       scaffoldBackgroundColor: c.ground,
@@ -122,7 +144,7 @@ abstract final class AppTheme {
         ),
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(color: c.accent),
-      extensions: [c],
+      extensions: [c, isDark ? ShootScene.dark : ShootScene.light],
     );
   }
 }

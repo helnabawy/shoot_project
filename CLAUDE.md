@@ -83,7 +83,7 @@ Order: 006, 007, 008, 009, then 010–014, with 015 in parallel.
   Android, outside the pnpm workspace; cubits (`flutter_bloc`), `get_it`, ARB strings (en, ar),
   exact-pinned packages; tests with `flutter_test`, `bloc_test`, `mocktail` (unit, cubit, widget,
   80 % coverage of changed code). Checks: `dart format`, `flutter analyze`, `flutter test` in
-  `apps/mobile`. Constitution 1.4.0. Planned (007–009): golden tests on Linux via
+  `apps/mobile`. Constitution 1.4.0. Planned (007–009): golden tests on macOS with the pinned Flutter via
   `apps/mobile/tool/goldens.sh`, the pixel diff against the canvas (`pnpm fidelity`), and the app's
   versioned REST API `/api/mobile/v1` with OTP sign-in and Bearer tokens.
 
@@ -148,12 +148,12 @@ pnpm db:migration:create <name>   # after any schema change; CI fails on drift
 dart format --set-exit-if-changed lib test
 flutter analyze                   # no issues
 flutter test --coverage           # >= 80 % of changed lines
-tool/goldens.sh                   # planned (007): golden tests in Docker (Linux only); --update rewrites the app's goldens
+tool/goldens.sh                   # (007): golden tests, macOS with the pinned Flutter only; --update rewrites the app's goldens
 # Back at the root
 pnpm fidelity                     # planned (007): every app golden vs the Playwright render of its canvas board
 ```
 
-Every Bash call needs Node 24 on PATH (`nvm use`); integration tests and `goldens.sh` need Docker.
+Every Bash call needs Node 24 on PATH (`nvm use`); integration tests need Docker; `goldens.sh` needs macOS and the pinned Flutter.
 
 ## Conventions
 

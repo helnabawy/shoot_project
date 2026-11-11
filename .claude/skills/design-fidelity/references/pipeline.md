@@ -20,7 +20,7 @@
 | `apps/mobile/test/flutter_test_config.dart` | 007 | loads the vendored fonts, `debugDisableShadows = false`, fixed clock |
 | `apps/mobile/test/fonts/` | 007 | Roboto and Noto Sans Arabic (static) with licences |
 | `apps/mobile/test/goldens/screens/` | each screen's feature | one `<id>_<name>_golden_test.dart` per screen |
-| `apps/mobile/tool/goldens.sh` | 007 | runs `flutter test --tags golden` in `ghcr.io/cirruslabs/flutter:3.47.2` |
+| `apps/mobile/tool/goldens.sh` | 007 | runs `flutter test --tags golden` with `GOLDENS=1` on macOS with the pinned Flutter 3.47.9 (refuses another OS or version); `--update` rewrites the goldens |
 
 ## 1. Flutter goldens (`goldens.sh`)
 

@@ -6,7 +6,7 @@
     "description": "Brand name: app bar title, task switcher and accessibility label."
   },
 
-  "languageSwitchAction": "العربية",
+  "languageSwitchAction": "عربي",
   "@languageSwitchAction": {
     "description": "Language button label: the OTHER language's name, written in that language."
   },
@@ -98,16 +98,32 @@
     "description": "Generic message for any other failure."
   },
 
-  "notFoundTitle": "Page not found",
+  "notFoundCode": "404",
+  "@notFoundCode": {
+    "description": "Small line above the not-found heading (screen 37): the HTTP status, as on the web."
+  },
+  "notFoundTitle": "That page isn't here",
   "@notFoundTitle": {
-    "description": "Title of the screen shown for an unknown route or deep link."
+    "description": "Heading of the not-found screen (screen 37), shown for an unknown or not-yet-built link."
   },
-  "notFoundBody": "This link doesn't lead anywhere in the app.",
+  "notFoundBody": "It may have moved, or the creator may have taken their profile down.",
   "@notFoundBody": {
-    "description": "Body of the not-found screen."
+    "description": "Body of the not-found screen (screen 37)."
   },
-  "notFoundAction": "Go to the start",
+  "notFoundNextLabel": "Where to next",
+  "@notFoundNextLabel": {
+    "description": "Screen-reader label of the list of places to go from the not-found and error screens."
+  },
+  "notFoundBrowseCreators": "Browse creators",
+  "@notFoundBrowseCreators": {
+    "description": "Row on the not-found screen that opens the creator directory."
+  },
+  "notFoundYourBookings": "Your bookings",
+  "@notFoundYourBookings": {
+    "description": "Row on the not-found screen that opens the person's bookings."
+  },
+  "notFoundAction": "Start a brief",
   "@notFoundAction": {
-    "description": "Button on the not-found screen that returns to the first screen."
+    "description": "The not-found screen's one primary action (Top Hit): start a brief. Same words as the web."
   }
 }

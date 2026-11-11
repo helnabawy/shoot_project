@@ -11,8 +11,8 @@ How to prove feature 009 works.
 - Features 007 and 008 merged (widgets, router, fidelity check; `defineHandler` with success
   statuses, `problems.ts`, the endpoint registry, the install id and `ActorContext.clientAddress`,
   `consumeAllowance` with `retryAfter`, `GET site` and `GET personas`).
-- Node 24 and pnpm (`nvm use`), Docker (PostgreSQL 17 and Testcontainers), Flutter 3.47.2 and
-  Dart 3.13.2.
+- Node 24 and pnpm (`nvm use`), Docker (PostgreSQL 17 and Testcontainers), Flutter 3.47.9 and
+  Dart 3.13.7.
 - `.env` from `.env.example` with `OTP_HMAC_SECRET` set (`openssl rand -hex 32`) and `OTP_PROVIDER`
   unset or `console`.
 - An iOS simulator and an Android emulator for the manual checks; a real phone with a UAE SIM for the

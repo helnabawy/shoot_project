@@ -38,6 +38,8 @@ const DESIGNER_VARIANT = { '42': { of: '21', variant: 'ar-dark' }, '43': { of: '
 
 // Selectors whose boxes the geometry gate compares (±1 logical px), when the board has them.
 const BOX_CANDIDATES = { header: '.hd', wordmark: '.wm', h1: '.h1', topHit: '.top' }
+// Boards whose heading has no `.h1` class: a stable selector for it (feature 007, T033).
+const EXTRA_BOXES = { '37': { h1: 'main h1' }, '39': { h1: 'main h1' } }
 
 const screens = []
 for (const board of canvas.order) {
@@ -49,9 +51,10 @@ for (const board of canvas.order) {
   const html = readFileSync(join(here, board), 'utf8')
   const sha256 = createHash('sha256').update(html).digest('hex')
   const classes = new Set([...html.matchAll(/class="([^"]+)"/g)].flatMap((m) => m[1].split(/\s+/)))
-  const boxes = Object.fromEntries(
-    Object.entries(BOX_CANDIDATES).filter(([, sel]) => classes.has(sel.slice(1))),
-  )
+  const boxes = {
+    ...Object.fromEntries(Object.entries(BOX_CANDIDATES).filter(([, sel]) => classes.has(sel.slice(1)))),
+    ...(EXTRA_BOXES[id] ?? {}),
+  }
   const isWeb = entry.w > 600
   const designer = DESIGNER_VARIANT[id]
   const prev = previous?.screens?.find((s) => s.id === id)

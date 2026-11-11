@@ -117,7 +117,7 @@ Decisions for feature 007. Each entry gives the **Decision**, then the **Rationa
 ## R7. Fonts and determinism
 
 - **Decision**:
-  - Vendor static Roboto 400/500/600/700 (Apache 2.0) and Noto Sans Arabic 400/500/600/700 (OFL),
+  - Vendor static Roboto 400/500/600/700 (OFL since Roboto 3; instances of the variable Android face, see `apps/mobile/test/fonts/README.md`) and Noto Sans Arabic 400/500/600/700 (OFL),
     with licence files, in `apps/mobile/test/fonts/`.
   - `test/flutter_test_config.dart` loads them with `FontLoader` under the families the theme
     resolves on Android (`Roboto`, with fallback `Noto Sans Arabic`).
@@ -135,7 +135,7 @@ Decisions for feature 007. Each entry gives the **Decision**, then the **Rationa
   - Same glyphs on both sides means differences are layout, which is what the gate is for.
 - **Alternatives**:
   - Bundling Inter in the app: changes the design.
-  - Comparing iOS simulator screenshots: not runnable in Linux CI, and SF rendering differs from
+  - Comparing iOS simulator screenshots: not runnable headless in CI, and SF rendering differs from
     Chromium's anyway.
 
 ## R8. CSS to Flutter: shadows, blur, gradients
@@ -189,7 +189,10 @@ Decisions for feature 007. Each entry gives the **Decision**, then the **Rationa
 
   Golden tests are tagged `golden`:
   - `flutter test` locally skips them unless `GOLDENS=1`;
-  - `tool/goldens.sh` runs them in `ghcr.io/cirruslabs/flutter:3.47.2`.
+  - `tool/goldens.sh` runs them on macOS with the pinned Flutter 3.47.9, and the CI job runs them
+    on a macOS runner. **Amended 2026-11-11**: the decision was a Linux image
+    (`ghcr.io/cirruslabs/flutter`), which is not published for this Flutter version; the owner
+    chose macOS, the platform they work on.
 - **Rationale**: SC-004 needs determinism; FR-046 needs the overflow sizes.
 - **Alternatives**: `golden_toolkit` or `alchemist` packages. Rejected because the needed parts
   are about 80 lines, and package-less is the README's rule.
@@ -213,8 +216,9 @@ Decisions for feature 007. Each entry gives the **Decision**, then the **Rationa
 
 ## R12. CI
 
-- **Decision**: a new `mobile` job in `.github/workflows/ci.yml` on `ubuntu-24.04` that:
-  - sets up Flutter 3.47.2 from a pinned action;
+- **Decision**: a new `mobile` job in `.github/workflows/ci.yml` on `macos-15` (amended 2026-11-11
+  from `ubuntu-24.04`, with the golden platform; see R10) that:
+  - sets up Flutter 3.47.9 from a pinned action;
   - runs `dart format --set-exit-if-changed lib test`, `flutter analyze` and
     `flutter test --coverage` (goldens included, `GOLDENS=1`);
   - checks the 80 % coverage gate on changed lines;

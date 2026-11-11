@@ -1,0 +1,5 @@
+# Golden image tests are made and checked on macOS with the pinned Flutter (tool/goldens.sh, or
+# the macOS CI job with GOLDENS=1). Without GOLDENS=1 they skip themselves; see test/helpers/golden.dart.
+tags:
+  golden:
+    description: "Golden image tests, macOS with the pinned Flutter"

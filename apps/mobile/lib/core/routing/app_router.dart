@@ -6,6 +6,8 @@ import 'package:shoot_mobile/features/service_health/presentation/pages/service_
 /// shared link (e.g. `/creators/{code}`) can open the app later.
 abstract final class AppRoutes {
   static const home = '/';
+  static const creators = '/creators';
+  static const accountBookings = '/account/bookings';
 }
 
 GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {

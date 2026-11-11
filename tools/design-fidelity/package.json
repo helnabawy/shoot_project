@@ -1,0 +1,17 @@
+{
+  "name": "design-fidelity",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Renders the design canvas boards and compares the Flutter app's goldens against them (feature 007).",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@shoot/config": "workspace:*",
+    "@types/node": "24.10.1",
+    "typescript": "5.7.3"
+  }
+}

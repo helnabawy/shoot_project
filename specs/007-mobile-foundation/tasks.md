@@ -59,15 +59,16 @@ starting.
   - Add its row ("Icons and scene drawn from the boards' SVG", feature 007) to the Packages table
     in `mobile/README.md`.
 - [ ] T003 [P] Vendor the static fonts into `mobile/test/fonts/`:
-  - `Roboto-{Regular,Medium,SemiBold,Bold}.ttf` with `LICENSE-Roboto.txt` (Apache 2.0);
+  - `Roboto-{Regular,Medium,SemiBold,Bold}.ttf` with `OFL-Roboto.txt` (OFL since Roboto 3);
   - `NotoSansArabic-{Regular,Medium,SemiBold,Bold}.ttf` with `OFL-NotoSansArabic.txt`.
 
   Record the sources and versions in `mobile/test/fonts/README.md`. They are test-only: do not
   list them under `flutter: fonts:` in `pubspec.yaml`.
 - [ ] T004 [P] Create `mobile/dart_test.yaml` with tag `golden`.
-  - Create `mobile/tool/goldens.sh`. It runs
-    `docker run --rm -v "$PWD":/app -w /app/apps/mobile ghcr.io/cirruslabs/flutter:3.47.2 sh -c "flutter pub get && GOLDENS=1 flutter test --tags golden $*"`
-    from the repo root, with `--update` mapped to `--update-goldens`.
+  - Create `mobile/tool/goldens.sh`. It runs `GOLDENS=1 flutter test --tags golden $*` on macOS
+    with the pinned Flutter (it refuses another OS or Flutter version), with `--update` mapped to
+    `--update-goldens`. (Amended 2026-11-11: the Linux Docker image is not published for this
+    Flutter version; the owner chose macOS.)
   - Make it executable.
 - [ ] T005 [P] Extend `scripts/check-scenario-tests.mjs` (this also covers 006 R7 if it has not
   landed):
@@ -82,12 +83,12 @@ starting.
   and `fidelity:report` (`pnpm --filter design-fidelity exec playwright show-report build/report`)
   to `package.json`.
 - [ ] T007 Add a job `mobile` to `.github/workflows/ci.yml` (research R12). It runs on
-  `ubuntu-24.04` and:
-  - checks out the repo, sets up Flutter 3.47.2 with a pinned action, and sets up Node 24 and pnpm;
+  `macos-15` (the golden platform) and:
+  - checks out the repo, sets up Flutter 3.47.9 with a pinned action, and sets up Node 24 and pnpm;
   - in `apps/mobile`: `flutter pub get`, `dart format --set-exit-if-changed lib test`,
     `flutter analyze`, `GOLDENS=1 flutter test --coverage`;
   - checks the 80 % changed-line coverage gate;
-  - runs `pnpm install --frozen-lockfile`, `pnpm --filter design-fidelity exec playwright install chromium --with-deps`
+  - runs `pnpm install --frozen-lockfile`, `pnpm --filter design-fidelity exec playwright install chromium`
     and `pnpm fidelity`;
   - uploads `tools/design-fidelity/build/report` as an artifact, always.
 
@@ -539,7 +540,7 @@ variants.
 
 - [ ] T069 [P] Update `mobile/README.md`:
   - Themes: the type scale, the new roles and `ShootScene`;
-  - a new "Design fidelity" section (commands, Linux-only goldens, the fonts);
+  - a new "Design fidelity" section (commands, macOS-only goldens, the fonts);
   - "Add a feature" gains "build to the board, add the fidelity keys, add the screen to
     `fid/shipped.json`";
   - "Not done yet" loses the motion and scene lines.

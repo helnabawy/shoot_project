@@ -319,8 +319,9 @@ screen 39; relaunch and see the first-run flag kept.
   kept for tests only. The Apple system font cannot be redistributed, so the automated check is
   exact for Android's rendering, and iOS fidelity is confirmed by eye in the simulator during the
   finish review.
-- The check runs on Linux in the project's continuous integration; renders on other machines are not
-  compared.
+- The check runs on macOS with the pinned Flutter, on the owner's Mac and in the project's continuous
+  integration (a macOS runner); renders on other platforms are not compared. (Amended 2026-11-11 from
+  Linux.)
 - Placeholder content in the boards (names, prices, dates) is reproduced by shared example data, never
   shipped as real content; real content comes from the CMS through feature 008.
 - Push notifications, the REST API and sign-in are out of scope (features 018, 008 and 009).

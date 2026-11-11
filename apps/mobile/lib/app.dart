@@ -72,6 +72,13 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             localeListResolutionCallback: (preferred, _) =>
                 AppLocales.resolve(preferred),
+            // CSS splits half-leading evenly; so does every text in the app.
+            builder: (context, child) => DefaultTextHeightBehavior(
+              textHeightBehavior: const TextHeightBehavior(
+                leadingDistribution: TextLeadingDistribution.even,
+              ),
+              child: child!,
+            ),
           );
         },
       ),

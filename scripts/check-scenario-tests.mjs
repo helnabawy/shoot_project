@@ -16,8 +16,8 @@ const quickstarts = process.argv.length > 2
       .map((d) => join(specsDir, d, 'quickstart.md'))
       // Tables whose rows carry a feature prefix (`CP-`, `QM-`); 001's unprefixed table predates the check.
       .filter((f) => existsSync(f) && /^\| [A-Z]{2,3}-(?:US|FR|SC)/m.test(readFileSync(f, 'utf8').split(MAPPING)[1] ?? ''))
-const SEARCH_ROOTS = ['apps/web/src', 'apps/web/tests', 'apps/mobile/test', 'packages/domain/src', 'scripts'].map((p) => join(root, p))
-const SKIP = new Set(['node_modules', '.next', 'coverage', 'test-results', 'playwright-report', '.dart_tool', 'build'])
+const SEARCH_ROOTS = ['apps/web/src', 'apps/web/tests', 'apps/mobile/test', 'tools/design-fidelity/tests', 'packages/domain/src', 'scripts'].map((p) => join(root, p))
+const SKIP = new Set(['node_modules', '.next', 'coverage', 'test-results', 'playwright-report', '.dart_tool', 'build', 'goldens'])
 
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {

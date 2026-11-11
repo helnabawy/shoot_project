@@ -56,7 +56,7 @@ void main() {
     await tester.pumpWidget(const ShootApp());
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('العربية'));
+    await tester.tap(find.text('عربي'));
     await tester.pumpAndSettle();
 
     expect(find.text('شوت'), findsOneWidget);
@@ -79,7 +79,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Page not found'), findsOneWidget);
+    expect(find.text("That page isn't here"), findsOneWidget);
   });
 
   testWidgets('MA-US2-S1 a saved accent is applied on the first frame', (

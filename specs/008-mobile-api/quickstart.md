@@ -10,7 +10,7 @@ How to prove feature 008 works.
 
 - Node 24 and pnpm (`nvm use`), and Docker for the integration tests and local PostgreSQL.
 - Features 001, 002, 003 and 005 merged (the queries this API wraps).
-- Flutter 3.47.2 and Dart 3.13.2 for the app side. Feature 006 (`PreferencesStore`) and 007
+- Flutter 3.47.9 and Dart 3.13.7 for the app side. Feature 006 (`PreferencesStore`) and 007
   (`SceneTile`, scenario check over Dart tests) merged.
 - For the app-link manual checks: an iPhone simulator, an Android emulator, and a staging host with
   HTTPS.

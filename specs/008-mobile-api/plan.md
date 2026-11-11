@@ -39,7 +39,7 @@ No database schema change and no migration.
 
 **Language/Version**:
 - TypeScript strict on Node 24 LTS (`apps/web`, `packages/domain`).
-- Dart 3.13.2 and Flutter 3.47.2 (`apps/mobile`, pinned in its README).
+- Dart 3.13.7 and Flutter 3.47.9 (`apps/mobile`, pinned in its README).
 
 **Primary Dependencies**:
 - Existing web stack: Next.js 16.4.3 route handlers, Payload 3.93.0 (Local API, `payload.auth`,

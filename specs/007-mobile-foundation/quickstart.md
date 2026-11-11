@@ -9,8 +9,8 @@ How to prove feature 007 works.
 
 ## Prerequisites
 
-- Flutter 3.47.2 and Dart 3.13.2 (see `apps/mobile/README.md`), plus Node 24 and pnpm (`nvm use`).
-- Docker, for the Linux golden image (`ghcr.io/cirruslabs/flutter:3.47.2`).
+- Flutter 3.47.9 and Dart 3.13.7 (see `apps/mobile/README.md`), plus Node 24 and pnpm (`nvm use`).
+- macOS with that Flutter, for the goldens (`tool/goldens.sh` refuses another OS or version).
 - Feature 006 merged: it provides `primary` and `PreferencesStore`.
 - An iOS simulator and an Android emulator, for the manual checks.
 
@@ -20,8 +20,8 @@ How to prove feature 007 works.
 cd apps/mobile
 dart format --set-exit-if-changed lib test
 flutter analyze                      # no issues
-flutter test                         # unit, cubit, widget (goldens skipped outside Linux)
-tool/goldens.sh                      # component and screen goldens in the pinned Linux image
+flutter test                         # unit, cubit, widget (goldens skipped without GOLDENS=1)
+tool/goldens.sh                      # component and screen goldens (macOS, pinned Flutter)
 ```
 
 From the repository root:

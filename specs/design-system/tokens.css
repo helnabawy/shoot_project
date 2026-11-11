@@ -17,6 +17,8 @@
   --control-border: rgba(0, 0, 0, 0.32);
   --tile: #f1eeea;
   --tile-ink: #5c5752;
+  --body-ink: #3a342f; /* running text (.body); 4.5:1+ on ground, panel, panel-solid and tile */
+  --surface-sunk: #e6e0d9; /* a step below the ground: 44 px tiles, progress tracks, dividers on tiles */
   --accent: #0a60ff;
   --on-accent: #ffffff;
   --primary: #e01414; /* the Top Hit and primary buttons; #ff1414 asked, deepened for white text at AA */
@@ -52,8 +54,12 @@
   --scene-tile-top: #ecd6bd;
   --scene-tile-bottom: #caa07c;
   --scene-tile-key: rgba(255, 246, 232, 0.92);
+  --scene-tile-alt-top: #f1dcc4; /* the second and third scene-tile shades */
+  --scene-tile-alt-bottom: #e6c8a8;
+  --scene-tile-deep: #b98a66;
   --scene-ink: #4a2e20; /* 5.2:1 on --scene-tile-bottom; keep text off the low dune (3.1:1) */
   --corner-glow: rgba(255, 244, 228, 0.95);
+  --corner-glow-mid: rgba(255, 233, 207, 0.6); /* the glow's 34 % stop (007) */
   --glint-sheen: rgba(255, 255, 255, 0.34);
   --pulse-ring: rgba(255, 140, 90, 0.35);
   --whatsapp-ink: #0f6e3f;
@@ -82,16 +88,16 @@
   --text-action: 600 17px/1.2 var(--font-sans); /* .top, the Top Hit (trailing price 500 15px) */
   --text-row: 400 16px/1.3 var(--font-sans); /* .row, .opt, .ln (1.375), fields */
   --text-button: 500 16px/1.2 var(--font-sans); /* .btn2, secondary buttons */
-  --text-body: 400 15px/1.6 var(--font-sans); /* .body, colour #3a342f (no role yet, see below) */
+  --text-body: 400 15px/1.6 var(--font-sans); /* .body, colour --body-ink */
   --text-chip: 400 15px/1.2 var(--font-sans); /* .chip (500 when on) */
   --text-meta: 400 13px/1.4 var(--font-sans); /* .meta, .st, colour --mute */
   --text-badge: 500 13px/1.2 var(--font-sans); /* .badge */
   --text-group-label: 600 11px/1.3 var(--font-sans); /* .gl, uppercase, colour --mute */
   --tracking-group-label: 0.06em;
 
-  /* Colours the boards use that have no role yet (settled in feature 007 before code):
-     #3a342f body text (36 uses, `.body`), #e6e0d9 (65 uses), and the scene shades
-     #f1dcc4, #e6c8a8, #b98a66. Dark values are still to be chosen and contrast-tested. */
+  /* Roles added in feature 007 for colours the boards used without one: --body-ink (#3a342f,
+     `.body`), --surface-sunk (#e6e0d9) and the scene shades --scene-tile-alt-top, -alt-bottom and
+     --scene-tile-deep. Their dark values are proposals awaiting the owner's approval (007 T011). */
 
   /* spacing and sizes */
   --space-1: 4px;
@@ -166,6 +172,8 @@
   --control-border: rgba(255, 255, 255, 0.36);
   --tile: #3a3a3f;
   --tile-ink: #d6d2cd;
+  --body-ink: #d9d3cd; /* proposed 007: 4.5:1+ on ground, panel, panel-solid and tile */
+  --surface-sunk: #2c2c31; /* proposed 007: a step below the dark panel */
   --accent: #2b6beb;
   --on-accent: #ffffff;
   --primary: #e01414;
@@ -198,8 +206,12 @@
   --scene-tile-top: #4a3a2f;
   --scene-tile-bottom: #2a211c;
   --scene-tile-key: rgba(255, 226, 196, 0.28);
+  --scene-tile-alt-top: #54423a; /* proposed 007, graphic only */
+  --scene-tile-alt-bottom: #3a2d25;
+  --scene-tile-deep: #1f1813;
   --scene-ink: #e6d3c0; /* 7.4:1 on --scene-tile-top; keep text off the key highlight (3.6:1) */
   --corner-glow: rgba(110, 78, 54, 0.4);
+  --corner-glow-mid: rgba(110, 78, 54, 0.24); /* proposed 007 */
   --glint-sheen: rgba(255, 255, 255, 0.3);
   --whatsapp-ink: #7fd49a;
 
@@ -236,6 +248,8 @@
   --color-control-border: var(--control-border);
   --color-tile: var(--tile);
   --color-tile-ink: var(--tile-ink);
+  --color-body-ink: var(--body-ink);
+  --color-surface-sunk: var(--surface-sunk);
   --color-accent: var(--accent);
   --color-on-accent: var(--on-accent);
   --color-primary: var(--primary);

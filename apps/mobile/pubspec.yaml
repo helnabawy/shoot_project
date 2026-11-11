@@ -5,8 +5,8 @@ publish_to: 'none'
 version: 0.1.0+1
 
 environment:
-  sdk: ^3.13.2
-  flutter: '>=3.47.2'
+  sdk: ^3.13.7
+  flutter: '>=3.47.9'
 
 # Versions are pinned exactly (no caret), like payload/next/react in the web
 # app. Bump them deliberately with `flutter pub upgrade --major-versions`, then
@@ -20,6 +20,7 @@ dependencies:
   dio: 5.11.1
   equatable: 3.0.0
   flutter_bloc: 9.1.1
+  flutter_svg: 2.3.0
   get_it: 9.3.0
   go_router: 18.1.4
   intl: 0.20.3

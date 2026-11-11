@@ -48,6 +48,39 @@ jobs:
             exit 1
           fi
 
+  mobile:
+    # Feature 007 (research R12): format, analyze, unit/widget tests with goldens, then the
+    # design-fidelity check of every shipped screen against its canvas board. macOS is the one
+    # platform goldens are made and checked on (decided 2026-11-11), so this job runs on a macOS
+    # runner (Apple silicon, like the owner's Mac). Branch protection must require this job.
+    name: Mobile (Flutter) and design fidelity
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 } # the coverage gate diffs against the base branch
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with: { flutter-version: 3.47.9, channel: stable, cache: true }
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - name: Flutter checks
+        working-directory: apps/mobile
+        env: { GOLDENS: '1' }
+        run: |
+          flutter pub get
+          dart format --set-exit-if-changed lib test
+          flutter analyze
+          flutter test --coverage
+      - name: Coverage of changed lines (>= 80 %)
+        if: github.event_name == 'pull_request'
+        run: node scripts/check-changed-coverage.mjs apps/mobile/coverage/lcov.info origin/${{ github.base_ref }} 80
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter design-fidelity exec playwright install chromium
+      - run: pnpm fidelity
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: design-fidelity-report, path: tools/design-fidelity/build/report, retention-days: 14 }
+
   e2e:
     name: Playwright
     runs-on: ubuntu-latest

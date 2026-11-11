@@ -10,7 +10,7 @@ spec, once the design is approved.
 | Dart package | `shoot_mobile` |
 | Android application id | `ae.shoot.shoot_mobile` |
 | iOS bundle id | `ae.shoot.shootMobile` |
-| Flutter / Dart | 3.47.2 / 3.13.2 (stable) |
+| Flutter / Dart | 3.47.9 / 3.13.7 (stable) |
 | Platforms | iOS, Android |
 
 The ids come from `flutter create --org ae.shoot`. Change them before the first store upload if the
@@ -128,6 +128,7 @@ Versions are pinned exactly in `pubspec.yaml` (no `^`), like `payload`/`next`/`r
 | `dio` | 5.11.1 | HTTP client: interceptors (language header now, auth later), timeouts, typed errors |
 | `equatable` | 3.0.0 | Value equality for entities, states and failures without hand-written `==` |
 | `intl` + `flutter_localizations` | 0.20.3 / SDK | Localization: ARB files and generated, type-safe `AppLocalizations` |
+| `flutter_svg` | 2.3.0 | Icons and scene drawn from the boards' SVG, copied verbatim (feature 007) |
 | `shared_preferences` | 2.5.6 | Saves appearance choices on the device (accent, theme mode, language; feature 006) |
 | `shared_preferences_platform_interface` (dev) | 2.4.2 | `InMemorySharedPreferencesAsync`, the in-memory store the preference tests run against |
 | `bloc_test` (dev) | 10.0.0 | Asserts the sequence of states a cubit emits |

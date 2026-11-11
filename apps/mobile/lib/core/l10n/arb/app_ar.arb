@@ -28,7 +28,11 @@
   "failureServer": "ردّت الخدمة بخطأ. حاول مرة أخرى بعد قليل.",
   "failureUnexpected": "حدث خطأ ما. حاول مرة أخرى.",
 
-  "notFoundTitle": "الصفحة غير موجودة",
-  "notFoundBody": "هذا الرابط لا يؤدي إلى أي مكان في التطبيق.",
-  "notFoundAction": "العودة إلى البداية"
+  "notFoundCode": "404",
+  "notFoundTitle": "هذه الصفحة ليست هنا",
+  "notFoundBody": "ربما نُقلت، أو ربما أزال المبدع ملفه الشخصي.",
+  "notFoundNextLabel": "إلى أين بعد ذلك",
+  "notFoundBrowseCreators": "تصفّح المبدعين",
+  "notFoundYourBookings": "حجوزاتك",
+  "notFoundAction": "ابدأ طلباً"
 }

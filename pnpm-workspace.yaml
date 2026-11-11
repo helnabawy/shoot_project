@@ -1,6 +1,7 @@
 packages:
   - "apps/*"
   - "packages/*"
+  - "tools/*"
   # apps/mobile is a Flutter (Dart) app with its own toolchain; it is not a
   # pnpm package and must never be picked up by -r scripts.
   - "!apps/mobile"
