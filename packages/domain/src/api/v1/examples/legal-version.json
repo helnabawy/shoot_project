@@ -1,0 +1,40 @@
+{
+  "locale": "en",
+  "kind": "terms",
+  "title": "Terms & Conditions",
+  "version": 1,
+  "effectiveFrom": "2026-01-01T00:00:00.000Z",
+  "until": "2026-06-01T00:00:00.000Z",
+  "body": {
+    "nodes": [
+      {
+        "type": "heading",
+        "level": 2,
+        "children": [
+          {
+            "type": "text",
+            "text": "1. Who we are",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Shoot connects people who need a photographer with the professionals who do the work.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          }
+        ]
+      }
+    ]
+  },
+  "inRequestedLanguage": true
+}

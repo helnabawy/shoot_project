@@ -1,0 +1,52 @@
+{
+  "locale": "en",
+  "path": "/how-it-works",
+  "title": "How it works",
+  "sections": [
+    {
+      "type": "howItWorks",
+      "anchor": "how-it-works",
+      "heading": "How it works",
+      "subheading": "Three steps, one conversation.",
+      "steps": [
+        {
+          "title": "Brief",
+          "body": "Tell us what you need in one line, in English or Arabic.",
+          "visual": "brief"
+        },
+        {
+          "title": "Match",
+          "body": "We find a professional who is free on your date.",
+          "visual": "match"
+        },
+        {
+          "title": "Shoot",
+          "body": "They show up and shoot. You get the finished work.",
+          "visual": "work"
+        }
+      ],
+      "cta": null
+    },
+    {
+      "type": "richText",
+      "anchor": null,
+      "content": {
+        "nodes": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "text": "You write the brief, we find the creator, and you agree the details on WhatsApp.",
+                "bold": false,
+                "italic": false,
+                "underline": false,
+                "code": false
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

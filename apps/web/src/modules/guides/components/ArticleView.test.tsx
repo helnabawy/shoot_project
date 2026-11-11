@@ -17,6 +17,8 @@ const summary = (n: number, extra = {}) => ({
   summary: `Summary ${n}`,
   publishedAt: '2026-10-01T08:00:00.000Z',
   translated: true,
+  coverMedia: null,
+  readingMinutes: 3,
   cover: { url: `/c${n}.webp`, alt: `Cover ${n}`, width: 800, height: 400 },
   author: { slug: 'sara', name: 'Sara Khan' },
   categories: [{ slug: 'weddings', name: 'Weddings' }],
