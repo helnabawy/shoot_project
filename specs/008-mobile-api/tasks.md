@@ -409,7 +409,7 @@ scratch copy fails with the endpoint and pointer. `flutter test test/core` passe
 
 ### Tests first
 
-- [ ] T043 [P] [US2] Write `v1/compat.test.ts`, with one case per rule in research R11 on small
+- [x] T043 [P] [US2] Write `v1/compat.test.ts`, with one case per rule in research R11 on small
   hand-written schema pairs.
   - **`MR-US2-S1`**: these pass:
     - a new endpoint;
@@ -427,7 +427,7 @@ scratch copy fails with the endpoint and pointer. `flutter test test/core` passe
     - a narrowed input enum, pattern, length or range;
     - `auth` from `none` to `optional`;
     - a removed problem code.
-- [ ] T044 [P] [US2] Write `v1/snapshot.test.ts`.
+- [x] T044 [P] [US2] Write `v1/snapshot.test.ts`.
   - Regenerate from `ENDPOINTS` and `PROBLEM_CODES` and compare with
     `specs/contracts/mobile-api/v1.schema.json`. It fails with "breaking" when `checkCompatible`
     reports breaks, and with "run api:snapshot" when the change is additive.
@@ -437,15 +437,15 @@ scratch copy fails with the endpoint and pointer. `flutter test test/core` passe
     anywhere in the snapshot.
   - **FR-033**: a field marked `.meta({ deprecated: true })` appears with `deprecated: true` in the
     snapshot, and removing it later is still reported as breaking.
-- [ ] T045 [P] [US2] Write `v1/examples.test.ts` (**`MR-US2-S3`**).
+- [x] T045 [P] [US2] Write `v1/examples.test.ts` (**`MR-US2-S3`**).
   - Every file in `v1/examples/` is claimed by exactly one endpoint, problem or app-link entry, and
     parses with its schema.
   - The inventory table in `specs/008-mobile-api/contracts/mobile-api.md` lists exactly the
     registry's ids, methods, paths, auth and cache.
-- [ ] T046 [P] [US2] Write `wtest/unit/problem-codes.test.ts` (**`MR-US2-S4`**). Every
+- [x] T046 [P] [US2] Write `wtest/unit/problem-codes.test.ts` (**`MR-US2-S4`**). Every
   `PROBLEM_CODES` entry, and every message key used by a v1 input schema, exists in
   `apps/web/messages/en.json` and `ar.json` with non-empty text.
-- [ ] T047 [P] [US2] Write `wtest/integration/mobile-api-access.int.test.ts` (**`MR-US2-S7`**).
+- [x] T047 [P] [US2] Write `wtest/integration/mobile-api-access.int.test.ts` (**`MR-US2-S7`**).
   For each entry in `ENDPOINTS`:
   - the route file at its path exists and exports its method;
   - an anonymous call with valid example params answers 200, or 404 where the seed has no such
@@ -474,9 +474,9 @@ scratch copy fails with the endpoint and pointer. `flutter test test/core` passe
 
 ### Implementation
 
-- [ ] T049 [US2] Create `v1/compat.ts`: `checkCompatible(old, next)` over the snapshot document,
+- [x] T049 [US2] Create `v1/compat.ts`: `checkCompatible(old, next)` over the snapshot document,
   returning `{ endpoint, pointer, rule }[]`. T043 passes.
-- [ ] T050 [US2] Create `v1/snapshot.ts`: `buildSnapshot(ENDPOINTS, PROBLEM_CODES)` using
+- [x] T050 [US2] Create `v1/snapshot.ts`: `buildSnapshot(ENDPOINTS, PROBLEM_CODES)` using
   `z.toJSONSchema` (input `io: 'input'`, output `io: 'output'`, `target: 'draft-2020-12'`), with
   keys sorted. Run `pnpm --filter @shoot/domain api:snapshot` and commit the first
   `specs/contracts/mobile-api/v1.schema.json` (the US1 endpoints). T044 and T045 pass.
