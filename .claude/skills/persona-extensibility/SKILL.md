@@ -1,6 +1,6 @@
 ---
 name: persona-extensibility
-description: The audience model that lets this website switch or add target audiences (personas) and their categories through the CMS with zero code changes — today photographers, videographers and other "shooters", tomorrow teachers or any other profession. Use this skill whenever a task mentions personas, audiences, target audience, "who the site is for", categories or specialties, role selection at registration ("I need a photographer" vs "I'm a photographer"), the brief builder's professional-type slot, persona-specific copy, or adds any collection, field, component or copy that names a profession. Also use it to review a change for hardcoded audience assumptions.
+description: The audience model that lets this website switch or add target audiences (personas) and their categories through the CMS with zero code changes — today photographers, videographers and other "shooters", tomorrow teachers or any other profession. Use this skill whenever a task mentions personas, audiences, target audience, "who the site is for", categories or specialties, role selection at registration ("I need a photographer" vs "I'm a photographer"), the brief builder's professional-type slot, persona-specific copy, or adds any collection, field, component, ARB string, Dart widget or API response that names a profession. Also use it to review a change for hardcoded audience assumptions.
 ---
 
 # Persona extensibility
@@ -119,6 +119,26 @@ published config defines.
    `layout` field.
 5. SEO text and FAQ answers: written by editors with placeholders.
 6. Account page: shows the member's persona and categories.
+
+## The mobile app (planned, features 007–015)
+
+The Flutter app (`apps/mobile`) obeys the same promise, and its trap is different: ARB files make it
+easy to type a profession into the app. Don't.
+
+- Persona and category labels (singular, plural, the role question at sign-in, specialty names,
+  option labels, persona-interpolated copy) come **only from the API** (`/api/mobile/v1`, see the
+  `mobile-api-contract` skill), already resolved for the request's `Accept-Language`. They are never
+  ARB entries, Dart constants or enums.
+- ARB strings stay profession-neutral ("Who do you need?", not "Choose a photographer"). A string
+  that needs a profession takes it as a placeholder filled from API data, or the whole sentence
+  comes from the CMS.
+- The app never branches on a persona or category slug. Lists, filters and the brief's slots are
+  rendered from what the API returns, in the order it returns them.
+- Scene tiles and icons do not encode a profession: a teacher persona tonight must not show a camera
+  baked into a Dart widget.
+- Tests: widget tests render persona-driven screens with a three-persona fixture (photographer,
+  videographer, teacher) taken from the shared API examples, in English and Arabic, and assert all
+  three appear.
 
 ## The zero-code guarantee is tested
 

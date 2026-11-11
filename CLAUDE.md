@@ -37,7 +37,30 @@ Feature 003 is `specs/003-quick-match-booking/`
 `apps/web/src/modules/pricing/` (the price-rule core 004 builds on), rules in
 `packages/domain/src/booking/` and `packages/domain/src/pricing/`, test-id prefix `QM-`; no payment
 provider: payments are recorded by an admin). The shootix.ae feature map and the draft for 004 are in
-`specs/ROADMAP.md`.
+`specs/ROADMAP.md`. Feature 006 is `specs/006-mobile-accent-colour/` (Flutter app `apps/mobile`: a
+per-device accent choice from five curated accents, Blue default, in an Appearance sheet; accent, theme
+mode and language saved with `shared_preferences`; primary actions get a fixed `primary` red; test-id
+prefix `MA-`; planned, not implemented).
+
+Features 007–015 build the whole Flutter app from the approved design canvas (40 screens at 360 px,
+imported into `specs/design-system/canvas/` with `manifest.json`), pixel-perfect, after 006 lands.
+None is implemented. 007, 008 and 009 are planned (spec, plan, research, data model, contracts,
+quickstart, tasks: 73, 95 and 93 tasks); 010–015 are draft specs (plan and tasks when next).
+`specs/ROADMAP.md` has the screens per feature:
+
+| # | Feature (test-id prefix) | What |
+|---|---|---|
+| 007 | `mobile-foundation` (`MF-`) | type scale, scene/shadow/gradient tokens, the `core/widgets/` catalogue, motion, shell, the pixel-diff pipeline (`tools/design-fidelity/`, goldens, `pnpm fidelity`); screens 37, 39 |
+| 008 | `mobile-api` (`MR-`) | `/api/mobile/v1`: `defineHandler`, problem+json errors, read endpoints, `resolve`, contracts, `.well-known` deep-link files |
+| 009 | `otp-sign-in` (`OT-`) | sign-in by mobile number + one-time code, Bearer tokens, `/me`, phone identity migration; screens 20–23 |
+| 010 | `first-visit-landing` (`ML-`) | splash, learning steps, landing, menu; screens 01–06 |
+| 011 | `mobile-creators` (`MC-`) | directory, profile, booking a creator; screens 15–19 |
+| 012 | `mobile-quick-match` (`MQ-`) | Quick Match and quotation, booking commands extracted from `booking/actions.ts`; screens 07–14, 40 |
+| 013 | `client-account` (`MK-`) | client account and bookings; screens 24–26 |
+| 014 | `creator-account` (`MW-`) | creator account, profile, review, availability, assignments; screens 27–32 |
+| 015 | `mobile-content` (`MG-`) | guides, pages, legal, removed; screens 33–36, 38 (can run alongside 010–014 once 008 exists) |
+
+Order: 006, 007, 008, 009, then 010–014, with 015 in parallel.
 
 ## Stack (binding, see constitution "Technology Stack & Constraints")
 
@@ -56,6 +79,13 @@ provider: payments are recorded by an admin). The shootix.ae feature map and the
   (light/dark/system, no flash).
 - Tests: Vitest (unit, component, integration against a Testcontainers PostgreSQL),
   Playwright (e2e), Lighthouse CI (performance budgets).
+- `apps/mobile`: Flutter (stable, SDK pinned in its README) + Dart, iOS (iPhone and iPad) and
+  Android, outside the pnpm workspace; cubits (`flutter_bloc`), `get_it`, ARB strings (en, ar),
+  exact-pinned packages; tests with `flutter_test`, `bloc_test`, `mocktail` (unit, cubit, widget,
+  80 % coverage of changed code). Checks: `dart format`, `flutter analyze`, `flutter test` in
+  `apps/mobile`. Constitution 1.4.0. Planned (007–009): golden tests on Linux via
+  `apps/mobile/tool/goldens.sh`, the pixel diff against the canvas (`pnpm fidelity`), and the app's
+  versioned REST API `/api/mobile/v1` with OTP sign-in and Bearer tokens.
 
 ## Project skills (in `.claude/skills/`) — use them
 
@@ -66,8 +96,19 @@ provider: payments are recorded by an admin). The shootix.ae feature map and the
   `~/.claude/skills/impeccable`, not vendored here) — before any visible change: the chosen world
   ("The Brief Bar"), tokens, components, client-flow rules, and the
   impeccable gates (craft floor, detector, finish review, DESIGN.md).
-- `persona-extensibility` — anything that names or lists a profession/audience.
+- `persona-extensibility` — anything that names or lists a profession/audience (on the app, labels
+  come only from the API, never from ARB).
+- `flutter-mobile` — any change in `apps/mobile`: layers, the add-a-feature recipe, the widget
+  catalogue and board-class map, CSS-to-Flutter rules, motion tiers and the 5 s cap, session,
+  routing, images, the package policy.
+- `design-fidelity` — any app screen, widget or golden, and any canvas re-export: the manifest,
+  derived dark/Arabic references, fonts, thresholds, the geometry gate, `pnpm fidelity`.
+- `mobile-api-contract` — any `/api/mobile/v1` endpoint, request/response shape, error code, token
+  or OTP flow, command extracted from a server action, or Dart model.
 - `speckit-*` — the workflow commands above.
+
+The three mobile skills describe planned work (features 007–015); each feature's `plan.md` wins
+where they differ.
 
 ## Non-negotiables (from the constitution)
 
@@ -79,7 +120,8 @@ provider: payments are recorded by an admin). The shootix.ae feature map and the
 - Simple client flow, designed not generated (Principle IX): one primary
   action per screen, brief without an account, no invented proof, no
   template tells; `PRODUCT.md` and `.impeccable/surfaces/` are the design
-  authority.
+  authority. For app screens the canvas boards in `specs/design-system/canvas/` are the authority,
+  proven by the pixel diff; references are never updated from Flutter output.
 - Mobile-first, WCAG 2.1 AA, verified at 360/768/1024/1440 px, in English (LTR)
   and Arabic (RTL), in light and dark theme.
 - Every user-visible CMS text field is `localized: true` (English fallback);
@@ -97,13 +139,21 @@ pnpm db:migrate                   # apply committed migrations
 pnpm seed                         # default bilingual content + admin from .env
 pnpm dev                          # http://localhost:3000, admin at /admin
 pnpm typecheck && pnpm lint && pnpm test
-pnpm check:scenarios              # every quickstart scenario has a test named with its CP-/MP-/QM- id
+pnpm check:scenarios              # every quickstart scenario has a test named with its CP-/MP-/QM-/MA-/M… id
 pnpm test:coverage                # domain 100 %, app >= 80 %
 pnpm build && pnpm test:e2e       # or BASE_URL=http://localhost:3100 against a running server
 pnpm db:migration:create <name>   # after any schema change; CI fails on drift
+
+# Mobile (in apps/mobile)
+dart format --set-exit-if-changed lib test
+flutter analyze                   # no issues
+flutter test --coverage           # >= 80 % of changed lines
+tool/goldens.sh                   # planned (007): golden tests in Docker (Linux only); --update rewrites the app's goldens
+# Back at the root
+pnpm fidelity                     # planned (007): every app golden vs the Playwright render of its canvas board
 ```
 
-Every Bash call needs Node 24 on PATH (`nvm use`); integration tests need Docker.
+Every Bash call needs Node 24 on PATH (`nvm use`); integration tests and `goldens.sh` need Docker.
 
 ## Conventions
 

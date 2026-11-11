@@ -1,0 +1,175 @@
+{
+  "name": "Shoot",
+  "version": 1,
+  "color": {
+    "themes": [
+      { "id": "light", "name": "Light" },
+      { "id": "dark", "name": "Dark (the phone at night)" }
+    ],
+    "tokens": [
+      { "name": "ground", "value": { "light": "#efe9e3", "dark": "#141416" }, "usage": "Page background everywhere. Warm stone by day, near-black by night. Never pure white or pure black." },
+      { "name": "panel", "value": { "light": "rgba(255,255,255,0.86)", "dark": "rgba(40,40,44,0.82)" }, "usage": "The Brief Bar and any floating sheet, with backdrop blur 20px. Only over the hero stage; elsewhere use panel-solid." },
+      { "name": "panel-solid", "value": { "light": "#fcfbfa", "dark": "#28282c" }, "usage": "Cards, sheets and the account column when nothing sits behind them. Same hairline border as panel." },
+      { "name": "ink", "value": { "light": "#1d1d1f", "dark": "#f5f5f7" }, "usage": "Primary text and icons on ground, panel and tile. 15.6:1 on ground (light), 16.9:1 (dark)." },
+      { "name": "mute", "value": { "light": "#6b6560", "dark": "#a29d98" }, "usage": "Secondary text: meta, group labels, helper text, trailing hints. 4.8:1 on ground (light), 6.9:1 (dark). Never below 13px." },
+      { "name": "hair", "value": { "light": "rgba(0,0,0,0.08)", "dark": "rgba(255,255,255,0.1)" }, "usage": "Hairline separators between rows and the 1px border of panels. Decorative only, so it needs no contrast ratio." },
+      { "name": "control-border", "value": { "light": "rgba(0,0,0,0.32)", "dark": "rgba(255,255,255,0.36)" }, "usage": "Border of text fields, checkboxes and unselected chips, where a 3:1 boundary is required." },
+      { "name": "tile", "value": { "light": "#f1eeea", "dark": "#3a3a3f" }, "usage": "The 30px glyph tile that leads every row, and the tile of an empty state. A photo slot with no photo is a scene tile, not this." },
+      { "name": "tile-ink", "value": { "light": "#5c5752", "dark": "#d6d2cd" }, "usage": "Glyph inside a tile. 6.2:1 on tile (light), 8.4:1 (dark)." },
+      { "name": "accent", "value": { "light": "#0a60ff", "dark": "#2b6beb" }, "usage": "The selection accent: the selected glyph tile, a selected chip, progress bars. Fill only; for text on ground use accent-ink. White text on it: 5.1:1 (light), 4.8:1 (dark). Primary buttons and the Top Hit use primary." },
+      { "name": "primary", "value": { "light": "#e01414", "dark": "#e01414" }, "usage": "Fill of the Top Hit row and every primary button; nothing else. Label in on-primary. White on it is 4.9:1 (AA). #ff1414 was asked for and deepened to #e01414 so the 17px label passes; the code uses the same value." },
+      { "name": "primary-hover", "value": { "light": "#c00f0f", "dark": "#c00f0f" }, "usage": "Primary button and Top Hit on hover or press." },
+      { "name": "on-primary", "value": { "light": "#ffffff", "dark": "#ffffff" }, "usage": "Label and icons on primary." },
+      { "name": "on-accent", "value": { "light": "#ffffff", "dark": "#ffffff" }, "usage": "Text and icons on accent." },
+      { "name": "accent-ink", "value": { "light": "#0848c2", "dark": "#b7d0ff" }, "usage": "Accent as text: links, selected row labels, filled slots in the brief sentence. 6.4:1 on ground (light), 11.8:1 (dark)." },
+      { "name": "selected", "value": { "light": "rgba(10,96,255,0.12)", "dark": "rgba(77,141,255,0.24)" }, "usage": "Background of a selected result row or creator row. Text on it is accent-ink." },
+      { "name": "selected-hover", "value": { "light": "rgba(10,96,255,0.18)", "dark": "rgba(77,141,255,0.32)" }, "usage": "Selected row on hover or press." },
+      { "name": "selection-wash", "value": { "light": "rgba(10,96,255,0.1)", "dark": "rgba(43,107,235,0.14)" }, "usage": "Behind a filled slot inside the brief sentence, and the hover state of an unselected row." },
+      { "name": "focus", "value": { "light": "#0a60ff", "dark": "#7aa7ff" }, "usage": "2px focus ring, offset 2px, on every interactive element. 3.9:1 on ground (light), 7.6:1 (dark); always paired with the element's own state change." },
+      { "name": "attention", "value": { "light": "#ffe3d6", "dark": "#4a2416" }, "usage": "Background of a warning or needs-action message (an unconfirmed booking, an expiring code). Text on it is on-attention." },
+      { "name": "on-attention", "value": { "light": "#6a1f00", "dark": "#ffd9c7" }, "usage": "Text on attention. 9.5:1 (light), 10.2:1 (dark)." },
+      { "name": "success", "value": { "light": "#e3f3e8", "dark": "#15301f" }, "usage": "Background of a confirmed or paid state. Text on it is on-success." },
+      { "name": "on-success", "value": { "light": "#0f5a2e", "dark": "#a6e6bd" }, "usage": "Text on success. 7.2:1 (light), 9.6:1 (dark)." },
+      { "name": "danger", "value": { "light": "#fde3e1", "dark": "#44181a" }, "usage": "Background of an error message or a cancelled state; also the field border colour on a validation error. Text on it is on-danger." },
+      { "name": "on-danger", "value": { "light": "#9b1c1c", "dark": "#ffb4b0" }, "usage": "Text on danger, and the error helper text under a field (6.6:1 on light ground, 9.4:1 on dark)." },
+      { "name": "photo-scrim", "value": { "light": "rgba(255,255,255,0.25)", "dark": "rgba(0,0,0,0.35)" }, "usage": "Laid over the hero photograph so the headline and the Brief Bar stay legible in both themes." },
+      { "name": "sweep-top", "value": { "light": "#cbb39c", "dark": "#4a3a2f" }, "usage": "Top of the studio sweep, the first version of the hero stand-in. Kept for the cover and print; the hero now uses the scene colours." },
+      { "name": "sweep-bottom", "value": { "light": "#8e6d52", "dark": "#1d1612" }, "usage": "Bottom of the studio sweep." },
+      { "name": "sweep-key", "value": { "light": "rgba(255,246,234,0.9)", "dark": "rgba(255,206,160,0.42)" }, "usage": "The key light: a radial highlight at the top of the sweep." },
+      { "name": "scene-sky-top", "value": { "light": "#f6eadb", "dark": "#141416" }, "usage": "Top of the scene's sky (landing hero, splash, learning-step stage, confirmed booking). By night it is the ground colour, so the sky runs into the page. Graphic only." },
+      { "name": "scene-sky-mid", "value": { "light": "#ecd2b3", "dark": "#2a211c" }, "usage": "Middle of the scene's sky, at 55 to 60% of its height." },
+      { "name": "scene-sky-low", "value": { "light": "#cfa27a", "dark": "#4a3a2f" }, "usage": "The foot of the scene's sky, behind the edit timeline." },
+      { "name": "scene-light", "value": { "light": "#fffaf2", "dark": "#ffe2bf" }, "usage": "The one light in a scene: the open iris of the lens by day, a low warm opening by night; also its bokeh discs. The centre of the glow that Key light moves." },
+      { "name": "scene-halo", "value": { "light": "#ffe9cf", "dark": "#ffcea0" }, "usage": "The soft halo around scene-light, fading to fully transparent. Never a hard edge." },
+      { "name": "scene-dune-far", "value": { "light": "#c0906a", "dark": "#3a2b25" }, "usage": "Name kept from the dune scene. Where the scene is drawn still in CSS (learning-step stage, component previews): the lightest timeline tone. The full SVG scene uses its own lens-* set." },
+      { "name": "scene-dune-mid", "value": { "light": "#a47452", "dark": "#2a1f1a" }, "usage": "Name kept from the dune scene. Where the scene is drawn still in CSS: a video clip on the edit timeline." },
+      { "name": "scene-dune-near", "value": { "light": "#84583d", "dark": "#1a1310" }, "usage": "Name kept from the dune scene. Where the scene is drawn still in CSS: the lower track and the ruler of the edit timeline and, at 16%, its bed. At 50% it is also the low dune on a large scene tile." },
+      { "name": "scene-tile-top", "value": { "light": "#ecd6bd", "dark": "#4a3a2f" }, "usage": "Start of the scene tile's gradient (160deg): the stand-in for a photo that does not exist yet. Variants: #e6cdb4 at 200deg and #f1e3d3 at 140deg." },
+      { "name": "scene-tile-bottom", "value": { "light": "#caa07c", "dark": "#2a211c" }, "usage": "End of the scene tile's gradient. Variants: #c0946f and #d0a886." },
+      { "name": "scene-tile-key", "value": { "light": "rgba(255,246,232,0.92)", "dark": "rgba(255,226,196,0.28)" }, "usage": "The highlight on a scene tile: a radial toward the top inline-end corner, fading to transparent at 46%." },
+      { "name": "scene-ink", "value": { "light": "#4a2e20", "dark": "#e6d3c0" }, "usage": "Glyph and text on a scene tile. Light: 5.2:1 on scene-tile-bottom, 4.5:1 on the darkest variant end. Dark: 7.4:1 on scene-tile-top. Keep text in the tile's middle band: 3.1:1 on the low dune, 3.6:1 on the dark highlight." },
+      { "name": "corner-glow", "value": { "light": "rgba(255,244,228,0.95)", "dark": "rgba(110,78,54,0.4)" }, "usage": "Centre of the still warm glow behind the top inline-end corner of every screen without a scene; a 400px circle fading to transparent at 68%. Behind content, never over it." },
+      { "name": "glint-sheen", "value": { "light": "rgba(255,255,255,0.34)", "dark": "rgba(255,255,255,0.3)" }, "usage": "Peak of the sheen that crosses the Top Hit in Glint. On nothing else." },
+      { "name": "pulse-ring", "value": { "light": "rgba(255,140,90,0.35)", "dark": "rgba(255,140,90,0.35)" }, "usage": "The ring that spreads from the current step's tile in Pulse, fading to transparent." },
+      { "name": "whatsapp-ink", "value": { "light": "#0f6e3f", "dark": "#7fd49a" }, "usage": "Only for the small text that says a step opens WhatsApp. Not a button colour; the WhatsApp action is the primary Top Hit." }
+    ]
+  },
+  "type": {
+    "fonts": [],
+    "families": {
+      "sans": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif",
+      "mono": "ui-monospace, 'SF Mono', Menlo, Consolas, monospace"
+    },
+    "groups": [
+      {
+        "name": "Display",
+        "family": "sans",
+        "styles": [
+          { "name": "display", "fontSize": "38px", "lineHeight": 1.02, "fontWeight": 700, "letterSpacing": "-0.03em", "sample": "You brief. We shoot.", "usage": "The hero line on a phone. One per page." },
+          { "name": "display-lg", "fontSize": "52px", "lineHeight": 1.02, "fontWeight": 700, "letterSpacing": "-0.03em", "sample": "You brief. We shoot.", "usage": "The hero line from 640px." },
+          { "name": "headline", "fontSize": "34px", "lineHeight": 1.25, "fontWeight": 700, "letterSpacing": "-0.03em", "sample": "Choose your photographer", "usage": "Page titles below the landing hero: step 2, the directory, a profile name." },
+          { "name": "section-title", "fontSize": "26px", "lineHeight": 1.25, "fontWeight": 700, "letterSpacing": "-0.025em", "sample": "Your bookings", "usage": "Section headings on the bare ground. 30px from 640px." }
+        ]
+      },
+      {
+        "name": "Interface",
+        "family": "sans",
+        "styles": [
+          { "name": "field", "fontSize": "20px", "lineHeight": 1.35, "fontWeight": 500, "letterSpacing": "-0.01em", "sample": "I need a photographer for a wedding in Dubai", "usage": "The brief sentence inside the Brief Bar. 22px from 640px." },
+          { "name": "top-hit", "fontSize": "17px", "lineHeight": 1.375, "fontWeight": 600, "sample": "Continue on WhatsApp", "usage": "Label of the Top Hit row and primary buttons." },
+          { "name": "row", "fontSize": "16px", "lineHeight": 1.375, "fontWeight": 400, "sample": "Photographer", "usage": "Every result row, creator row and list item. Tabular numerals for prices and dates." },
+          { "name": "body", "fontSize": "15px", "lineHeight": 1.625, "fontWeight": 400, "sample": "One fixed price, shown before you book.", "usage": "Paragraph text on the ground and in messages." },
+          { "name": "meta", "fontSize": "13px", "lineHeight": 1.4, "fontWeight": 400, "sample": "Dubai · Sat 14 Dec · 4 hours", "usage": "Secondary lines under a row, timestamps, helper text. Colour mute. Never smaller." },
+          { "name": "group-label", "fontSize": "11px", "lineHeight": 1.2, "fontWeight": 600, "letterSpacing": "0.06em", "sample": "OCCASION", "usage": "Uppercase group heading above a run of rows. In Arabic: 12px, no letter-spacing, no case change." },
+          { "name": "key-hint", "fontSize": "12px", "lineHeight": 1, "fontWeight": 500, "sample": "↩", "usage": "The trailing key hint on a focused row, desktop only." }
+        ]
+      },
+      {
+        "name": "Arabic",
+        "family": "sans",
+        "styles": [
+          { "name": "display-ar", "fontSize": "36px", "lineHeight": 1.25, "fontWeight": 700, "sample": "أنت تصف. نحن نصوّر.", "usage": "The hero line in Arabic: slightly smaller, 25% more leading, no letter-spacing." },
+          { "name": "headline-ar", "fontSize": "32px", "lineHeight": 1.4, "fontWeight": 700, "sample": "اختر مصوّرك", "usage": "Arabic page titles." },
+          { "name": "field-ar", "fontSize": "19px", "lineHeight": 1.6, "fontWeight": 500, "sample": "أحتاج مصوّرًا لحفل زفاف في دبي", "usage": "The brief sentence in Arabic." },
+          { "name": "row-ar", "fontSize": "16px", "lineHeight": 1.6, "fontWeight": 400, "sample": "مصوّر فوتوغرافي", "usage": "Arabic rows. Same 44px row height; the extra leading sits inside it." },
+          { "name": "body-ar", "fontSize": "15px", "lineHeight": 1.8, "fontWeight": 400, "sample": "سعر ثابت واحد، تراه قبل الحجز.", "usage": "Arabic paragraphs." },
+          { "name": "group-label-ar", "fontSize": "12px", "lineHeight": 1.4, "fontWeight": 600, "sample": "المناسبة", "usage": "Arabic group heading: no uppercase exists, so weight and colour carry it." }
+        ]
+      }
+    ]
+  },
+  "spacing": {
+    "tokens": [
+      { "name": "space-1", "value": "4px", "usage": "Gap between a glyph and its label inside a chip; icon inset." },
+      { "name": "space-2", "value": "8px", "usage": "Inset of the Top Hit inside the panel; gap between chips; top-hit-inset." },
+      { "name": "space-3", "value": "12px", "usage": "Gap between a glyph tile and the row label; page gutter on a phone (page-gutter)." },
+      { "name": "space-4", "value": "16px", "usage": "Row inline padding; gap between stacked messages." },
+      { "name": "space-5", "value": "20px", "usage": "Page gutter from 768px; header inline padding." },
+      { "name": "space-6", "value": "24px", "usage": "Gap between a heading and its first row." },
+      { "name": "space-8", "value": "32px", "usage": "Gap between groups of rows on the bare ground." },
+      { "name": "space-12", "value": "48px", "usage": "Gap between the headline and the Brief Bar." },
+      { "name": "space-16", "value": "64px", "usage": "Section gap on a phone (section-gap); pane gap on desktop." },
+      { "name": "space-24", "value": "96px", "usage": "Section gap from 1024px." },
+      { "name": "row-height", "value": "44px", "usage": "Height of every row and every touch target. The whole rhythm of the system." },
+      { "name": "row-block", "value": "7px", "usage": "Block padding inside a 44px row around a 30px tile." },
+      { "name": "tile-size", "value": "30px", "usage": "The glyph tile." },
+      { "name": "photo-tile-size", "value": "44px", "usage": "The photo tile when the row is a person." },
+      { "name": "top-hit-height", "value": "50px", "usage": "The Top Hit row and primary buttons." },
+      { "name": "icon-button", "value": "44px", "usage": "Square size of an icon-only button." },
+      { "name": "column", "value": "680px", "usage": "Max width of the Brief Bar and any reading column." },
+      { "name": "form-column", "value": "480px", "usage": "Max width of sign-in and booking-details forms." },
+      { "name": "account-column", "value": "560px", "usage": "Max width of account lists." },
+      { "name": "pane", "value": "1080px", "usage": "Max width of two-pane layouts (directory list + profile, step 2 list + summary)." }
+    ]
+  },
+  "radius": {
+    "tokens": [
+      { "name": "radius-key-hint", "value": "5px", "usage": "Key hints." },
+      { "name": "radius-message", "value": "6px", "usage": "Attention, success and danger messages; filled slots in the brief sentence." },
+      { "name": "radius-tile", "value": "8px", "usage": "Glyph tiles; chips that are not pills." },
+      { "name": "radius-row", "value": "9px", "usage": "Rows, buttons, text fields, the Top Hit." },
+      { "name": "radius-photo-tile", "value": "10px", "usage": "The 44px photo tile." },
+      { "name": "radius-photo-lg", "value": "12px", "usage": "Sample tiles and the profile photo." },
+      { "name": "radius-panel", "value": "14px", "usage": "The Brief Bar, sheets, cards." },
+      { "name": "radius-sheet", "value": "20px", "usage": "Top corners of a bottom sheet on a phone." },
+      { "name": "radius-pill", "value": "999px", "usage": "Status badges only." }
+    ]
+  },
+  "shadow": {
+    "tokens": [
+      { "name": "shadow-panel", "value": { "light": "0 24px 60px rgba(40,25,12,0.22)", "dark": "0 24px 60px rgba(0,0,0,0.5)" }, "usage": "The Brief Bar over the hero stage. The only large shadow in the system." },
+      { "name": "shadow-sheet", "value": { "light": "0 -8px 32px rgba(40,25,12,0.14)", "dark": "0 -8px 32px rgba(0,0,0,0.5)" }, "usage": "A bottom sheet on a phone." },
+      { "name": "shadow-lift", "value": { "light": "0 1px 2px rgba(0,0,0,0.06)", "dark": "0 1px 2px rgba(0,0,0,0.4)" }, "usage": "Cards on the bare ground (panel-solid). Barely there." }
+    ]
+  },
+  "duration": {
+    "note": "Three tiers. React (fast, base, slow) answers the person. Arrive (rise, focus, roll, draw, grow, write, deal, shake) plays once when a thing first appears. Ambient (glint, keylight, settle, drift, pulse) is rationed: see Motion and states for where each may run.",
+    "tokens": [
+      { "name": "duration-fast", "value": "120ms", "usage": "Hover and press colour changes, focus ring." },
+      { "name": "duration-base", "value": "180ms", "usage": "A row becoming selected, a chip filling, a message appearing." },
+      { "name": "duration-slow", "value": "260ms", "usage": "A sheet sliding up, a step changing, the sentence slot updating." },
+      { "name": "duration-rise", "value": "500ms", "usage": "Rise: content enters 14px lower and faded. 420 to 600ms by the size of the thing; 500ms by default." },
+      { "name": "stagger-step", "value": "70ms", "usage": "Delay between siblings that rise together, the first at 60ms, eight at most." },
+      { "name": "duration-focus", "value": "700ms", "usage": "Focus: a photo, scene tile or scene enters blurred 10px and 6% large, then sharpens." },
+      { "name": "duration-roll", "value": "700ms", "usage": "Roll: a price or total rolls up into place. One per screen." },
+      { "name": "duration-draw", "value": "500ms", "usage": "Tick: the confirmation check draws its stroke." },
+      { "name": "duration-grow", "value": "900ms", "usage": "Grow: a progress bar fills from its inline start." },
+      { "name": "duration-write", "value": "1100ms", "usage": "Write-in: one slot of the brief sentence being filled." },
+      { "name": "duration-deal", "value": "600ms", "usage": "Deal: carousel cards slide in from the inline end, 90ms apart." },
+      { "name": "duration-shake", "value": "450ms", "usage": "Shake: the code boxes, once, on a wrong code." },
+      { "name": "duration-glint", "value": "7s", "usage": "Glint: one sheen pass of about 1.1s across the Top Hit in each 7s. Repeats on the landing only; elsewhere one pass on arrival and one each time the Top Hit becomes enabled." },
+      { "name": "duration-keylight", "value": "14s", "usage": "Key light: the glow behind the scene's lens breathing out and back. Loops on the landing only." },
+      { "name": "duration-settle", "value": "5s", "usage": "Key light on the learning steps and the confirmed booking: the light settles into place once, then still." },
+      { "name": "duration-drift", "value": "44s", "usage": "Drift: the landing's creator strip and word ticker, 38 to 54s by length. Pauses on hover, on keyboard focus and with the Pause control." },
+      { "name": "duration-pulse", "value": "2.4s", "usage": "One beat of Pulse (the current timeline step) or Tap (the learning-step hand). Two beats, then still." }
+    ]
+  },
+  "easing": {
+    "tokens": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.2, 0, 0, 1)", "usage": "Everything that enters or changes." },
+      { "name": "ease-exit", "value": "cubic-bezier(0.4, 0, 1, 1)", "usage": "Everything that leaves." },
+      { "name": "ease-ambient", "value": "ease-in-out", "usage": "Key light, Pulse, Tap and the landing's vignettes: slow motion with no arrival." },
+      { "name": "ease-drift", "value": "linear", "usage": "Drift only." }
+    ]
+  }
+}

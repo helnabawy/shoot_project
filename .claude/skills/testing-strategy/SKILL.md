@@ -1,6 +1,6 @@
 ---
 name: testing-strategy
-description: The testing approach for this project — how every spec acceptance scenario maps to an automated test, where unit, component, integration (Payload + Testcontainers PostgreSQL) and Playwright end-to-end tests live, how to configure Vitest projects and coverage thresholds, naming and traceability conventions, determinism rules, and what to test for forms, CMS content, access control, personas, auth, Arabic/RTL localisation and light/dark themes. Use this skill whenever you write or change a test, start implementing any task (tests come first), add a Vitest or Playwright config, debug a flaky test, are asked "how should I test this", or need to prove a user story works before ticking it in tasks.md.
+description: The testing approach for this project — how every spec acceptance scenario maps to an automated test, where unit, component, integration (Payload + Testcontainers PostgreSQL) and Playwright end-to-end tests live, how to configure Vitest projects and coverage thresholds, naming and traceability conventions, determinism rules, and what to test for forms, CMS content, access control, personas, auth, Arabic/RTL localisation and light/dark themes; plus the Flutter app's pyramid (unit, cubit, widget, component and screen goldens, the pixel-diff fidelity layer against the design canvas), Dart scenario ids, and mobile API contract tests. Use this skill whenever you write or change a test, start implementing any task (tests come first), add a Vitest or Playwright config, debug a flaky test, are asked "how should I test this", or need to prove a user story works before ticking it in tasks.md.
 ---
 
 # Testing strategy
@@ -24,6 +24,53 @@ Pick the lowest layer that can prove the behaviour. A validation rule is a
 unit test, not an e2e test; an access rule is an integration test, not a
 component test.
 
+## The mobile pyramid (`apps/mobile`)
+
+Constitution Principle III applies to the Flutter app with its own pyramid; Testcontainers,
+Playwright-against-the-app and Lighthouse do not apply to it. Layers marked *planned* arrive with
+feature 007 (mobile-foundation) and the `design-fidelity` skill describes them in full.
+
+| Layer | Tool | Location | Proves |
+|---|---|---|---|
+| Unit | `flutter_test` (`test`) | `apps/mobile/test/features/*/domain/`, `…/data/`, `test/core/` | use cases, models (decoded from the shared API examples), repositories (exceptions → failures), interceptors, helpers such as the CSS converters |
+| Cubit | `bloc_test` + `mocktail` | `apps/mobile/test/features/*/presentation/cubit/` | every state transition, including failure and empty |
+| Widget | `testWidgets` via `test/helpers/pump_app.dart` | `apps/mobile/test/features/*/presentation/`, `test/core/widgets/` | every screen and interactive widget in English and Arabic (and light and dark where colour carries meaning): semantics, states, taps, mirroring, 44 px targets, largest text size without overflow |
+| Component golden (*planned*) | `matchesGoldenFile`, tag `golden` | `apps/mobile/test/core/widgets/` (gallery) | each catalogue widget in all states and four variants |
+| Screen golden (*planned*) | `matchesGoldenFile`, tag `golden` | `apps/mobile/test/goldens/screens/<id>_<name>_golden_test.dart` | the screen at its board's size in en-light, en-dark, ar-light, ar-dark, plus self-baselines at 393/430/768/1024 px and text scale 2.0 |
+| Fidelity (*planned*) | Playwright in `tools/design-fidelity/` | `pnpm fidelity` | each screen golden against the Playwright render of its canvas board: pixel ratio ≤ 0.01 (0.02 for text-heavy boards) and every manifest box within ±1 px |
+
+- Gate: 80 % line coverage of the code a feature adds or changes, from
+  `flutter test --coverage` (`coverage/lcov.info`).
+- Goldens run only on Linux, through `apps/mobile/tool/goldens.sh` (Docker); a plain
+  `flutter test` on macOS skips the `golden` tag. Never update the canvas references from Flutter
+  output (see `design-fidelity`).
+- Determinism: inject the `Clock` (`core/time/clock.dart`, *planned*) instead of `DateTime.now()`,
+  stub Dio with a fake adapter (no real network), turn animations off in goldens, and build state
+  from the shared JSON examples in `packages/domain/src/api/v1/examples/` (*planned*), never from
+  data typed into the test.
+- Every screen scenario in a mobile spec has a fidelity test for all four variants as well as its
+  widget test.
+- Checks: `dart format --set-exit-if-changed lib test`, `flutter analyze` (no issues),
+  `flutter test --coverage` in `apps/mobile`, then `apps/mobile/tool/goldens.sh` and
+  `pnpm fidelity` (*planned*), and `pnpm check:scenarios` at the root. CI runs them in a `mobile`
+  job (*planned*, 007).
+
+## Mobile API contract tests (*planned*, features 008 onward)
+
+The `/api/mobile/v1` endpoints (see the `mobile-api-contract` skill) are tested at three layers,
+all from one fixture set:
+
+- **Unit** (`packages/domain/src/api/v1/*.test.ts`, 100 % gate): every zod schema against its JSON
+  examples, valid and invalid; the OTP rules.
+- **Contract**: the JSON-schema snapshot `specs/contracts/mobile-api/v1.schema.json` is regenerated
+  and must differ only additively; every problem code exists in both web message files and is
+  handled in the app's `failure_message.dart`.
+- **Integration** (`apps/web/tests/integration/mobile-api/*.int.test.ts`, Testcontainers
+  PostgreSQL): each handler for auth none/optional/required, Bearer valid/expired/revoked, locale,
+  validation problems, rate limits and cache headers, with the response parsed by its v1 schema;
+  each extracted command; the existing server-action tests stay as regression tests.
+- **Dart**: each model decodes the same example files the domain tests parse.
+
 ## Traceability: tests name the requirement they prove
 
 Spec files define user stories (`US1`…) with acceptance scenarios and
@@ -35,6 +82,22 @@ describe('FR-010 WhatsApp link uses the CMS number', () => {
   it('US2-S1 builds a wa.me link with digits only', () => { ... })
 })
 ```
+
+Feature quickstarts map each scenario to a prefixed id (`CP-US1-S2`, `MP-…`, `QM-…`; for the
+mobile features `MA-` (006), `MF-` (007), `MR-` (008), `OT-` (009), `ML-` (010), `MC-` (011),
+`MQ-` (012), `MK-` (013), `MW-` (014), `MG-` (015)). Dart tests carry the id in the name of a
+`test`, `testWidgets`, `group` or `blocTest`:
+
+```dart
+group('MF-US1-S1 not-found screen matches board 37', () {
+  testWidgets('shows the Top Hit back to the start in Arabic', (tester) async { ... });
+});
+```
+
+`pnpm check:scenarios` (`scripts/check-scenario-tests.mjs`) enforces the mapping; feature 006
+(task T003) adds `apps/mobile/test` to its search roots and accepts `_test.dart` files, and each new
+feature adds its quickstart to the `check:scenarios` script. Ids of planned features with no tests
+yet are reported as pending.
 
 Before ticking a task in `tasks.md`, grep the suite for the FR/US ids the task
 covers; if none exist, the task is not done. This is how `/speckit-analyze`
@@ -144,3 +207,5 @@ reach 80% and still prove nothing about the spec.
 
 - `references/vitest-setup.md` — Vitest workspace with unit/component/integration projects and coverage thresholds.
 - `references/playwright-setup.md` — Playwright config, seeding, fixtures, axe and smoke tags.
+- `.claude/skills/design-fidelity/` — goldens, the canvas references and `pnpm fidelity` (planned).
+- `.claude/skills/mobile-api-contract/` — the API contract triangle and its tests (planned).

@@ -1,0 +1,780 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "A-ar-dark.dc.html": {
+      "h": 780,
+      "radius": 28,
+      "title": "A · Arabic · dark",
+      "w": 360,
+      "x": 440,
+      "y": 0
+    },
+    "B-ar-dark.dc.html": {
+      "h": 780,
+      "radius": 28,
+      "title": "B · Arabic · dark",
+      "w": 360,
+      "x": 440,
+      "y": 1100
+    },
+    "B-en-light.dc.html": {
+      "h": 780,
+      "radius": 28,
+      "title": "B · English · light",
+      "w": 360,
+      "x": 0,
+      "y": 1100
+    },
+    "C-ar-dark.dc.html": {
+      "h": 780,
+      "radius": 28,
+      "title": "C · Arabic · dark",
+      "w": 360,
+      "x": 440,
+      "y": 2200
+    },
+    "C-en-light.dc.html": {
+      "h": 780,
+      "radius": 28,
+      "title": "C · English · light",
+      "w": 360,
+      "x": 0,
+      "y": 2200
+    },
+    "Main.dc.html": {
+      "h": 780,
+      "radius": 28,
+      "title": "A · English · light",
+      "w": 360,
+      "x": 0,
+      "y": 0
+    },
+    "S00-splash.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "01 · Splash",
+      "w": 360,
+      "x": 0,
+      "y": 0,
+      "is_interactive": true
+    },
+    "S00a-learn-brief.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "02 · Learn · say it in one line",
+      "w": 360,
+      "x": 440,
+      "y": 0,
+      "is_interactive": true
+    },
+    "S00b-learn-price.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "03 · Learn · price and who's free",
+      "w": 360,
+      "x": 880,
+      "y": 0,
+      "is_interactive": true
+    },
+    "S00c-learn-number.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "04 · Learn · your number is your account",
+      "w": 360,
+      "x": 1320,
+      "y": 0,
+      "is_interactive": true
+    },
+    "S01-landing-wide.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "page": "screens",
+      "title": "41 · Landing · 1440",
+      "w": 1440,
+      "x": 0,
+      "y": 11960,
+      "is_interactive": true
+    },
+    "S01-landing.dc.html": {
+      "h": 2360,
+      "is_interactive": true,
+      "page": "screens",
+      "radius": 28,
+      "title": "05 · Landing · full page (scrolls)",
+      "w": 360,
+      "x": 0,
+      "y": 1100
+    },
+    "S02-choose-creator.dc.html": {
+      "h": 780,
+      "is_interactive": true,
+      "page": "screens",
+      "radius": 28,
+      "title": "07 · Quick Match · swipe to choose",
+      "w": 360,
+      "x": 880,
+      "y": 1100
+    },
+    "S03-details.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "09 · Quick Match · details",
+      "w": 360,
+      "x": 1760,
+      "y": 1100,
+      "is_interactive": true
+    },
+    "S03b-signin-number.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "10 · Your number (after the brief)",
+      "w": 360,
+      "x": 2200,
+      "y": 1100,
+      "is_interactive": true
+    },
+    "S03c-signin-code.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "11 · Code, then WhatsApp",
+      "w": 360,
+      "x": 2640,
+      "y": 1100,
+      "is_interactive": true
+    },
+    "S04-quotation-ar.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "43 · Booking · Arabic dark",
+      "w": 360,
+      "x": 1960,
+      "y": 11960,
+      "is_interactive": true
+    },
+    "S04-quotation.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "13 · Booking · confirmed, how to pay",
+      "w": 360,
+      "x": 3520,
+      "y": 1100,
+      "is_interactive": true
+    },
+    "S05-directory.dc.html": {
+      "h": 1320,
+      "page": "screens",
+      "radius": 28,
+      "title": "15 · Creators directory (scrolls)",
+      "w": 360,
+      "x": 0,
+      "y": 3780,
+      "is_interactive": true
+    },
+    "S06-profile.dc.html": {
+      "h": 1240,
+      "page": "screens",
+      "radius": 28,
+      "title": "16 · Creator public profile",
+      "w": 360,
+      "x": 440,
+      "y": 3780,
+      "is_interactive": true
+    },
+    "S07-bookings.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "26 · Your bookings",
+      "w": 360,
+      "x": 880,
+      "y": 6520,
+      "is_interactive": true
+    },
+    "S07a-account-client.dc.html": {
+      "h": 900,
+      "page": "screens",
+      "radius": 28,
+      "title": "24 · My account · client",
+      "w": 360,
+      "x": 0,
+      "y": 6520,
+      "is_interactive": true
+    },
+    "S07b-complete-account.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "25 · Finish your account",
+      "w": 360,
+      "x": 440,
+      "y": 6520,
+      "is_interactive": true
+    },
+    "S07c-account-creator.dc.html": {
+      "h": 900,
+      "page": "screens",
+      "radius": 28,
+      "title": "27 · My account · creator",
+      "w": 360,
+      "x": 0,
+      "y": 7740,
+      "is_interactive": true
+    },
+    "S08-creator-account.dc.html": {
+      "h": 1080,
+      "is_interactive": true,
+      "page": "screens",
+      "radius": 28,
+      "title": "28 · My profile · steps with missing info",
+      "w": 360,
+      "x": 440,
+      "y": 7740
+    },
+    "S08b-profile-ready.dc.html": {
+      "h": 900,
+      "page": "screens",
+      "radius": 28,
+      "title": "29 · My profile · every step done",
+      "w": 360,
+      "x": 880,
+      "y": 7740,
+      "is_interactive": true
+    },
+    "S09-signin-number.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "20 · Sign in · number",
+      "w": 360,
+      "x": 0,
+      "y": 5420,
+      "is_interactive": true
+    },
+    "S09b-signin-code-ar.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "42 · Sign in · code · Arabic dark",
+      "w": 360,
+      "x": 1520,
+      "y": 11960,
+      "is_interactive": true
+    },
+    "S09b-signin-code.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "21 · Sign in · code",
+      "w": 360,
+      "x": 440,
+      "y": 5420,
+      "is_interactive": true
+    },
+    "S10-not-found.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "37 · Not found",
+      "w": 360,
+      "x": 0,
+      "y": 10860,
+      "is_interactive": true
+    },
+    "S01m-menu.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 780,
+      "title": "06 · Menu",
+      "x": 440,
+      "y": 1100,
+      "is_interactive": true
+    },
+    "S02b-none-free.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 780,
+      "title": "08 · Quick Match · no one free that day",
+      "x": 1320,
+      "y": 1100,
+      "is_interactive": true
+    },
+    "S04a-quote-accept.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 780,
+      "title": "12 · Quotation · to accept",
+      "x": 3080,
+      "y": 1100,
+      "is_interactive": true
+    },
+    "S04b-delivered.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 820,
+      "title": "14 · Booking · delivered, confirm",
+      "x": 3960,
+      "y": 1100,
+      "is_interactive": true
+    },
+    "S06b-book.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 780,
+      "title": "17 · Book this creator",
+      "x": 880,
+      "y": 3780,
+      "is_interactive": true
+    },
+    "S05b-specialty.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 1180,
+      "title": "18 · Work by specialty",
+      "x": 1320,
+      "y": 3780,
+      "is_interactive": true
+    },
+    "S05c-hire.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 1060,
+      "title": "19 · Hire page",
+      "x": 1760,
+      "y": 3780,
+      "is_interactive": true
+    },
+    "S09d-code-error.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 780,
+      "title": "22 · Sign in · wrong code",
+      "x": 880,
+      "y": 5420,
+      "is_interactive": true
+    },
+    "S09c-join.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 780,
+      "title": "23 · Join as a creator",
+      "x": 1320,
+      "y": 5420,
+      "is_interactive": true
+    },
+    "S08c-in-review.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 900,
+      "title": "30 · My profile · waiting for review",
+      "x": 1320,
+      "y": 7740,
+      "is_interactive": true
+    },
+    "S08d-availability.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 960,
+      "is_interactive": true,
+      "title": "31 · Availability · tap a day to block it",
+      "x": 1760,
+      "y": 7740
+    },
+    "S07d-creator-bookings.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 900,
+      "title": "32 · Bookings · requests to answer",
+      "x": 2200,
+      "y": 7740,
+      "is_interactive": true
+    },
+    "S11-guides.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 1100,
+      "title": "33 · Guides",
+      "x": 0,
+      "y": 9140,
+      "is_interactive": true
+    },
+    "S11b-guide.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 1400,
+      "title": "34 · Guide article",
+      "x": 440,
+      "y": 9140,
+      "is_interactive": true
+    },
+    "S12-page.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 1100,
+      "title": "35 · Editor-built page · How it works",
+      "x": 880,
+      "y": 9140,
+      "is_interactive": true
+    },
+    "S13-legal.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 1100,
+      "title": "36 · Legal · Terms",
+      "x": 1320,
+      "y": 9140,
+      "is_interactive": true
+    },
+    "S10b-removed.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 780,
+      "title": "38 · Page removed",
+      "x": 440,
+      "y": 10860,
+      "is_interactive": true
+    },
+    "S10c-error.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 780,
+      "title": "39 · Something went wrong",
+      "x": 880,
+      "y": 10860,
+      "is_interactive": true
+    },
+    "S04c-expired.dc.html": {
+      "page": "screens",
+      "radius": 28,
+      "w": 360,
+      "h": 780,
+      "title": "40 · Quotation expired",
+      "x": 1320,
+      "y": 10860,
+      "is_interactive": true
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-09T12:00:00Z",
+    "v": 1
+  },
+  "designSystems": [
+    {
+      "artifact": "https://claude.ai/artifact/JRVi8Z5AuEPujeFgE4Lqjk",
+      "copiedAt": "2026-11-09T12:50:00Z",
+      "namespace": "shoot",
+      "title": "Shoot Design System",
+      "version": "1794229253-2600"
+    }
+  ],
+  "launch": {
+    "page": "screens",
+    "view": "canvas"
+  },
+  "noteOrder": [
+    "title-a",
+    "note-a",
+    "title-b",
+    "note-b",
+    "title-c",
+    "note-c",
+    "s-title-1",
+    "s-title-2",
+    "s-title-3",
+    "s-title-4",
+    "s-title-5",
+    "s-title-6",
+    "s-title-7",
+    "s-title-8",
+    "s-title-9",
+    "s-note-index",
+    "s-note",
+    "s-note-landing",
+    "s-note-step2",
+    "s-note-flow",
+    "s-note-accounts",
+    "s-note-new",
+    "s-note-motion"
+  ],
+  "notes": {
+    "note-a": {
+      "fill": "blue",
+      "text": "Idea: the brief is one floating Spotlight-style panel over a photo stage. Evolves the current site: warm stone ground, one selection blue, system type (zero font bytes), 44 px row rhythm.\n\nBest at: familiarity and speed. Every option is a row you already know how to tap. Cheapest to build and fastest to load.\n\nWorst at: brand. It borrows an operating-system look, so the wordmark does most of the brand work and the panel can feel like a tool rather than a company.\n\nCHOSEN 9 Nov 2026.",
+      "w": 380,
+      "x": 880,
+      "y": 0
+    },
+    "note-b": {
+      "fill": "green",
+      "text": "Idea: the brief is the headline. One large fill-in-the-blank sentence on warm paper; the blanks are the interface, options appear as chips under the blank you tapped. Editorial, type-led, one deep green.\n\nBest at: brand and clarity. It is unmistakably Shoot, reads in two seconds, and makes Arabic look designed rather than translated (IBM Plex Sans + Plex Sans Arabic are one family).\n\nWorst at: long option lists. Five chips fit; fifteen emirates or a date picker need a sheet, so step 2 of the flow has to change shape.",
+      "w": 380,
+      "x": 880,
+      "y": 1100
+    },
+    "note-c": {
+      "fill": "teal",
+      "text": "Idea: the landing page is the start of the conversation. Shoot asks, you answer with chips, your brief forms as a message, and Send hands it to WhatsApp. Soft warm white, one teal, Rubik in both scripts.\n\nBest at: matching the real journey. The client is going to WhatsApp anyway, so the page already behaves like it; first-timers on a phone need no instructions.\n\nWorst at: premium. Chat bubbles read casual, and businesses booking corporate work may want something that feels more like a studio than a messenger.",
+      "w": 380,
+      "x": 880,
+      "y": 2200
+    },
+    "s-note": {
+      "fill": "gray",
+      "page": "screens",
+      "text": "Screens use the Shoot Design System (installed on this canvas). Every label, option and price shown is placeholder data standing in for CMS content; no real creators, prices or photos exist yet, so photo slots show a warm illustrated scene tile as an honest stand-in, replaced by the CMS photo when one exists. Text in [SQUARE BRACKETS] is written by an editor in the CMS.\n\nSign-in is mobile number + OTP. Email/password exists only as an editor fallback, reached from the menu (06).",
+      "w": 360,
+      "x": 1760,
+      "y": 0
+    },
+    "s-note-accounts": {
+      "fill": "blue",
+      "page": "screens",
+      "text": "Built from the live app (account home, /account/profile, /creators/{code}), same structure and copy, in the new design.\n\n24 and 27 My account: who you are, then Up next (the one thing to do, as the Top Hit), then In your account with a status per place, briefs, Log out. The header's account icon opens it.\n\n28 My profile: Draft status, Profile strength (one number and a bar), the peach \"isn't complete yet\" message with how many steps need attention, then the 7 steps as a sideways strip of tabs. Each tab: number (a tick when done), name, and a state line; required-and-missing reads in peach (\"Needs languages\"), recommended in grey (\"Add a short bio\"), done in blue. One step's panel at a time with Back / Next; missing fields are ringed in peach. Send for review stays off until nothing required is missing. Press Play to switch steps.\n\n29: every step done, 100%, the steps as a list with ticks, Send for review on.\n\n16 Public profile: Verified (only when identity is verified) with what it means, the deciding facts, Book with Omar, Actions, About, bio, Work.\n\n30 Waiting for review: where the profile stands, and what to do meanwhile.\n\n31 Availability: tap a day to block or free it; booked days are fixed. Press Play to try it.\n\n32 Bookings: the request that needs an answer is the one primary action; the rest is a list.",
+      "w": 400,
+      "x": 2640,
+      "y": 7740
+    },
+    "s-note-flow": {
+      "fill": "orange",
+      "page": "screens",
+      "text": "Flow change (owner, 9 Nov): sign-in is no longer a gate. The client builds the brief (05), picks a creator (07), adds details (09), and only then gives their mobile number (10) and the code (11). The code signs them in, saves the booking and opens WhatsApp in one tap.\n\nAfter that the same link shows the quotation to accept (12), the confirmed booking and how to pay (13), and the delivery to confirm (14). Payment is recorded by our team; nothing is paid on the site.\n\nScreens 20 and 21 stay as the standalone sign-in for returning clients and creators (header account icon). Screen 09 no longer asks for a phone number.\n\nThe learning steps (02 to 04) show on the first visit only and can be skipped; each one is built from the real components, not an illustration.",
+      "w": 380,
+      "x": 4820,
+      "y": 1100
+    },
+    "s-note-landing": {
+      "fill": "blue",
+      "page": "screens",
+      "text": "Landing, full page (10 Nov, in motion). The hero is a golden-hour scene with a slow key light; the Brief Bar writes itself in and stays the one primary action. Below it:\n\n1. What do you need shot?: occasion tiles that start a brief.\n2. Meet the creators: a slowly moving strip of creator cards linking to profiles; \"See all\" opens the directory. It pauses on hover and keyboard focus. Its Pause control stops every loop on the page (the light, the strip, the sheen, the writing example, the small scenes), which is what WCAG 2.2.2 asks for; the 1440 landing (41) has the same control beside its creator columns. The writing example also ends the first time the bar is touched. Everything stands still under reduced motion. It shows only when there are enough real creators to fill it.\n3. Shoot for a living?: the dark band for creators.\n4. Ready when you are: back up to the brief.\n\nHow it works, Questions and the footer stay removed. Press Play to see it move.",
+      "w": 380,
+      "x": -440,
+      "y": 1100
+    },
+    "s-note-step2": {
+      "fill": "blue",
+      "page": "screens",
+      "text": "07 Quick Match (9 Nov, revised): creators are a horizontal carousel. Each card is 296 px wide and snaps to the centre, so the next one peeks in at the edge; swiping changes the chosen creator (outlined in accent, its dot widens) and the Top Hit below follows: \"Continue with Omar · AED 950\". Tapping a card also chooses it and centres it. Press Play on this frame to swipe.\n\nCard: work gallery (one large tile, two small; play mark on video), photo, name, code, emirates, years, specialties, languages, fixed price and what it includes. Below the rail: dots and \"1 of 3\" (announced to screen readers), the Top Hit, a link to the chosen creator's profile, and a \"Let us pick\" row.\n\nNo ratings, verified badges or review counts: none exist yet.",
+      "w": 380,
+      "x": 4400,
+      "y": 1100
+    },
+    "title-a": {
+      "kind": "title1",
+      "maxW": 800,
+      "text": "A · Brief Bar II",
+      "w": 240,
+      "x": 0,
+      "y": -270
+    },
+    "title-b": {
+      "kind": "title1",
+      "maxW": 800,
+      "text": "B · The Sentence",
+      "w": 240,
+      "x": 0,
+      "y": 830
+    },
+    "title-c": {
+      "kind": "title1",
+      "maxW": 800,
+      "text": "C · The Thread",
+      "w": 240,
+      "x": 0,
+      "y": 1930
+    },
+    "s-title-1": {
+      "kind": "title1",
+      "maxW": 1680,
+      "page": "screens",
+      "text": "First visit · 01 to 04",
+      "w": 240,
+      "x": 0,
+      "y": -270
+    },
+    "s-title-2": {
+      "kind": "title1",
+      "maxW": 4320,
+      "page": "screens",
+      "text": "Booking a shoot · 05 to 14",
+      "w": 240,
+      "x": 0,
+      "y": 830
+    },
+    "s-title-3": {
+      "kind": "title1",
+      "maxW": 2120,
+      "page": "screens",
+      "text": "Finding a creator · 15 to 19",
+      "w": 240,
+      "x": 0,
+      "y": 3510
+    },
+    "s-title-4": {
+      "kind": "title1",
+      "maxW": 1680,
+      "page": "screens",
+      "text": "Sign-in and joining · 20 to 23",
+      "w": 240,
+      "x": 0,
+      "y": 5150
+    },
+    "s-title-5": {
+      "kind": "title1",
+      "maxW": 1240,
+      "page": "screens",
+      "text": "Client account · 24 to 26",
+      "w": 240,
+      "x": 0,
+      "y": 6250
+    },
+    "s-title-6": {
+      "kind": "title1",
+      "maxW": 2560,
+      "page": "screens",
+      "text": "Creator account · 27 to 32",
+      "w": 240,
+      "x": 0,
+      "y": 7470
+    },
+    "s-title-7": {
+      "kind": "title1",
+      "maxW": 1680,
+      "page": "screens",
+      "text": "Guides, pages and legal · 33 to 36",
+      "w": 240,
+      "x": 0,
+      "y": 8870
+    },
+    "s-title-8": {
+      "kind": "title1",
+      "maxW": 1680,
+      "page": "screens",
+      "text": "When something goes wrong · 37 to 40",
+      "w": 240,
+      "x": 0,
+      "y": 10590
+    },
+    "s-title-9": {
+      "kind": "title1",
+      "maxW": 2320,
+      "page": "screens",
+      "text": "Desktop and Arabic dark · 41 to 43",
+      "w": 240,
+      "x": 0,
+      "y": 11690
+    },
+    "s-note-new": {
+      "fill": "green",
+      "page": "screens",
+      "w": 400,
+      "x": 1760,
+      "y": 9140,
+      "text": "Added 10 Nov: 19 screens, so every route in the app has a design. The canvas is now laid out in the order a person meets the screens, numbered 01 to 43.\n\nNew: 06 Menu · 08 No one free · 12 Quotation to accept · 14 Delivered · 17 Book this creator · 18 Work by specialty · 19 Hire page · 22 Wrong code · 23 Join as a creator · 30 Waiting for review · 31 Availability · 32 Booking requests · 33 Guides · 34 Guide article · 35 Editor-built page · 36 Terms · 38 Page removed · 39 Something went wrong · 40 Quotation expired.\n\nMenu (06): with the footer gone from the landing, the menu is the one place for Creators, Guides, How it works, language, theme, Terms, Professional terms, Privacy and the editor sign-in. The header's menu button opens it.\n\nHow it works (35) is an editor-built page, not a landing section. It reuses the three learning steps and takes its questions from the CMS.\n\nEach screen still has one solid blue action. Legal (36) has none: it is for reading.\n\nOpen for the owner: counts such as \"12 pros\" and \"3 free\" are placeholders and show only when real data exists."
+    },
+    "s-note-index": {
+      "fill": "gray",
+      "page": "screens",
+      "w": 400,
+      "x": -900,
+      "y": 0,
+      "text": "Screen list, in order\n\nFIRST VISIT\n01  Splash\n02  Learn · say it in one line\n03  Learn · price and who's free\n04  Learn · your number is your account\n\nBOOKING A SHOOT\n05  Landing · full page (scrolls)\n06  Menu\n07  Quick Match · swipe to choose\n08  Quick Match · no one free that day\n09  Quick Match · details\n10  Your number (after the brief)\n11  Code, then WhatsApp\n12  Quotation · to accept\n13  Booking · confirmed, how to pay\n14  Booking · delivered, confirm\n\nFINDING A CREATOR\n15  Creators directory (scrolls)\n16  Creator public profile\n17  Book this creator\n18  Work by specialty\n19  Hire page\n\nSIGN-IN AND JOINING\n20  Sign in · number\n21  Sign in · code\n22  Sign in · wrong code\n23  Join as a creator\n\nCLIENT ACCOUNT\n24  My account · client\n25  Finish your account\n26  Your bookings\n\nCREATOR ACCOUNT\n27  My account · creator\n28  My profile · steps with missing info\n29  My profile · every step done\n30  My profile · waiting for review\n31  Availability · tap a day to block it\n32  Bookings · requests to answer\n\nGUIDES, PAGES AND LEGAL\n33  Guides\n34  Guide article\n35  Editor-built page · How it works\n36  Legal · Terms\n\nWHEN SOMETHING GOES WRONG\n37  Not found\n38  Page removed\n39  Something went wrong\n40  Quotation expired\n\nDESKTOP AND ARABIC DARK\n41  Landing · 1440\n42  Sign in · code · Arabic dark\n43  Booking · Arabic dark"
+    },
+    "s-note-motion": {
+      "fill": "blue",
+      "page": "screens",
+      "w": 400,
+      "x": 2200,
+      "y": 0,
+      "text": "Motion and graphics (10 Nov), on all 43 screens. Press Play on a board to see it.\n\nRise: content arrives in order.\nFocus: photo slots sharpen in.\nGlint: a sheen crosses the blue action once, 2.4 s after it arrives. Every 7 s on the landing only.\nRoll: totals roll up.\nTick: confirmations draw themselves.\nKey light: loops on the landing only. On the learning steps and the confirmed booking it settles once, inside 5 s. The splash plays once, in 2 s. Every other screen gets a still warm light in the corner.\n\nOnly the landing loops, and its Pause control stops all of it. Every other screen is still within 5 s, so a board plays its motion once after you press Play. All of it stands still under reduced motion. Scene tiles are stand-ins for photos, never invented work."
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "A-ar-dark.dc.html",
+    "B-en-light.dc.html",
+    "B-ar-dark.dc.html",
+    "C-en-light.dc.html",
+    "C-ar-dark.dc.html",
+    "S00-splash.dc.html",
+    "S00a-learn-brief.dc.html",
+    "S00b-learn-price.dc.html",
+    "S00c-learn-number.dc.html",
+    "S01-landing.dc.html",
+    "S01m-menu.dc.html",
+    "S02-choose-creator.dc.html",
+    "S02b-none-free.dc.html",
+    "S03-details.dc.html",
+    "S03b-signin-number.dc.html",
+    "S03c-signin-code.dc.html",
+    "S04a-quote-accept.dc.html",
+    "S04-quotation.dc.html",
+    "S04b-delivered.dc.html",
+    "S05-directory.dc.html",
+    "S06-profile.dc.html",
+    "S06b-book.dc.html",
+    "S05b-specialty.dc.html",
+    "S05c-hire.dc.html",
+    "S09-signin-number.dc.html",
+    "S09b-signin-code.dc.html",
+    "S09d-code-error.dc.html",
+    "S09c-join.dc.html",
+    "S07a-account-client.dc.html",
+    "S07b-complete-account.dc.html",
+    "S07-bookings.dc.html",
+    "S07c-account-creator.dc.html",
+    "S08-creator-account.dc.html",
+    "S08b-profile-ready.dc.html",
+    "S08c-in-review.dc.html",
+    "S08d-availability.dc.html",
+    "S07d-creator-bookings.dc.html",
+    "S11-guides.dc.html",
+    "S11b-guide.dc.html",
+    "S12-page.dc.html",
+    "S13-legal.dc.html",
+    "S10-not-found.dc.html",
+    "S10b-removed.dc.html",
+    "S10c-error.dc.html",
+    "S04c-expired.dc.html",
+    "S01-landing-wide.dc.html",
+    "S09b-signin-code-ar.dc.html",
+    "S04-quotation-ar.dc.html"
+  ],
+  "pages": [
+    {
+      "id": "directions",
+      "name": "Directions"
+    },
+    {
+      "id": "screens",
+      "name": "Screens"
+    }
+  ],
+  "title": "Shoot — Design Directions"
+}

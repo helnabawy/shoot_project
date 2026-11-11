@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Shoot, landing, full page in motion</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#0848c2}a:hover{color:#0a60ff}
+a:focus-visible,button:focus-visible{outline:2px solid #0a60ff;outline-offset:2px}
+.root{width:360px;height:2360px;box-sizing:border-box;position:relative;overflow:hidden;background:#efe9e3;color:#1d1d1f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,'Noto Sans Arabic',sans-serif}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.meta{font-size:13px;line-height:1.4;color:#6b6560}
+.gl{margin:0;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b6560}
+h2{margin:0;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.15}
+
+/* motion: every base style is the finished state, keyframes only describe where it comes from */
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes focus{from{opacity:0;filter:blur(10px);transform:scale(1.06)}}
+@keyframes glint{0%{transform:translateX(-140%) skewX(-18deg)}16%,100%{transform:translateX(420%) skewX(-18deg)}}
+@keyframes ph{0%,7%{opacity:1}11%,90%{opacity:0}96%,100%{opacity:1}}
+@keyframes val{0%,7%{opacity:0;transform:translateY(7px)}12%,90%{opacity:1;transform:none}96%,100%{opacity:0;transform:translateY(-5px)}}
+@keyframes wash{0%,7%{background:transparent;box-shadow:inset 0 -2px 0 rgba(0,0,0,.28)}12%,90%{background:rgba(10,96,255,.1);box-shadow:inset 0 0 0 rgba(0,0,0,0)}96%,100%{background:transparent;box-shadow:inset 0 -2px 0 rgba(0,0,0,.28)}}
+@keyframes caret{50%{opacity:0}}
+@keyframes drift{to{transform:translateX(-50%)}}
+@keyframes sway{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+@keyframes breathe{0%,100%{transform:scale(.94);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+@keyframes lit{0%,12%{opacity:.16}24%,78%{opacity:1}100%{opacity:.16}}
+@keyframes steam{0%{transform:translateY(8px);opacity:0}40%{opacity:.9}100%{transform:translateY(-16px);opacity:0}}
+@keyframes sheen{0%,55%{transform:translateX(-40px)}85%,100%{transform:translateX(60px)}}
+/* one Pause control (on the creator strip) stops every loop on the page; the Write-in example ends on the first touch of the bar */
+.root.stopped *,.root.stopped *::before,.root.stopped *::after{animation-play-state:paused!important}
+.root.touched .slot,.root.touched .slot .ph,.root.touched .slot .val,.root.touched .caret{animation:none}
+@keyframes glowb{0%,100%{transform:scale(.94);opacity:.82}50%{transform:scale(1.06);opacity:1}}
+@keyframes lens{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+@keyframes iris{from{transform:scale(.14) rotate(-64deg)}}
+@keyframes vf{from{opacity:0;transform:scale(1.04)}}
+@keyframes bokeh{0%{transform:translateY(0);opacity:0}20%,70%{opacity:1}100%{transform:translateY(-44px);opacity:0}}
+@keyframes play{from{transform:translateX(-150px)}to{transform:translateX(250px)}}
+@keyframes rec{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* hero */
+.hero{position:relative;height:700px}
+.scene{position:absolute;inset:0 0 auto 0;width:360px;height:650px;display:block}
+/* backdrop: the lens is the light, the edit timeline is the ground; the playhead, the glow, the lens ring, the bokeh and the REC dot are the backdrop's only loops, and Pause stops them */
+.gw{transform-box:fill-box;transform-origin:center;animation:glowb 14s ease-in-out infinite}
+.lr{transform-box:view-box;transform-origin:270px 312px;animation:lens 18s ease-in-out infinite alternate}
+.ir{transform-box:view-box;transform-origin:270px 312px;animation:iris 1.2s cubic-bezier(.2,0,0,1) .3s both}
+.vf{transform-box:fill-box;transform-origin:center;animation:vf .7s cubic-bezier(.2,0,0,1) .5s both}
+.bk circle{animation:bokeh 14s linear infinite}
+.bk circle:nth-child(2){animation-delay:-2.5s}.bk circle:nth-child(3){animation-delay:-5s}.bk circle:nth-child(4){animation-delay:-7.5s}.bk circle:nth-child(5){animation-delay:-10s}.bk circle:nth-child(6){animation-delay:-12s}.bk circle:nth-child(7){animation-delay:-3.8s}.bk circle:nth-child(8){animation-delay:-8.6s}
+.pl{animation:play 22s linear infinite}
+.pl2{animation-delay:-9s}
+.lr2{transform-box:view-box;transform-origin:288px 338px;animation:lens 18s ease-in-out infinite alternate}
+.hud{position:absolute;inset-inline-start:20px;top:286px;display:flex;flex-direction:column;gap:8px;font-size:12px;line-height:1;font-weight:600;letter-spacing:.04em;color:#5a3a29;font-variant-numeric:tabular-nums;pointer-events:none;animation:rise .52s cubic-bezier(.2,0,0,1) .6s both}
+.hud span{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.hud i{flex:none;width:7px;height:7px;border-radius:50%;background:#84583d;animation:rec 2s ease-in-out infinite}
+.hd{position:relative;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 12px 0 20px;box-sizing:border-box}
+.ib{width:44px;height:44px;border:0;background:transparent;color:#1d1d1f;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;cursor:pointer;text-decoration:none}
+.wm{text-decoration:none;color:#1d1d1f;font-size:22px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.lead{position:relative;padding:22px 20px 0}
+.lead h1{margin:0;font-size:46px;line-height:1;font-weight:700;letter-spacing:-.035em}
+.lead h1 span{display:block;animation:rise .52s cubic-bezier(.2,0,0,1) both}
+.lead h1 span:nth-child(2){animation-delay:.14s}
+.lead p{margin:14px 0 0;max-width:270px;font-size:16px;line-height:1.45;color:#3d3632;animation:rise .52s cubic-bezier(.2,0,0,1) .3s both}
+.bar{position:absolute;left:12px;right:12px;top:446px;background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 24px 60px rgba(40,25,12,.22);padding:8px;animation:rise .6s cubic-bezier(.2,0,0,1) .46s both}
+.say{display:flex;gap:10px;padding:10px 8px 14px;border-bottom:1px solid rgba(0,0,0,.08)}
+.say svg{flex:none;margin-top:5px;color:#6b6560}
+.say p{margin:0;font-size:20px;line-height:1.5;font-weight:500;letter-spacing:-.01em}
+.slot{display:inline-grid;vertical-align:baseline;padding:0 6px;border-radius:6px;background:rgba(10,96,255,.1);animation:wash 12s cubic-bezier(.2,0,0,1) infinite both}
+.slot>span{grid-area:1/1;white-space:nowrap}
+.slot .ph{color:#6b6560;opacity:0;animation:ph 12s linear infinite both}
+.slot .val{color:#0848c2;animation:val 12s cubic-bezier(.2,0,0,1) infinite both}
+.s2,.s2 span{animation-delay:1.1s!important}.s3,.s3 span{animation-delay:2.2s!important}.s4,.s4 span{animation-delay:3.3s!important}
+.caret{display:inline-block;width:2px;height:20px;margin-inline-start:3px;vertical-align:-3px;background:#0a60ff;animation:caret 1s steps(1) infinite}
+.top{position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;height:50px;padding:0 12px;box-sizing:border-box;border-radius:9px;background:#e01414;color:#fff;text-decoration:none;font-size:17px;font-weight:600}
+.top:hover{color:#fff;background:#c00f0f}
+.top::after{content:"";position:absolute;top:0;bottom:0;left:0;width:26%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.34),rgba(255,255,255,0));animation:glint 7s cubic-bezier(.2,0,0,1) 2s infinite both}
+.top .t{flex:none;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.2);display:inline-flex;align-items:center;justify-content:center}
+
+/* ticker */
+.tick{height:96px;display:flex;align-items:center;overflow:hidden}
+.tick div{display:flex;width:max-content;animation:drift 44s linear infinite}
+.tick span{font-size:54px;font-weight:700;letter-spacing:-.04em;color:#e0d7cd;white-space:nowrap;padding-inline-end:28px}
+
+/* kinds of shoot */
+.sec{padding:0 0 64px}
+.sech{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:0 20px 16px}
+.kinds{display:flex;gap:10px;overflow-x:auto;padding:0 12px 4px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.kinds::-webkit-scrollbar{display:none}
+.kd{flex:none;width:132px;height:236px;border-radius:14px;overflow:hidden;position:relative;scroll-snap-align:start;color:#fff;text-decoration:none;animation:focus .7s cubic-bezier(.2,0,0,1) both}
+.kd:hover{color:#fff}
+.kd:nth-child(2){animation-delay:.09s}.kd:nth-child(3){animation-delay:.18s}.kd:nth-child(4){animation-delay:.27s}.kd:nth-child(5){animation-delay:.36s}.kd:nth-child(6){animation-delay:.45s}
+.kd svg{position:absolute;inset:0;width:100%;height:100%;display:block;transition:transform .26s cubic-bezier(.2,0,0,1)}
+.kd:hover svg{transform:scale(1.05)}
+.kd .lb{position:absolute;left:0;right:0;bottom:0;padding:44px 12px 12px;background:linear-gradient(to top,rgba(29,18,12,.86),rgba(29,18,12,0));display:flex;flex-direction:column;gap:2px}
+.kd .no{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;opacity:.86}
+.kd .nm{font-size:17px;font-weight:600;line-height:1.2}
+.fb{transform-box:fill-box}
+.beam{transform-origin:50% 0;animation:sway 5s ease-in-out infinite alternate}
+.beam.b2{animation-duration:6.4s;animation-direction:alternate-reverse}.beam.b3{animation-duration:4.2s}
+.key{transform-origin:center;animation:breathe 6s ease-in-out infinite}
+.win rect{animation:lit 7s ease-in-out infinite both}
+.win rect:nth-child(2n){animation-delay:-2.2s}.win rect:nth-child(3n){animation-delay:-4.1s}.win rect:nth-child(5n){animation-delay:-5.6s}
+.stm path{animation:steam 3.4s ease-out infinite both}
+.stm path:nth-child(2){animation-delay:.9s}.stm path:nth-child(3){animation-delay:1.8s}
+.shn{animation:sheen 5s ease-in-out infinite}
+
+/* creators */
+.mqw{overflow:hidden;padding:4px 0 6px}
+.mq{display:flex;width:max-content;padding-inline-start:12px;animation:drift 38s linear infinite}
+.mqw:hover .mq,.mqw:focus-within .mq,.mqw.paused .mq{animation-play-state:paused}
+sc-for,sc-if{display:contents}
+.cc{flex:none;width:196px;margin-inline-end:12px;box-sizing:border-box;padding:8px 8px 12px;background:#fcfbfa;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 1px 2px rgba(0,0,0,.06);text-decoration:none;color:#1d1d1f;display:flex;flex-direction:column;gap:2px}
+.cc:hover{color:#1d1d1f}
+.cv{height:124px;border-radius:10px;position:relative;overflow:hidden;margin-bottom:8px;background:radial-gradient(circle at 72% 26%,#fff6ea 0,rgba(255,246,234,0) 48%),linear-gradient(160deg,#ecd6bd,#c39a75)}
+.cv.k2{background:radial-gradient(circle at 24% 30%,#fff6ea 0,rgba(255,246,234,0) 46%),linear-gradient(200deg,#e6cdb4,#a97c5b)}
+.cv.k3{background:radial-gradient(circle at 50% 12%,#ffe9cf 0,rgba(255,233,207,0) 52%),linear-gradient(180deg,#7b5a45,#3a2b25)}
+.cv.k4{background:radial-gradient(circle at 80% 60%,#fff6ea 0,rgba(255,246,234,0) 44%),linear-gradient(140deg,#f1e3d3,#d0a886)}
+.cv svg{position:absolute;inset:0;width:100%;height:100%;fill:#5a3a29;opacity:.86}
+.cv.k3 svg{fill:#1f1612}
+.cc b{font-size:16px;font-weight:600;padding:0 4px}
+.cc .meta{padding:0 4px}
+.cc .pr{display:flex;justify-content:space-between;align-items:baseline;padding:6px 4px 0;font-size:14px}
+
+/* night band */
+.night{position:relative;height:470px;margin-bottom:64px;color:#f5f5f7;background:linear-gradient(180deg,#17171a,#2a211c 70%,#3a2b25);overflow:hidden}
+.night svg{position:absolute;inset:0;width:100%;height:100%}
+.night .in{position:relative;padding:56px 20px 0;display:flex;flex-direction:column;gap:12px}
+.night .gl{color:#c9c3bd}
+.night p{margin:0;font-size:16px;line-height:1.5;color:#d6d2cd;max-width:290px}
+.ghost{margin-top:10px;align-self:flex-start;display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 18px;border-radius:9px;border:1px solid rgba(255,255,255,.44);color:#f5f5f7;text-decoration:none;font-size:17px;font-weight:600}
+.ghost:hover{color:#fff;background:rgba(255,255,255,.08)}
+
+.end{padding:0 12px;display:flex;flex-direction:column;gap:14px}
+.end h2{padding:0 8px;font-size:34px}
+</style>
+</helmet>
+<div class="root {{ rootCls }}">
+
+  <section class="hero" aria-label="Start your brief">
+    <svg class="scene" viewBox="0 0 360 650" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6eadb"></stop><stop offset=".55" stop-color="#ecd2b3"></stop><stop offset="1" stop-color="#cfa27a"></stop></linearGradient>
+        <radialGradient id="hsun"><stop offset="0" stop-color="#fffaf2"></stop><stop offset=".42" stop-color="#fff1dc" stop-opacity=".85"></stop><stop offset="1" stop-color="#ffe9cf" stop-opacity="0"></stop></radialGradient>
+        <clipPath id="hclip"><circle cx="270" cy="312" r="38"></circle></clipPath>
+      </defs>
+      <rect width="360" height="650" fill="url(#hsky)"></rect>
+      <g class="bk" fill="#fffaf2" fill-opacity=".5" stroke="#fffaf2" stroke-opacity=".8" stroke-width="1"><circle cx="44" cy="196" r="9"></circle><circle cx="318" cy="210" r="6"></circle><circle cx="158" cy="268" r="11"></circle><circle cx="70" cy="352" r="5"></circle><circle cx="196" cy="350" r="8"></circle><circle cx="338" cy="128" r="5"></circle></g>
+      <circle class="gw" cx="270" cy="312" r="124" fill="url(#hsun)"></circle><g class="lr" fill="none" stroke="#84583d" stroke-opacity=".55"><circle cx="270" cy="312" r="56.24" stroke-width="1"></circle><path stroke-width="1" stroke-linecap="round" d="M314.84 312L323.2 312M314.16 319.79L318.65 320.58M312.14 327.34L316.42 328.9M308.83 334.42L316.07 338.6M304.35 340.82L307.84 343.75M298.82 346.35L301.75 349.84M292.42 350.83L296.6 358.07M285.34 354.14L286.9 358.42M277.79 356.16L278.58 360.65M270 356.84L270 365.2M262.21 356.16L261.42 360.65M254.66 354.14L253.1 358.42M247.58 350.83L243.4 358.07M241.18 346.35L238.25 349.84M235.65 340.82L232.16 343.75M231.17 334.42L223.93 338.6M227.86 327.34L223.58 328.9M225.84 319.79L221.35 320.58M225.16 312L216.8 312M225.84 304.21L221.35 303.42M227.86 296.66L223.58 295.1M231.17 289.58L223.93 285.4M235.65 283.18L232.16 280.25M241.18 277.65L238.25 274.16M247.58 273.17L243.4 265.93M254.66 269.86L253.1 265.58M262.21 267.84L261.42 263.35M270 267.16L270 258.8M277.79 267.84L278.58 263.35M285.34 269.86L286.9 265.58M292.42 273.17L296.6 265.93M298.82 277.65L301.75 274.16M304.35 283.18L307.84 280.25M308.83 289.58L316.07 285.4M312.14 296.66L316.42 295.1M314.16 304.21L318.65 303.42"></path></g><circle cx="270" cy="312" r="38" fill="#b98a66" fill-opacity=".78"></circle><g clip-path="url(#hclip)"><g class="ir" stroke="#84583d" stroke-opacity=".62" stroke-width="1.2"><path fill="none" vector-effect="non-scaling-stroke" d="M274.42 291.19L649.76 581.43M289.03 302.48L296.13 776.89M289.31 320.95L-77.18 622.29M275.05 332.67L-189.05 234.03M256.98 328.83L44.75 -95.52M248.72 312.32L448.17 -118.19M256.48 295.56L717.42 183.08"></path><polygon fill="#fffaf2" vector-effect="non-scaling-stroke" points="274.42,291.19 289.03,302.48 289.31,320.95 275.05,332.67 256.98,328.83 248.72,312.32 256.48,295.56"></polygon></g></g><circle cx="270" cy="312" r="38" fill="none" stroke="#84583d" stroke-opacity=".55" stroke-width="1.6"></circle><path fill="none" stroke="#fffaf2" stroke-opacity=".6" stroke-width="2" stroke-linecap="round" d="M240.01 301.08A31.92 31.92 0 0 1 257.02 282.84"></path>
+      <path class="vf" fill="none" stroke="#5a3a29" stroke-opacity=".55" stroke-width="1.5" d="M12 82V66H28M332 66H348V82M348 358V374H332M28 374H12V358"></path>
+      <g class="tl"><rect x="0" y="382" width="360" height="268" fill="#84583d" fill-opacity=".16"></rect><path stroke="#84583d" stroke-opacity=".4" stroke-width="1" d="M0 382.5H360"></path><path fill="none" stroke="#84583d" stroke-opacity=".62" stroke-width="1" d="M3 392v-6M9 392v-3M15 392v-3M21 392v-3M27 392v-3M33 392v-6M39 392v-3M45 392v-3M51 392v-3M57 392v-3M63 392v-6M69 392v-3M75 392v-3M81 392v-3M87 392v-3M93 392v-6M99 392v-3M105 392v-3M111 392v-3M117 392v-3M123 392v-6M129 392v-3M135 392v-3M141 392v-3M147 392v-3M153 392v-6M159 392v-3M165 392v-3M171 392v-3M177 392v-3M183 392v-6M189 392v-3M195 392v-3M201 392v-3M207 392v-3M213 392v-6M219 392v-3M225 392v-3M231 392v-3M237 392v-3M243 392v-6M249 392v-3M255 392v-3M261 392v-3M267 392v-3M273 392v-6M279 392v-3M285 392v-3M291 392v-3M297 392v-3M303 392v-6M309 392v-3M315 392v-3M321 392v-3M327 392v-3M333 392v-6M339 392v-3M345 392v-3M351 392v-3M357 392v-3"></path><rect x="-8" y="397" width="92" height="26" rx="3" fill="#a47452"></rect><rect x="-6" y="399" width="16" height="22" rx="1.5" fill="#f1dcc4"></rect><rect x="12" y="399" width="16" height="22" rx="1.5" fill="#e6c8a8"></rect><rect x="30" y="399" width="16" height="22" rx="1.5" fill="#f1dcc4"></rect><rect x="48" y="399" width="16" height="22" rx="1.5" fill="#e6c8a8"></rect><rect x="66" y="399" width="16" height="22" rx="1.5" fill="#f1dcc4"></rect><path fill="#c0906a" d="M-6 421V414.84L3.6 410.88L10 416.6V421zM12 421V414.84L18.72 410.88L28 416.6V421zM30 421V414.84L36.72 410.88L46 416.6V421zM48 421V414.84L57.6 410.88L64 416.6V421zM66 421V414.84L72.72 410.88L82 416.6V421z"></path><g fill="#fffaf2"><circle cx="-1.84" cy="405.6" r="2.42"></circle><circle cx="23.52" cy="405.6" r="2.42"></circle><circle cx="41.52" cy="405.6" r="2.42"></circle><circle cx="52.16" cy="405.6" r="2.42"></circle><circle cx="77.52" cy="405.6" r="2.42"></circle></g><rect x="87" y="397" width="83" height="26" rx="3" fill="#a47452"></rect><rect x="89" y="399" width="14.2" height="22" rx="1.5" fill="#e6c8a8"></rect><rect x="105.2" y="399" width="14.2" height="22" rx="1.5" fill="#f1dcc4"></rect><rect x="121.4" y="399" width="14.2" height="22" rx="1.5" fill="#e6c8a8"></rect><rect x="137.6" y="399" width="14.2" height="22" rx="1.5" fill="#f1dcc4"></rect><rect x="153.8" y="399" width="14.2" height="22" rx="1.5" fill="#e6c8a8"></rect><path fill="#c0906a" d="M89 421V414.84L94.96 410.88L103.2 416.6V421zM105.2 421V414.84L111.16 410.88L119.4 416.6V421zM121.4 421V414.84L129.92 410.88L135.6 416.6V421zM137.6 421V414.84L143.56 410.88L151.8 416.6V421zM153.8 421V414.84L159.76 410.88L168 416.6V421z"></path><g fill="#fffaf2"><circle cx="99.22" cy="405.6" r="2.42"></circle><circle cx="115.42" cy="405.6" r="2.42"></circle><circle cx="125.09" cy="405.6" r="2.42"></circle><circle cx="147.82" cy="405.6" r="2.42"></circle><circle cx="164.02" cy="405.6" r="2.42"></circle></g><rect x="173" y="397" width="63" height="26" rx="3" fill="#a47452"></rect><rect x="175" y="399" width="18.33" height="22" rx="1.5" fill="#f1dcc4"></rect><rect x="195.33" y="399" width="18.33" height="22" rx="1.5" fill="#e6c8a8"></rect><rect x="215.67" y="399" width="18.33" height="22" rx="1.5" fill="#f1dcc4"></rect><path fill="#c0906a" d="M175 421V414.84L182.7 410.88L193.33 416.6V421zM195.33 421V414.84L206.33 410.88L213.67 416.6V421zM215.67 421V414.84L223.37 410.88L234 416.6V421z"></path><g fill="#fffaf2"><circle cx="188.2" cy="405.6" r="2.42"></circle><circle cx="200.1" cy="405.6" r="2.42"></circle><circle cx="228.87" cy="405.6" r="2.42"></circle></g><rect x="239" y="397" width="91" height="26" rx="3" fill="#a47452"></rect><rect x="241" y="399" width="15.8" height="22" rx="1.5" fill="#e6c8a8"></rect><rect x="258.8" y="399" width="15.8" height="22" rx="1.5" fill="#f1dcc4"></rect><rect x="276.6" y="399" width="15.8" height="22" rx="1.5" fill="#e6c8a8"></rect><rect x="294.4" y="399" width="15.8" height="22" rx="1.5" fill="#f1dcc4"></rect><rect x="312.2" y="399" width="15.8" height="22" rx="1.5" fill="#e6c8a8"></rect><path fill="#c0906a" d="M241 421V414.84L250.48 410.88L256.8 416.6V421zM258.8 421V414.84L265.44 410.88L274.6 416.6V421zM276.6 421V414.84L283.24 410.88L292.4 416.6V421zM294.4 421V414.84L303.88 410.88L310.2 416.6V421zM312.2 421V414.84L318.84 410.88L328 416.6V421z"></path><g fill="#fffaf2"><circle cx="245.11" cy="405.6" r="2.42"></circle><circle cx="270.18" cy="405.6" r="2.42"></circle><circle cx="287.98" cy="405.6" r="2.42"></circle><circle cx="298.51" cy="405.6" r="2.42"></circle><circle cx="323.58" cy="405.6" r="2.42"></circle></g><rect x="333" y="397" width="39" height="26" rx="3" fill="#a47452"></rect><rect x="335" y="399" width="16.5" height="22" rx="1.5" fill="#f1dcc4"></rect><rect x="353.5" y="399" width="16.5" height="22" rx="1.5" fill="#e6c8a8"></rect><path fill="#c0906a" d="M335 421V414.84L341.93 410.88L351.5 416.6V421zM353.5 421V414.84L360.43 410.88L370 416.6V421z"></path><g fill="#fffaf2"><circle cx="346.88" cy="405.6" r="2.42"></circle><circle cx="365.38" cy="405.6" r="2.42"></circle></g><rect x="-8" y="427" width="128" height="16" rx="3" fill="#84583d" fill-opacity=".86"></rect><rect x="123" y="427" width="113" height="16" rx="3" fill="#84583d" fill-opacity=".86"></rect><rect x="239" y="427" width="133" height="16" rx="3" fill="#84583d" fill-opacity=".86"></rect><path fill="none" stroke="#f6eadb" stroke-opacity=".75" stroke-width="1.4" stroke-linecap="round" d="M-4 434.28V435.72M-1 434.28V435.72M2 432.79V437.21M5 430.11V439.89M8 430.77V439.23M11 434.28V435.72M14 431.58V438.42M17 431.34V438.66M20 433.95V436.05M23 434.22V435.78M26 434.28V435.72M29 430.91V439.09M32 429.46V440.54M35 431.93V438.07M38 433.8V436.2M41 431.66V438.34M44 433.13V436.87M47 434.28V435.72M50 434.28V435.72M53 432.61V437.39M56 429.51V440.49M59 429.85V440.15M62 433.55V436.45M65 432.93V437.07M68 432.74V437.26M71 434.28V435.72M74 433.33V436.67M77 434.28V435.72M80 430.86V439.14M83 429.01V440.99M86 431.13V438.87M89 434.28V435.72M92 433.03V436.97M95 434.28V435.72M98 433.02V436.98M101 433.34V436.66M104 433.13V436.87M107 429.61V440.39M110 429.56V440.44M113 432.86V437.14M116 434.02V435.98M127 433.15V436.85M130 432.88V437.12M133 429.59V440.41M136 430.03V439.97M139 433.37V436.63M142 434.16V435.84M145 434.28V435.72M148 432.24V437.76M151 431.44V438.56M154 434.28V435.72M157 431.4V438.6M160 429.65V440.35M163 431.71V438.29M166 434.28V435.72M169 434.28V435.72M172 433.05V436.95M175 430.74V439.26M178 431.8V438.2M181 434.09V435.91M184 430.58V439.42M187 430.72V439.28M190 433.63V436.37M193 434.28V435.72M196 434.2V435.8M199 431.12V438.88M202 430.14V439.86M205 433V437M208 432.66V437.34M211 430.76V439.24M214 432.52V437.48M217 434.28V435.72M220 434.28V435.72M223 432.39V437.61M226 429.72V440.28M229 430.59V439.41M232 434.28V435.72M243 434.12V435.88M246 434.28V435.72M249 431.7V438.3M252 429.26V440.74M255 430.64V439.36M258 434.28V435.72M261 432.34V437.66M264 432.99V437.01M267 434.28V435.72M270 433.62V436.38M273 433.74V436.26M276 430.07V439.93M279 429.2V440.8M282 432.15V437.85M285 434.01V435.99M288 432.93V437.07M291 434.28V435.72M294 432.96V437.04M297 434.12V435.88M300 432.02V437.98M303 429.16V440.84M306 430.15V439.85M309 433.86V436.14M312 433.56V436.44M315 434.28V435.72M318 432.99V437.01M321 432.42V437.58M324 434.28V435.72M327 430.53V439.47M330 429.27V440.73M333 431.8V438.2M336 434.28V435.72M339 434.12V435.88M342 433.58V436.42M345 431.55V438.45M348 432.9V437.1M351 432.95V437.05M354 429.76V440.24M357 430.37V439.63M360 433.62V436.38M363 434.28V435.72M366 434.28V435.72"></path><rect x="-8" y="447" width="58" height="26" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="53" y="447" width="97" height="26" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="153" y="447" width="137" height="26" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="293" y="447" width="79" height="26" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="20" y="477" width="90" height="8" rx="3" fill="#5a3a29" fill-opacity=".5"></rect><rect x="180" y="477" width="56" height="8" rx="3" fill="#5a3a29" fill-opacity=".5"></rect><rect x="260" y="477" width="80" height="8" rx="3" fill="#5a3a29" fill-opacity=".5"></rect><rect x="-8" y="489" width="178" height="16" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="173" y="489" width="199" height="16" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="-8" y="509" width="118" height="26" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="113" y="509" width="137" height="26" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="253" y="509" width="119" height="26" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="-8" y="539" width="244" height="16" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="239" y="539" width="133" height="16" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="-8" y="559" width="78" height="26" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="73" y="559" width="127" height="26" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="203" y="559" width="169" height="26" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="40" y="589" width="110" height="8" rx="3" fill="#5a3a29" fill-opacity=".5"></rect><rect x="210" y="589" width="120" height="8" rx="3" fill="#5a3a29" fill-opacity=".5"></rect><rect x="-8" y="601" width="148" height="16" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="143" y="601" width="229" height="16" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="-8" y="621" width="188" height="29" rx="3" fill="#84583d" fill-opacity=".8"></rect><rect x="183" y="621" width="189" height="29" rx="3" fill="#84583d" fill-opacity=".8"></rect><g class="pl" fill="#3a2418"><path d="M125 372h10v6l-5 5l-5-5z"></path><rect x="129.25" y="378" width="1.5" height="272"></rect></g></g>
+    </svg>
+    <div class="hud" aria-hidden="true"><span dir="ltr" lang="en"><i></i>REC 00:00:14:08</span><span dir="ltr" lang="en">f/2.8 · 1/250 · ISO 100</span></div>
+
+    <header class="hd">
+      <a href="S01-landing.dc.html" class="wm">Shoot</a>
+      <div style="display:flex;gap:2px">
+        <a href="#ar" lang="ar" class="ib" style="width:auto;padding:0 10px;font-size:15px;font-weight:500">عربي</a>
+        <a href="S09-signin-number.dc.html" class="ib" aria-label="My account"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></a>
+        <a href="S01m-menu.dc.html" class="ib" aria-label="Open menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></a>
+      </div>
+    </header>
+
+    <div class="lead">
+      <h1><span>You brief.</span><span>We shoot.</span></h1>
+      <p>Say what you need in one line. See one fixed price before you book.</p>
+    </div>
+
+    <div class="bar" onClick="{{ touch }}">
+      <div class="say">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.500-3.500"></path></svg>
+        <p>I need <span class="slot"><span class="ph" aria-hidden="true">who</span><span class="val">a photographer</span></span> for <span class="slot s2"><span class="ph" aria-hidden="true">what</span><span class="val">a wedding</span></span> in <span class="slot s3"><span class="ph" aria-hidden="true">where</span><span class="val">Dubai</span></span> on <span class="slot s4"><span class="ph" aria-hidden="true">when</span><span class="val num">Sat 14 Dec</span></span><span class="caret" aria-hidden="true"></span></p>
+      </div>
+      <p class="gl" style="padding:12px 8px 8px">Top hit</p>
+      <a href="S02-choose-creator.dc.html" class="top" style="color: var(--ink, #1d1d1f); background-color: #e01414"><span class="t" aria-hidden="true" style="color: var(--on-accent, #ffffff)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></span><span style="flex: 1; color: var(--on-accent, #ffffff)">See price and who's free</span></a>
+      <p class="meta" style="margin:0;padding:10px 8px 6px">No account needed. Price shown next.</p>
+    </div>
+  </section>
+
+  <div class="tick" aria-hidden="true"><div><span>Weddings</span><span>Events</span><span>Portraits</span><span>Products</span><span>Real estate</span><span>Food</span><span>Weddings</span><span>Events</span><span>Portraits</span><span>Products</span><span>Real estate</span><span>Food</span></div></div>
+
+  <section class="sec" aria-labelledby="kinds-h">
+    <div class="sech"><div><p class="gl" style="padding-bottom:6px">Start from the shoot</p><h2 id="kinds-h">What do you need shot?</h2></div></div>
+    <div class="kinds">
+      <a class="kd" href="S02-choose-creator.dc.html">
+        <svg viewBox="0 0 132 236" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="k1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e7d6"></stop><stop offset="1" stop-color="#dfb892"></stop></linearGradient></defs><rect width="132" height="236" fill="url(#k1)"></rect><circle class="key fb" cx="66" cy="108" r="26" fill="#fffaf2"></circle><rect y="178" width="132" height="58" fill="#b58461"></rect><path d="M36 180v-72a30 30 0 0 1 60 0v72" fill="none" stroke="#7a5038" stroke-width="5" stroke-linecap="round"></path><g fill="#fff6ea"><circle cx="36" cy="120" r="4"></circle><circle cx="40" cy="96" r="5"></circle><circle cx="54" cy="81" r="4"></circle><circle cx="72" cy="78" r="5"></circle><circle cx="88" cy="90" r="4"></circle><circle cx="96" cy="112" r="5"></circle><circle cx="34" cy="142" r="3"></circle><circle cx="98" cy="136" r="3"></circle></g><g fill="#5a3a29"><circle cx="58" cy="146" r="5"></circle><path d="M52 180v-22a6 6 0 0 1 12 0v22z"></path><circle cx="75" cy="148" r="5"></circle><path d="M67 180l3-24a5 5 0 0 1 10 0l3 24z"></path></g></svg>
+        <span class="lb"><span class="no">01</span><span class="nm">Weddings</span></span>
+      </a>
+      <a class="kd" href="S02-choose-creator.dc.html">
+        <svg viewBox="0 0 132 236" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="k2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1f1a"></stop><stop offset="1" stop-color="#7b5a45"></stop></linearGradient></defs><rect width="132" height="236" fill="url(#k2)"></rect><g fill="#ffe9cf" opacity=".3"><path class="beam fb" d="M30 0 4 176h52z"></path><path class="beam b2 fb" d="M66 0 40 176h52z"></path><path class="beam b3 fb" d="M102 0 76 176h52z"></path></g><rect y="172" width="132" height="64" fill="#1f1612"></rect><g fill="#120c09"><circle cx="14" cy="176" r="9"></circle><circle cx="36" cy="172" r="10"></circle><circle cx="60" cy="177" r="9"></circle><circle cx="82" cy="172" r="10"></circle><circle cx="104" cy="176" r="9"></circle><circle cx="124" cy="172" r="9"></circle></g></svg>
+        <span class="lb"><span class="no">02</span><span class="nm">Events</span></span>
+      </a>
+      <a class="kd" href="S02-choose-creator.dc.html">
+        <svg viewBox="0 0 132 236" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="k3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ecd9c5"></stop><stop offset="1" stop-color="#c49a76"></stop></linearGradient></defs><rect width="132" height="236" fill="url(#k3)"></rect><circle class="key fb" cx="76" cy="98" r="48" fill="#fff6ea" opacity=".9"></circle><g fill="#6d4c38"><circle cx="66" cy="104" r="24"></circle><path d="M14 236c0-56 22-86 52-86s52 30 52 86z"></path></g></svg>
+        <span class="lb"><span class="no">03</span><span class="nm">Portraits</span></span>
+      </a>
+      <a class="kd" href="S02-choose-creator.dc.html">
+        <svg viewBox="0 0 132 236" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="k4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3e6d7"></stop><stop offset="1" stop-color="#d6b494"></stop></linearGradient><clipPath id="k4c"><rect x="52" y="84" width="28" height="64" rx="7"></rect></clipPath></defs><rect width="132" height="236" fill="url(#k4)"></rect><ellipse cx="66" cy="204" rx="46" ry="8" fill="#a47452" opacity=".4"></ellipse><rect x="34" y="150" width="64" height="52" fill="#b58461"></rect><ellipse cx="66" cy="150" rx="32" ry="8" fill="#caa07c"></ellipse><rect x="60" y="68" width="12" height="20" rx="2" fill="#5a3a29"></rect><rect x="58" y="62" width="16" height="8" rx="2" fill="#3a2b25"></rect><rect x="52" y="84" width="28" height="64" rx="7" fill="#5a3a29"></rect><g clip-path="url(#k4c)"><rect class="shn" x="44" y="80" width="9" height="76" fill="#fff6ea" opacity=".5" transform="skewX(-14)"></rect></g></svg>
+        <span class="lb"><span class="no">04</span><span class="nm">Products</span></span>
+      </a>
+      <a class="kd" href="S02-choose-creator.dc.html">
+        <svg viewBox="0 0 132 236" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="k5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9b999"></stop><stop offset="1" stop-color="#8e6d52"></stop></linearGradient></defs><rect width="132" height="236" fill="url(#k5)"></rect><circle cx="104" cy="52" r="15" fill="#fff6ea" opacity=".85"></circle><rect x="26" y="66" width="80" height="170" fill="#4a3428"></rect><rect x="16" y="120" width="22" height="116" fill="#3a2b25"></rect><g class="win" fill="#ffe9cf"><rect x="36" y="78" width="14" height="16"></rect><rect x="59" y="78" width="14" height="16"></rect><rect x="82" y="78" width="14" height="16"></rect><rect x="36" y="104" width="14" height="16"></rect><rect x="59" y="104" width="14" height="16"></rect><rect x="82" y="104" width="14" height="16"></rect><rect x="36" y="130" width="14" height="16"></rect><rect x="59" y="130" width="14" height="16"></rect><rect x="82" y="130" width="14" height="16"></rect><rect x="36" y="156" width="14" height="16"></rect><rect x="59" y="156" width="14" height="16"></rect><rect x="82" y="156" width="14" height="16"></rect></g></svg>
+        <span class="lb"><span class="no">05</span><span class="nm">Real estate</span></span>
+      </a>
+      <a class="kd" href="S02-choose-creator.dc.html">
+        <svg viewBox="0 0 132 236" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="k6" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3e4d2"></stop><stop offset="1" stop-color="#e0c0a0"></stop></linearGradient></defs><rect width="132" height="236" fill="url(#k6)"></rect><rect y="168" width="132" height="68" fill="#c39a75"></rect><ellipse cx="66" cy="170" rx="50" ry="9" fill="#fff6ea"></ellipse><path d="M32 132h68a34 34 0 0 1-68 0z" fill="#7a5038"></path><ellipse cx="66" cy="132" rx="34" ry="7" fill="#a47452"></ellipse><g class="stm" fill="none" stroke="#fffaf2" stroke-width="3" stroke-linecap="round"><path d="M52 112c-6-8 6-12 0-22"></path><path d="M66 108c-6-8 6-14 0-26"></path><path d="M80 112c-6-8 6-12 0-22"></path></g></svg>
+        <span class="lb"><span class="no">06</span><span class="nm">Food</span></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="cr-h">
+    <div class="sech"><div><p class="gl" style="padding-bottom:6px">Or pick your own</p><h2 id="cr-h">Meet the creators</h2></div><div style="display:flex;align-items:flex-end;gap:8px"><button type="button" class="ib" style="height:44px;margin-bottom:-12px" aria-label="Pause motion on this page" aria-pressed="{{ pressed }}" onClick="{{ toggle }}"><sc-if value="{{ running }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5v14M15 5v14"></path></svg></sc-if><sc-if value="{{ paused }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 5v14l12-7z"></path></svg></sc-if></button><a href="S05-directory.dc.html" style="font-size:15px;font-weight:500;min-height:44px;display:inline-flex;align-items:flex-end;text-decoration:none">See all</a></div></div>
+    <div class="mqw {{ mqCls }}">
+      <div class="mq">
+        <a class="cc" href="S06-profile.dc.html"><span class="cv" aria-hidden="true"><svg viewBox="0 0 200 124"><circle cx="100" cy="58" r="20"></circle><path d="M54 124c0-30 20-42 46-42s46 12 46 42z"></path></svg></span><b>Omar K.</b><span class="meta">Photographer and videographer · Sharjah</span><span class="pr"><bdi class="num meta">SH-0087</bdi><span>from <b class="num" style="padding:0">AED 950</b></span></span></a>
+        <a class="cc" href="S06-profile.dc.html"><span class="cv k2" aria-hidden="true"><svg viewBox="0 0 200 124"><circle cx="104" cy="58" r="20"></circle><path d="M58 124c0-30 20-42 46-42s46 12 46 42z"></path></svg></span><b>Mariam A.</b><span class="meta">Photographer · Dubai</span><span class="pr"><bdi class="num meta">SH-0421</bdi><span>from <b class="num" style="padding:0">AED 1,200</b></span></span></a>
+        <a class="cc" href="S06-profile.dc.html"><span class="cv k3" aria-hidden="true"><svg viewBox="0 0 200 124"><circle cx="96" cy="60" r="20"></circle><path d="M50 124c0-30 20-42 46-42s46 12 46 42z"></path></svg></span><b>Yusuf R.</b><span class="meta">Videographer · Abu Dhabi</span><span class="pr"><bdi class="num meta">SH-0233</bdi><span>from <b class="num" style="padding:0">AED 1,400</b></span></span></a>
+        <a class="cc" href="S06-profile.dc.html"><span class="cv k4" aria-hidden="true"><svg viewBox="0 0 200 124"><circle cx="100" cy="58" r="20"></circle><path d="M54 124c0-30 20-42 46-42s46 12 46 42z"></path></svg></span><b>Hind S.</b><span class="meta">Photographer · Dubai</span><span class="pr"><bdi class="num meta">SH-0310</bdi><span>from <b class="num" style="padding:0">AED 1,500</b></span></span></a>
+        <a class="cc" href="S06-profile.dc.html" aria-hidden="true" tabindex="-1"><span class="cv"><svg viewBox="0 0 200 124"><circle cx="100" cy="58" r="20"></circle><path d="M54 124c0-30 20-42 46-42s46 12 46 42z"></path></svg></span><b>Omar K.</b><span class="meta">Photographer and videographer · Sharjah</span><span class="pr"><bdi class="num meta">SH-0087</bdi><span>from <b class="num" style="padding:0">AED 950</b></span></span></a>
+        <a class="cc" href="S06-profile.dc.html" aria-hidden="true" tabindex="-1"><span class="cv k2"><svg viewBox="0 0 200 124"><circle cx="104" cy="58" r="20"></circle><path d="M58 124c0-30 20-42 46-42s46 12 46 42z"></path></svg></span><b>Mariam A.</b><span class="meta">Photographer · Dubai</span><span class="pr"><bdi class="num meta">SH-0421</bdi><span>from <b class="num" style="padding:0">AED 1,200</b></span></span></a>
+        <a class="cc" href="S06-profile.dc.html" aria-hidden="true" tabindex="-1"><span class="cv k3"><svg viewBox="0 0 200 124"><circle cx="96" cy="60" r="20"></circle><path d="M50 124c0-30 20-42 46-42s46 12 46 42z"></path></svg></span><b>Yusuf R.</b><span class="meta">Videographer · Abu Dhabi</span><span class="pr"><bdi class="num meta">SH-0233</bdi><span>from <b class="num" style="padding:0">AED 1,400</b></span></span></a>
+        <a class="cc" href="S06-profile.dc.html" aria-hidden="true" tabindex="-1"><span class="cv k4"><svg viewBox="0 0 200 124"><circle cx="100" cy="58" r="20"></circle><path d="M54 124c0-30 20-42 46-42s46 12 46 42z"></path></svg></span><b>Hind S.</b><span class="meta">Photographer · Dubai</span><span class="pr"><bdi class="num meta">SH-0310</bdi><span>from <b class="num" style="padding:0">AED 1,500</b></span></span></a>
+      </div>
+    </div>
+    <p class="meta" style="margin:10px 20px 0">Each cover is the creator's own photo once they upload one.</p>
+  </section>
+
+  <section class="night" aria-labelledby="join-h">
+    <svg viewBox="0 0 360 470" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <defs><radialGradient id="moon"><stop offset="0" stop-color="#ffe9cf" stop-opacity=".55"></stop><stop offset="1" stop-color="#ffe9cf" stop-opacity="0"></stop></radialGradient><clipPath id="jclip"><circle cx="288" cy="338" r="30"></circle></clipPath></defs>
+      <g class="bk" fill="#ffcea0" fill-opacity=".12" stroke="#ffcea0" stroke-opacity=".24" stroke-width="1"><circle cx="40" cy="60" r="7"></circle><circle cx="300" cy="90" r="5"></circle><circle cx="150" cy="40" r="6"></circle><circle cx="330" cy="220" r="8"></circle><circle cx="236" cy="300" r="5"></circle></g>
+      <circle class="gw" cx="288" cy="338" r="110" fill="url(#moon)"></circle><g class="lr2" fill="none" stroke="#8a6f5a" stroke-opacity=".62"><circle cx="288" cy="338" r="44.4" stroke-width="1"></circle><path stroke-width="1" stroke-linecap="round" d="M323.4 338L330 338M322.86 344.15L326.41 344.77M321.27 350.11L324.65 351.34M318.66 355.7L324.37 359M315.12 360.75L317.88 363.07M310.75 365.12L313.07 367.88M305.7 368.66L309 374.37M300.11 371.27L301.34 374.65M294.15 372.86L294.77 376.41M288 373.4L288 380M281.85 372.86L281.23 376.41M275.89 371.27L274.66 374.65M270.3 368.66L267 374.37M265.25 365.12L262.93 367.88M260.88 360.75L258.12 363.07M257.34 355.7L251.63 359M254.73 350.11L251.35 351.34M253.14 344.15L249.59 344.77M252.6 338L246 338M253.14 331.85L249.59 331.23M254.73 325.89L251.35 324.66M257.34 320.3L251.63 317M260.88 315.25L258.12 312.93M265.25 310.88L262.93 308.12M270.3 307.34L267 301.63M275.89 304.73L274.66 301.35M281.85 303.14L281.23 299.59M288 302.6L288 296M294.15 303.14L294.77 299.59M300.11 304.73L301.34 301.35M305.7 307.34L309 301.63M310.75 310.88L313.07 308.12M315.12 315.25L317.88 312.93M318.66 320.3L324.37 317M321.27 325.89L324.65 324.66M322.86 331.85L326.41 331.23"></path></g><circle cx="288" cy="338" r="30" fill="#2a1f1a" fill-opacity=".92"></circle><g clip-path="url(#jclip)"><g class="ir2" stroke="#8a6f5a" stroke-opacity=".72" stroke-width="1.2"><path fill="none" vector-effect="non-scaling-stroke" d="M291.49 321.57L587.81 550.71M303.03 330.49L308.63 705.02M303.24 345.06L13.91 582.96M291.98 354.32L-74.41 276.44M277.72 351.29L110.17 16.28M271.2 338.25L428.66 -1.63M277.33 325.02L641.23 236.22"></path><polygon fill="#ffe2bf" vector-effect="non-scaling-stroke" points="291.49,321.57 303.03,330.49 303.24,345.06 291.98,354.32 277.72,351.29 271.2,338.25 277.33,325.02"></polygon></g></g><circle cx="288" cy="338" r="30" fill="none" stroke="#8a6f5a" stroke-opacity=".62" stroke-width="1.6"></circle><path fill="none" stroke="#ffe2bf" stroke-opacity=".6" stroke-width="2" stroke-linecap="round" d="M264.32 329.38A25.2 25.2 0 0 1 277.75 314.98"></path>
+      <g class="tl"><rect x="0" y="396" width="360" height="74" fill="#000000" fill-opacity=".24"></rect><path stroke="#a08670" stroke-opacity=".4" stroke-width="1" d="M0 396.5H360"></path><path fill="none" stroke="#a08670" stroke-opacity=".7" stroke-width="1" d="M3 405v-6M9 405v-3M15 405v-3M21 405v-3M27 405v-3M33 405v-6M39 405v-3M45 405v-3M51 405v-3M57 405v-3M63 405v-6M69 405v-3M75 405v-3M81 405v-3M87 405v-3M93 405v-6M99 405v-3M105 405v-3M111 405v-3M117 405v-3M123 405v-6M129 405v-3M135 405v-3M141 405v-3M147 405v-3M153 405v-6M159 405v-3M165 405v-3M171 405v-3M177 405v-3M183 405v-6M189 405v-3M195 405v-3M201 405v-3M207 405v-3M213 405v-6M219 405v-3M225 405v-3M231 405v-3M237 405v-3M243 405v-6M249 405v-3M255 405v-3M261 405v-3M267 405v-3M273 405v-6M279 405v-3M285 405v-3M291 405v-3M297 405v-3M303 405v-6M309 405v-3M315 405v-3M321 405v-3M327 405v-3M333 405v-6M339 405v-3M345 405v-3M351 405v-3M357 405v-3"></path><rect x="-8" y="410" width="104" height="26" rx="3" fill="#4a3a2f"></rect><rect x="-6" y="412" width="15" height="22" rx="1.5" fill="#6b5546"></rect><rect x="11" y="412" width="15" height="22" rx="1.5" fill="#5c4739"></rect><rect x="28" y="412" width="15" height="22" rx="1.5" fill="#6b5546"></rect><rect x="45" y="412" width="15" height="22" rx="1.5" fill="#5c4739"></rect><rect x="62" y="412" width="15" height="22" rx="1.5" fill="#6b5546"></rect><rect x="79" y="412" width="15" height="22" rx="1.5" fill="#5c4739"></rect><path fill="#2a1f1a" d="M-6 434V427.84L3 423.88L9 429.6V434zM11 434V427.84L17.3 423.88L26 429.6V434zM28 434V427.84L34.3 423.88L43 429.6V434zM45 434V427.84L54 423.88L60 429.6V434zM62 434V427.84L68.3 423.88L77 429.6V434zM79 434V427.84L85.3 423.88L94 429.6V434z"></path><g fill="#ffcea0"><circle cx="-2.1" cy="418.6" r="2.42"></circle><circle cx="21.8" cy="418.6" r="2.42"></circle><circle cx="38.8" cy="418.6" r="2.42"></circle><circle cx="48.9" cy="418.6" r="2.42"></circle><circle cx="72.8" cy="418.6" r="2.42"></circle><circle cx="89.8" cy="418.6" r="2.42"></circle></g><rect x="99" y="410" width="115" height="26" rx="3" fill="#4a3a2f"></rect><rect x="101" y="412" width="14.14" height="22" rx="1.5" fill="#5c4739"></rect><rect x="117.14" y="412" width="14.14" height="22" rx="1.5" fill="#6b5546"></rect><rect x="133.29" y="412" width="14.14" height="22" rx="1.5" fill="#5c4739"></rect><rect x="149.43" y="412" width="14.14" height="22" rx="1.5" fill="#6b5546"></rect><rect x="165.57" y="412" width="14.14" height="22" rx="1.5" fill="#5c4739"></rect><rect x="181.71" y="412" width="14.14" height="22" rx="1.5" fill="#6b5546"></rect><rect x="197.86" y="412" width="14.14" height="22" rx="1.5" fill="#5c4739"></rect><path fill="#2a1f1a" d="M101 434V427.84L106.94 423.88L115.14 429.6V434zM117.14 434V427.84L123.08 423.88L131.29 429.6V434zM133.29 434V427.84L141.77 423.88L147.43 429.6V434zM149.43 434V427.84L155.37 423.88L163.57 429.6V434zM165.57 434V427.84L171.51 423.88L179.71 429.6V434zM181.71 434V427.84L190.2 423.88L195.86 429.6V434zM197.86 434V427.84L203.8 423.88L212 429.6V434z"></path><g fill="#ffcea0"><circle cx="111.18" cy="418.6" r="2.42"></circle><circle cx="127.33" cy="418.6" r="2.42"></circle><circle cx="136.96" cy="418.6" r="2.42"></circle><circle cx="159.61" cy="418.6" r="2.42"></circle><circle cx="175.75" cy="418.6" r="2.42"></circle><circle cx="185.39" cy="418.6" r="2.42"></circle><circle cx="208.04" cy="418.6" r="2.42"></circle></g><rect x="217" y="410" width="83" height="26" rx="3" fill="#4a3a2f"></rect><rect x="219" y="412" width="14.2" height="22" rx="1.5" fill="#6b5546"></rect><rect x="235.2" y="412" width="14.2" height="22" rx="1.5" fill="#5c4739"></rect><rect x="251.4" y="412" width="14.2" height="22" rx="1.5" fill="#6b5546"></rect><rect x="267.6" y="412" width="14.2" height="22" rx="1.5" fill="#5c4739"></rect><rect x="283.8" y="412" width="14.2" height="22" rx="1.5" fill="#6b5546"></rect><path fill="#2a1f1a" d="M219 434V427.84L224.96 423.88L233.2 429.6V434zM235.2 434V427.84L243.72 423.88L249.4 429.6V434zM251.4 434V427.84L257.36 423.88L265.6 429.6V434zM267.6 434V427.84L273.56 423.88L281.8 429.6V434zM283.8 434V427.84L292.32 423.88L298 429.6V434z"></path><g fill="#ffcea0"><circle cx="229.22" cy="418.6" r="2.42"></circle><circle cx="238.89" cy="418.6" r="2.42"></circle><circle cx="261.62" cy="418.6" r="2.42"></circle><circle cx="277.82" cy="418.6" r="2.42"></circle><circle cx="287.49" cy="418.6" r="2.42"></circle></g><rect x="303" y="410" width="69" height="26" rx="3" fill="#4a3a2f"></rect><rect x="305" y="412" width="14.75" height="22" rx="1.5" fill="#5c4739"></rect><rect x="321.75" y="412" width="14.75" height="22" rx="1.5" fill="#6b5546"></rect><rect x="338.5" y="412" width="14.75" height="22" rx="1.5" fill="#5c4739"></rect><rect x="355.25" y="412" width="14.75" height="22" rx="1.5" fill="#6b5546"></rect><path fill="#2a1f1a" d="M305 434V427.84L313.85 423.88L319.75 429.6V434zM321.75 434V427.84L327.94 423.88L336.5 429.6V434zM338.5 434V427.84L344.69 423.88L353.25 429.6V434zM355.25 434V427.84L364.1 423.88L370 429.6V434z"></path><g fill="#ffcea0"><circle cx="308.83" cy="418.6" r="2.42"></circle><circle cx="332.37" cy="418.6" r="2.42"></circle><circle cx="349.12" cy="418.6" r="2.42"></circle><circle cx="359.08" cy="418.6" r="2.42"></circle></g><rect x="-8" y="440" width="158" height="16" rx="3" fill="#2a1f1a" fill-opacity=".86"></rect><rect x="153" y="440" width="219" height="16" rx="3" fill="#2a1f1a" fill-opacity=".86"></rect><path fill="none" stroke="#ffcea0" stroke-opacity=".75" stroke-width="1.4" stroke-linecap="round" d="M-4 447.28V448.72M-1 447.28V448.72M2 445.79V450.21M5 443.11V452.89M8 443.77V452.23M11 447.28V448.72M14 444.58V451.42M17 444.34V451.66M20 446.95V449.05M23 447.22V448.78M26 447.28V448.72M29 443.91V452.09M32 442.46V453.54M35 444.93V451.07M38 446.8V449.2M41 444.66V451.34M44 446.13V449.87M47 447.28V448.72M50 447.28V448.72M53 445.61V450.39M56 442.51V453.49M59 442.85V453.15M62 446.55V449.45M65 445.93V450.07M68 445.74V450.26M71 447.28V448.72M74 446.33V449.67M77 447.28V448.72M80 443.86V452.14M83 442.01V453.99M86 444.13V451.87M89 447.28V448.72M92 446.03V449.97M95 447.28V448.72M98 446.02V449.98M101 446.34V449.66M104 446.13V449.87M107 442.61V453.39M110 442.56V453.44M113 445.86V450.14M116 447.02V448.98M119 447.11V448.89M122 446.35V449.65M125 445.02V450.98M128 447.28V448.72M131 444.5V451.5M134 442.27V453.73M137 443.98V452.02M140 447.28V448.72M143 447.06V448.94M146 447.09V448.91M157 444.4V451.6M160 442.65V453.35M163 444.71V451.29M166 447.28V448.72M169 447.28V448.72M172 446.05V449.95M175 443.74V452.26M178 444.8V451.2M181 447.09V448.91M184 443.58V452.42M187 443.72V452.28M190 446.63V449.37M193 447.28V448.72M196 447.2V448.8M199 444.12V451.88M202 443.14V452.86M205 446V450M208 445.66V450.34M211 443.76V452.24M214 445.52V450.48M217 447.28V448.72M220 447.28V448.72M223 445.39V450.61M226 442.72V453.28M229 443.59V452.41M232 447.28V448.72M235 444.92V451.08M238 444.94V451.06M241 447.28V448.72M244 446.97V449.03M247 447.13V448.87M250 443.58V452.42M253 442.26V453.74M256 444.87V451.13M259 446.97V449.03M262 445.16V450.84M265 446.82V449.18M268 446.78V449.22M271 447.16V448.84M274 445.43V450.57M277 442.33V453.67M280 442.84V453.16M283 446.54V449.46M286 446.23V449.77M289 446.38V449.62M292 447.1V448.9M295 445.92V450.08M298 447.28V448.72M301 443.75V452.25M304 442.03V453.97M307 444.26V451.74M310 447.28V448.72M313 446.46V449.54M316 447.28V448.72M319 445.41V450.59M322 446.08V449.92M325 446.14V449.86M328 442.66V453.34M331 442.77V453.23M334 446.04V449.96M337 447.17V448.83M340 447.28V448.72M343 445.67V450.33M346 444.56V451.44M349 447.13V448.87M352 444.58V451.42M355 442.51V453.49M358 444.33V451.67M361 447.28V448.72M364 447.28V448.72M367 446.48V449.52"></path><rect x="-8" y="460" width="78" height="12" rx="3" fill="#1a1310" fill-opacity=".8"></rect><rect x="73" y="460" width="177" height="12" rx="3" fill="#1a1310" fill-opacity=".8"></rect><rect x="253" y="460" width="119" height="12" rx="3" fill="#1a1310" fill-opacity=".8"></rect><g class="pl pl2" fill="#ffe2bf"><path d="M125 386h10v6l-5 5l-5-5z"></path><rect x="129.25" y="392" width="1.5" height="78"></rect></g></g>
+    </svg>
+    <div class="in">
+      <p class="gl">For creators</p>
+      <h2 id="join-h" style="font-size:34px">Shoot for a living?</h2>
+      <p>Make a profile, set the days you're free, and get briefs that fit what you do.</p>
+      <a href="S09c-join.dc.html" class="ghost">Join as a creator<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></a>
+    </div>
+  </section>
+
+  <section class="end" aria-labelledby="end-h">
+    <h2 id="end-h">Ready when you are.</h2>
+    <p style="margin:0;padding:0 8px;font-size:16px;line-height:1.5;color:#3d3632">One line is enough to start.</p>
+    <a href="S02-choose-creator.dc.html" class="top" style="margin-top:6px"><span class="t" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></span><span style="flex:1">Start your brief</span></a>
+    <p class="meta" style="margin:0;padding:0 8px">No account needed. Price shown next.</p>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":2360}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { paused: false, touched: false }; }
+  renderVals() {
+    const paused = this.state.paused;
+    return {
+      paused: paused,
+      running: !paused,
+      pressed: paused ? 'true' : 'false',
+      mqCls: paused ? 'paused' : '',
+      rootCls: (paused ? 'stopped' : '') + (this.state.touched ? ' touched' : ''),
+      touch: () => { if (!this.state.touched) this.setState({ touched: true }); },
+      toggle: () => this.setState({ paused: !this.state.paused })
+    };
+  }
+}
+</script>
+</body>
+</html>

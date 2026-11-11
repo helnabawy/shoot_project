@@ -68,6 +68,31 @@
     'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI Arabic', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
+  /* type scale (added 2026-11-11, read from the canvas boards in canvas/; most-used value per role).
+     Each role: size / weight / line-height / letter-spacing. Numbers use tabular figures
+     (`font-variant-numeric: tabular-nums`, Flutter `FontFeature.tabularFigures()`). */
+  --text-wordmark: 700 22px/1 var(--font-sans); /* .wm */
+  --tracking-wordmark: -0.03em;
+  --text-display: 700 34px/1.2 var(--font-sans); /* .h1; 30px on the sign-in boards */
+  --tracking-display: -0.03em;
+  --text-title: 700 26px/1.25 var(--font-sans); /* .h2 */
+  --tracking-title: -0.025em;
+  --text-heading: 600 20px/1.3 var(--font-sans); /* .h3 */
+  --tracking-heading: -0.01em;
+  --text-action: 600 17px/1.2 var(--font-sans); /* .top, the Top Hit (trailing price 500 15px) */
+  --text-row: 400 16px/1.3 var(--font-sans); /* .row, .opt, .ln (1.375), fields */
+  --text-button: 500 16px/1.2 var(--font-sans); /* .btn2, secondary buttons */
+  --text-body: 400 15px/1.6 var(--font-sans); /* .body, colour #3a342f (no role yet, see below) */
+  --text-chip: 400 15px/1.2 var(--font-sans); /* .chip (500 when on) */
+  --text-meta: 400 13px/1.4 var(--font-sans); /* .meta, .st, colour --mute */
+  --text-badge: 500 13px/1.2 var(--font-sans); /* .badge */
+  --text-group-label: 600 11px/1.3 var(--font-sans); /* .gl, uppercase, colour --mute */
+  --tracking-group-label: 0.06em;
+
+  /* Colours the boards use that have no role yet (settled in feature 007 before code):
+     #3a342f body text (36 uses, `.body`), #e6e0d9 (65 uses), and the scene shades
+     #f1dcc4, #e6c8a8, #b98a66. Dark values are still to be chosen and contrast-tested. */
+
   /* spacing and sizes */
   --space-1: 4px;
   --space-2: 8px;

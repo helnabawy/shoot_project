@@ -1,6 +1,6 @@
 ---
 name: ui-design
-description: How to design and build any user-facing screen in this project so it is simple to use and looks deliberately designed rather than AI-generated — the chosen visual world "The Brief Bar" (one Spotlight-style panel: the brief as a search field, options as grouped result rows, the Top Hit as the one action), its tokens and type, the client-flow simplicity rules, and the mandatory impeccable workflow (context, craft floor, detector, finish review, DESIGN.md). Use this skill before writing or changing any page, section, component, form, empty/error/success state, the brief builder, auth screens, account pages, or any later surface (creator profiles, pricing, quotation), and whenever someone asks to make the site prettier, simpler, more modern, more user-friendly or "less AI-looking".
+description: How to design and build any user-facing screen in this project so it is simple to use and looks deliberately designed rather than AI-generated — the chosen visual world "The Brief Bar" (one Spotlight-style panel: the brief as a search field, options as grouped result rows, the Top Hit as the one action), its tokens and type, the client-flow simplicity rules, and the mandatory impeccable workflow (context, craft floor, detector, finish review, DESIGN.md). Use this skill before writing or changing any page, section, component, form, empty/error/success state, the brief builder, auth screens, account pages, or any later surface (creator profiles, pricing, quotation), any screen of the Flutter app (where the approved canvas boards are the authority), and whenever someone asks to make the site prettier, simpler, more modern, more user-friendly or "less AI-looking".
 ---
 
 # UI design in this project
@@ -106,6 +106,40 @@ filter); facts on a profile are single rows, not badges; the work is a uniform 4
 captions or hover zoom; the editor is one page in sections between a status bar and a closing bar,
 with English and Arabic fields side by side (page language first), never a wizard. Counts, proof and
 verification are real or absent: no ratings, reviews, response times or invented totals.
+
+## The mobile app (`apps/mobile`, features 006–015, planned)
+
+The Flutter app is built from the approved design canvas
+(https://claude.ai/artifact/HeYx13fA2XFumiydvHeoTV), imported into `specs/design-system/canvas/`:
+40 phone screens at 360 px (01–40) and the designer's Arabic dark boards 42 and 43. For app screens
+**the canvas boards are the authority**, ahead of `DESIGN.md` (which records the web build). A
+screen is built to its board and proven by the pixel diff (`design-fidelity` skill); "close enough"
+is not done. How to build it is in the `flutter-mobile` skill.
+
+- **No board, no screen.** A state or layout the canvas does not show is designed in the canvas
+  first (through the design system and this skill's rules), re-exported, and then built. Never
+  improvise a screen in Dart. iPad layouts are the exception: a centred column of at most 600 px,
+  checked by self-baselines, unless a spec's clarify says otherwise.
+- **The fixed `primary` red.** The Top Hit and every primary action use the `primary` role (#E01414,
+  hover #C00F0F; feature 006). The person's chosen accent (five curated accents, Blue default) only
+  recolours selection, focus and tints, never a primary action. One primary action per screen, as on
+  the web.
+- **Scene tiles.** A photo slot with no photo is a `SceneTile` (the warm scene gradient with its key
+  light), never a grey box, a stock image or a generic icon. The splash, the learning steps, the hero
+  and the confirmed booking sit on the golden-hour scene, copied verbatim from the boards' SVG; other
+  screens get the still corner glow. Real photography replaces a tile only when the API sends it.
+- **Motion with a 5-second cap.** React (120/180/260 ms) answers a tap; arrive (rise, focus, roll,
+  tick, grow, deal, write-in, shake) plays once; ambient loops exist only on the landing, behind one
+  Pause control. Every other screen's self-started motion ends within 5 s (WCAG 2.2.2), and reduced
+  motion shows the end state at once.
+- **Navigation.** The header and its menu (board 06) are the navigation; no bottom tab bar.
+- **Same honesty rules.** No invented proof, counts or ratings; the boards' placeholder data
+  (Omar K., AED 950) lives only in the shared test examples, never in the app.
+- **Craft gates.** Principle IX applies to the app. The canvas boards are its direction contract and
+  the fidelity gate is its proof; feature 007's Constitution Check states how impeccable's detector
+  and finish review apply to Flutter screens (they read HTML, not Dart).
+- Verify on a 360 px phone and on iPad 768/1024, in English and Arabic, light and dark, at the
+  largest text size, with VoiceOver and TalkBack (Principle VI).
 
 ## Client flow rules (spec FR-055–FR-062)
 

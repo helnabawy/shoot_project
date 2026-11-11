@@ -1,3 +1,22 @@
+<!--
+Sync Impact Report (amendment 2026-11-10)
+- Version: 1.3.0 -> 1.4.0 (MINOR: materially expanded guidance; no principle removed or redefined)
+- Modified principles:
+  - III. Test-First for Every Use Case: adds the mobile test pyramid (unit, cubit, widget) and its
+    coverage gate
+  - V. Modular Monolith, Monorepo-Ready: names apps/mobile and its layout
+  - VI. Responsive, Accessible, Bilingual and Themed by Default: adds mobile verification sizes and
+    checks
+- Added sections: "Mobile app (apps/mobile)" bullet group in Technology Stack & Constraints; mobile
+  checks in Development Workflow & Quality Gates
+- Removed sections: none
+- Compliance (Principle III amended): the existing mobile code already follows these rules (see
+  apps/mobile/README.md); its tests are unit, cubit and widget tests. Known gap: no CI job runs
+  flutter analyze / flutter test yet.
+- Dependent files: CLAUDE.md stack section to mention apps/mobile (runtime guidance must stay
+  consistent); templates read the constitution at runtime and need no change.
+- Deferred TODOs: add the CI job for the mobile checks.
+-->
 # Shoot Project Constitution
 
 ## Core Principles
@@ -55,7 +74,16 @@ verifies, failing first. The test pyramid is:
   edit content in the CMS and see it live).
 
 Minimum coverage gate: 80% statements and branches repository-wide; the domain
-package gates at 100% statements. Tests are deterministic: no reliance on wall
+package gates at 100% statements.
+
+The mobile app (`apps/mobile`) uses the same rule with its own pyramid: unit
+tests for domain logic and use cases, cubit tests (`bloc_test`) for every
+state transition, and widget tests for every screen and interactive widget in
+English and Arabic. Testcontainers, Playwright and Lighthouse do not apply to
+it. Its gate is 80% line coverage of the code a feature adds or changes,
+measured with `flutter test --coverage`. Scenario ids in Dart test names
+(`test`, `testWidgets`, `group`, `blocTest`) are enforced by the same
+`check:scenarios` script as the web tests. Tests are deterministic: no reliance on wall
 clock, network or ordering. Flaky tests are fixed or deleted, never retried
 into green.
 
@@ -99,6 +127,10 @@ rewrite:
 - A new app (mobile, separate API, second site) is added as a new workspace
   under `apps/` that depends on `packages/*`; shared UI is extracted to
   `packages/ui` only when a second consumer exists (YAGNI).
+- `apps/mobile` is the Flutter app for iOS and Android. It sits outside the
+  pnpm workspace (its own toolchain), follows clean architecture by feature
+  (`features/<feature>/{domain,data,presentation}` with shared `core/`), and
+  reads product data only through the web app's REST API.
 - Horizontal scaling MUST be possible: the web app is stateless (sessions are
   cookie/JWT based, uploads go to object storage in production, no in-process
   caches that assume a single instance).
@@ -117,6 +149,12 @@ respected. Touch targets are ≥ 44 px. Layout uses logical (start/end)
 properties so RTL needs no per-component overrides; the theme is applied
 before first paint so there is never a flash of the wrong colours. These are
 acceptance criteria, not polish.
+
+Mobile app screens meet the same bar: verified on a 360 px-wide phone and,
+for every form factor the app targets (today iPad), at 768 px and 1024 px; in
+English and Arabic, light and dark; at the largest system text size; with
+VoiceOver and TalkBack; using directional layout APIs only (start/end, never
+left/right); and with the saved theme applied on the first frame.
 
 Rationale: most visitors to a creative-services site in the UAE arrive on a
 phone, many read Arabic, and many devices are in dark mode; accessibility and
@@ -207,6 +245,14 @@ NOT introduce alternatives without a constitution amendment.
   budgets. Integration tests run against an ephemeral PostgreSQL container.
 - **Tooling**: ESLint + Prettier with a shared config package; Conventional
   Commits; GitHub Actions for CI.
+- **Mobile app (`apps/mobile`)**: Flutter on the stable channel with the SDK
+  version pinned in its README, Dart with sound null safety and the strict
+  `analysis_options.yaml`; targets iOS (iPhone and iPad) and Android. Packages
+  are pinned exactly (no `^`); no code generation unless a plan justifies it
+  in Complexity Tracking. State with cubits (`flutter_bloc`), dependency
+  injection with `get_it`, tests with `flutter_test`, `bloc_test` and
+  `mocktail`. Interface strings live in ARB files (`en`, `ar`); product copy is
+  CMS data read through the API, never a Dart constant or an ARB entry.
 - **Browser support**: last 2 versions of evergreen browsers plus iOS Safari
   ≥ 16; no IE.
 - **Internationalisation**: bilingual from the first release — English
@@ -225,7 +271,9 @@ NOT introduce alternatives without a constitution amendment.
 - One feature branch per spec, named `NNN-short-name` to match `specs/`.
 - Definition of Done for a task: code + tests written, `pnpm typecheck`,
   `pnpm lint`, `pnpm test` (unit + integration + component) pass locally;
-  responsive checks done per Principle VI; task ticked in `tasks.md`.
+  responsive checks done per Principle VI; task ticked in `tasks.md`. For
+  mobile tasks the checks are `dart format`, `flutter analyze` (no issues)
+  and `flutter test` in `apps/mobile`, plus `pnpm check:scenarios`.
 - Pull request gates (all required to merge): typecheck, lint, unit +
   integration + component tests with coverage thresholds, Playwright smoke
   suite, Lighthouse CI budgets (Principle II), no high/critical `pnpm audit`
@@ -258,4 +306,4 @@ the conflicting artifact is updated.
   `.claude/skills/` carry day-to-day development guidance and MUST stay
   consistent with this document.
 
-**Version**: 1.3.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-07
+**Version**: 1.4.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-10
