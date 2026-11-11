@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shoot_mobile/core/config/app_config.dart';
 import 'package:shoot_mobile/core/first_run/first_run_store.dart';
+import 'package:shoot_mobile/core/install/install_id_store.dart';
 import 'package:shoot_mobile/core/l10n/app_locales.dart';
 import 'package:shoot_mobile/core/l10n/locale_cubit.dart';
 import 'package:shoot_mobile/core/network/dio_client.dart';
@@ -27,8 +28,13 @@ void configureDependencies(AppConfig config, PreferencesStore store) {
     ..registerSingleton<LocaleCubit>(LocaleCubit(store))
     ..registerSingleton<ThemeModeCubit>(ThemeModeCubit(store))
     ..registerSingleton<AccentCubit>(AccentCubit(store))
+    ..registerSingleton<InstallIdStore>(InstallIdStore(store))
     ..registerLazySingleton<Dio>(
-      () => createDio(config: config, languageCode: _currentLanguageCode),
+      () => createDio(
+        config: config,
+        languageCode: _currentLanguageCode,
+        installId: getIt<InstallIdStore>().id,
+      ),
     );
 
   // One line per feature.

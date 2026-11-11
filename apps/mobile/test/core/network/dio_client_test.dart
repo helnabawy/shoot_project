@@ -32,11 +32,16 @@ void main() {
         environment: 'test',
       ),
       languageCode: () => language,
+      installId: () => '0123456789abcdef0123456789abcdef',
     )..httpClientAdapter = adapter;
 
     await dio.get<dynamic>('/api/health');
     expect(adapter.lastRequest?.uri.toString(), 'http://api.test/api/health');
     expect(adapter.lastRequest?.headers['Accept-Language'], 'en');
+    expect(
+      adapter.lastRequest?.headers['X-Shoot-Install'],
+      '0123456789abcdef0123456789abcdef',
+    );
 
     language = 'ar';
     await dio.get<dynamic>('/api/health');

@@ -233,7 +233,7 @@ wrapper and the app's network core. These are used by every story.
 
 ### App network core
 
-- [ ] T023 [P] Write the Dart tests.
+- [x] T023 [P] Write the Dart tests.
   - `mobile/test/core/install/install_id_store_test.dart` (**`MR-US2-S8`**), using 006's in-memory
     `PreferencesStore`:
     - the first call creates 32 lower-case hex characters, and a new store instance returns the
@@ -252,22 +252,30 @@ wrapper and the app's network core. These are used by every story.
     - `readEnum` maps an unknown value to the fallback.
   - `mobile/test/core/media/image_ref_model_test.dart`: decoding, and `pick()` for 120 px at 1×,
     2× and 3× against sizes 400, 800 and 1600, plus a larger target than any size.
-- [ ] T024 Create `mobile/lib/core/install/install_id_store.dart` (`InstallIdStore.id()`,
+- [x] T024 Create `mobile/lib/core/install/install_id_store.dart` (`InstallIdStore.id()`,
   `Random.secure()`, key `install.id` through `PreferencesStore`). Register it in
   `mobile/lib/core/di/injection.dart`.
-- [ ] T025 Create `mobile/lib/core/network/install_id_interceptor.dart`. Add it in `createDio` in
+- [x] T025 Create `mobile/lib/core/network/install_id_interceptor.dart`. Add it in `createDio` in
   `mobile/lib/core/network/dio_client.dart`, after `LanguageInterceptor`, and update
   `test/core/network/dio_client_test.dart`.
-- [ ] T026 Update the errors and network core.
+- [x] T026 Update the errors and network core.
   - Add `code` and `fields` to `ServerException` (`mobile/lib/core/error/exceptions.dart`) and
     `code` to `ServerFailure`, and add `NotFoundFailure` (`failures.dart`). Keep the existing
     callers compiling.
   - Create `mobile/lib/core/network/api_paths.dart` (`apiV1 = '/api/mobile/v1'`) and
     `api_get.dart` (`apiGet(dio, path, {query})`, per research R14).
-- [ ] T027 Create `mobile/lib/core/network/json_read.dart` (`readString`, `readNullableString`,
+- [x] T027 Create `mobile/lib/core/network/json_read.dart` (`readString`, `readNullableString`,
   `readInt`, `readBool`, `readList`, `readObject`, `readEnum`) and
   `mobile/lib/core/media/image_ref.dart` (the `ImageRef` entity, `ImageRefModel.fromJson` and
   `pick`). T023 passes.
+  - Built on branch `008-app-network-core` before the web side existed. The Dart tests read local
+    stand-ins in `mobile/test/fixtures/api/v1/` (`problem-422.json`, `problem-404.json`,
+    `image.json`) through `mobile/test/helpers/api_fixture.dart`. **After the merge**, point
+    `apiFixture` at `packages/domain/src/api/v1/examples/` (the image becomes the logo in
+    `site.json`) and delete the local folder.
+  - Also added: `PreferenceKeys.installId` (in `PreferenceKeys.all`, so the device store keeps it),
+    `readNullableObject` and `asObject` in `json_read.dart`, and `NotFoundFailure` words
+    (`notFoundTitle`) in `failure_message.dart`.
 
 **Checkpoint**: the wrapper and the catch-all pass their integration test. The app sends the
 install id and decodes problems. No product endpoint exists yet.

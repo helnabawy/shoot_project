@@ -1,0 +1,6 @@
+{
+  "type": "about:blank",
+  "status": 422,
+  "code": "api.errors.invalidInput",
+  "fields": [{ "path": "query.locale", "code": "api.errors.localeUnsupported" }]
+}
