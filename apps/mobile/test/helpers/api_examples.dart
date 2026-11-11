@@ -14,9 +14,7 @@ const apiExamplesDir = '../../packages/domain/src/api/v1/examples';
 Object? loadExampleValue(String name) {
   final file = File('$apiExamplesDir/$name.json');
   if (!file.existsSync()) {
-    throw StateError(
-      'API example "$name" not found at ${file.absolute.path}',
-    );
+    throw StateError('API example "$name" not found at ${file.absolute.path}');
   }
   return jsonDecode(file.readAsStringSync());
 }

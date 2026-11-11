@@ -38,7 +38,7 @@ void main() {
       const NotFoundFailure(),
       isNot(const ServerFailure(statusCode: 404)),
     );
-    expect(const NotFoundFailure().message(l10n), l10n.notFoundTitle);
+    expect(const NotFoundFailure().message(l10n), l10n.problemNotFound);
     expect(const ServerFailure().message(l10n), l10n.failureServer);
   });
 }

@@ -159,6 +159,46 @@ void main() {
     });
   });
 
+  group('readNullableInt', () {
+    test('reads an integer, null or absent', () {
+      expect(readNullableInt(json, 'count'), 3);
+      expect(readNullableInt(json, 'none'), isNull);
+      expect(readNullableInt(json, 'x'), isNull);
+    });
+    test(
+      'throws on mistyped',
+      () => expect(() => readNullableInt(json, 'half'), _throwsFormat),
+    );
+  });
+
+  group('readNullableNum', () {
+    test('reads a number, null or absent', () {
+      expect(readNullableNum(json, 'half'), 4.5);
+      expect(readNullableNum(json, 'count'), 3);
+      expect(readNullableNum(json, 'none'), isNull);
+      expect(readNullableNum(json, 'x'), isNull);
+    });
+    test(
+      'throws on mistyped',
+      () => expect(() => readNullableNum(json, 'name'), _throwsFormat),
+    );
+  });
+
+  group('readStringList', () {
+    test('reads a list of strings', () {
+      expect(readStringList(json, 'list'), ['a', 'b']);
+    });
+    test('throws on a non-string item or a non-list', () {
+      expect(
+        () => readStringList({
+          'mixed': ['a', 1],
+        }, 'mixed'),
+        _throwsFormat,
+      );
+      expect(() => readStringList(json, 'name'), _throwsFormat);
+    });
+  });
+
   test('the message names the field', () {
     expect(
       () => readString(json, 'missing'),

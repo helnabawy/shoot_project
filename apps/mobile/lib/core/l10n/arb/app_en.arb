@@ -97,6 +97,30 @@
   "@failureUnexpected": {
     "description": "Generic message for any other failure."
   },
+  "problemInvalidInput": "Some details need another look.",
+  "@problemInvalidInput": {
+    "description": "The server rejected a request's details (problem codes api.errors.invalidInput, invalidField and localeUnsupported). Same words as the website's api.errors.invalidInput."
+  },
+  "problemNotFound": "We couldn't find that.",
+  "@problemNotFound": {
+    "description": "The thing asked for does not exist or is not public (problem code api.errors.notFound, HTTP 404)."
+  },
+  "problemUnauthorized": "Sign in to continue.",
+  "@problemUnauthorized": {
+    "description": "The request needs a signed-in person (problem code api.errors.unauthorized)."
+  },
+  "problemTokenInvalid": "Your session has ended. Sign in again.",
+  "@problemTokenInvalid": {
+    "description": "The sign-in token expired or was revoked (problem code api.errors.tokenInvalid)."
+  },
+  "problemRateLimited": "Too many tries. Wait a moment and try again.",
+  "@problemRateLimited": {
+    "description": "Too many requests from this install in a short time (problem code api.errors.rateLimited, HTTP 429)."
+  },
+  "problemUnexpected": "Something went wrong on our side. Try again.",
+  "@problemUnexpected": {
+    "description": "The server failed unexpectedly (problem code api.errors.unexpected, HTTP 500)."
+  },
 
   "notFoundCode": "404",
   "@notFoundCode": {

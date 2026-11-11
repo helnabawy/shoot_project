@@ -27,6 +27,12 @@
   "failureNetwork": "تعذّر الوصول إلى الخدمة. تحقّق من اتصالك وحاول مرة أخرى.",
   "failureServer": "ردّت الخدمة بخطأ. حاول مرة أخرى بعد قليل.",
   "failureUnexpected": "حدث خطأ ما. حاول مرة أخرى.",
+  "problemInvalidInput": "بعض التفاصيل تحتاج إلى مراجعة.",
+  "problemNotFound": "لم نعثر على ما تبحث عنه.",
+  "problemUnauthorized": "سجّل الدخول للمتابعة.",
+  "problemTokenInvalid": "انتهت جلستك. سجّل الدخول مرة أخرى.",
+  "problemRateLimited": "محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.",
+  "problemUnexpected": "حدث خطأ من جهتنا. حاول مرة أخرى.",
 
   "notFoundCode": "404",
   "notFoundTitle": "هذه الصفحة ليست هنا",

@@ -4,7 +4,7 @@ import 'package:shoot_mobile/core/error/exceptions.dart';
 import 'package:shoot_mobile/core/network/api_get.dart';
 import 'package:shoot_mobile/core/network/api_paths.dart';
 
-import '../../helpers/api_fixture.dart';
+import '../../helpers/api_examples.dart';
 import '../../helpers/scripted_adapter.dart';
 
 Dio _dio(ResponseBody Function(RequestOptions options) respond) {
@@ -69,7 +69,7 @@ void main() {
         () {
           final dio = _dio(
             (_) => jsonBody(
-              apiFixture('problem-422'),
+              loadExample('problem-422'),
               status: 422,
               contentType: 'application/problem+json',
             ),
@@ -91,7 +91,7 @@ void main() {
       test('a 404 problem keeps its code and has no fields', () {
         final dio = _dio(
           (_) => jsonBody(
-            apiFixture('problem-404'),
+            loadExample('problem-404'),
             status: 404,
             contentType: 'application/problem+json',
           ),
