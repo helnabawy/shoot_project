@@ -2,6 +2,26 @@ import { z } from 'zod'
 
 const optional = z.string().trim().optional().transform((v) => (v ? v : undefined))
 
+/** A comma-separated list, trimmed; every item must match `item` (empty or unset means unset). */
+const list = (item: RegExp, message: string) =>
+  z
+    .string()
+    .optional()
+    .transform((v, ctx) => {
+      if (!v?.trim()) return undefined
+      const items = v.split(',').map((i) => i.trim())
+      if (items.some((i) => !item.test(i))) {
+        ctx.addIssue({ code: 'custom', message })
+        return z.NEVER
+      }
+      return items
+    })
+
+// App links (feature 008, research R13): Apple team id + bundle id, the Android package and its signing certificates.
+const IOS_APP_ID = /^[A-Z0-9]{10}\.[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$/
+const ANDROID_PACKAGE = /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$/
+const CERT_SHA256 = /^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){31}$/
+
 const s3Keys = ['S3_BUCKET', 'S3_REGION', 'S3_ENDPOINT', 'S3_ACCESS_KEY_ID', 'S3_SECRET_ACCESS_KEY'] as const
 
 export const envSchema = z
@@ -20,6 +40,11 @@ export const envSchema = z
     S3_SECRET_ACCESS_KEY: optional,
     NODE_ENV: optional,
     E2E_CLOCK: optional,
+    APP_IOS_APP_IDS: list(IOS_APP_ID, 'must be comma-separated TEAMID.bundle.id values, e.g. ABCDE12345.ae.shoot.app'),
+    APP_ANDROID_PACKAGE: optional.refine((v) => v === undefined || ANDROID_PACKAGE.test(v), 'must be a package name, e.g. ae.shoot.app'),
+    APP_ANDROID_CERT_SHA256: list(CERT_SHA256, 'must be comma-separated SHA-256 fingerprints, AA:BB:… (32 bytes)').transform((v) =>
+      v?.map((c) => c.toUpperCase()),
+    ),
   })
   .superRefine((env, ctx) => {
     // The e2e clock override moves time for /api/cron/bookings; it must never reach a deployment.

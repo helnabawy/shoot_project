@@ -79,5 +79,7 @@ describe('safeHref', () => {
     expect(safeHref('data:text/html,x')).toBe('#')
     expect(safeHref(undefined)).toBe('#')
     expect(safeHref(' /y ', 'ar')).toBe('/ar/y')
+    expect(safeHref('/ar/y', 'ar')).toBe('/ar/y')
+    expect(safeHref('//evil.example')).toBe('#')
   })
 })

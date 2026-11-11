@@ -730,5 +730,17 @@
       "kind": "Booked dates change only through bookings.",
       "generic": "Something went wrong. Please try again."
     }
+  },
+  "api": {
+    "errors": {
+      "invalidInput": "Some details need another look.",
+      "invalidField": "Check this value.",
+      "localeUnsupported": "This language isn't available. Choose English or Arabic.",
+      "notFound": "We couldn't find that.",
+      "unauthorized": "Sign in to continue.",
+      "tokenInvalid": "Your session has ended. Sign in again.",
+      "rateLimited": "Too many tries. Wait a moment and try again.",
+      "unexpected": "Something went wrong on our side. Try again."
+    }
   }
 }

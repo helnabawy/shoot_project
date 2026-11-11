@@ -49,27 +49,27 @@ not apply. `ShootImage` only shows 007's `SceneTile`.
 **Purpose**: the package export, configuration, message keys, the scenario check and the shared
 example loader.
 
-- [ ] T001 Add the v1 contract entry point.
+- [x] T001 Add the v1 contract entry point.
   - Add `"./api/v1": "./src/api/v1/index.ts"` to the `exports` of `packages/domain/package.json`.
   - Add the script `"api:snapshot": "UPDATE_API_SNAPSHOT=1 vitest run src/api/v1/snapshot.test.ts"`.
   - Create `v1/index.ts` (re-exports, filled by later tasks) and `v1/examples/`.
   - Create the folder `specs/contracts/mobile-api/`; the snapshot itself is written in T050.
-- [ ] T002 [P] Add `APP_IOS_APP_IDS`, `APP_ANDROID_PACKAGE` and `APP_ANDROID_CERT_SHA256` to
+- [x] T002 [P] Add `APP_IOS_APP_IDS`, `APP_ANDROID_PACKAGE` and `APP_ANDROID_CERT_SHA256` to
   `web/shared/lib/env.ts`, all optional.
   - Validation: `TEAMID.bundle.id` items, a Java package name, and `AA:BB:…` 32-byte fingerprints;
     each list is comma-separated and trimmed.
   - Add cases to `web/shared/lib/env.test.ts`: valid, malformed, unset.
   - Document the three variables in `apps/web/.env.example`.
-- [ ] T003 [P] Add the `api.errors` namespace to `apps/web/messages/en.json` and `ar.json`, with
+- [x] T003 [P] Add the `api.errors` namespace to `apps/web/messages/en.json` and `ar.json`, with
   `invalidInput`, `invalidField`, `localeUnsupported`, `notFound`, `unauthorized`, `tokenInvalid`,
   `rateLimited` and `unexpected` (research R6).
   - The Arabic is written by someone who writes Arabic.
   - The existing `tests/unit/messages.test.ts` must stay green (same keys in both files).
-- [ ] T004 [P] Add `node scripts/check-scenario-tests.mjs specs/008-mobile-api/quickstart.md` to
+- [x] T004 [P] Add `node scripts/check-scenario-tests.mjs specs/008-mobile-api/quickstart.md` to
   `check:scenarios` in the root `package.json`.
   - Confirm `scripts/check-scenario-tests.mjs` searches `apps/mobile/test` and recognises Dart test
     names (007 T005). If that task has not landed, apply the same change here.
-- [ ] T005 [P] Create `mobile/test/helpers/api_examples.dart`. `loadExample(name)` reads
+- [x] T005 [P] Create `mobile/test/helpers/api_examples.dart`. `loadExample(name)` reads
   `../../packages/domain/src/api/v1/examples/<name>.json` relative to `apps/mobile` and returns the
   decoded map. A missing file fails with its name and path.
 
@@ -85,18 +85,18 @@ wrapper and the app's network core. These are used by every story.
 
 ### Tests first
 
-- [ ] T006 [P] Write `v1/common.test.ts`.
+- [x] T006 [P] Write `v1/common.test.ts`.
   - `imageV1`:
     - **`MR-US3-S5`**: absolute URLs only, `sizes` non-empty, ascending and unique;
     - a relative URL is refused.
   - `linkV1`: the path starts with `/` and has no `/ar` prefix.
   - `richTextV1`: every node kind parses; an unknown node kind is refused; depth 9 is refused.
   - `paginationV1`: the page bounds.
-- [ ] T007 [P] Write `v1/problems.test.ts`.
+- [x] T007 [P] Write `v1/problems.test.ts`.
   - `PROBLEM_CODES` entries are unique and match the message-key pattern.
   - `problemV1` accepts each status in research R6.
   - `fields` is accepted on 422 only, and `retryAfter` on 429 only.
-- [ ] T008 [P] Write `dom/content/links.test.ts` and `v1/richtext.test.ts`. **`MR-US4-S2`** covers:
+- [x] T008 [P] Write `dom/content/links.test.ts` and `v1/richtext.test.ts`. **`MR-US4-S2`** covers:
   - `linkTarget`:
     - `/guides/x` and `/ar/guides/x` give `/guides/x`;
     - `https:`, `mailto:` and `tel:` are kept;
@@ -112,7 +112,7 @@ wrapper and the app's network core. These are used by every story.
     - empty paragraphs dropped;
     - depth 9 flattened;
     - a `null` or empty state gives `{ nodes: [] }`.
-- [ ] T009 [P] Write `v1/endpoints.test.ts` for the registry rules.
+- [x] T009 [P] Write `v1/endpoints.test.ts` for the registry rules.
   - Ids are unique.
   - `(method, path)` is unique.
   - Every path starts with `/api/mobile/v1/`, and its `{param}`s equal the `input.params` keys.
@@ -122,7 +122,7 @@ wrapper and the app's network core. These are used by every story.
   - `deprecated` is true when the endpoint or any field of its `output` carries
     `.meta({ deprecated: true })` (**FR-033**).
   - The test passes on an empty registry and runs against each story's additions.
-- [ ] T010 [P] Write `web/shared/api/negotiate.test.ts`.
+- [x] T010 [P] Write `web/shared/api/negotiate.test.ts`.
   - **`MR-US1-S3`**: `?locale=ar` beats `Accept-Language: en`; `fr` is invalid.
   - `Accept-Language`:
     - `fr;q=1, ar;q=0.8` gives `ar`;
@@ -136,7 +136,7 @@ wrapper and the app's network core. These are used by every story.
     - `clientAddressOf` returns the first `x-forwarded-for`, else `x-real-ip`, else `null`, whether
       or not an install id is present (009 limits per address).
   - `requestIdOf` echoes a valid id and generates one otherwise.
-- [ ] T011 [P] Write `web/shared/api/problem.test.ts` (**`MR-US2-S6`**).
+- [x] T011 [P] Write `web/shared/api/problem.test.ts` (**`MR-US2-S6`**).
   - `problem()` sets the JSON body, `application/problem+json`, `no-store`, and `Retry-After` on 429.
   - `fromZodError`:
     - one entry per path, the first issue winning;
@@ -144,7 +144,7 @@ wrapper and the app's network core. These are used by every story.
     - any other message becomes `api.errors.invalidField`;
     - paths are joined with `.`.
   - No `title`, `detail` or `stack` key ever appears.
-- [ ] T012 [P] Write `web/shared/api/wire.test.ts` (**`MR-US3-S5`**).
+- [x] T012 [P] Write `web/shared/api/wire.test.ts` (**`MR-US3-S5`**).
   - `toWireImage`:
     - relative `/api/media/file/x.webp` is prefixed with `NEXT_PUBLIC_SITE_URL`, and an S3 URL is
       kept;
@@ -155,7 +155,7 @@ wrapper and the app's network core. These are used by every story.
     - alt `null` becomes `""`.
   - `toWireRichText` passes `toWireImage` to `reduceRichText`.
   - `toWireLink` strips the locale prefix.
-- [ ] T013 Write `wtest/integration/mobile-api-handler.int.test.ts`, with test-only handlers
+- [x] T013 Write `wtest/integration/mobile-api-handler.int.test.ts`, with test-only handlers
   defined in the file through `defineHandler`: `none`, `optional`, `required`, one with
   `rateLimit: { action: 'test', limit: 2 }`, one that throws, one that returns a wrong shape, one
   `deprecated`, one with `status: 202` and one with `status: 204`.
@@ -185,31 +185,34 @@ wrapper and the app's network core. These are used by every story.
 
 ### Implementation
 
-- [ ] T014 Create `v1/common.ts`: `localeV1`, `imageSizeV1`, `imageV1`, `linkV1`, `externalLinkV1`,
+- [x] T014 Create `v1/common.ts`: `localeV1`, `imageSizeV1`, `imageV1`, `linkV1`, `externalLinkV1`,
   `inlineV1`, `blockV1` (recursive through zod 4 getters), `richTextV1` and `paginationV1`, per
   data-model.md. Export them from `v1/index.ts`. T006 passes.
-- [ ] T015 Create `v1/problems.ts`: `PROBLEM_CODES`, `ProblemCode`, `problemFieldV1` and
+- [x] T015 Create `v1/problems.ts`: `PROBLEM_CODES`, `ProblemCode`, `problemFieldV1` and
   `problemV1`. T007 passes.
-- [ ] T016 Create `dom/content/links.ts` (`linkTarget`) and export it from `dom/content/index.ts`.
+- [x] T016 Create `dom/content/links.ts` (`linkTarget`) and export it from `dom/content/index.ts`.
   Change `web/shared/ui/RichContent.tsx` `safeHref` to call `linkTarget`, then localise the site
   path as today. `RichContent.test.tsx` stays green.
-- [ ] T017 Create `v1/richtext.ts`: `reduceRichText(state, { image })` per research R10. T008 passes.
-- [ ] T018 Create `v1/endpoints.ts`: `defineEndpoint` (fields per data-model.md, including the
+- [x] T017 Create `v1/richtext.ts`: `reduceRichText(state, { image })` per research R10. T008 passes.
+- [x] T018 Create `v1/endpoints.ts`: `defineEndpoint` (fields per data-model.md, including the
   optional `status` and `requestExamples`, and `deprecated` derived from the output schema), the
   `Endpoint` type, `noContentV1`, an empty `endpoints` record and `ENDPOINTS`. Stories register their
   endpoints here. T009 passes.
-- [ ] T019 Create these in `web/shared/api/`:
+  - Done as: the machinery (`defineEndpoint`, `noContentV1`, the types and `registryProblems`, the
+    registry rules T009 runs against `ENDPOINTS`) lives in `v1/registry.ts`, so a schema file can
+    never import the record; `v1/endpoints.ts` holds `endpoints`/`ENDPOINTS` and re-exports the rest.
+- [x] T019 Create these in `web/shared/api/`:
   - `actor.ts`: `ActorContext` per data-model.md (with `clientAddress`);
   - `negotiate.ts`: `negotiateLocale`, `readInstallId`, `clientAddressOf`, `visitorKeyOf`,
     `requestIdOf`;
   - `problem.ts`: `problem`, `ApiProblem`, `fromZodError` and `problemResponse`.
 
   T010 and T011 pass.
-- [ ] T094 Change `consumeAllowance` in `apps/web/src/shared/payload/rate-limit.ts` so its 429
+- [x] T094 Change `consumeAllowance` in `apps/web/src/shared/payload/rate-limit.ts` so its 429
   `APIError` carries `data: { retryAfter }`, the seconds to the end of the hourly window (research
   R5). Write the failing case in `rate-limit.test.ts` first. The brief and upload callers are
   unchanged. 009 relies on this (its T022 only confirms it).
-- [ ] T020 Create `web/shared/api/handler.ts`: `defineHandler` per contracts/handler.md. Needs
+- [x] T020 Create `web/shared/api/handler.ts`: `defineHandler` per contracts/handler.md. Needs
   T094.
   - Steps 1–9 in order.
   - Auth copies only `Authorization`.
@@ -221,9 +224,9 @@ wrapper and the app's network core. These are used by every story.
   - It adds `Deprecation` per the header table.
   - It re-exports `problem` and `ApiProblem` from `problem.ts`, so handlers import
     `{ defineHandler, problem }` from `@/shared/api/handler`.
-- [ ] T021 Create `web/shared/api/wire.ts`: `mediaBase()` (from the validated env), `toWireImage`,
+- [x] T021 Create `web/shared/api/wire.ts`: `mediaBase()` (from the validated env), `toWireImage`,
   `toWireRichText` and `toWireLink`. T012 passes.
-- [ ] T022 Add the catch-all.
+- [x] T022 Add the catch-all.
   - Create `web/shared/api/not-found.ts` (`notFoundV1`, `auth: 'none'`, always 404
     `api.errors.notFound`).
   - Create `web/app/(payload)/api/mobile/[...rest]/route.ts`, exporting it as `GET`, `POST`,

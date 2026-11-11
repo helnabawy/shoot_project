@@ -51,4 +51,37 @@ describe('environment validation', () => {
   it('treats empty optional values as unset', () => {
     expect(parseEnv({ ...valid, SEED_ADMIN_EMAIL: '' }).SEED_ADMIN_EMAIL).toBeUndefined()
   })
+
+  describe('MR-US5-S5 app-link variables', () => {
+    const cert = Array.from({ length: 32 }, (_, i) => i.toString(16).padStart(2, '0').toUpperCase()).join(':')
+
+    it('are optional and unset by default', () => {
+      const env = parseEnv(valid)
+      expect(env.APP_IOS_APP_IDS).toBeUndefined()
+      expect(env.APP_ANDROID_PACKAGE).toBeUndefined()
+      expect(env.APP_ANDROID_CERT_SHA256).toBeUndefined()
+      expect(parseEnv({ ...valid, APP_IOS_APP_IDS: '  ', APP_ANDROID_CERT_SHA256: '' }).APP_IOS_APP_IDS).toBeUndefined()
+    })
+
+    it('parse comma-separated, trimmed lists and a package name', () => {
+      const env = parseEnv({
+        ...valid,
+        APP_IOS_APP_IDS: 'ABCDE12345.ae.shoot.app , ZYXWV98765.ae.shoot.app.beta',
+        APP_ANDROID_PACKAGE: ' ae.shoot.app ',
+        APP_ANDROID_CERT_SHA256: `${cert}, ${cert.toLowerCase()}`,
+      })
+      expect(env.APP_IOS_APP_IDS).toEqual(['ABCDE12345.ae.shoot.app', 'ZYXWV98765.ae.shoot.app.beta'])
+      expect(env.APP_ANDROID_PACKAGE).toBe('ae.shoot.app')
+      expect(env.APP_ANDROID_CERT_SHA256).toEqual([cert, cert])
+    })
+
+    it('refuse malformed values with the variable name', () => {
+      expect(() => parseEnv({ ...valid, APP_IOS_APP_IDS: 'ae.shoot.app' })).toThrow(/APP_IOS_APP_IDS: /)
+      expect(() => parseEnv({ ...valid, APP_IOS_APP_IDS: 'ABCDE12345.ae.shoot.app,' })).toThrow(/APP_IOS_APP_IDS: /)
+      expect(() => parseEnv({ ...valid, APP_ANDROID_PACKAGE: 'shoot' })).toThrow(/APP_ANDROID_PACKAGE: /)
+      expect(() => parseEnv({ ...valid, APP_ANDROID_PACKAGE: 'ae.1shoot' })).toThrow(/APP_ANDROID_PACKAGE: /)
+      expect(() => parseEnv({ ...valid, APP_ANDROID_CERT_SHA256: 'AA:BB' })).toThrow(/APP_ANDROID_CERT_SHA256: /)
+      expect(() => parseEnv({ ...valid, APP_ANDROID_CERT_SHA256: cert.replace('00', 'G0') })).toThrow(/APP_ANDROID_CERT_SHA256: /)
+    })
+  })
 })

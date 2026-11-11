@@ -12,7 +12,7 @@ export function visitorKey(req: PayloadRequest): string {
 
 /**
  * Counts one action against `key`'s hourly allowance and refuses it past `limit` with a 429 that
- * carries `messageKey`. The counters live in the `rate-limits` collection so the limit holds across
+ * carries `messageKey` and, in `data.retryAfter`, the seconds to the end of the window. The counters live in the `rate-limits` collection so the limit holds across
  * instances (Principle V). Used by the brief hook and by provider uploads.
  */
 export async function consumeAllowance(
@@ -33,7 +33,9 @@ export async function consumeAllowance(
   const row = found.docs[0]
   const windowOpen = row && now - Date.parse(row.windowStart) < RATE_WINDOW_MS
   if (row && windowOpen && row.count >= limit) {
-    throw new APIError(messageKey, 429, undefined, true)
+    // Seconds until the window ends, so an API client can say when to try again (008 research R5).
+    const retryAfter = Math.max(1, Math.ceil((Date.parse(row.windowStart) + RATE_WINDOW_MS - now) / 1000))
+    throw new APIError(messageKey, 429, { retryAfter }, true)
   }
   if (!row) {
     await req.payload.create({

@@ -1,19 +1,19 @@
 import { RichText, type JSXConvertersFunction } from '@payloadcms/richtext-lexical/react'
+import { linkTarget } from '@shoot/domain/content'
 import type { ComponentProps } from 'react'
 import { localizeHref } from '@/shared/i18n/href'
 
 type Data = ComponentProps<typeof RichText>['data']
 
-const EXTERNAL = /^(https?:\/\/|mailto:|tel:)/i
-
 /**
  * The only hrefs long-form text may produce (FR-015): site paths (in the reader's language), web,
- * mail and phone links. Anything else, `javascript:` included, becomes an inert "#".
+ * mail and phone links, by the rule the mobile API shares (`linkTarget`). Anything else,
+ * `javascript:` included, becomes an inert "#".
  */
 export function safeHref(url: string | null | undefined, locale?: string): string {
-  const value = (url ?? '').trim()
-  if (value.startsWith('/') && !value.startsWith('//')) return locale ? localizeHref(value, locale) : value
-  return EXTERNAL.test(value) ? value : '#'
+  const target = linkTarget(url)
+  if (!target) return '#'
+  return target.startsWith('/') && locale ? localizeHref(target, locale) : target
 }
 
 const isSitePath = (href: string) => href.startsWith('/')
