@@ -23,5 +23,8 @@ abstract final class PreferenceKeys {
   /// `true` once the person has seen the welcome steps (feature 007, FirstRunStore).
   static const welcomeSeen = 'firstRun.welcomeSeen';
 
-  static const all = {accent, themeMode, locale, welcomeSeen};
+  /// The anonymous install id sent as `X-Shoot-Install` (feature 008, InstallIdStore).
+  static const installId = 'install.id';
+
+  static const all = {accent, themeMode, locale, welcomeSeen, installId};
 }

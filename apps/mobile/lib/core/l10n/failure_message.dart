@@ -8,6 +8,7 @@ extension FailureMessageX on Failure {
     return switch (this) {
       NetworkFailure() => l10n.failureNetwork,
       ServerFailure() => l10n.failureServer,
+      NotFoundFailure() => l10n.notFoundTitle,
       UnexpectedFailure() => l10n.failureUnexpected,
     };
   }

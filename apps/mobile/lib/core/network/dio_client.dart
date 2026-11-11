@@ -1,13 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:shoot_mobile/core/config/app_config.dart';
+import 'package:shoot_mobile/core/network/install_id_interceptor.dart';
 
 /// Builds the one [Dio] instance the app shares (registered in DI).
 ///
 /// [languageCode] is read on every request so the server answers in the
 /// language the app is showing (Payload resolves `Accept-Language`).
+/// [installId] is sent as `X-Shoot-Install` (see `InstallIdStore`).
 Dio createDio({
   required AppConfig config,
   required String Function() languageCode,
+  required String Function() installId,
 }) {
   final dio = Dio(
     BaseOptions(
@@ -19,7 +22,9 @@ Dio createDio({
       responseType: ResponseType.json,
     ),
   );
-  dio.interceptors.add(LanguageInterceptor(languageCode));
+  dio.interceptors
+    ..add(LanguageInterceptor(languageCode))
+    ..add(InstallIdInterceptor(installId));
   return dio;
 }
 

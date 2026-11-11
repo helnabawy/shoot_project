@@ -17,13 +17,22 @@ final class NetworkFailure extends Failure {
 }
 
 /// The server answered with an error or an unreadable body.
+///
+/// [code] is the problem's message key (`api.errors.rateLimited`) or `null`.
 final class ServerFailure extends Failure {
-  const ServerFailure({this.statusCode});
+  const ServerFailure({this.statusCode, this.code});
 
   final int? statusCode;
+  final String? code;
 
   @override
-  List<Object?> get props => [statusCode];
+  List<Object?> get props => [statusCode, code];
+}
+
+/// The thing asked for does not exist or is not public (a 404). Screens show
+/// the not-found screen (37) for it.
+final class NotFoundFailure extends Failure {
+  const NotFoundFailure();
 }
 
 /// Anything we did not anticipate. Logged, never shown verbatim.
