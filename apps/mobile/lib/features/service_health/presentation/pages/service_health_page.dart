@@ -41,7 +41,7 @@ class ServiceHealthView extends StatelessWidget {
         title: Text(l10n.appTitle),
         actions: const [
           LanguageButton(),
-          ThemeMenuButton(),
+          AppearanceButton(),
           SizedBox(width: ShootSpace.s2),
         ],
       ),

@@ -15,21 +15,53 @@
     "description": "Tooltip and screen-reader label for the language button."
   },
 
-  "themeMenuTooltip": "Theme",
-  "@themeMenuTooltip": {
-    "description": "Tooltip and screen-reader label for the theme menu button."
+  "appearanceTitle": "Appearance",
+  "@appearanceTitle": {
+    "description": "Heading of the Appearance sheet, where the person picks the theme and the accent colour."
+  },
+  "appearanceButtonTooltip": "Appearance",
+  "@appearanceButtonTooltip": {
+    "description": "Tooltip and screen-reader label for the app bar button that opens the Appearance sheet."
+  },
+  "themeGroupLabel": "Theme",
+  "@themeGroupLabel": {
+    "description": "Group label above the light / dark / match-device options in the Appearance sheet."
+  },
+  "accentGroupLabel": "Accent colour",
+  "@accentGroupLabel": {
+    "description": "Group label above the accent colour options in the Appearance sheet."
+  },
+  "accentBlue": "Blue",
+  "@accentBlue": {
+    "description": "Accent colour option name."
+  },
+  "accentTeal": "Teal",
+  "@accentTeal": {
+    "description": "Accent colour option name."
+  },
+  "accentViolet": "Violet",
+  "@accentViolet": {
+    "description": "Accent colour option name."
+  },
+  "accentMagenta": "Magenta",
+  "@accentMagenta": {
+    "description": "Accent colour option name."
+  },
+  "accentGraphite": "Graphite",
+  "@accentGraphite": {
+    "description": "Accent colour option name: a neutral dark grey for people who prefer no colour."
   },
   "themeSystem": "Match device",
   "@themeSystem": {
-    "description": "Theme menu option: follow the device's light/dark setting."
+    "description": "Theme option: follow the device's light/dark setting."
   },
   "themeLight": "Light",
   "@themeLight": {
-    "description": "Theme menu option: always light."
+    "description": "Theme option: always light."
   },
   "themeDark": "Dark",
   "@themeDark": {
-    "description": "Theme menu option: always dark."
+    "description": "Theme option: always dark."
   },
 
   "serviceHealthTitle": "Service status",

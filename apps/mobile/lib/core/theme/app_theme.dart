@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:shoot_mobile/core/theme/shoot_accent.dart';
 import 'package:shoot_mobile/core/theme/shoot_colors.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 
 /// Builds the Material themes from the semantic roles in [ShootColors], so
 /// stock widgets pick up the tokens and custom widgets read the roles
 /// directly through [ShootThemeX.colors].
+///
+/// The accent decides the selection roles; the primary action colour is fixed
+/// (`primary`), so it is the same under every accent.
 abstract final class AppTheme {
-  static final ThemeData light = _build(ShootColors.light, Brightness.light);
-  static final ThemeData dark = _build(ShootColors.dark, Brightness.dark);
+  static final Map<(ShootAccent, Brightness), ThemeData> _cache = {};
+
+  /// The theme for [accent] in [brightness], built once per pair.
+  static ThemeData of(ShootAccent accent, Brightness brightness) {
+    return _cache.putIfAbsent((accent, brightness), () {
+      final dark = brightness == Brightness.dark;
+      final colors = dark
+          ? ShootColors.dark.withAccent(accent.dark)
+          : ShootColors.light.withAccent(accent.light);
+      return _build(colors, brightness);
+    });
+  }
+
+  static final ThemeData light = of(ShootAccent.blue, Brightness.light);
+  static final ThemeData dark = of(ShootAccent.blue, Brightness.dark);
 
   static ThemeData _build(ShootColors c, Brightness brightness) {
     final isDark = brightness == Brightness.dark;
@@ -69,15 +86,26 @@ abstract final class AppTheme {
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          backgroundColor: c.accent,
-          foregroundColor: c.onAccent,
-          minimumSize: const Size.fromHeight(ShootSize.topHitHeight),
-          textStyle: text.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(ShootRadius.row),
-          ),
-        ),
+        style:
+            FilledButton.styleFrom(
+              backgroundColor: c.primary,
+              foregroundColor: c.onPrimary,
+              minimumSize: const Size.fromHeight(ShootSize.topHitHeight),
+              textStyle: text.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(ShootRadius.row),
+              ),
+            ).copyWith(
+              backgroundColor: WidgetStateProperty.resolveWith(
+                (states) =>
+                    states.contains(WidgetState.pressed) ||
+                        states.contains(WidgetState.hovered)
+                    ? c.primaryHover
+                    : c.primary,
+              ),
+            ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(

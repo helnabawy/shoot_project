@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // SC-004 / Principle III: every scenario in a feature's quickstart mapping table has its tests.
 // Fails when a test file named in the table is missing, or does not carry the row's id (`CP-…`, `MP-…`, `QM-…`)
-// in a test or describe name (any two- or three-letter prefix). Usage: node scripts/check-scenario-tests.mjs [specs/NNN-name/quickstart.md …]
+// in a test or describe name (any two- or three-letter prefix); Dart tests under apps/mobile/test count when the id is in the string
+// of a `test(`, `testWidgets(`, `group(` or `blocTest(` call. Usage: node scripts/check-scenario-tests.mjs [specs/NNN-name/quickstart.md …]
 // With no argument, every specs/*/quickstart.md that has a mapping table is checked.
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
@@ -15,8 +16,8 @@ const quickstarts = process.argv.length > 2
       .map((d) => join(specsDir, d, 'quickstart.md'))
       // Tables whose rows carry a feature prefix (`CP-`, `QM-`); 001's unprefixed table predates the check.
       .filter((f) => existsSync(f) && /^\| [A-Z]{2,3}-(?:US|FR|SC)/m.test(readFileSync(f, 'utf8').split(MAPPING)[1] ?? ''))
-const SEARCH_ROOTS = ['apps/web/src', 'apps/web/tests', 'packages/domain/src', 'scripts'].map((p) => join(root, p))
-const SKIP = new Set(['node_modules', '.next', 'coverage', 'test-results', 'playwright-report'])
+const SEARCH_ROOTS = ['apps/web/src', 'apps/web/tests', 'apps/mobile/test', 'packages/domain/src', 'scripts'].map((p) => join(root, p))
+const SKIP = new Set(['node_modules', '.next', 'coverage', 'test-results', 'playwright-report', '.dart_tool', 'build'])
 
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {
@@ -58,8 +59,14 @@ for (const quickstart of quickstarts) {
         problems.push(`${label}: missing: ${ref} (row: ${cells[0]?.slice(0, 70)})`)
         continue
       }
-      if (!id || !/\.(test|spec)\.tsx?$/.test(ref)) continue
-      const named = found.some((f) => readFileSync(f, 'utf8').split('\n').some((line) => line.includes(id) && /\b(it|test|describe)(\.\w+)*\(/.test(line)))
+      const isDart = /_test\.dart$/.test(ref)
+      if (!id || !(isDart || /\.(test|spec)\.tsx?$/.test(ref))) continue
+      // Dart: the id sits in the first string of the call, which `dart format` may move to the next line.
+      const dartNamed = new RegExp(`\\b(?:test|testWidgets|group|blocTest)(?:<[^(]*>)?\\(\\s*(['"])[^'"\\n]*${id}`)
+      const named = found.some((f) => {
+        const text = readFileSync(f, 'utf8')
+        return isDart ? dartNamed.test(text) : text.split('\n').some((line) => line.includes(id) && /\b(it|test|describe)(\.\w+)*\(/.test(line))
+      })
       if (!named) problems.push(`${label}: no test named with ${id}: ${ref}`)
     }
   }

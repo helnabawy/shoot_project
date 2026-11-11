@@ -6,6 +6,8 @@ import 'package:shoot_mobile/core/config/app_config.dart';
 import 'package:shoot_mobile/core/l10n/app_locales.dart';
 import 'package:shoot_mobile/core/l10n/locale_cubit.dart';
 import 'package:shoot_mobile/core/network/dio_client.dart';
+import 'package:shoot_mobile/core/preferences/preferences_store.dart';
+import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/features/service_health/service_health_injection.dart';
 
@@ -14,11 +16,13 @@ import 'package:shoot_mobile/features/service_health/service_health_injection.da
 /// their constructors so tests can pass fakes.
 final GetIt getIt = GetIt.instance;
 
-void configureDependencies(AppConfig config) {
+void configureDependencies(AppConfig config, PreferencesStore store) {
   getIt
     ..registerSingleton<AppConfig>(config)
-    ..registerSingleton<LocaleCubit>(LocaleCubit())
-    ..registerSingleton<ThemeModeCubit>(ThemeModeCubit())
+    ..registerSingleton<PreferencesStore>(store)
+    ..registerSingleton<LocaleCubit>(LocaleCubit(store))
+    ..registerSingleton<ThemeModeCubit>(ThemeModeCubit(store))
+    ..registerSingleton<AccentCubit>(AccentCubit(store))
     ..registerLazySingleton<Dio>(
       () => createDio(config: config, languageCode: _currentLanguageCode),
     );

@@ -1,12 +1,28 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shoot_mobile/core/preferences/preferences_store.dart';
 
-/// Light, dark or follow the device (the default, as on the web).
-///
-/// In memory only for now; persisting the choice comes with the mobile spec
-/// (it needs a storage package and a Complexity Tracking entry).
+/// Light, dark or follow the device (the default, as on the web), saved on the
+/// device. Anything unreadable or unknown follows the device.
 class ThemeModeCubit extends Cubit<ThemeMode> {
-  ThemeModeCubit() : super(ThemeMode.system);
+  ThemeModeCubit(this._store)
+    : super(_read(_store.readString(PreferenceKeys.themeMode)));
 
-  void select(ThemeMode mode) => emit(mode);
+  final PreferencesStore _store;
+
+  static ThemeMode _read(String? saved) {
+    for (final mode in ThemeMode.values) {
+      if (mode.name == saved) return mode;
+    }
+    return ThemeMode.system;
+  }
+
+  /// Applies [mode] at once, then saves it without waiting.
+  void select(ThemeMode mode) {
+    if (mode == state) return;
+    emit(mode);
+    unawaited(_store.writeString(PreferenceKeys.themeMode, mode.name));
+  }
 }

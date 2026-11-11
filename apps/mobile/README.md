@@ -128,13 +128,15 @@ Versions are pinned exactly in `pubspec.yaml` (no `^`), like `payload`/`next`/`r
 | `dio` | 5.11.1 | HTTP client: interceptors (language header now, auth later), timeouts, typed errors |
 | `equatable` | 3.0.0 | Value equality for entities, states and failures without hand-written `==` |
 | `intl` + `flutter_localizations` | 0.20.3 / SDK | Localization: ARB files and generated, type-safe `AppLocalizations` |
+| `shared_preferences` | 2.5.6 | Saves appearance choices on the device (accent, theme mode, language; feature 006) |
+| `shared_preferences_platform_interface` (dev) | 2.4.2 | `InMemorySharedPreferencesAsync`, the in-memory store the preference tests run against |
 | `bloc_test` (dev) | 10.0.0 | Asserts the sequence of states a cubit emits |
 | `mocktail` (dev) | 1.0.5 | Mocks without code generation |
 | `flutter_lints` (dev) | 6.0.0 | Base lint set; `analysis_options.yaml` adds the strict rules on top |
 
 There is deliberately no code generation (`build_runner`, `injectable`, `freezed`,
-`json_serializable`) and no storage package yet. Add one when a spec needs it, with a Complexity
-Tracking entry in that spec's plan.
+`json_serializable`) and no storage package beyond `shared_preferences` (appearance choices only).
+Add one when a spec needs it, with a Complexity Tracking entry in that spec's plan.
 
 ## Languages
 
@@ -146,7 +148,8 @@ afterthought.
 - `flutter pub get` (or `flutter gen-l10n`) generates `lib/core/l10n/generated/`, which is
   git-ignored. Read strings with `context.l10n.someKey`.
 - The app follows the device language until the person picks one with the language button. The
-  choice is kept in memory for now; saving it comes with the mobile spec.
+  choice is saved on the device (`appearance.locale`) and applied on the first frame; going back to
+  the device language removes it.
 - Use directional APIs so Arabic mirrors without per-screen work: `EdgeInsetsDirectional`,
   `AlignmentDirectional`, `PositionedDirectional`, `TextAlign.start`. Never `left`/`right`.
 - Every request sends `Accept-Language`, so the API answers in the language on screen.
@@ -164,11 +167,23 @@ Light and dark are both first-class. The app follows the device until the person
   `ink`, `mute`, `hair`, `controlBorder`, `tile`, `tileInk`, `accent`, `onAccent`, `accentInk`,
   `selected`, `focus`, `attention`, `success`, `danger` and their `on…` partners), one value per
   theme. Names and values mirror `specs/design-system/tokens.css` (direction "Brief Bar II").
+- Accent colour (feature 006): the person picks one of five curated accents (Blue, Teal, Violet,
+  Magenta, Graphite; Blue is the default) in the Appearance sheet, opened from the app bar.
+  `shoot_accent.dart` holds each accent's seven roles (`accent`, `onAccent`, `accentInk`, `selected`,
+  `selectedHover`, `selectionWash`, `focus`) for light and dark; `ShootColors.withAccent(roles)`
+  swaps exactly those in, and `AppTheme.of(accent, brightness)` builds (and memoises) the theme.
+  Ids are saved on the device and never change once shipped.
+- Primary actions use the fixed `primary` / `primaryHover` / `onPrimary` roles (red `#E01414`, same
+  in both themes and under every accent), never `accent`. `FilledButton` is wired to them.
+- Choices (accent, theme mode, language) are saved through `PreferencesStore`
+  (`lib/core/preferences/`, `shared_preferences` underneath) and read before `runApp`, so the first
+  frame is already right. Unknown or unreadable values fall back to the defaults silently.
 - `shoot_tokens.dart` holds spacing, sizes, radii and the "react" motion durations and curves.
 - Widgets read roles, never raw colours: `context.colors.ink`. Stock Material widgets get the same
   roles through the `ColorScheme` built in `app_theme.dart`.
 - `test/core/theme/shoot_colors_test.dart` fails if a text role drops below WCAG AA (4.5:1) on its
-  surface in either theme.
+  surface in either theme; `accent_palette_test.dart` does the same for every accent (text 4.5:1,
+  focus ring 3:1) and checks no accent is close to the primary red or the danger state.
 - When a token changes on the web, change it here in the same pull request.
 - Not mirrored yet: the graphic-only scene, sweep and glow colours, the shadows and the "arrive"
   and "ambient" motion tiers. Add them with the spec that first uses them.
@@ -198,7 +213,6 @@ Remove `service_health` once the first real feature has replaced it as the home 
 ## Not done yet
 
 - Sign-in (UAE mobile number + OTP) is not specified, so nothing here authenticates.
-- The language and theme choices are not saved between launches.
 - The home-screen name is "Shoot" on iOS in every language (Android shows "شوت" in Arabic). The
   Arabic name on iOS needs an `InfoPlist.strings` added in Xcode.
 - App icon and launch screen are the Flutter defaults.

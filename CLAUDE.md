@@ -40,7 +40,8 @@ provider: payments are recorded by an admin). The shootix.ae feature map and the
 `specs/ROADMAP.md`. Feature 006 is `specs/006-mobile-accent-colour/` (Flutter app `apps/mobile`: a
 per-device accent choice from five curated accents, Blue default, in an Appearance sheet; accent, theme
 mode and language saved with `shared_preferences`; primary actions get a fixed `primary` red; test-id
-prefix `MA-`; planned, not implemented).
+prefix `MA-`; implemented on this branch; open in its `tasks.md`: T001 owner sign-off on the palette and
+Arabic names, the impeccable brief/detector/finish review (T018, T023, T034) and the device walkthrough T033).
 
 Features 007–015 build the whole Flutter app from the approved design canvas (40 screens at 360 px,
 imported into `specs/design-system/canvas/` with `manifest.json`), pixel-perfect, after 006 lands.

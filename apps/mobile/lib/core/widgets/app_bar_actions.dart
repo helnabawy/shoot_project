@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoot_mobile/core/l10n/app_locales.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/l10n/locale_cubit.dart';
-import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
+import 'package:shoot_mobile/core/widgets/appearance_sheet.dart';
 
 /// Switches between the two languages. Its label is the other language's
 /// name in that language ("العربية" / "English"), like the web header.
@@ -33,32 +35,17 @@ class LanguageButton extends StatelessWidget {
   }
 }
 
-/// Light / dark / match device.
-class ThemeMenuButton extends StatelessWidget {
-  const ThemeMenuButton({super.key});
+/// Opens the Appearance sheet (theme and accent colour).
+class AppearanceButton extends StatelessWidget {
+  const AppearanceButton({super.key = const Key('appearance-button')});
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final current = context.watch<ThemeModeCubit>().state;
-    String label(ThemeMode mode) => switch (mode) {
-      ThemeMode.system => l10n.themeSystem,
-      ThemeMode.light => l10n.themeLight,
-      ThemeMode.dark => l10n.themeDark,
-    };
-    return PopupMenuButton<ThemeMode>(
-      tooltip: l10n.themeMenuTooltip,
+    final label = context.l10n.appearanceButtonTooltip;
+    return IconButton(
+      tooltip: label,
       icon: const Icon(Icons.contrast),
-      initialValue: current,
-      onSelected: context.read<ThemeModeCubit>().select,
-      itemBuilder: (context) => [
-        for (final mode in ThemeMode.values)
-          CheckedPopupMenuItem<ThemeMode>(
-            value: mode,
-            checked: mode == current,
-            child: Text(label(mode)),
-          ),
-      ],
+      onPressed: () => unawaited(showAppearanceSheet(context)),
     );
   }
 }

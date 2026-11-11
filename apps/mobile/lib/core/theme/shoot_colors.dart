@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shoot_mobile/core/theme/shoot_accent.dart';
 
 /// Semantic colour roles, one value per theme.
 ///
@@ -23,6 +24,9 @@ final class ShootColors extends ThemeExtension<ShootColors> {
     required this.tileInk,
     required this.accent,
     required this.onAccent,
+    required this.primary,
+    required this.primaryHover,
+    required this.onPrimary,
     required this.accentInk,
     required this.selected,
     required this.selectedHover,
@@ -51,6 +55,9 @@ final class ShootColors extends ThemeExtension<ShootColors> {
     tileInk: Color(0xFF5C5752),
     accent: Color(0xFF0A60FF),
     onAccent: Color(0xFFFFFFFF),
+    primary: Color(0xFFE01414),
+    primaryHover: Color(0xFFC00F0F),
+    onPrimary: Color(0xFFFFFFFF),
     accentInk: Color(0xFF0848C2),
     selected: Color.fromRGBO(10, 96, 255, 0.12),
     selectedHover: Color.fromRGBO(10, 96, 255, 0.18),
@@ -79,6 +86,9 @@ final class ShootColors extends ThemeExtension<ShootColors> {
     tileInk: Color(0xFFD6D2CD),
     accent: Color(0xFF2B6BEB),
     onAccent: Color(0xFFFFFFFF),
+    primary: Color(0xFFE01414),
+    primaryHover: Color(0xFFC00F0F),
+    onPrimary: Color(0xFFFFFFFF),
     accentInk: Color(0xFFB7D0FF),
     selected: Color.fromRGBO(77, 141, 255, 0.24),
     selectedHover: Color.fromRGBO(77, 141, 255, 0.32),
@@ -121,11 +131,21 @@ final class ShootColors extends ThemeExtension<ShootColors> {
   /// Icon colour on a [tile].
   final Color tileInk;
 
-  /// The one primary action (Top Hit) background.
+  /// Selection fill (progress, checked controls, the caret). Set by the
+  /// chosen accent; not the primary action, see [primary].
   final Color accent;
 
   /// Text and icons on [accent].
   final Color onAccent;
+
+  /// The one primary action (Top Hit) background; never changed by the accent.
+  final Color primary;
+
+  /// [primary] while pressed or hovered; never changed by the accent.
+  final Color primaryHover;
+
+  /// Text and icons on [primary] and [primaryHover]; never changed by the accent.
+  final Color onPrimary;
 
   /// Accent used as text (links, selected labels).
   final Color accentInk;
@@ -155,6 +175,20 @@ final class ShootColors extends ThemeExtension<ShootColors> {
   /// WhatsApp action text.
   final Color whatsappInk;
 
+  /// These roles with the seven accent roles replaced by [roles]. Everything
+  /// else, the `primary` roles included, is kept.
+  ShootColors withAccent(AccentRoles roles) {
+    return copyWith(
+      accent: roles.accent,
+      onAccent: roles.onAccent,
+      accentInk: roles.accentInk,
+      selected: roles.selected,
+      selectedHover: roles.selectedHover,
+      selectionWash: roles.selectionWash,
+      focus: roles.focus,
+    );
+  }
+
   @override
   ShootColors copyWith({
     Color? ground,
@@ -168,6 +202,9 @@ final class ShootColors extends ThemeExtension<ShootColors> {
     Color? tileInk,
     Color? accent,
     Color? onAccent,
+    Color? primary,
+    Color? primaryHover,
+    Color? onPrimary,
     Color? accentInk,
     Color? selected,
     Color? selectedHover,
@@ -194,6 +231,9 @@ final class ShootColors extends ThemeExtension<ShootColors> {
       tileInk: tileInk ?? this.tileInk,
       accent: accent ?? this.accent,
       onAccent: onAccent ?? this.onAccent,
+      primary: primary ?? this.primary,
+      primaryHover: primaryHover ?? this.primaryHover,
+      onPrimary: onPrimary ?? this.onPrimary,
       accentInk: accentInk ?? this.accentInk,
       selected: selected ?? this.selected,
       selectedHover: selectedHover ?? this.selectedHover,
@@ -226,6 +266,9 @@ final class ShootColors extends ThemeExtension<ShootColors> {
       tileInk: mix(tileInk, other.tileInk),
       accent: mix(accent, other.accent),
       onAccent: mix(onAccent, other.onAccent),
+      primary: mix(primary, other.primary),
+      primaryHover: mix(primaryHover, other.primaryHover),
+      onPrimary: mix(onPrimary, other.onPrimary),
       accentInk: mix(accentInk, other.accentInk),
       selected: mix(selected, other.selected),
       selectedHover: mix(selectedHover, other.selectedHover),
