@@ -48,3 +48,6 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# One-time codes written by the console provider (feature 009)
+/.otp-outbox/

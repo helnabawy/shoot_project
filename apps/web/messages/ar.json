@@ -121,10 +121,22 @@
       "invalid": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
       "locked": "محاولات كثيرة. حاول مرة أخرى بعد 15 دقيقة.",
       "generic": "حدث خطأ. حاول مرة أخرى.",
-      "acceptTerms": "يرجى الموافقة على الشروط وسياسة الخصوصية لإنشاء حساب."
+      "acceptTerms": "يرجى الموافقة على الشروط وسياسة الخصوصية لإنشاء حساب.",
+      "phoneInvalid": "أدخل رقم هاتف متحرك إماراتياً، مثل 50 123 4567.",
+      "tooManyRequests": "طلبت رموزاً كثيرة. حاول مرة أخرى بعد {minutes} دقيقة.",
+      "resendTooSoon": "يمكنك طلب رمز جديد بعد {time}.",
+      "sendFailed": "تعذّر إرسال الرمز. حاول مرة أخرى، أو أرسله عبر {otherChannel}.",
+      "codeInvalid": "الرمز غير صحيح. راجع الرسالة التي أرسلناها واكتبه مرة أخرى.",
+      "codeExpired": "انتهت صلاحية هذا الرمز. اطلب رمزاً جديداً.",
+      "codeLocked": "جُرِّب هذا الرمز مرات كثيرة. اطلب رمزاً جديداً.",
+      "useEmailSignIn": "يسجّل المحررون الدخول بالبريد الإلكتروني.",
+      "numberTaken": "هذا الرقم مستخدم لتسجيل الدخول إلى حساب آخر."
     },
     "acceptTerms": "أوافق على <terms>الشروط والأحكام</terms> و<privacy>سياسة الخصوصية</privacy>.",
-    "acceptTermsWithProfessional": "أوافق على <terms>الشروط والأحكام</terms> و<professional>شروط المحترفين</professional> و<privacy>سياسة الخصوصية</privacy>."
+    "acceptTermsWithProfessional": "أوافق على <terms>الشروط والأحكام</terms> و<professional>شروط المحترفين</professional> و<privacy>سياسة الخصوصية</privacy>.",
+    "otp": {
+      "sms": "رمزك في Shoot هو {code}. تنتهي صلاحيته بعد {minutes} دقائق. لا تشاركه مع أحد.\n\n@{domain} #{code}"
+    }
   },
   "account": {
     "title": "حسابي",

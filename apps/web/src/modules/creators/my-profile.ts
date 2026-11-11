@@ -225,7 +225,7 @@ export async function getMyProfileView(user: User, locale: Locale) {
   // Every profession chosen at registration (one, or several with "Both"), primary first.
   const registered = (user.persona ?? []).map((p) => Number(relId(p))).filter((n) => Number.isFinite(n))
   const defaults = {
-    name: user.name,
+    name: user.name ?? '',
     personas: registered,
     specialties: (user.categories ?? []).map((c) => Number(relId(c))).filter((n) => Number.isFinite(n)),
   }

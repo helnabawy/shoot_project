@@ -31,7 +31,7 @@ describe('QM-US4-S4 / QM-FR-011 nobody sees another person’s bookings', () => 
     seekerB = await createUser(['member'])
     editor = await createUser(['editor'])
     asVisitor()
-    await signIn((await getTestPayload()) as never, seekerA.email)
+    await signIn((await getTestPayload()) as never, seekerA.email!)
     const b = await briefFor(submitBrief as never, world)
     quote = await quoteFor(requestQuotation as never, b, { pick: `photographer:${world.creators.sara!.code}` })
     bookingId = (await bookingByRef(await getTestPayload(), quote.ref)).id

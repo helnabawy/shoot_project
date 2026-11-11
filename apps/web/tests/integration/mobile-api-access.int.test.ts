@@ -41,7 +41,7 @@ describe('MR-US2-S7 every registered endpoint', () => {
     const payload = await getTestPayload()
     await seed(payload, { log: () => {} })
     const seeker = await createUser(['member'], { accountType: 'seeker' })
-    const { token } = await payload.login({ collection: 'users', data: { email: seeker.email, password: 'password-123' } })
+    const { token } = await payload.login({ collection: 'users', data: { email: seeker.email!, password: 'password-123' } })
     seekerToken = token as string
   })
 

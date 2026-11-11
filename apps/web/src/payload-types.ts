@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
+    'otp-challenges': OtpChallenge;
     personas: Persona;
     categories: Category;
     locations: Location;
@@ -110,6 +111,7 @@ export interface Config {
   };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    'otp-challenges': OtpChallengesSelect<false> | OtpChallengesSelect<true>;
     personas: PersonasSelect<false> | PersonasSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     locations: LocationsSelect<false> | LocationsSelect<true>;
@@ -165,22 +167,34 @@ export interface Config {
   };
 }
 export interface UserAuthOperations {
-  forgotPassword: {
-    email: string;
-    password: string;
-  };
-  login: {
-    email: string;
-    password: string;
-  };
+  forgotPassword:
+    | {
+        email: string;
+      }
+    | {
+        username: string;
+      };
+  login:
+    | {
+        email: string;
+        password: string;
+      }
+    | {
+        password: string;
+        username: string;
+      };
   registerFirstUser: {
-    email: string;
     password: string;
+    username?: string;
+    email?: string;
   };
-  unlock: {
-    email: string;
-    password: string;
-  };
+  unlock:
+    | {
+        email: string;
+      }
+    | {
+        username: string;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -188,7 +202,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
-  name: string;
+  name?: string | null;
   roles?: ('admin' | 'editor' | 'member')[] | null;
   accountType: 'seeker' | 'provider';
   persona?: (number | Persona)[] | null;
@@ -196,7 +210,11 @@ export interface User {
   phone?: string | null;
   updatedAt: string;
   createdAt: string;
-  email: string;
+  email?: string | null;
+  /**
+   * Verified by a one-time code. Empty for email accounts.
+   */
+  username?: string | null;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
   salt?: string | null;
@@ -338,6 +356,26 @@ export interface Category {
   personas: (number | Persona)[];
   order?: number | null;
   active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "otp-challenges".
+ */
+export interface OtpChallenge {
+  id: number;
+  publicId: string;
+  phoneHash: string;
+  codeHash: string;
+  channel: 'sms' | 'whatsapp';
+  locale: 'en' | 'ar';
+  attempts: number;
+  expiresAt: string;
+  resendAt: string;
+  usedAt?: string | null;
+  supersededAt?: string | null;
+  providerRef?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1568,6 +1606,10 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'otp-challenges';
+        value: number | OtpChallenge;
+      } | null)
+    | ({
         relationTo: 'personas';
         value: number | Persona;
       } | null)
@@ -1731,6 +1773,7 @@ export interface UsersSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   email?: T;
+  username?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
   salt?: T;
@@ -1745,6 +1788,25 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "otp-challenges_select".
+ */
+export interface OtpChallengesSelect<T extends boolean = true> {
+  publicId?: T;
+  phoneHash?: T;
+  codeHash?: T;
+  channel?: T;
+  locale?: T;
+  attempts?: T;
+  expiresAt?: T;
+  resendAt?: T;
+  usedAt?: T;
+  supersededAt?: T;
+  providerRef?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

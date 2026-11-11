@@ -85,8 +85,8 @@ describe('MR-US2 defineHandler', () => {
     await seed(payload, { log: () => {} })
     const member = await createUser(['member'])
     memberId = String(member.id)
-    memberEmail = member.email
-    const { token } = await payload.login({ collection: 'users', data: { email: member.email, password: 'password-123' } })
+    memberEmail = member.email!
+    const { token } = await payload.login({ collection: 'users', data: { email: member.email!, password: 'password-123' } })
     memberToken = token as string
   })
 

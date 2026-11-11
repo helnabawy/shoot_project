@@ -8,6 +8,7 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
+import { OtpChallenges } from './modules/auth/collections/OtpChallenges'
 import { Users } from './modules/auth/collections/Users'
 import { Briefs } from './modules/brief/collections/Briefs'
 import { OptionSets } from './modules/brief/collections/OptionSets'
@@ -62,6 +63,7 @@ export default buildConfig({
   },
   collections: [
     Users,
+    OtpChallenges,
     Personas,
     Categories,
     Locations,

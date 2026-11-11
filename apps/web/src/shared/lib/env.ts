@@ -23,6 +23,9 @@ const ANDROID_PACKAGE = /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$/
 const CERT_SHA256 = /^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){31}$/
 
 const s3Keys = ['S3_BUCKET', 'S3_REGION', 'S3_ENDPOINT', 'S3_ACCESS_KEY_ID', 'S3_SECRET_ACCESS_KEY'] as const
+// One-time-code delivery (feature 009, contracts/otp-provider.md): the vendor's variables, all or none.
+const unifonicKeys = ['UNIFONIC_APP_SID', 'OTP_SMS_SENDER_ID', 'OTP_WHATSAPP_SENDER', 'OTP_WHATSAPP_TEMPLATE'] as const
+const LOCAL_SITE = /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/
 
 export const envSchema = z
   .object({
@@ -42,13 +45,20 @@ export const envSchema = z
     E2E_CLOCK: optional,
     APP_IOS_APP_IDS: list(IOS_APP_ID, 'must be comma-separated TEAMID.bundle.id values, e.g. ABCDE12345.ae.shoot.app'),
     APP_ANDROID_PACKAGE: optional.refine((v) => v === undefined || ANDROID_PACKAGE.test(v), 'must be a package name, e.g. ae.shoot.app'),
+    OTP_PROVIDER: z.enum(['console', 'unifonic'], { message: 'must be console or unifonic' }).optional(),
+    OTP_HMAC_SECRET: optional.refine((v) => v === undefined || v.length >= 32, 'must be at least 32 characters (openssl rand -hex 32)'),
+    UNIFONIC_APP_SID: optional,
+    OTP_SMS_SENDER_ID: optional,
+    OTP_WHATSAPP_SENDER: optional,
+    OTP_WHATSAPP_TEMPLATE: optional,
     APP_ANDROID_CERT_SHA256: list(CERT_SHA256, 'must be comma-separated SHA-256 fingerprints, AA:BB:… (32 bytes)').transform((v) =>
       v?.map((c) => c.toUpperCase()),
     ),
   })
   .superRefine((env, ctx) => {
     // The e2e clock override moves time for /api/cron/bookings; it must never reach a deployment.
-    if (env.E2E_CLOCK === '1' && env.NODE_ENV === 'production' && !/^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(env.NEXT_PUBLIC_SITE_URL)) {
+    const deployed = env.NODE_ENV === 'production' && !LOCAL_SITE.test(env.NEXT_PUBLIC_SITE_URL)
+    if (env.E2E_CLOCK === '1' && deployed) {
       ctx.addIssue({ code: 'custom', path: ['E2E_CLOCK'], message: 'is for local end-to-end runs only; unset it in production' })
     }
     const set = s3Keys.filter((k) => env[k])
@@ -57,6 +67,26 @@ export const envSchema = z
         code: 'custom',
         path: ['S3_BUCKET'],
         message: `S3 storage needs all of ${s3Keys.join(', ')} (missing: ${s3Keys.filter((k) => !env[k]).join(', ')})`,
+      })
+    }
+    // The console provider writes codes to a local file: never in a deployment (research R9, OT-US2-S5).
+    if (deployed && (env.OTP_PROVIDER ?? 'console') === 'console') {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['OTP_PROVIDER'],
+        message: 'the console provider is for local development and tests only; set a real provider in production',
+      })
+    }
+    if (deployed && !env.OTP_HMAC_SECRET) {
+      ctx.addIssue({ code: 'custom', path: ['OTP_HMAC_SECRET'], message: 'is required in production (openssl rand -hex 32)' })
+    }
+    const missingVendor = unifonicKeys.filter((k) => !env[k])
+    const someVendor = missingVendor.length < unifonicKeys.length
+    if ((env.OTP_PROVIDER === 'unifonic' || someVendor) && missingVendor.length > 0) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['OTP_PROVIDER'],
+        message: `the unifonic provider needs all of ${unifonicKeys.join(', ')} (missing: ${missingVendor.join(', ')})`,
       })
     }
   })

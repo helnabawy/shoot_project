@@ -27,7 +27,7 @@ export function AccountSummary({
         aria-hidden="true"
         className="grid size-16 shrink-0 place-items-center rounded-[12px] bg-tile text-[20px] font-bold tracking-tight text-tile-ink"
       >
-        {initialsOf(user.name)}
+        {initialsOf(user.name ?? '')}
       </span>
       <div className="min-w-0">
         <h1 className="text-[26px] leading-tight font-bold tracking-[-0.025em] text-balance break-words text-ink sm:text-[34px] sm:tracking-[-0.03em] lg:text-[26px]">

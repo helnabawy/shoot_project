@@ -1,11 +1,13 @@
 import { getPayloadClient } from '@/shared/lib/payload'
 import { RATE_WINDOW_MS } from '@/modules/brief/limits'
+import { deleteExpiredChallenges } from '@/modules/auth/otp/challenges'
 import { deleteOrphanedUploads } from '@/modules/creators/cleanup'
 
 export const dynamic = 'force-dynamic'
 
 /**
- * Deletes expired rate-limit windows and provider uploads that no profile uses after 24 hours.
+ * Deletes expired rate-limit windows, provider uploads that no profile uses after 24 hours, and
+ * sign-in codes that expired more than 24 hours ago (feature 009, FR-034).
  * Call every 15 minutes with `Authorization: Bearer $CRON_SECRET`.
  */
 export async function GET(request: Request) {
@@ -21,5 +23,6 @@ export async function GET(request: Request) {
     overrideAccess: true,
   })
   const orphanedUploads = await deleteOrphanedUploads(payload)
-  return Response.json({ deleted: result.docs.length, orphanedUploads })
+  const expiredChallenges = await deleteExpiredChallenges(payload, new Date())
+  return Response.json({ deleted: result.docs.length, orphanedUploads, expiredChallenges })
 }

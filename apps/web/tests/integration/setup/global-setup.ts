@@ -9,6 +9,7 @@ export const TEST_ENV = {
   NEXT_PUBLIC_SITE_URL: 'http://localhost:3000',
   PREVIEW_SECRET: 'integration-preview-secret',
   CRON_SECRET: 'integration-cron-secret!!',
+  OTP_HMAC_SECRET: 'integration-otp-hmac-secret-integration-otp',
 }
 
 /** Starts a throwaway PostgreSQL and applies the committed migrations (constitution Principle III). */

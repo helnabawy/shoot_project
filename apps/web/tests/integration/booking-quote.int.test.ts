@@ -268,7 +268,7 @@ describe('QM-US2 details → quotation', () => {
   it('QM-US2-S6 a member gets the booking in their account', async () => {
     const member = await createUser(['member'])
     const payload = await getTestPayload()
-    await signIn(payload as never, member.email)
+    await signIn(payload as never, member.email!)
     const q = await quote(await brief({ occasion: 'aerial-drone' }))
     expect((await bookingByRef(payload, q.ref)).member).toBe(member.id)
     jar.delete('payload-token')

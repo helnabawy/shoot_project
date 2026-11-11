@@ -84,4 +84,37 @@ describe('environment validation', () => {
       expect(() => parseEnv({ ...valid, APP_ANDROID_CERT_SHA256: cert.replace('00', 'G0') })).toThrow(/APP_ANDROID_CERT_SHA256: /)
     })
   })
+
+  describe('OT-US2-S5 one-time-code delivery', () => {
+    const vendor = { UNIFONIC_APP_SID: 'sid', OTP_SMS_SENDER_ID: 'Shoot', OTP_WHATSAPP_SENDER: '+971500000000', OTP_WHATSAPP_TEMPLATE: 'shoot_code' }
+    const secret = { OTP_HMAC_SECRET: 'h'.repeat(32) }
+
+    it('refuses the console provider, set or unset, in a production deployment', () => {
+      const message = /OTP_PROVIDER: the console provider is for local development and tests only; set a real provider in production/
+      expect(() => parseEnv({ ...valid, ...secret, NODE_ENV: 'production' })).toThrow(message)
+      expect(() => parseEnv({ ...valid, ...secret, NODE_ENV: 'production', OTP_PROVIDER: 'console' })).toThrow(message)
+    })
+
+    it('allows the console provider for localhost production builds and outside production', () => {
+      expect(parseEnv({ ...valid, NODE_ENV: 'production', NEXT_PUBLIC_SITE_URL: 'http://localhost:3100' }).OTP_PROVIDER).toBeUndefined()
+      expect(parseEnv({ ...valid, NODE_ENV: 'development', OTP_PROVIDER: 'console' }).OTP_PROVIDER).toBe('console')
+    })
+
+    it('refuses an HMAC secret shorter than 32 characters, and requires one in production', () => {
+      expect(() => parseEnv({ ...valid, OTP_HMAC_SECRET: 'short' })).toThrow(/OTP_HMAC_SECRET: must be at least 32/)
+      expect(() => parseEnv({ ...valid, ...vendor, NODE_ENV: 'production', OTP_PROVIDER: 'unifonic' })).toThrow(/OTP_HMAC_SECRET: is required in production/)
+    })
+
+    it('needs every vendor variable when the vendor is chosen, and lists the missing ones', () => {
+      expect(() => parseEnv({ ...valid, OTP_PROVIDER: 'unifonic', UNIFONIC_APP_SID: 'sid' })).toThrow(
+        /missing: OTP_SMS_SENDER_ID, OTP_WHATSAPP_SENDER, OTP_WHATSAPP_TEMPLATE/,
+      )
+      expect(() => parseEnv({ ...valid, OTP_SMS_SENDER_ID: 'Shoot' })).toThrow(/the unifonic provider needs all of/)
+      expect(parseEnv({ ...valid, ...secret, ...vendor, NODE_ENV: 'production', OTP_PROVIDER: 'unifonic' }).OTP_PROVIDER).toBe('unifonic')
+    })
+
+    it('refuses an unknown provider', () => {
+      expect(() => parseEnv({ ...valid, OTP_PROVIDER: 'pigeon' })).toThrow(/OTP_PROVIDER: must be console or unifonic/)
+    })
+  })
 })

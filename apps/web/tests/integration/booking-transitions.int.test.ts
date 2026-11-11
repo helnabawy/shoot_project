@@ -25,7 +25,7 @@ describe('QM-US2-S3 / QM-US3 booking transitions', () => {
   }
   const access = (q: { ref: string; key: string }) => form({ locale: 'en', ref: q.ref, key: q.key })
   const accept = (q: { ref: string; key: string }) => redirectOf(() => actions.acceptQuotation(access(q)))
-  const asCreator = async (key: string) => signIn((await getTestPayload()) as never, world.creators[key]!.user.email)
+  const asCreator = async (key: string) => signIn((await getTestPayload()) as never, world.creators[key]!.user.email!)
   const respond = (bookingId: number, personaId: number, decision: 'confirm' | 'decline', reason?: string) =>
     redirectOf(() => actions.respondToAssignment(form({ locale: 'en', booking: bookingId, persona: personaId, decision, reason })))
   const state = async (ref: string) => (await bookingByRef(await getTestPayload(), ref)).state

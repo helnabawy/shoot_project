@@ -43,7 +43,7 @@ export async function removeDemoCreators(payload: Payload, options: { siteUrl?: 
   assertDemoHostAllowed(options.siteUrl)
   const all = { depth: 0, limit: 0, pagination: false, overrideAccess: true } as const
   const users = await payload.find({ collection: 'users', where: { email: { like: '@demo.test' } }, ...all })
-  const userIds = users.docs.filter((u) => u.email.endsWith('@demo.test')).map((u) => u.id)
+  const userIds = users.docs.filter((u) => u.email?.endsWith('@demo.test')).map((u) => u.id)
   if (userIds.length === 0) return options.log('Demo creators: none to remove')
 
   const profiles = await payload.find({ collection: 'creator-profiles', where: { user: { in: userIds } }, draft: true, ...all })

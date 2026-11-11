@@ -20,7 +20,7 @@ describe('QM-FR-002 creators block their own dates', () => {
   beforeAll(async () => {
     world = await bookingWorld()
     jar.clear()
-    await signIn((await getTestPayload()) as never, world.creators.sara!.user.email)
+    await signIn((await getTestPayload()) as never, world.creators.sara!.user.email!)
   })
 
   it('blocks and frees a future date of their own profile', async () => {

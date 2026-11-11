@@ -78,7 +78,7 @@ async function settle(run: () => unknown) {
 async function signIn(roles: ('admin' | 'editor' | 'member')[] = ['member'], extra: Record<string, unknown> = {}) {
   const user = await createUser(roles, extra)
   const payload = await getTestPayload()
-  const { token } = await payload.login({ collection: 'users', data: { email: user.email, password: 'password-123' } })
+  const { token } = await payload.login({ collection: 'users', data: { email: user.email!, password: 'password-123' } })
   jar.set('payload-token', token!)
   return user
 }

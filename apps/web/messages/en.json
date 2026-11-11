@@ -121,10 +121,22 @@
       "invalid": "Email or password is incorrect.",
       "locked": "Too many attempts. Try again in 15 minutes.",
       "generic": "Something went wrong. Please try again.",
-      "acceptTerms": "Please accept the Terms and the Privacy Policy to create an account."
+      "acceptTerms": "Please accept the Terms and the Privacy Policy to create an account.",
+      "phoneInvalid": "Enter a UAE mobile number, like 50 123 4567.",
+      "tooManyRequests": "Too many codes for now. Try again in {minutes} minutes.",
+      "resendTooSoon": "You can ask for a new code in {time}.",
+      "sendFailed": "We couldn't send the code. Try again, or send it by {otherChannel}.",
+      "codeInvalid": "That code isn't right. Check the text we sent and type it again.",
+      "codeExpired": "That code has expired. Ask for a new one.",
+      "codeLocked": "That code was tried too many times. Ask for a new one.",
+      "useEmailSignIn": "Editors sign in with email.",
+      "numberTaken": "This number already signs in to another account."
     },
     "acceptTerms": "I accept the <terms>Terms</terms> and the <privacy>Privacy Policy</privacy>.",
-    "acceptTermsWithProfessional": "I accept the <terms>Terms</terms>, the <professional>Professional Terms</professional> and the <privacy>Privacy Policy</privacy>."
+    "acceptTermsWithProfessional": "I accept the <terms>Terms</terms>, the <professional>Professional Terms</professional> and the <privacy>Privacy Policy</privacy>.",
+    "otp": {
+      "sms": "Your Shoot code is {code}. It expires in {minutes} minutes. Don't share it.\n\n@{domain} #{code}"
+    }
   },
   "account": {
     "title": "My account",

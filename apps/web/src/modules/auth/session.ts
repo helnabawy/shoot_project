@@ -42,5 +42,5 @@ export async function getSessionSummary(): Promise<SessionSummary | null> {
   const photo = docs[0]?.photo
   const avatarUrl =
     photo && typeof photo === 'object' ? (photo.sizes?.thumbnail?.url ?? photo.url ?? null) : null
-  return { name: user.name, avatarUrl }
+  return { name: user.name ?? '', avatarUrl }
 }
