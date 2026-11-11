@@ -12,7 +12,9 @@ import 'package:shoot_mobile/core/preferences/preferences_store.dart';
 import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
+import 'package:shoot_mobile/features/landing/landing_injection.dart';
 import 'package:shoot_mobile/features/service_health/service_health_injection.dart';
+import 'package:shoot_mobile/features/site/site_injection.dart';
 
 /// The service locator. Only the composition root (this file, `main.dart`
 /// and route builders) reads from it; classes take their dependencies through
@@ -39,6 +41,8 @@ void configureDependencies(AppConfig config, PreferencesStore store) {
 
   // One line per feature.
   registerServiceHealthFeature(getIt);
+  registerSiteFeature(getIt);
+  registerLandingFeature(getIt);
 }
 
 String _currentLanguageCode() {

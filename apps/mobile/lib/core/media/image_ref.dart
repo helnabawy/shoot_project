@@ -74,6 +74,17 @@ final class ImageRefModel {
     );
   }
 
+  /// A required `imageV1` at [key].
+  static ImageRef read(Json json, String key) {
+    return ImageRefModel.fromJson(readObject(json, key)).toEntity();
+  }
+
+  /// A nullable `imageV1` at [key] (`null` when there is no image).
+  static ImageRef? readNullable(Json json, String key) {
+    final value = readNullableObject(json, key);
+    return value == null ? null : ImageRefModel.fromJson(value).toEntity();
+  }
+
   final ImageRef _entity;
 
   ImageRef toEntity() => _entity;

@@ -35,6 +35,18 @@ int readInt(Json json, String key) {
   _bad(key, 'an integer', value);
 }
 
+/// An integer or `null`. An absent key also reads as `null`.
+int? readNullableInt(Json json, String key) {
+  return json[key] == null ? null : readInt(json, key);
+}
+
+/// A number (integer or double) or `null`. An absent key also reads as `null`.
+num? readNullableNum(Json json, String key) {
+  final value = json[key];
+  if (value == null || value is num) return value as num?;
+  _bad(key, 'a number or null', value);
+}
+
 bool readBool(Json json, String key) {
   final value = json[key];
   return value is bool ? value : _bad(key, 'a boolean', value);
@@ -45,6 +57,15 @@ List<T> readList<T>(Json json, String key, T Function(Object? item) item) {
   final value = json[key];
   if (value is! List) _bad(key, 'a list', value);
   return [for (final element in value) item(element)];
+}
+
+/// A list of strings.
+List<String> readStringList(Json json, String key) {
+  return readList(
+    json,
+    key,
+    (item) => item is String ? item : _bad(key, 'a list of strings', item),
+  );
 }
 
 Json readObject(Json json, String key) {
