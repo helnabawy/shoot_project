@@ -1,0 +1,9 @@
+{
+  "id": "43",
+  "name": null,
+  "phone": "+971501234567",
+  "email": null,
+  "accountType": "provider",
+  "personas": ["photographer", "videographer"],
+  "locale": "en"
+}

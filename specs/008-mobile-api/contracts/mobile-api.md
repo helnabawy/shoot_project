@@ -51,6 +51,11 @@ Cache:
 | `legalVersions` | `GET /legal/{kind}/versions` | none | public | `params.kind` | `legalVersionsV1` | `legal` `getLegalVersions` | no document |
 | `legalVersion` | `GET /legal/{kind}/versions/{version}` | none | public | `params.kind`, `params.version` (1–9999) | `legalVersionV1` | `legal` `getLegalVersion` | not published |
 | `resolve` | `GET /resolve?path` | none | public | `resolveRequestV1` | `resolveV1` | `pages` `resolvePath` (research R12) | never (not found is an answer) |
+| `otpRequest` | `POST /auth/otp/request` | none | no-store | `otpRequestV1` | `otpChallengeV1` (202) | `auth` `request-code` (009) | — |
+| `otpVerify` | `POST /auth/otp/verify` | none | no-store | `otpVerifyV1` | `authTokenV1` | `auth` `verify-code` (009) | — |
+| `authRefresh` | `POST /auth/refresh` | req | no-store | — | `authRefreshV1` | `auth` `refresh-session` (009) | — |
+| `authLogout` | `POST /auth/logout` | req | no-store | — | 204 | `auth` `end-session` (009) | — |
+| `me` | `GET /me` | req | no-store | — | `meV1` | `auth` `toWireMe` (009) | — |
 | — | any other address under `/api/mobile` | none | no-store | — | `problemV1` | catch-all | always |
 
 App links, at the site root and outside v1:

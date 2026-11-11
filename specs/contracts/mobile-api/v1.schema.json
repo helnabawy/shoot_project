@@ -1,5 +1,53 @@
 {
   "endpoints": {
+    "authLogout": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {},
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "null"
+      },
+      "path": "/api/mobile/v1/auth/logout"
+    },
+    "authRefresh": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {},
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "exp": {
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "type": "integer"
+          },
+          "token": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "exp"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/auth/refresh"
+    },
     "briefBuilder": {
       "auth": "none",
       "cache": "public",
@@ -2213,6 +2261,80 @@
       },
       "path": "/api/mobile/v1/landing"
     },
+    "me": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {},
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "accountType": {
+            "enum": [
+              "seeker",
+              "provider"
+            ],
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "en",
+              "ar"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "personas": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "pattern": "^\\+9715\\d{8}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "phone",
+          "email",
+          "accountType",
+          "personas",
+          "locale"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me"
+    },
     "navigation": {
       "auth": "none",
       "cache": "public",
@@ -2324,6 +2446,237 @@
         "type": "object"
       },
       "path": "/api/mobile/v1/navigation"
+    },
+    "otpRequest": {
+      "auth": "none",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "body": {
+            "properties": {
+              "channel": {
+                "default": "sms",
+                "enum": [
+                  "sms",
+                  "whatsapp"
+                ],
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "phone"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "challengeId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "channel": {
+            "enum": [
+              "sms",
+              "whatsapp"
+            ],
+            "type": "string"
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+            "type": "string"
+          },
+          "phone": {
+            "pattern": "^\\+9715\\d{8}$",
+            "type": "string"
+          },
+          "resendAt": {
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "challengeId",
+          "channel",
+          "phone",
+          "expiresAt",
+          "resendAt"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/auth/otp/request"
+    },
+    "otpVerify": {
+      "auth": "none",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "body": {
+            "properties": {
+              "challengeId": {
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                "type": "string"
+              },
+              "code": {
+                "pattern": "^\\d{6}$",
+                "type": "string"
+              },
+              "phone": {
+                "pattern": "^\\+9715\\d{8}$",
+                "type": "string"
+              },
+              "signup": {
+                "properties": {
+                  "acceptTerms": {
+                    "const": true,
+                    "type": "boolean"
+                  },
+                  "accountType": {
+                    "default": "seeker",
+                    "enum": [
+                      "seeker",
+                      "provider"
+                    ],
+                    "type": "string"
+                  },
+                  "name": {
+                    "maxLength": 80,
+                    "minLength": 2,
+                    "type": "string"
+                  },
+                  "personas": {
+                    "default": [],
+                    "items": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "maxItems": 4,
+                    "type": "array"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "required": [
+              "challengeId",
+              "phone",
+              "code"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "exp": {
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "type": "integer"
+          },
+          "isNew": {
+            "type": "boolean"
+          },
+          "token": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "user": {
+            "additionalProperties": false,
+            "properties": {
+              "accountType": {
+                "enum": [
+                  "seeker",
+                  "provider"
+                ],
+                "type": "string"
+              },
+              "email": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "type": "string"
+              },
+              "locale": {
+                "enum": [
+                  "en",
+                  "ar"
+                ],
+                "type": "string"
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "personas": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "phone": {
+                "anyOf": [
+                  {
+                    "pattern": "^\\+9715\\d{8}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "phone",
+              "email",
+              "accountType",
+              "personas",
+              "locale"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "token",
+          "exp",
+          "isNew",
+          "user"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/auth/otp/verify"
     },
     "personas": {
       "auth": "none",
@@ -2782,7 +3135,19 @@
     "api.errors.rateLimited",
     "api.errors.tokenInvalid",
     "api.errors.unauthorized",
-    "api.errors.unexpected"
+    "api.errors.unexpected",
+    "auth.errors.acceptTerms",
+    "auth.errors.codeExpired",
+    "auth.errors.codeInvalid",
+    "auth.errors.codeLocked",
+    "auth.errors.numberTaken",
+    "auth.errors.personaInactive",
+    "auth.errors.personaRequired",
+    "auth.errors.phoneInvalid",
+    "auth.errors.resendTooSoon",
+    "auth.errors.sendFailed",
+    "auth.errors.tooManyRequests",
+    "auth.errors.useEmailSignIn"
   ],
   "version": 1
 }

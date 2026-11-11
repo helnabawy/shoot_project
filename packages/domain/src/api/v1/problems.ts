@@ -18,11 +18,24 @@ export const PROBLEM_CODES = [
   'api.errors.tokenInvalid',
   'api.errors.rateLimited',
   'api.errors.unexpected',
+  // 009: sign-in by one-time code (contracts/auth-api.md).
+  'auth.errors.phoneInvalid',
+  'auth.errors.tooManyRequests',
+  'auth.errors.resendTooSoon',
+  'auth.errors.sendFailed',
+  'auth.errors.codeInvalid',
+  'auth.errors.codeExpired',
+  'auth.errors.codeLocked',
+  'auth.errors.useEmailSignIn',
+  'auth.errors.numberTaken',
+  'auth.errors.personaRequired',
+  'auth.errors.personaInactive',
+  'auth.errors.acceptTerms',
 ] as const
 export type ProblemCode = (typeof PROBLEM_CODES)[number]
 
-/** The statuses a problem can carry in 008; 009 adds 403, 409 and 503 additively. */
-export const PROBLEM_STATUSES = [401, 404, 422, 429, 500] as const
+/** The statuses a problem can carry: 008's, plus 403, 409 and 503 from 009 (additive). */
+export const PROBLEM_STATUSES = [401, 403, 404, 409, 422, 429, 500, 503] as const
 export const problemStatusV1 = z.literal(PROBLEM_STATUSES)
 export type ProblemStatus = z.infer<typeof problemStatusV1>
 

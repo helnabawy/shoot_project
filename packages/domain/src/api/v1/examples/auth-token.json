@@ -1,0 +1,14 @@
+{
+  "token": "eyJhbGciOiJIUzI1NiIsImF1dGhWZXJzaW9uIjoiMyJ9.eyJpZCI6NDIsImNvbGxlY3Rpb24iOiJ1c2VycyJ9.c2lnbmF0dXJl",
+  "exp": 1797000000,
+  "isNew": true,
+  "user": {
+    "id": "42",
+    "name": null,
+    "phone": "+971501234567",
+    "email": null,
+    "accountType": "provider",
+    "personas": ["photographer", "videographer"],
+    "locale": "en"
+  }
+}
