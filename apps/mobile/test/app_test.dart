@@ -66,7 +66,10 @@ void main() {
   });
 
   testWidgets('an unknown route shows the not-found screen', (tester) async {
-    final router = createAppRouter(initialLocation: '/does-not-exist');
+    final router = createAppRouter(
+      initialLocation: '/does-not-exist',
+      home: (_) => const SizedBox(),
+    );
     addTearDown(router.dispose);
 
     await tester.pumpWidget(

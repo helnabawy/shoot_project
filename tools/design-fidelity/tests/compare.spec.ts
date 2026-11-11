@@ -92,23 +92,31 @@ test.describe('report', () => {
   })
 })
 
+/** The pixel and geometry gates for one shipped screen and variant against its board. */
+async function checkScreen(page: Page, screen: Screen, variant: Variant, testInfo: import('@playwright/test').TestInfo) {
+  const goldenPng = join(goldensDir, screen.id, `${variant}.png`)
+  expect(existsSync(goldenPng), `missing app golden ${screen.id}/${variant}; run tool/goldens.sh --update`).toBe(true)
+  const app = readFileSync(goldenPng)
+  const result = await gate(page, screen, variant, app, readJson(join(goldensDir, screen.id, `${variant}.boxes.json`)), (n, b, c) =>
+    testInfo.attach(n, { body: b, contentType: c }),
+  )
+  // Playwright's own expected / actual / diff images, at the same tolerance.
+  expect.soft(app).toMatchSnapshot([screen.id, `${variant}.png`], {
+    maxDiffPixelRatio: result.threshold,
+    threshold: 0.2,
+  })
+  expect(result.failures, `screen ${screen.id} ${variant}`).toEqual([])
+}
+
 for (const screen of comparableScreens(manifest)) {
   for (const variant of derivedVariants(screen.variants)) {
-    const label = variant === 'en-light' ? 'MF-US1-S1' : 'MF-US2-S3'
-    test(`${label} screen ${screen.id} ${variant} matches its board`, async ({ page }, testInfo) => {
-      const goldenPng = join(goldensDir, screen.id, `${variant}.png`)
-      expect(existsSync(goldenPng), `missing app golden ${screen.id}/${variant}; run tool/goldens.sh --update`).toBe(true)
-      const app = readFileSync(goldenPng)
-      const result = await gate(page, screen, variant, app, readJson(join(goldensDir, screen.id, `${variant}.boxes.json`)), (n, b, c) =>
-        testInfo.attach(n, { body: b, contentType: c }),
-      )
-      // Playwright's own expected / actual / diff images, at the same tolerance.
-      expect.soft(app).toMatchSnapshot([screen.id, `${variant}.png`], {
-        maxDiffPixelRatio: result.threshold,
-        threshold: 0.2,
-      })
-      expect(result.failures, `screen ${screen.id} ${variant}`).toEqual([])
-    })
+    if (variant === 'en-light') {
+      test(`MF-US1-S1 screen ${screen.id} en-light matches its board`, ({ page }, testInfo) =>
+        checkScreen(page, screen, variant, testInfo))
+    } else {
+      test(`MF-US2-S3 screen ${screen.id} ${variant} matches its board`, ({ page }, testInfo) =>
+        checkScreen(page, screen, variant, testInfo))
+    }
   }
 }
 

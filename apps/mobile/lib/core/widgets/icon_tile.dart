@@ -15,6 +15,13 @@ class IconTile extends StatelessWidget {
     this.strokeWidth = 2.2,
   });
 
+  /// The 56 px `.big` mark above an error state (radius 14, 26 px icon, stroke 1.8).
+  const IconTile.big(this.icon, {super.key})
+    : size = 56,
+      radius = ShootRadius.panel,
+      iconSize = 26,
+      strokeWidth = 1.8;
+
   const IconTile.large(this.icon, {super.key})
     : size = ShootSize.photoTile,
       radius = ShootRadius.photoTile,

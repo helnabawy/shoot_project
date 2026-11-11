@@ -25,7 +25,12 @@ enum ShootIcons {
   refresh(
     '<path d="M20 11a8 8 0 0 0-14.9-3M4 5v4h4M4 13a8 8 0 0 0 14.9 3M20 19v-4h-4"/>',
   ),
-  alert('<circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01"/>');
+  alert('<circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01"/>'),
+
+  /// Opens a list (picker fields).
+  chevronDown('<path d="m6 9 6 6 6-6"/>'),
+  pause('<path d="M9 5v14M15 5v14"/>'),
+  play('<path d="M7 5v14l12-7z"/>');
 
   const ShootIcons(this.body, {this.directional = false});
 

@@ -125,5 +125,26 @@
   "notFoundAction": "Start a brief",
   "@notFoundAction": {
     "description": "The not-found screen's one primary action (Top Hit): start a brief. Same words as the web."
+  },
+
+  "errorTitle": "Something went wrong",
+  "@errorTitle": {
+    "description": "Heading of the error screen (screen 39), shown when a screen fails to load. Never shows technical detail."
+  },
+  "errorBody": "Please try again, or message us on WhatsApp. Your brief is saved on this phone.",
+  "@errorBody": {
+    "description": "Body of the error screen (screen 39)."
+  },
+  "errorWhatsapp": "Ask us on WhatsApp",
+  "@errorWhatsapp": {
+    "description": "Row on the error screen that opens a WhatsApp chat with the business number. Same words as the web."
+  },
+  "errorHome": "Back to the start",
+  "@errorHome": {
+    "description": "Row on the error screen that goes to the first screen. Same words as the web."
+  },
+  "errorRetry": "Try again",
+  "@errorRetry": {
+    "description": "The error screen's one primary action (Top Hit): run the failed step again."
   }
 }

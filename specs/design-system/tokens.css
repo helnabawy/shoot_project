@@ -57,6 +57,13 @@
   --scene-tile-alt-top: #f1dcc4; /* the second and third scene-tile shades */
   --scene-tile-alt-bottom: #e6c8a8;
   --scene-tile-deep: #b98a66;
+  --scene-tile-2-top: #e6cdb4; /* the 2nd and 3rd scene-tile variants (.sc:nth-child(2n), (3n)) */
+  --scene-tile-2-bottom: #c0946f;
+  --scene-tile-3-top: #f1e3d3;
+  --scene-tile-3-bottom: #d0a886;
+  --scene-tile-key-2: rgba(255, 246, 232, 0.85);
+  --scene-tile-key-3: rgba(255, 246, 232, 0.9);
+  --scene-dune: rgba(132, 88, 61, 0.5); /* the low dune ellipse on a scene tile */
   --scene-ink: #4a2e20; /* 5.2:1 on --scene-tile-bottom; keep text off the low dune (3.1:1) */
   --corner-glow: rgba(255, 244, 228, 0.95);
   --corner-glow-mid: rgba(255, 233, 207, 0.6); /* the glow's 34 % stop (007) */
@@ -209,6 +216,13 @@
   --scene-tile-alt-top: #54423a; /* proposed 007, graphic only */
   --scene-tile-alt-bottom: #3a2d25;
   --scene-tile-deep: #1f1813;
+  --scene-tile-2-top: #46372d; /* proposed 007, graphic only */
+  --scene-tile-2-bottom: #261e19;
+  --scene-tile-3-top: #4f3e32;
+  --scene-tile-3-bottom: #2e241e;
+  --scene-tile-key-2: rgba(255, 226, 196, 0.24);
+  --scene-tile-key-3: rgba(255, 226, 196, 0.26);
+  --scene-dune: rgba(0, 0, 0, 0.28);
   --scene-ink: #e6d3c0; /* 7.4:1 on --scene-tile-top; keep text off the key highlight (3.6:1) */
   --corner-glow: rgba(110, 78, 54, 0.4);
   --corner-glow-mid: rgba(110, 78, 54, 0.24); /* proposed 007 */

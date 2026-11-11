@@ -46,31 +46,31 @@ starting.
 
 **Purpose**: the new workspace, the package, the test fonts, the scenario check and CI.
 
-- [ ] T001 Add `tools/*` to `pnpm-workspace.yaml`.
+- [x] T001 Add `tools/*` to `pnpm-workspace.yaml`.
   - Create `fid/package.json`: name `design-fidelity`, private, type module.
   - devDependency `@playwright/test` pinned to the exact version `apps/web/package.json` uses
     (1.63.0); TypeScript from the shared config.
   - Create `fid/tsconfig.json`, extending `packages/config`.
   - Add `fid/build/` to `.gitignore`.
   - Run `pnpm install`.
-- [ ] T002 [P] Add `flutter_svg`, pinned exactly (latest stable at least two weeks old, no caret),
+- [x] T002 [P] Add `flutter_svg`, pinned exactly (latest stable at least two weeks old, no caret),
   to `mobile/pubspec.yaml`.
   - Run `flutter pub get`.
   - Add its row ("Icons and scene drawn from the boards' SVG", feature 007) to the Packages table
     in `mobile/README.md`.
-- [ ] T003 [P] Vendor the static fonts into `mobile/test/fonts/`:
+- [x] T003 [P] Vendor the static fonts into `mobile/test/fonts/`:
   - `Roboto-{Regular,Medium,SemiBold,Bold}.ttf` with `OFL-Roboto.txt` (OFL since Roboto 3);
   - `NotoSansArabic-{Regular,Medium,SemiBold,Bold}.ttf` with `OFL-NotoSansArabic.txt`.
 
   Record the sources and versions in `mobile/test/fonts/README.md`. They are test-only: do not
   list them under `flutter: fonts:` in `pubspec.yaml`.
-- [ ] T004 [P] Create `mobile/dart_test.yaml` with tag `golden`.
+- [x] T004 [P] Create `mobile/dart_test.yaml` with tag `golden`.
   - Create `mobile/tool/goldens.sh`. It runs `GOLDENS=1 flutter test --tags golden $*` on macOS
     with the pinned Flutter (it refuses another OS or Flutter version), with `--update` mapped to
     `--update-goldens`. (Amended 2026-11-11: the Linux Docker image is not published for this
     Flutter version; the owner chose macOS.)
   - Make it executable.
-- [ ] T005 [P] Extend `scripts/check-scenario-tests.mjs` (this also covers 006 R7 if it has not
+- [x] T005 [P] Extend `scripts/check-scenario-tests.mjs` (this also covers 006 R7 if it has not
   landed):
   - `SEARCH_ROOTS` gains `apps/mobile/test` and `tools/design-fidelity/tests`;
   - `SKIP` gains `.dart_tool`, `build` and `goldens`;
@@ -79,10 +79,10 @@ starting.
 
   Add `node scripts/check-scenario-tests.mjs specs/007-mobile-foundation/quickstart.md` to
   `check:scenarios` in `package.json`.
-- [ ] T006 [P] Add root scripts `fidelity` (`pnpm --filter design-fidelity exec playwright test`)
+- [x] T006 [P] Add root scripts `fidelity` (`pnpm --filter design-fidelity exec playwright test`)
   and `fidelity:report` (`pnpm --filter design-fidelity exec playwright show-report build/report`)
   to `package.json`.
-- [ ] T007 Add a job `mobile` to `.github/workflows/ci.yml` (research R12). It runs on
+- [x] T007 Add a job `mobile` to `.github/workflows/ci.yml` (research R12). It runs on
   `macos-15` (the golden platform) and:
   - checks out the repo, sets up Flutter 3.47.9 with a pinned action, and sets up Node 24 and pnpm;
   - in `apps/mobile`: `flutter pub get`, `dart format --set-exit-if-changed lib test`,
@@ -106,17 +106,17 @@ until later phases add tests.
 
 ### Tests first
 
-- [ ] T008 [P] Write `mobile/test/core/theme/shoot_type_test.dart`.
+- [x] T008 [P] Write `mobile/test/core/theme/shoot_type_test.dart`.
   - Every role in research R3 has the exact size, weight, height and letter-spacing in px
     (`em × size`).
   - `TextLeadingDistribution.even` is set on the theme.
   - The `num` helper adds `FontFeature.tabularFigures()`.
-- [ ] T009 [P] Extend `mobile/test/core/theme/shoot_colors_test.dart`.
+- [x] T009 [P] Extend `mobile/test/core/theme/shoot_colors_test.dart`.
   - `bodyInk` has at least 4.5:1 on `ground`, `panel`, `panelSolid` and `tile`, in light and dark.
   - `surfaceSunk` exists in both themes.
   - Every role in `tokens.css` `:root` and `.dark` has a Dart value. The test parses
     `specs/design-system/tokens.css` by repo-relative path.
-- [ ] T010 [P] Write `mobile/test/core/theme/css_gradient_test.dart` and
+- [x] T010 [P] Write `mobile/test/core/theme/css_gradient_test.dart` and
   `mobile/test/core/theme/shoot_shadows_test.dart`.
   - `cssShadow(0,24,60,0,c)` gives `blurRadius ≈ 51.1` (±0.1).
   - `linear-gradient(160deg, …)` gives begin/end alignments whose stops land on the CSS gradient
@@ -126,43 +126,43 @@ until later phases add tests.
 
 ### Implementation
 
-- [ ] T011 Add the new roles to `specs/design-system/tokens.css` (`:root` and `.dark`) and to the
+- [x] T011 (done 2026-11-11; dark values are proposals awaiting the owner's approval; also added `--corner-glow-mid`, the corner glow's 34 % stop) Add the new roles to `specs/design-system/tokens.css` (`:root` and `.dark`) and to the
   `@theme inline` map: `--body-ink`, `--surface-sunk` and the scene shades `--scene-tile-alt-top`,
   `--scene-tile-alt-bottom`, `--scene-tile-deep` (research R4).
   - Light values are `#3a342f`, `#e6e0d9`, `#f1dcc4`, `#e6c8a8` and `#b98a66`.
   - Propose the dark values so that T009 passes, and replace the "Colours the boards use that
     have no role yet" comment with the roles.
   - Get the owner's approval of the dark values in the pull request.
-- [ ] T012 Add `bodyInk`, `surfaceSunk` and their `on…` partners where needed to
+- [x] T012 Add `bodyInk`, `surfaceSunk` and their `on…` partners where needed to
   `mobile/lib/core/theme/shoot_colors.dart`, light and dark, with the same values as T011.
-- [ ] T013 [P] Create `mobile/lib/core/theme/shoot_type.dart`: `ShootType`, holding the roles in
+- [x] T013 [P] Create `mobile/lib/core/theme/shoot_type.dart`: `ShootType`, holding the roles in
   research R3 as `TextStyle`s, plus `ShootType.num(style)`.
   - Wire it into `mobile/lib/core/theme/app_theme.dart`: `textTheme` mapped from the roles,
     `TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even)` set through
     `DefaultTextHeightBehavior` in `app.dart`, and `fontFamilyFallback: ['Noto Sans Arabic']`.
-- [ ] T014 [P] Create these in `mobile/lib/core/theme/`:
+- [x] T014 [P] Create these in `mobile/lib/core/theme/`:
   - `shoot_shadows.dart`: `cssShadow` and `ShootShadows.panel/sheet/lift` per theme, from
     `tokens.css`;
   - `css_gradient.dart`: `cssLinearGradient(deg, stops)`, `cssRadialGradient(...)`;
   - `shoot_scene.dart`: a `ThemeExtension<ShootScene>` holding every `--scene-*`, `--sweep-*`,
     corner-glow, glint and pulse role, light and dark, registered in `app_theme.dart`.
-- [ ] T015 [P] Extend `mobile/lib/core/theme/shoot_tokens.dart`:
+- [x] T015 [P] Extend `mobile/lib/core/theme/shoot_tokens.dart`:
   - sizes `header = 58`, `rowBlock = 7`, `pane = 1080`, `carouselRatio = 296 / 360`,
     `maxColumn = 600`;
   - `ShootArrive` (rise 500, stagger 70, firstDelay 60, focus 700, roll 700, draw 500, grow 900,
     write 1100, deal 600, shake 450 ms);
   - `ShootAmbient` (glint 7 s, keylight 14 s, settle 5 s, drift 44 s, pulse 2.4 s,
     `selfStartedBudget = 5 s`).
-- [ ] T016 Create `mobile/test/flutter_test_config.dart`:
+- [x] T016 (done 2026-11-11: fonts load for every test; the fixed clock is `FixedClock` in `lib/core/time/clock.dart`, and shadows are set per golden in `helpers/golden.dart` because the binding resets them per test) Create `mobile/test/flutter_test_config.dart`:
   - load every font in `test/fonts/` with `FontLoader`: `Roboto` for the four Roboto weights,
     `Noto Sans Arabic` for the four Arabic weights;
   - set `debugDisableShadows = false`;
   - register a fixed `Clock` (2026-12-14 10:00 Asia/Dubai) for tests;
   - skip tests tagged `golden` unless `GOLDENS=1`.
-- [ ] T017 Create `mobile/lib/core/time/clock.dart`, a `Clock` interface with a system
+- [x] T017 Create `mobile/lib/core/time/clock.dart`, a `Clock` interface with a system
   implementation, registered in `mobile/lib/core/di/injection.dart`. Tests get the fixed clock
   from T016.
-- [ ] T018 Create the golden harness `mobile/test/helpers/golden.dart` (research R10).
+- [x] T018 Create the golden harness `mobile/test/helpers/golden.dart` (research R10).
   - `pumpBoard(tester, id: '37', variant: Variant.enLight, child: …)`:
     - reads `w`, `h` and `boxes` from `specs/design-system/canvas/manifest.json`;
     - sets `tester.view.physicalSize = Size(w*2, h*2)` and `devicePixelRatio = 2`;
@@ -174,7 +174,7 @@ until later phases add tests.
       (`tester.getRect`, logical px).
   - `pumpSelfBaselines(...)` renders at 393×852, 430×932, 768×1024, 1024×1366 and text scale
     2.0 into `goldens/<id>/self/`, and fails on any `FlutterError` overflow.
-- [ ] T019 [P] Create `fid/src/manifest.ts`. It loads `canvas/manifest.json` and validates it per
+- [x] T019 [P] Create `fid/src/manifest.ts`. It loads `canvas/manifest.json` and validates it per
   contracts/manifest.md:
   - ids unique;
   - `reason` required with `threshold`;
@@ -183,10 +183,10 @@ until later phases add tests.
 
   Export `comparableScreens()`: target `mobile`, a non-null `feature`, and the feature marked
   shipped in `fid/shipped.json`, which is `["007-mobile-foundation"]` for now.
-- [ ] T020 [P] Create `fid/src/fonts.ts`, which builds an `@font-face` block from
+- [x] T020 [P] Create `fid/src/fonts.ts`, which builds an `@font-face` block from
   `apps/mobile/test/fonts/*` (file URLs, the weights in T003) plus a
   `.root, .root * { font-family: Roboto, 'Noto Sans Arabic' !important }` rule (research R7).
-- [ ] T021 Create `fid/playwright.config.ts`:
+- [x] T021 Create `fid/playwright.config.ts`:
   - project `refs` (`tests/refs.spec.ts`, `tests/derivation.spec.ts`);
   - project `compare` (`tests/compare.spec.ts`, `dependencies: ['refs']`);
   - `use: { deviceScaleFactor: 2, reducedMotion: 'reduce' }`;
@@ -209,10 +209,10 @@ and name `h1`.
 
 ### Tests first
 
-- [ ] T022 [P] [US1] Write `fid/tests/manifest.spec.ts`:
+- [x] T022 [P] [US1] Write `fid/tests/manifest.spec.ts`:
   - **`MF-US1-S4`**: a manifest copy with `threshold` and no `reason` throws, naming the screen;
   - **`MF-US1-S5`**: screens with `changedSinceLastExport` come back from `needsReview()`.
-- [ ] T023 [P] [US1] Write `fid/tests/compare.spec.ts`, covering each comparable screen and its
+- [x] T023 [P] [US1] Write `fid/tests/compare.spec.ts`, covering each comparable screen and its
   variant `en-light` (the other variants come in US2). Using the reference from `refs` and the
   golden at `apps/mobile/test/goldens/screens/goldens/<id>/<variant>.png`:
   - **`MF-US1-S1`**: `toMatchSnapshot` with the screen's `maxDiffPixelRatio`; the geometry gate
@@ -222,9 +222,9 @@ and name `h1`.
     naming `h1` and `dy=2`.
   - **`MF-US1-S3`**: on a fixture golden with a recoloured block over 2 % of pixels, it fails and
     reports `diffRatio` against `threshold`.
-- [ ] T024 [P] [US1] Write `mobile/test/goldens/screens/37_not_found_golden_test.dart`
+- [x] T024 [P] [US1] Write `mobile/test/goldens/screens/37_not_found_golden_test.dart`
   (`@Tags(['golden'])`): `pumpBoard` for screen 37 in `en-light`, with self-baselines.
-- [ ] T025 [P] [US1] Write widget tests in `mobile/test/core/widgets/`:
+- [x] T025 [P] [US1] Write widget tests in `mobile/test/core/widgets/`:
   - `shoot_header_test.dart`, `wordmark_test.dart`, `shoot_icon_button_test.dart`,
     `top_hit_test.dart`, `shoot_row_test.dart`, `icon_tile_test.dart`, `empty_state_test.dart`;
   - each checks size, padding and type from contracts/component-catalogue.md, the states, and
@@ -232,12 +232,12 @@ and name `h1`.
 
 ### Implementation
 
-- [ ] T026 [P] [US1] Create `fid/src/review.ts`. In a page `<canvas>` it draws:
+- [x] T026 [P] [US1] Create `fid/src/review.ts`. In a page `<canvas>` it draws:
   - `sideBySide(board, app)`: board | app | |diff|, at 1×;
   - `overlay(board, app)`: the app at 50 % alpha over the board, plus a difference-blend strip.
 
   Both return PNG buffers for `testInfo.attach`.
-- [ ] T027 [US1] Write `fid/tests/refs.spec.ts`. For each comparable screen and its manifest
+- [x] T027 [US1] Write `fid/tests/refs.spec.ts`. For each comparable screen and its manifest
   variants:
   - route `**/support.js` to an empty 200 response;
   - `page.goto(file://…/canvas/<board>)` with the fonts from T020 injected;
@@ -247,31 +247,31 @@ and name `h1`.
     element fails.
 
   `en-light` only in this phase.
-- [ ] T028 [US1] Implement `fid/tests/compare.spec.ts` to make T023 pass, using T019, T026 and
+- [x] T028 [US1] Implement `fid/tests/compare.spec.ts` to make T023 pass, using T019, T026 and
   T027. The report header lists:
   - the screens needing review;
   - the screens skipped because their feature has not shipped;
   - the overrides, with reasons.
-- [ ] T029 [P] [US1] Copy the icon paths used by boards 37 and 39 (search, person, calendar,
+- [x] T029 (done 2026-11-11 as Dart strings in `shoot_icon.dart`, copied verbatim from the boards, instead of asset files: no async asset loading in goldens) [P] [US1] Copy the icon paths used by boards 37 and 39 (search, person, calendar,
   chevron, back, refresh, WhatsApp) verbatim into `mobile/assets/icons/*.svg`. Declare the folder
   under `flutter: assets:`. Create `mobile/lib/core/widgets/shoot_icon.dart` (`ShootIcon(name,
   size, color, mirror)`, stroke from the file).
-- [ ] T030 [P] [US1] Create in `mobile/lib/core/widgets/`, each per the catalogue and with its
+- [x] T030 [P] [US1] Create in `mobile/lib/core/widgets/`, each per the catalogue and with its
   fidelity key:
   - `shoot_scaffold.dart`: ground, `CornerGlow`, safe area, centred column ≤ `maxColumn`;
   - `shoot_header.dart` (`ValueKey('fidelity:header')`);
   - `wordmark.dart` (`fidelity:wordmark`);
   - `shoot_icon_button.dart`;
   - `corner_glow.dart`.
-- [ ] T031 [P] [US1] Create `mobile/lib/core/widgets/top_hit.dart` (`fidelity:topHit`): 50 high,
+- [x] T031 [P] [US1] Create `mobile/lib/core/widgets/top_hit.dart` (`fidelity:topHit`): 50 high,
   radius 9, `primary`, type `action`, optional trailing price and chevron, the pressed colour
   `primaryHover`, and the disabled and loading states. The glint comes in US4.
-- [ ] T032 [P] [US1] Create in `mobile/lib/core/widgets/`:
+- [x] T032 [P] [US1] Create in `mobile/lib/core/widgets/`:
   - `shoot_row.dart`: min 48, gap 12, leading tile, trailing chevron that mirrors;
   - `icon_tile.dart`: 30, radius 8, `surfaceSunk`;
   - `empty_state.dart`: tile, meta line, title, body (max width 260, `mute`, 15/1.6) and an
     actions slot.
-- [ ] T033 [US1] Build `mobile/lib/core/routing/not_found_page.dart` to board 37:
+- [x] T033 [US1] Build `mobile/lib/core/routing/not_found_page.dart` to board 37:
   - header with the wordmark and a language button;
   - centred empty state ("404", "That page isn't here", body);
   - the "Where to next" rows (Browse creators, Your bookings);
@@ -281,7 +281,7 @@ and name `h1`.
   written in Arabic and reviewed. The heading carries `ValueKey('fidelity:h1')`; add `h1` to
   screen 37's boxes by giving the board's heading a stable selector in
   `canvas/build-manifest.mjs` (`main h1`).
-- [ ] T034 [US1] Run `apps/mobile/tool/goldens.sh --update` for screen 37, then `pnpm fidelity`.
+- [x] T034 (screen 37 passes en-light 0.118 % and en-dark 0.115 % against 1 %, every box within 0.5 px; goldens made on macOS, the platform chosen 2026-11-11) [US1] Run `apps/mobile/tool/goldens.sh --update` for screen 37, then `pnpm fidelity`.
   Fix the widgets until the result is `diffRatio ≤ 0.01` with every box within 1 px. Commit the
   goldens. Record the measured `diffRatio` per variant in research R9 as the calibration.
 
@@ -328,7 +328,7 @@ and name `h1`.
     `m9 6 6 6-6 6`).
   - Throw on an English text node with no translation, unless it is listed in that file's
     `"keep"` array (brand, numbers, codes).
-- [ ] T040 [US2] Write `canvas/strings.ar/S10-not-found.json`, `S10c-error.json`,
+- [ ] T040 [US2] (waits for the designer's boards, research R6, 2026-11-11) Write `canvas/strings.ar/S10-not-found.json`, `S10c-error.json`,
   `S09b-signin-code.json` and `S04-quotation.json`.
   - For 21 and 13, take the Arabic from boards 42 and 43, so the derivation compares like with
     like.
@@ -336,7 +336,7 @@ and name `h1`.
   - The Arabic is written by someone who writes Arabic, not machine-translated.
 - [ ] T041 [US2] Extend `fid/tests/refs.spec.ts` to render every manifest variant: tokenise for
   dark, localise for Arabic, `colorScheme` from the variant.
-- [ ] T042 [US2] Add `en-dark`, `ar-light` and `ar-dark` to `37_not_found_golden_test.dart`.
+- [ ] T042 [US2] (en-dark done for 37; Arabic waits for the designer's boards, research R6) Add `en-dark`, `ar-light` and `ar-dark` to `37_not_found_golden_test.dart`.
   Update the goldens, run `pnpm fidelity` and fix until all four variants pass.
   - If MF-US2-S2 cannot pass at 1 %, stop. Report the side-by-side images to the owner and
     choose: ask the designer for the missing variants (the research R5 fallback), or approve a
@@ -490,7 +490,7 @@ variants.
 
 ### Tests first
 
-- [ ] T061 [P] [US5] Write `mobile/test/core/routing/app_router_test.dart`:
+- [x] T061 [P] [US5] Write `mobile/test/core/routing/app_router_test.dart`:
   - **`MF-US5-S1`**: `/does-not-exist` shows `NotFoundPage` in English;
   - **`MF-US5-S2`**: `/ar/does-not-exist` shows it in Arabic with `Directionality.rtl`, and the
     locale is saved;
@@ -498,22 +498,22 @@ variants.
     `NotFoundPage`;
   - **`MF-US3-S5`**: with `kDebugMode` overridden to false (through an injected `isDebug` flag),
     `/_gallery` shows `NotFoundPage`.
-- [ ] T062 [P] [US5] Write `mobile/test/core/routing/error_page_test.dart` (**`MF-US5-S3`**):
+- [x] T062 [P] [US5] Write `mobile/test/core/routing/error_page_test.dart` (**`MF-US5-S3`**):
   - a route whose builder throws shows `ErrorPage`, with "Try again" and no exception text in the
     tree;
   - "Try again" re-runs the navigation;
   - the WhatsApp row is hidden when no site number is available.
-- [ ] T063 [P] [US5] Write `mobile/test/core/first_run/first_run_store_test.dart`
+- [x] T063 [P] [US5] Write `mobile/test/core/first_run/first_run_store_test.dart`
   (**`MF-US5-S4`**). Using the 006 in-memory `PreferencesStore`:
   - `markWelcomeSeen()` then a new store instance means `welcomeSeen` is true;
   - an unreadable value is false;
   - a failed write keeps the session value.
-- [ ] T064 [P] [US5] Write `mobile/test/goldens/screens/39_error_golden_test.dart` (`golden`,
+- [x] T064 [P] [US5] Write `mobile/test/goldens/screens/39_error_golden_test.dart` (`golden`,
   four variants, plus self-baselines).
 
 ### Implementation
 
-- [ ] T065 [US5] Create `mobile/lib/core/routing/app_routes.dart`: the full path table from
+- [x] T065 [US5] Create `mobile/lib/core/routing/app_routes.dart`: the full path table from
   contracts/routes.md as `AppRoute(path, owner, built, auth)`.
   - Rewrite `mobile/lib/core/routing/app_router.dart` to:
     - build `GoRoute`s for `built` routes only;
@@ -521,15 +521,15 @@ variants.
     - send unbuilt and unknown paths to `NotFoundPage`;
     - set `errorBuilder` to `ErrorPage`.
   - Keep the existing home route (`service_health`) until feature 010 replaces it.
-- [ ] T066 [US5] Build `mobile/lib/core/routing/error_page.dart` to board 39, with strings in both
+- [x] T066 [US5] Build `mobile/lib/core/routing/error_page.dart` to board 39, with strings in both
   ARB files. In `mobile/lib/main.dart`, set `ErrorWidget.builder` for release builds and
   `FlutterError.onError` (log without personal data). Add `ValueKey('fidelity:*')` for the
   manifest boxes of 39.
-- [ ] T067 [US5] Create `mobile/lib/core/first_run/first_run_store.dart`, with
+- [x] T067 [US5] Create `mobile/lib/core/first_run/first_run_store.dart`, with
   `firstRun.welcomeSeen` stored through `PreferencesStore`. Register it in DI. Add the
   first-launch redirect hook in `app_router.dart`, inactive until `/welcome/:step` is built
   (feature 010). Deep links never redirect.
-- [ ] T068 [US5] Run `tool/goldens.sh --update` for 39, then `pnpm fidelity`, and fix until all
+- [ ] T068 (English light and dark pass: 0.30 % and 0.31 %; Arabic waits for the designer's boards, research R6) [US5] Run `tool/goldens.sh --update` for 39, then `pnpm fidelity`, and fix until all
   four variants pass.
 
 **Checkpoint**: MF-US5-S1 to S5 and MF-US3-S5 pass; screens 37 and 39 pass in four variants.

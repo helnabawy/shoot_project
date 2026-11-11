@@ -20,5 +20,8 @@ abstract final class PreferenceKeys {
   static const themeMode = 'appearance.themeMode';
   static const locale = 'appearance.locale';
 
-  static const all = {accent, themeMode, locale};
+  /// `true` once the person has seen the welcome steps (feature 007, FirstRunStore).
+  static const welcomeSeen = 'firstRun.welcomeSeen';
+
+  static const all = {accent, themeMode, locale, welcomeSeen};
 }

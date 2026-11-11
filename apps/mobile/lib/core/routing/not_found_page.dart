@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
-import 'package:shoot_mobile/core/routing/app_router.dart';
+import 'package:shoot_mobile/core/routing/app_routes.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/widgets/empty_state.dart';
 import 'package:shoot_mobile/core/widgets/icon_tile.dart';

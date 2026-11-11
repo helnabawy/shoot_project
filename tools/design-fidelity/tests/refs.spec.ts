@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { expect, test } from '@playwright/test'
 import { boardBoxes, openBoard } from '../src/board'
 import { comparableScreens, loadManifest, refsDir, type Variant } from '../src/manifest'
-import { derivedVariants, transformsFor } from '../src/variants'
+import { derivedVariants, prepareVariant } from '../src/variants'
 
 const manifest = loadManifest()
 
@@ -11,7 +11,8 @@ const manifest = loadManifest()
 for (const screen of comparableScreens(manifest)) {
   for (const variant of derivedVariants(screen.variants)) {
     test(`reference ${screen.id} ${variant}`, async ({ page }) => {
-      await openBoard(page, screen, variant as Variant, transformsFor(variant as Variant))
+      await openBoard(page, screen, variant as Variant)
+      await prepareVariant(page, screen, variant as Variant)
       const root = page.locator('.root')
       const box = await root.boundingBox()
       expect(box, 'the board has a .root').not.toBeNull()

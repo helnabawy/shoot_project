@@ -31,7 +31,7 @@ export async function openBoard(
   const file = join(canvasDir, screen.board)
   let html = readFileSync(file, 'utf8')
   for (const t of transforms) html = t(html, screen)
-  const fonts = `<style data-fidelity-fonts>${fontCss()}${REFERENCE_FIXES}</style>`
+  const fonts = `<style data-fidelity="fonts">${fontCss()}${REFERENCE_FIXES}</style>`
   html = html.includes('</head>') ? html.replace('</head>', `${fonts}</head>`) : fonts + html
 
   await page.setViewportSize({ width: screen.w, height: screen.h })

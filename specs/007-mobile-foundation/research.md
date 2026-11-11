@@ -113,6 +113,16 @@ Decisions for feature 007. Each entry gives the **Decision**, then the **Rationa
 - **Rationale**: Arabic must be written, not machine-translated (constitution). One string source
   keeps the references and the app identical.
 - **Alternatives**: machine translation, rejected. Arabic boards for every screen: the fallback.
+- **Finding (2026-11-11)**: boards 42 and 43 are not pure variants of 21 and 13. Board 42 adds a
+  wrong-code error message and moves the resend line; board 43 merges and reorders text nodes. No
+  derivation can match them pixel for pixel, so they cannot validate it (MF-US2-S2).
+- **Finding (2026-11-11)**: the designer's Arabic boards use their own type rules, the same in both:
+  no letter-spacing, no uppercase, line-height 1.25 → 1.4, 1.375 → 1.6, 1.4 → 1.7, 1.625 → 1.8,
+  display 34 → 32, wordmark 22 → 24, group label 11 → 12; the header padding mirrors; digit rows
+  stay left to right. The dark corner glow's middle stop is `rgba(74, 58, 47, 0.22)` at 36 %.
+- **Decision (owner, 2026-11-11)**: ask the designer for Arabic dark boards of 21 and 13 with the
+  same content and state as the English boards, and to confirm the Arabic type rules. The Arabic
+  derivation (T038–T042) waits for them. Request: [designer-request.md](designer-request.md).
 
 ## R7. Fonts and determinism
 
@@ -171,6 +181,12 @@ Decisions for feature 007. Each entry gives the **Decision**, then the **Rationa
 
     Both are attached to the test.
   - The HTML report is uploaded as a CI artifact.
+- **Calibration (2026-11-11, macOS goldens against Chromium references)**: screen 37 en-light
+  diffRatio 0.001179 and en-dark 0.00115 against the 1 % default; every key box within 0.5 px. The
+  difference is glyph anti-aliasing on the wordmark and the `404` meta line.
+- **Reference fix**: the boards' Top Hit glint (`.top::after`) stays visible under reduced motion
+  (`animation: none` leaves it on the button). The reference renderer hides it, as the board's own
+  `.top.off` rule does, until the canvas is fixed (raised with the owner).
 - **Rationale**: Playwright already ships pixelmatch-based diffing, an expected/actual/diff
   viewer and attachments. No new package is needed.
 - **Alternatives**: `flutter_test`'s `matchesGoldenFile` against the board PNG directly. It has

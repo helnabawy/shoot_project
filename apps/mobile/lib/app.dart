@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shoot_mobile/core/di/injection.dart';
+import 'package:shoot_mobile/core/first_run/first_run_store.dart';
 import 'package:shoot_mobile/core/l10n/app_locales.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/l10n/locale_cubit.dart';
@@ -9,6 +10,7 @@ import 'package:shoot_mobile/core/routing/app_router.dart';
 import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
+import 'package:shoot_mobile/features/service_health/presentation/pages/service_health_page.dart';
 
 /// The app shell: language, theme and router. No feature logic here.
 class ShootApp extends StatefulWidget {
@@ -19,7 +21,11 @@ class ShootApp extends StatefulWidget {
 }
 
 class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
-  final GoRouter _router = createAppRouter();
+  final GoRouter _router = createAppRouter(
+    onArabicLink: () => getIt<LocaleCubit>().select(AppLocales.arabic),
+    welcomeSeen: () => getIt<FirstRunStore>().welcomeSeen,
+    home: (_) => const ServiceHealthPage(),
+  );
 
   @override
   void initState() {

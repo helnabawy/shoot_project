@@ -34,5 +34,11 @@
   "notFoundNextLabel": "إلى أين بعد ذلك",
   "notFoundBrowseCreators": "تصفّح المبدعين",
   "notFoundYourBookings": "حجوزاتك",
-  "notFoundAction": "ابدأ طلباً"
+  "notFoundAction": "ابدأ طلباً",
+
+  "errorTitle": "حدث خطأ",
+  "errorBody": "حاول مرة أخرى، أو راسلنا على واتساب. طلبك محفوظ على هذا الهاتف.",
+  "errorWhatsapp": "اسألنا على واتساب",
+  "errorHome": "العودة إلى البداية",
+  "errorRetry": "حاول مرة أخرى"
 }
