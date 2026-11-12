@@ -26,9 +26,8 @@ export function LoginForm({ locale, next }: { locale: string; next?: string }) {
           <TopHit label={pending ? t('auth.pending') : t('auth.submitLogin')} pending={pending} testId="login-submit" />
         </div>
         <p className="border-t border-hair px-4 py-3 text-[14px] text-mute">
-          {t('auth.noAccount')}{' '}
-          <Link href={{ pathname: '/register', query: next ? { next } : {} }} className="font-medium text-ink underline">
-            {t('nav.register')}
+          <Link href={{ pathname: '/login', query: next ? { next } : {} }} className="font-medium text-ink underline">
+            {t('auth.otp.codeSignIn')}
           </Link>
         </p>
       </form>

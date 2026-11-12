@@ -33,3 +33,24 @@ scenario in a quickstart mapping table has no such test.
 
 Environment variables are documented in `.env.example` and validated at
 startup by `src/shared/lib/env.ts`.
+
+## Sign-in by one-time code (feature 009)
+
+- `OTP_HMAC_SECRET` (at least 32 characters, required in production) keys the stored fingerprints of
+  codes and numbers. `OTP_PROVIDER` is `console` (the default outside production) or the vendor once
+  the owner approves it (`specs/009-otp-sign-in/research.md` R10); the vendor's variables come as a
+  group. A production deployment refuses to start on the console provider.
+- The console provider writes each code to `.otp-outbox/<challengeId>.json` (git-ignored). Read the
+  newest with `pnpm --filter web otp:last` (number masked, refused when `NODE_ENV=production`).
+
+## Upgrading Payload
+
+Payload is exact-pinned. On every upgrade:
+
+1. Re-read `node_modules/payload/dist/auth/sessions.js` (`addSessionToUser`). `src/modules/auth/otp/mint.ts`
+   mirrors it (feature 009, research R2) because it is not exported.
+2. Run `tests/integration/mobile-api-auth-session.int.test.ts` (OT-US3-S8, the tripwire): a minted token
+   must be accepted by `payload.auth`, match a password-login token's header and claims, and stop working
+   after logout.
+3. If the internal changed shape and cannot be mirrored again, switch to the recorded fallback (a custom
+   auth strategy with hashed opaque tokens, research R2).

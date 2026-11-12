@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test'
-import { a11y, inEnglish, uniqueEmail } from './helpers'
+import { a11y, e2ePhone, enterOutboxCode, inEnglish } from './helpers'
 
-const PASSWORD = process.env.SEED_ADMIN_PASSWORD ?? 'e2e-password-123'
 
 test.describe('MP-US2 legal pages', () => {
   test('@smoke MP-US2-S1 the footer links the three documents, each at its fixed address with a version and a date', async ({ page }, info) => {
@@ -40,13 +39,15 @@ test.describe('MP-US2 legal pages', () => {
     const accept = page.getByTestId('accept-terms')
     await expect(accept.getByRole('link', { name: 'Terms' })).toHaveAttribute('href', '/terms')
     await expect(accept.getByRole('link', { name: 'Privacy Policy' })).toHaveAttribute('href', '/privacy')
-    await page.getByLabel('Full name').fill('Legal Seeker')
-    await page.getByLabel('Email').fill(uniqueEmail('legal'))
-    await page.getByLabel('Password').fill(PASSWORD)
-    await page.getByTestId('register-submit').click()
-    await expect(page).toHaveURL(/\/register/) // the required checkbox stops the sign-up
+    // Join as a creator by code (feature 009): nothing is sent without the acceptance.
+    await page.getByLabel('I am a').selectOption({ index: 1 })
+    await page.getByLabel('Mobile number').fill(e2ePhone())
+    await page.getByTestId('send-code').click()
+    await expect(accept.getByText('Please accept the Terms and the Privacy Policy to create an account.')).toBeVisible()
+    await expect(page).toHaveURL(/\/register/)
     await accept.getByRole('checkbox').check()
-    await page.getByTestId('register-submit').click()
-    await expect(page).toHaveURL(/\/account$/, { timeout: 30_000 })
+    await page.getByTestId('send-code').click()
+    await enterOutboxCode(page)
+    await expect(page).toHaveURL(/\/account\/profile$/, { timeout: 30_000 })
   })
 })

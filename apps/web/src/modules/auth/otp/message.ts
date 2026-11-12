@@ -13,3 +13,9 @@ export function renderSms(locale: 'en' | 'ar', code: string, siteUrl: string): s
   const t = createTranslator({ locale, messages: MESSAGES[locale], namespace: 'auth.otp' })
   return t('sms', { code, minutes: OTP_TTL_MS / 60_000, domain: new URL(siteUrl).host })
 }
+
+/** The channel's name in the person's language, for messages such as "send it by {otherChannel}". */
+export function channelLabel(locale: 'en' | 'ar', channel: 'sms' | 'whatsapp'): string {
+  const t = createTranslator({ locale, messages: MESSAGES[locale], namespace: 'auth.otp.channels' })
+  return t(channel)
+}

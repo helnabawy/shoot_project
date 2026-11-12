@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import { expect, test, type APIRequestContext, type Page } from '@playwright/test'
 import sharp from 'sharp'
-import { adminToken, auth, expectNoSeriousA11yIssues, uniqueEmail } from './helpers'
+import { adminToken, auth, expectNoSeriousA11yIssues, uniqueEmail, createAccount, e2ePhone, enterOutboxCode } from './helpers'
 
 const PASSWORD = 'e2e-password-123'
 type Ids = { persona: number; category: number; city: number }
@@ -19,8 +19,7 @@ async function seedIds(request: APIRequestContext): Promise<Ids> {
 /** A provider account signed in in this browser context (cookie set through the REST login). */
 async function signedInProvider(page: Page, request: APIRequestContext, ids: Ids) {
   const email = uniqueEmail('provider')
-  const created = await request.post('/api/users', { data: { name: 'E2E Provider', email, password: PASSWORD, accountType: 'provider', persona: [ids.persona] } })
-  expect(created.ok()).toBeTruthy()
+  const created = await createAccount(request, { name: 'E2E Provider', email, password: PASSWORD, accountType: 'provider', persona: [ids.persona] })
   const login = await page.context().request.post('/api/users/login', { data: { email, password: PASSWORD } })
   expect(login.ok()).toBeTruthy()
   return { email, id: (await created.json()).doc.id as number }
@@ -55,14 +54,13 @@ test.describe('CP-US3 providers manage their own profile', () => {
     const ids = await seedIds(request)
 
     // A new professional starts on their profile.
-    await page.goto('/register?type=provider')
-    const email = uniqueEmail('journey')
-    await page.getByLabel('Full name').fill('Journey Provider')
-    await page.getByLabel('Email').fill(email)
-    await page.getByLabel('Password').fill(PASSWORD)
+    // Join as a creator by code (feature 009).
+    await page.goto('/register')
     await page.getByLabel('I am a').selectOption('photographer')
+    await page.getByLabel('Mobile number').fill(e2ePhone())
     await page.getByTestId('accept-terms').getByRole('checkbox').check()
-    await page.getByTestId('register-submit').click()
+    await page.getByTestId('send-code').click()
+    await enterOutboxCode(page)
     await expect(page).toHaveURL(/\/account\/profile$/, { timeout: 30_000 })
     await expect(status(page)).toHaveAttribute('data-status', 'draft')
     // The registration choices are already ticked.
@@ -224,7 +222,7 @@ test.describe('CP-US3 providers manage their own profile', () => {
 
   test('CP-US3 a seeker has no profile page, and a visitor is sent to log in', async ({ page, request }) => {
     const seekerEmail = uniqueEmail('seeker')
-    await request.post('/api/users', { data: { name: 'E2E Seeker', email: seekerEmail, password: PASSWORD, accountType: 'seeker' } })
+    await createAccount(request, { name: 'E2E Seeker', email: seekerEmail, password: PASSWORD, accountType: 'seeker' })
     const signedOut = await page.goto('/account/profile')
     await expect(page).toHaveURL(/\/login\?next=%2Faccount%2Fprofile|\/login\?next=\/account\/profile/)
     expect(signedOut?.status()).toBeLessThan(400)

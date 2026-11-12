@@ -1,4 +1,6 @@
+import { maskPhone } from '@shoot/domain/auth'
 import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import type { User } from '@/payload-types'
 import { initialsOf } from '@/modules/creators'
 import { rowClass, RowContent } from '@/shared/ui/bar'
@@ -10,7 +12,7 @@ import { logout } from '../actions'
  * Who is signed in, as the page's heading: the initials in a large photo tile, the name as the h1, and the
  * profession (creators) with the email as one meta line. Facts, not rows: none of it is something to do.
  */
-export function AccountSummary({
+export async function AccountSummary({
   user,
   personaLabel,
 }: {
@@ -18,6 +20,7 @@ export function AccountSummary({
   personaLabel?: string | null
   locale: string
 }) {
+  const t = await getTranslations('auth.otp')
   return (
     <header
       className="flex items-center gap-4 px-1 lg:flex-col lg:items-start"
@@ -31,12 +34,27 @@ export function AccountSummary({
       </span>
       <div className="min-w-0">
         <h1 className="text-[26px] leading-tight font-bold tracking-[-0.025em] text-balance break-words text-ink sm:text-[34px] sm:tracking-[-0.03em] lg:text-[26px]">
-          {user.name}
+          {user.name || (user.username ? <Bidi>{maskPhone(user.username)}</Bidi> : null)}
         </h1>
         {personaLabel ? <p className="mt-0.5 text-[15px] text-ink">{personaLabel}</p> : null}
-        <p className="mt-0.5 text-[15px] break-all text-mute">
-          <Bidi>{user.email}</Bidi>
-        </p>
+        {user.email ? (
+          <p className="mt-0.5 text-[15px] break-all text-mute">
+            <Bidi>{user.email}</Bidi>
+          </p>
+        ) : null}
+        {user.username && user.name ? (
+          <p className="mt-0.5 text-[15px] text-mute">
+            <Bidi>{maskPhone(user.username)}</Bidi>
+          </p>
+        ) : null}
+        {!user.username ? (
+          // FR-063: an email member adds a sign-in number by code.
+          <p className="mt-1 text-[15px]">
+            <Link href={{ pathname: '/login', query: { add: 'number' } }} className="font-medium text-ink underline" data-testid="add-number">
+              {t('linkTitle')}
+            </Link>
+          </p>
+        ) : null}
       </div>
     </header>
   )

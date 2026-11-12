@@ -35,7 +35,7 @@ vi.mock('@/i18n/navigation', () => ({
   },
 }))
 
-const { login, logout, register } = await import('@/modules/auth/actions')
+const { login, logout } = await import('@/modules/auth/actions')
 const { submitBrief } = await import('@/modules/brief/actions')
 const { getCurrentUser, requireUser } = await import('@/modules/auth/session')
 const { exportBriefsCsv } = await import('@/modules/brief/export')
@@ -81,77 +81,8 @@ describe('server actions', () => {
   })
 
   describe('US4 auth actions', () => {
-    it('US4-S1 register signs the new member in and redirects to the safe next path', async () => {
-      const target = await expectRedirect(() =>
-        register(undefined, form({ locale: 'ar', name: 'Mona', email: 'Mona@Example.test', password: 'password-123', accountType: 'seeker', next: '/account' })),
-      )
-      expect(target).toEqual({ href: '/account', locale: 'ar' })
-      expect(jar.get('payload-token')).toBeTruthy()
-      const payload = await getTestPayload()
-      const { docs } = await payload.find({ collection: 'users', where: { email: { equals: 'mona@example.test' } } })
-      expect(docs[0]?.roles).toEqual(['member'])
-    })
-
-    it('US4-S7 a roles value posted with the form is ignored', async () => {
-      await expectRedirect(() =>
-        register(undefined, form({ name: 'Eve', email: 'eve@example.test', password: 'password-123', accountType: 'seeker', roles: 'admin' })),
-      )
-      const payload = await getTestPayload()
-      const { docs } = await payload.find({ collection: 'users', where: { email: { equals: 'eve@example.test' } } })
-      expect(docs[0]?.roles).toEqual(['member'])
-    })
-
-    it('FR-019 field errors come back with the values the visitor typed', async () => {
-      const state = await register(undefined, form({ name: 'A', email: 'nope', password: 'short', accountType: 'seeker' }))
-      expect(state?.errors).toMatchObject({ name: expect.any(String), email: expect.any(String), password: expect.any(String) })
-      expect(state?.values?.email).toBe('nope')
-      expect(jar.size).toBe(0)
-    })
-
-    it('US4-S3 a taken email gets its own message', async () => {
-      const existing = await createUser()
-      const state = await register(undefined, form({ name: 'Sam', email: existing.email!, password: 'password-123', accountType: 'seeker' }))
-      expect(state?.errors).toEqual({ email: 'auth.errors.emailTaken' })
-    })
-
-    it('FR-021 a provider must pick an active persona', async () => {
-      const state = await register(
-        undefined,
-        form({ name: 'Pat', email: 'pat@example.test', password: 'password-123', accountType: 'provider', persona: 'teacher' }),
-      )
-      expect(state?.errors).toEqual({ persona: 'auth.errors.personaInactive' })
-    })
-
-    it('FR-020 a provider with an active persona is stored with it, and starts on their profile', async () => {
-      const target = await expectRedirect(() =>
-        register(undefined, form({ name: 'Lu', email: 'lu@example.test', password: 'password-123', accountType: 'provider', persona: 'videographer' })),
-      )
-      expect(target).toEqual({ href: '/account/profile', locale: 'en' })
-      const payload = await getTestPayload()
-      const { docs } = await payload.find({ collection: 'users', where: { email: { equals: 'lu@example.test' } }, depth: 1 })
-      expect((docs[0]?.persona as { slug: string }[]).map((p) => p.slug)).toEqual(['videographer'])
-    })
-
-    it('a provider who picks "Both" is stored with every persona, in order, and their profile starts with them', async () => {
-      await expectRedirect(() =>
-        register(undefined, form({ name: 'Bo', email: 'bo@example.test', password: 'password-123', accountType: 'provider', persona: 'photographer,videographer' })),
-      )
-      const payload = await getTestPayload()
-      const { docs } = await payload.find({ collection: 'users', where: { email: { equals: 'bo@example.test' } }, depth: 1 })
-      expect((docs[0]?.persona as { slug: string }[]).map((p) => p.slug)).toEqual(['photographer', 'videographer'])
-      const { getMyProfileView } = await import('@/modules/creators/my-profile')
-      const user = await payload.findByID({ collection: 'users', id: docs[0]!.id, depth: 0 })
-      const view = await getMyProfileView(user, 'en')
-      expect(view.defaults.personas).toEqual((docs[0]?.persona as { id: number }[]).map((p) => p.id))
-    })
-
-    it('refuses a combined value that includes an inactive persona', async () => {
-      const state = await register(
-        undefined,
-        form({ name: 'Pat', email: 'pat2@example.test', password: 'password-123', accountType: 'provider', persona: 'photographer,teacher' }),
-      )
-      expect(state?.errors).toEqual({ persona: 'auth.errors.personaInactive' })
-    })
+    // Email registration was withdrawn by feature 009 (FR-061, 001 spec amended): sign-up by code is
+    // proven in tests/integration/auth-web.int.test.ts and mobile-api-auth-{otp,join}.int.test.ts.
 
     it('US4-S2 login sets the session cookie and refuses an off-site next', async () => {
       const user = await createUser()

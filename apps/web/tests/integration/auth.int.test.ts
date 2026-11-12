@@ -8,30 +8,37 @@ describe('US4 accounts', () => {
     await seed(await getTestPayload(), { log: () => {} })
   })
 
-  it('US4-S1 / US4-S7 public registration creates a member and never returns the password; roles in the body are ignored', async () => {
+  it('T083 (009) no public endpoint creates users; an admin does, and the password never comes back', async () => {
     const payload = await getTestPayload()
+    await expect(
+      payload.create({ collection: 'users', data: { name: 'Public', email: 'public@test.local', password: 'password-123', accountType: 'seeker' }, overrideAccess: false }),
+    ).rejects.toThrow()
+    const admin = await createUser(['admin'])
     const user = await payload.create({
       collection: 'users',
-      data: { name: 'Mariam', email: 'mariam@test.local', password: 'password-123', accountType: 'seeker', roles: ['admin'] },
+      data: { name: 'Mariam', email: 'mariam@test.local', password: 'password-123', accountType: 'seeker' },
       overrideAccess: false,
+      user: { ...admin, collection: 'users' },
     })
-    expect(user.roles).toEqual(['member'])
     expect(user).not.toHaveProperty('password')
     expect(JSON.stringify(user)).not.toMatch(/hash|salt/)
   })
 
+  it('US4-S7 a member cannot grant themselves a role', async () => {
+    const payload = await getTestPayload()
+    const member = await createUser(['member'])
+    const updated = await payload.update({ collection: 'users', id: member.id, data: { roles: ['admin'] }, overrideAccess: false, user: { ...member, collection: 'users' } })
+    expect(updated.roles).toEqual(['member'])
+  })
+
   it('US4-S3 refuses a second account with the same email', async () => {
     const payload = await getTestPayload()
-    await expect(
-      payload.create({ collection: 'users', data: { name: 'Again', email: 'mariam@test.local', password: 'password-123', accountType: 'seeker' }, overrideAccess: false }),
-    ).rejects.toThrow()
+    await expect(payload.create({ collection: 'users', data: { name: 'Again', email: 'mariam@test.local', password: 'password-123', accountType: 'seeker' } })).rejects.toThrow()
   })
 
   it('US4-S2 a provider needs a profession', async () => {
     const payload = await getTestPayload()
-    await expect(
-      payload.create({ collection: 'users', data: { name: 'Pro', email: 'pro@test.local', password: 'password-123', accountType: 'provider' }, overrideAccess: false }),
-    ).rejects.toThrow()
+    await expect(payload.create({ collection: 'users', data: { name: 'Pro', email: 'pro@test.local', password: 'password-123', accountType: 'provider' } })).rejects.toThrow()
   })
 
   it('FR-022 logs in with the right password and reads the session', async () => {

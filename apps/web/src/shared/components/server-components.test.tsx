@@ -5,6 +5,13 @@ import type { Brief, Media, User } from '@/payload-types'
 vi.mock('server-only', () => ({}))
 vi.mock('next-intl/server', () => import('../../../tests/setup/server-intl'))
 vi.mock('@/modules/auth/actions', () => ({ logout: vi.fn() }))
+vi.mock('@/i18n/navigation', () => ({
+  Link: ({ href, children, ...rest }: { href: unknown; children: React.ReactNode }) => (
+    <a href={typeof href === 'string' ? href : JSON.stringify(href)} {...rest}>
+      {children}
+    </a>
+  ),
+}))
 
 const { Header } = await import('./Header')
 const { Footer } = await import('./Footer')
@@ -156,7 +163,7 @@ describe('AccountSummary', () => {
     const user = { id: 1, name: 'mona', email: 'mona@example.test', accountType: 'provider' } as User
     render(
       <>
-        {AccountSummary({ user, personaLabel: 'Photographer', locale: 'en' })}
+        {await AccountSummary({ user, personaLabel: 'Photographer', locale: 'en' })}
         {await SignOut({ locale: 'en' })}
       </>,
     )
@@ -164,5 +171,14 @@ describe('AccountSummary', () => {
     expect(screen.getByText('mona@example.test')).toBeInTheDocument()
     expect(screen.getByText(/Photographer/)).toBeInTheDocument()
     expect(screen.getByTestId('logout')).toHaveAttribute('type', 'submit')
+    // OT-US5-S5: an email account without a sign-in number is offered one.
+    expect(screen.getByTestId('add-number')).toHaveTextContent('Add your mobile number')
+  })
+
+  it('OT-US5-S5 a code account shows its own number and no "Add your mobile number"', async () => {
+    const user = { id: 2, name: null, email: null, username: '+971501234567', accountType: 'seeker' } as unknown as User
+    render(<>{await AccountSummary({ user, locale: 'en' })}</>)
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('+971 50 123 4567')
+    expect(screen.queryByTestId('add-number')).toBeNull()
   })
 })

@@ -3,7 +3,7 @@ import { APIError, type CollectionConfig, type FieldAccess } from 'payload'
 import { countProfileReferences } from '@/modules/creators/references'
 import { MAX_PROVIDER_PERSONAS } from '@shoot/domain/auth'
 import { refuseDeleteWhileReferenced } from '@/modules/personas/collections/guards'
-import { anyone, hasRole, isAdmin, isAdminField, isAdminOrSelf } from '@/shared/payload/access'
+import { hasRole, isAdmin, isAdminField, isAdminOrSelf } from '@/shared/payload/access'
 
 /** The member themself or an admin: who may read the sign-in and contact numbers (FR-025, FR-033). */
 const selfOrAdminField: FieldAccess = ({ req, doc, id }) =>
@@ -45,7 +45,8 @@ export const Users: CollectionConfig = {
   access: {
     // Admins and editors may open /admin (FR-016).
     admin: ({ req }) => hasRole(req.user as never, 'admin', 'editor'),
-    create: anyone,
+    // Feature 009 (research R18): no public endpoint creates users; the code commands use overrideAccess.
+    create: isAdmin,
     read: isAdminOrSelf,
     update: isAdminOrSelf,
     delete: isAdmin,

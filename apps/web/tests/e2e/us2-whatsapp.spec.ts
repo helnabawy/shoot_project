@@ -24,7 +24,7 @@ test.describe('US2 WhatsApp', () => {
     await expect(page.getByTestId('whatsapp-floating')).toBeVisible()
     await page.goto('/register')
     const button = await page.getByTestId('whatsapp-floating').boundingBox()
-    const submit = await page.getByTestId('register-submit').boundingBox()
+    const submit = await page.getByTestId('send-code').boundingBox()
     const overlap = button && submit && !(button.x > submit.x + submit.width || button.x + button.width < submit.x || button.y > submit.y + submit.height || button.y + button.height < submit.y)
     expect(overlap).toBeFalsy()
   })

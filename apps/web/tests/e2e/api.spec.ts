@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { adminToken, auth, uniqueEmail } from './helpers'
+import { adminToken, auth, uniqueEmail, createAccount } from './helpers'
 
 // REST contract (contracts/rest-api.md); runs once.
 test.describe('REST contract', () => {
@@ -16,10 +16,9 @@ test.describe('REST contract', () => {
     expect((await request.get('/api/rate-limits')).status()).toBe(403)
 
     const email = uniqueEmail('api')
-    const created = await request.post('/api/users', { data: { name: 'API', email, password: 'password-123', accountType: 'seeker', roles: ['admin'] } })
-    expect(created.status()).toBe(201)
-    expect((await created.json()).doc.roles).toEqual(['member'])
-    expect((await request.post('/api/users', { data: { name: 'API', email, password: 'password-123', accountType: 'seeker' } })).status()).toBe(400)
+    // Feature 009 (T083): no public endpoint creates users.
+    expect((await request.post('/api/users', { data: { name: 'API', email, password: 'password-123', accountType: 'seeker', roles: ['admin'] } })).status()).toBe(403)
+    await createAccount(request, { name: 'API', email, password: 'password-123', accountType: 'seeker' })
 
     const login = await request.post('/api/users/login', { data: { email, password: 'password-123' } })
     expect(login.ok()).toBeTruthy()

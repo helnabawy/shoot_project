@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { briefToStep2, expectNoSeriousA11yIssues, inTenDays, uniqueEmail } from './helpers'
+import { briefToStep2, expectNoSeriousA11yIssues, inTenDays, uniqueEmail, createAccount } from './helpers'
 
 async function details(page: Page, code?: string) {
   await page.getByTestId('match-any').click()
@@ -35,8 +35,7 @@ test.describe('QM-US2 leave details and receive a quotation', () => {
 
   test('QM-US2-S6 a member finds the quotation in their account', async ({ page }, info) => {
     const email = uniqueEmail('client')
-    const created = await page.request.post('/api/users', { data: { name: 'E2E Client', email, password: 'e2e-password-123', accountType: 'seeker' } })
-    expect(created.ok()).toBeTruthy()
+    await createAccount(page.request, { name: 'E2E Client', email, password: 'e2e-password-123', accountType: 'seeker' })
     expect((await page.context().request.post('/api/users/login', { data: { email, password: 'e2e-password-123' } })).ok()).toBeTruthy()
     await briefToStep2(page, '/', { nojs: info.project.name === 'nojs' })
     await details(page)

@@ -125,9 +125,21 @@ describe('Next.js routes and pages', () => {
       await payload.create({ collection: 'rate-limits', data: { key: 'old', count: 3, windowStart: old }, context: quiet })
       await payload.create({ collection: 'rate-limits', data: { key: 'fresh', count: 1, windowStart: new Date().toISOString() }, context: quiet })
       const response = await call(`Bearer ${process.env.CRON_SECRET}`)
-      expect(await response.json()).toEqual({ deleted: 1, orphanedUploads: 0 })
+      expect(await response.json()).toEqual({ deleted: 1, orphanedUploads: 0, expiredChallenges: 0 })
       const left = await payload.find({ collection: 'rate-limits' })
       expect(left.docs.map((d) => d.key)).toEqual(['fresh'])
+    })
+
+    it('FR-034 cron cleanup deletes sign-in codes that expired more than 24 hours ago (009)', async () => {
+      const payload = await getTestPayload()
+      const at = (ms: number) => new Date(Date.now() + ms).toISOString()
+      const challenge = (publicId: string, expiresAt: string) => ({ publicId, phoneHash: 'p'.repeat(64), codeHash: 'c'.repeat(64), channel: 'sms', locale: 'en', attempts: 0, expiresAt, resendAt: expiresAt })
+      await payload.create({ collection: 'otp-challenges', data: challenge('old', at(-25 * 60 * 60 * 1000)) as never, overrideAccess: true })
+      await payload.create({ collection: 'otp-challenges', data: challenge('recent', at(-60 * 60 * 1000)) as never, overrideAccess: true })
+      const response = await cron.GET(new Request('http://test/api/cron/cleanup', { headers: { authorization: `Bearer ${process.env.CRON_SECRET}` } }))
+      expect(((await response.json()) as { expiredChallenges: number }).expiredChallenges).toBe(1)
+      const left = await payload.find({ collection: 'otp-challenges', overrideAccess: true })
+      expect(left.docs.map((d) => d.publicId)).toEqual(['recent'])
     })
 
     it('cron cleanup refuses every call when no secret is configured', async () => {
@@ -274,10 +286,10 @@ describe('Next.js routes and pages', () => {
   })
 
   describe('US4 auth pages', () => {
-    it('login renders the form for a visitor and passes only a safe next path', async () => {
+    it('OT-US5-S1 login renders the number step for a visitor and passes only a safe next path', async () => {
       const tree = elements(await login.default({ ...params('ar'), ...search({ next: 'https://evil.test' }) }))
-      const form = tree.find((el) => (el.type as { name?: string }).name === 'LoginForm') as ReactElement<{ next: string; locale: string }>
-      expect(form.props).toMatchObject({ next: '/account', locale: 'ar' })
+      const form = tree.find((el) => (el.type as { name?: string }).name === 'PhoneStep') as ReactElement<{ next: string; locale: string; mode: string }>
+      expect(form.props).toMatchObject({ next: '/account', locale: 'ar', mode: 'login' })
       expect((await login.generateMetadata({ ...params('en'), ...search() })).robots).toEqual({ index: false })
     })
 
@@ -289,18 +301,11 @@ describe('Next.js routes and pages', () => {
       expect((fromRegister.error as Redirect).target).toEqual({ href: '/account', locale: 'ar' })
     })
 
-    it('US5 register offers the active professions and honours ?type=provider&persona=', async () => {
+    it('OT-US5-S4 register is Join as a creator by code, with the active professions and ?persona=', async () => {
       const tree = elements(await register.default({ ...params('en'), ...search({ type: 'provider', persona: 'videographer' }) }))
-      const form = tree.find((el) => (el.type as { name?: string }).name === 'RegisterForm') as ReactElement<{
-        personas: { slug: string }[]
-        initialType: string
-        initialPersona?: string
-      }>
+      const form = tree.find((el) => (el.type as { name?: string }).name === 'PhoneStep') as ReactElement<{ personas: { slug: string }[]; mode: string; initialPersona?: string }>
       expect(form.props.personas.map((p) => p.slug)).toEqual(['photographer', 'videographer'])
-      expect(form.props).toMatchObject({ initialType: 'provider', initialPersona: 'videographer' })
-      const plain = elements(await register.default({ ...params('en'), ...search({ type: 'anything' }) }))
-      const seeker = plain.find((el) => (el.type as { name?: string }).name === 'RegisterForm') as ReactElement<{ initialType: string }>
-      expect(seeker.props.initialType).toBe('seeker')
+      expect(form.props).toMatchObject({ mode: 'join', initialPersona: 'videographer' })
       expect((await register.generateMetadata({ ...params('ar'), ...search() })).title).toBeTruthy()
     })
 

@@ -94,3 +94,41 @@ export async function briefToStep2(page: Page, path = '/', options: { nojs?: boo
 /** A date ten days ahead (the UAE calendar is close enough for a form field). */
 export const inDays = (days: number) => new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10)
 export const inTenDays = () => inDays(10)
+
+// ---- Feature 009: sign-in by one-time code through the console provider's outbox.
+
+/** The code the console provider wrote for a challenge (apps/web/.otp-outbox/<challengeId>.json). */
+export async function readOutboxCode(challengeId: string): Promise<string> {
+  const { readFile } = await import('node:fs/promises')
+  const { join } = await import('node:path')
+  const file = join(import.meta.dirname, '..', '..', '.otp-outbox', `${challengeId}.json`)
+  for (let i = 0; i < 50; i++) {
+    try {
+      return (JSON.parse(await readFile(file, 'utf8')) as { code: string }).code
+    } catch {
+      await new Promise((r) => setTimeout(r, 100))
+    }
+  }
+  throw new Error(`no outbox file for ${challengeId}`)
+}
+
+let phoneSeq = 0
+/** A UAE mobile number unique to this run (never one of the console provider's failure numbers). */
+export const e2ePhone = () => `+9715${String((Date.now() % 1e7) * 10 + (phoneSeq++ % 10)).padStart(8, '0').slice(-8)}`
+
+/** Accounts are created by admins only (feature 009, T083): the REST create with the seeded admin's token. */
+export async function createAccount(request: APIRequestContext, data: Record<string, unknown>) {
+  const res = await request.post('/api/users', { headers: auth(await adminToken(request)), data })
+  expect(res.ok(), `create account: ${res.status()}`).toBeTruthy()
+  return res
+}
+
+/** On the code step: reads the pending challenge from the HTTP-only cookie and types its code. */
+export async function enterOutboxCode(page: Page) {
+  await expect(page).toHaveURL(/\/login\/code$/)
+  const pending = (await page.context().cookies()).find((c) => c.name === 'shoot-otp')
+  expect(pending, 'the pending-challenge cookie').toBeTruthy()
+  const { challengeId } = JSON.parse(decodeURIComponent(pending!.value)) as { challengeId: string }
+  await page.getByLabel(/Six-digit code|الرمز/).fill(await readOutboxCode(challengeId))
+  await page.getByTestId('verify-code').click()
+}
