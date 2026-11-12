@@ -31,3 +31,15 @@ export { getMyProfileView } from './my-profile'
 export { toWireCreatorCard, toWireCreatorList, toWireCreatorProfile, toWireSpecialtyPage } from './wire'
 // The mobile API (008 US3): directory, profile and specialty endpoints.
 export { getCreatorProfileV1, getCreatorsV1, getSpecialtyV1 } from './api'
+// The creator's own profile for the app (014): the command and its handlers.
+export { readMyProfile as readMyCreatorProfile } from './commands/my-profile'
+export {
+  addMyCreatorSampleV1,
+  getMyCreatorProfileV1,
+  removeMyCreatorSampleV1,
+  saveMyCreatorProfileV1,
+  setMyCreatorVisibilityV1,
+  submitMyCreatorProfileV1,
+  uploadMyCreatorIdentityV1,
+  uploadMyCreatorPhotoV1,
+} from './api-account'
