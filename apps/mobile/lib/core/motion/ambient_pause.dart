@@ -14,11 +14,15 @@ class AmbientPause extends StatefulWidget {
     super.key,
     required this.child,
     this.initiallyPaused = false,
+    this.startPausedWhenReduced = false,
     this.onChanged,
   });
 
   final Widget child;
   final bool initiallyPaused;
+
+  /// With reduced motion on, start paused so the control reads "Play" (the landing, FR-033).
+  final bool startPausedWhenReduced;
 
   /// Called with the new paused state when the person presses the control (never for the
   /// reduced-motion visit).
@@ -57,7 +61,7 @@ class _AmbientPauseState extends State<AmbientPause> {
 
   void _changed() {
     final reduced = MotionPolicy.of(context).reduced;
-    if (reduced) {
+    if (reduced && widget.startPausedWhenReduced) {
       _override.value = !_paused.value;
       return;
     }
@@ -71,7 +75,7 @@ class _AmbientPauseState extends State<AmbientPause> {
     _started = true;
     _reducedStart = MotionPolicy.of(context).reduced;
     // Still from the first frame; the control reads "Play" (FR-033).
-    if (_reducedStart) {
+    if (_reducedStart && widget.startPausedWhenReduced) {
       _paused.removeListener(_changed);
       _paused.value = true;
       _paused.addListener(_changed);

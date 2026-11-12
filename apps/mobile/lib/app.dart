@@ -25,14 +25,17 @@ import 'package:shoot_mobile/features/welcome/welcome_routes.dart';
 
 /// The app shell: language, theme and router. No feature logic here.
 class ShootApp extends StatefulWidget {
-  const ShootApp({super.key});
+  /// [home] replaces the landing (feature 010); tests use it to exercise the shell.
+  const ShootApp({super.key, this.home});
+
+  final WidgetBuilder? home;
 
   @override
   State<ShootApp> createState() => _ShootAppState();
 }
 
 class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
-  final GoRouter _router = createAppRouter(
+  late final GoRouter _router = createAppRouter(
     onArabicLink: () => getIt<LocaleCubit>().select(AppLocales.arabic),
     welcomeSeen: () => getIt<FirstRunStore>().welcomeSeen,
     session: getIt<SessionCubit>(),
@@ -51,13 +54,15 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         links: getIt<WebsiteLinks>(),
       ),
     ],
-    home: (_) => LandingPage(
-      landing: getIt<LandingCubit>(),
-      brief: getIt<BriefCubit>(),
-      motion: getIt<LandingMotionStore>(),
-      clock: getIt<Clock>(),
-      links: getIt<WebsiteLinks>(),
-    ),
+    home:
+        widget.home ??
+        (_) => LandingPage(
+          landing: getIt<LandingCubit>(),
+          brief: getIt<BriefCubit>(),
+          motion: getIt<LandingMotionStore>(),
+          clock: getIt<Clock>(),
+          links: getIt<WebsiteLinks>(),
+        ),
   );
 
   @override

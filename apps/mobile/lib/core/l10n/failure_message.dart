@@ -26,7 +26,13 @@ enum ProblemCode {
   numberTaken('auth.errors.numberTaken'),
   personaRequired('auth.errors.personaRequired'),
   personaInactive('auth.errors.personaInactive'),
-  acceptTerms('auth.errors.acceptTerms');
+  acceptTerms('auth.errors.acceptTerms'),
+  // 010: recording a brief.
+  briefRequired('brief.errors.required'),
+  briefOptionGone('brief.errors.optionGone'),
+  briefPastDate('brief.errors.pastDate'),
+  briefTooMany('brief.errors.tooMany'),
+  briefGeneric('brief.errors.generic');
 
   const ProblemCode(this.wire);
 
@@ -76,6 +82,11 @@ enum ProblemCode {
       personaRequired => l10n.problemPersonaRequired,
       personaInactive => l10n.problemPersonaInactive,
       acceptTerms => l10n.problemAcceptTerms,
+      briefRequired => l10n.mlBriefRequired,
+      briefOptionGone => l10n.mlBriefOptionGone,
+      briefPastDate => l10n.mlBriefPastDate,
+      briefTooMany => l10n.mlBriefRateLimited,
+      briefGeneric => l10n.mlBriefGeneric,
     };
   }
 }

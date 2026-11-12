@@ -170,6 +170,7 @@ class _LandingPageState extends State<LandingPage> {
           }
           return AmbientPause(
             initiallyPaused: widget.motion.paused,
+            startPausedWhenReduced: true,
             onChanged: (p) => widget.motion.save(paused: p),
             child: Scaffold(
               backgroundColor: context.colors.ground,
@@ -676,7 +677,8 @@ class _CreatorStripState extends State<CreatorStrip>
       onPointerUp: (_) => _touch(false),
       onPointerCancel: (_) => _touch(false),
       child: SizedBox(
-        height: 232,
+        height:
+            248 * MediaQuery.textScalerOf(context).scale(16).clamp(16, 32) / 16,
         child: ListView.builder(
           key: const ValueKey('landing:strip'),
           controller: _scroll,

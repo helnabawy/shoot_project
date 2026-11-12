@@ -76,9 +76,8 @@ CreatorCard _card(CreatorCard c, int i) => CreatorCard(
   featured: c.featured,
 );
 
-SiteInfo exampleSite({bool arabic = false}) => SiteInfoModel.fromJson(
-  loadExample(arabic ? 'site.ar' : 'site'),
-).toEntity();
+SiteInfo exampleSite({bool arabic = false}) =>
+    SiteInfoModel.fromJson(loadExample(arabic ? 'site.ar' : 'site')).toEntity();
 
 BriefBuilder exampleBuilder({bool arabic = false}) =>
     BriefBuilderModel.fromJson(
@@ -166,7 +165,9 @@ Future<void> pumpRouter(
       providers: [
         BlocProvider(create: (_) => LocaleCubit(prefs)..select(locale)),
         BlocProvider(create: (_) => ThemeModeCubit(prefs)..select(themeMode)),
-        BlocProvider(create: (_) => AccentCubit(prefs)..select(ShootAccent.blue)),
+        BlocProvider(
+          create: (_) => AccentCubit(prefs)..select(ShootAccent.blue),
+        ),
         BlocProvider<SessionCubit>.value(value: session),
         BlocProvider<BriefCubit>.value(value: brief ?? makeBrief()),
       ],

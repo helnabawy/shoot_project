@@ -14,6 +14,7 @@ import 'package:shoot_mobile/core/widgets/otp_code_input.dart';
 import 'package:shoot_mobile/core/widgets/phone_field.dart';
 import 'package:shoot_mobile/core/widgets/scene_tile.dart';
 import 'package:shoot_mobile/core/widgets/shoot_header.dart';
+import 'package:shoot_mobile/core/widgets/shoot_icon_button.dart';
 import 'package:shoot_mobile/core/widgets/shoot_scaffold.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/core/widgets/wordmark.dart';
@@ -166,6 +167,7 @@ class LearnStepPage extends StatelessWidget {
     final c = context.colors;
     final state = context.watch<WelcomeCubit>().state;
     final last = step == welcomeStepCount;
+    final large = MediaQuery.textScalerOf(context).scale(16) > 20;
     final text = state.steps.length >= step ? state.steps[step - 1] : null;
     final rtl = Directionality.of(context) == TextDirection.rtl;
     final demo = switch (step) {
@@ -192,101 +194,104 @@ class LearnStepPage extends StatelessWidget {
         }
       },
       child: ShootScaffold(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              flex: 5,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
-                child: Semantics(
-                  container: true,
-                  label: demoLabel,
-                  excludeSemantics: true,
-                  child: ExcludeFocus(child: IgnorePointer(child: demo)),
+        child: _Frame(
+          large: large,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _Slot(
+                large: large,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 12, 0),
+                  child: Semantics(
+                    container: true,
+                    label: demoLabel,
+                    excludeSemantics: true,
+                    child: ExcludeFocus(child: IgnorePointer(child: demo)),
+                  ),
                 ),
               ),
-            ),
-            ShootHeader(
-              leading: Wordmark(label: l10n.appTitle),
-              trailing: [
-                TextButton(
-                  key: const ValueKey('welcome:skip'),
-                  onPressed: onSkip,
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size(44, 44),
-                    foregroundColor: c.accentInk,
-                    textStyle: ShootType.button,
-                  ),
-                  child: Text(l10n.mlSkip),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 0),
-              child: Rise(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.mlStepOf(step, welcomeStepCount),
-                      style: ShootType.meta.copyWith(color: c.mute),
+              ShootHeader(
+                leading: Wordmark(label: l10n.appTitle),
+                trailing: [
+                  KeyedSubtree(
+                    key: const ValueKey('welcome:skip'),
+                    child: ShootTextAction(
+                      text: l10n.mlSkip,
+                      label: l10n.mlSkip,
+                      onPressed: onSkip,
                     ),
-                    const SizedBox(height: 6),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 0),
+                child: Rise(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.mlStepOf(step, welcomeStepCount),
+                        style: ShootType.meta.copyWith(color: c.mute),
+                      ),
+                      const SizedBox(height: 6),
+                      Semantics(
+                        header: true,
+                        child: Text(
+                          text?.title ?? '',
+                          style: ShootType.title.copyWith(color: c.ink),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        text?.body ?? '',
+                        style: ShootType.body.copyWith(color: c.bodyInk),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (large) const SizedBox(height: 24) else const Spacer(),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 20, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
                     Semantics(
-                      header: true,
-                      child: Text(
-                        text?.title ?? '',
-                        style: ShootType.title.copyWith(color: c.ink),
+                      container: true,
+                      label: l10n.mlStepSemantics(step, welcomeStepCount),
+                      excludeSemantics: true,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          for (var i = 1; i <= welcomeStepCount; i++)
+                            AnimatedContainer(
+                              duration: MediaQuery.disableAnimationsOf(context)
+                                  ? Duration.zero
+                                  : ShootMotion.base,
+                              margin: const EdgeInsets.symmetric(horizontal: 3),
+                              width: i == step ? 18 : 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: i == step ? c.accent : c.hair,
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      text?.body ?? '',
-                      style: ShootType.body.copyWith(color: c.bodyInk),
+                    const SizedBox(height: 16),
+                    TopHit(
+                      label: last ? l10n.mlStartBrief : l10n.mlNext,
+                      centered: true,
+                      onPressed: last ? onStartBrief : onNext,
                     ),
                   ],
                 ),
               ),
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Semantics(
-                    label: l10n.mlStepSemantics(step, welcomeStepCount),
-                    excludeSemantics: true,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        for (var i = 1; i <= welcomeStepCount; i++)
-                          AnimatedContainer(
-                            duration: MediaQuery.disableAnimationsOf(context)
-                                ? Duration.zero
-                                : ShootMotion.base,
-                            margin: const EdgeInsets.symmetric(horizontal: 3),
-                            width: i == step ? 18 : 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: i == step ? c.accent : c.hair,
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TopHit(
-                    label: last ? l10n.mlStartBrief : l10n.mlNext,
-                    centered: true,
-                    onPressed: last ? onStartBrief : onNext,
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -435,7 +440,7 @@ class _DemoPrice extends StatelessWidget {
                   label: config!.submitLabel,
                   centered: true,
                   glint: false,
-                  onPressed: null,
+                  onPressed: () {},
                 ),
               ),
           ],
@@ -516,4 +521,29 @@ class _WelcomeRouteState extends State<WelcomeRoute> {
       ),
     );
   }
+}
+
+/// The screen's frame: the content fills the screen, or scrolls when large text makes it taller.
+class _Frame extends StatelessWidget {
+  const _Frame({required this.large, required this.child});
+
+  final bool large;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) =>
+      large ? SingleChildScrollView(child: child) : child;
+}
+
+/// The demonstration's place: the leftover height on a normal screen.
+class _Slot extends StatelessWidget {
+  const _Slot({required this.large, required this.child});
+
+  final bool large;
+  final Widget child;
+
+  @override
+  // At large text sizes the decorative demonstration is left out; the text and the action stay.
+  Widget build(BuildContext context) =>
+      large ? const SizedBox(height: 8) : Expanded(flex: 5, child: child);
 }
