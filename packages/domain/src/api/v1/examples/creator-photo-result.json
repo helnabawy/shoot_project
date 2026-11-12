@@ -1,0 +1,213 @@
+{
+  "code": "SH-0087",
+  "status": "draft",
+  "submittedAt": null,
+  "reviewNote": "",
+  "strength": 100,
+  "canSubmit": true,
+  "hasPendingChanges": false,
+  "fields": {
+    "displayName": {
+      "en": "Omar K.",
+      "ar": "عمر ك."
+    },
+    "bio": {
+      "en": "Weddings and events.",
+      "ar": "أعراس وفعاليات."
+    },
+    "gender": "man",
+    "nationality": "EG",
+    "yearsExperience": 8,
+    "professions": [
+      "1"
+    ],
+    "specialties": [
+      "10"
+    ],
+    "emirates": [
+      "20"
+    ],
+    "languages": [
+      "en",
+      "ar"
+    ],
+    "social": [
+      {
+        "platform": "instagram",
+        "url": "https://instagram.com/omark"
+      }
+    ]
+  },
+  "photo": {
+    "alt": "Wedding in Dubai",
+    "width": 1200,
+    "height": 800,
+    "sizes": [
+      {
+        "url": "https://shoot.example/media/omar-480.jpg",
+        "width": 480,
+        "height": 320
+      },
+      {
+        "url": "https://shoot.example/media/omar-1200.jpg",
+        "width": 1200,
+        "height": 800
+      }
+    ]
+  },
+  "samples": [
+    {
+      "id": "s1",
+      "kind": "image",
+      "image": {
+        "alt": "Wedding in Dubai",
+        "width": 1200,
+        "height": 800,
+        "sizes": [
+          {
+            "url": "https://shoot.example/media/s1-480.jpg",
+            "width": 480,
+            "height": 320
+          },
+          {
+            "url": "https://shoot.example/media/s1-1200.jpg",
+            "width": 1200,
+            "height": 800
+          }
+        ]
+      },
+      "videoUrl": "",
+      "caption": {
+        "en": "Wedding, Dubai",
+        "ar": "زفاف في دبي"
+      },
+      "specialty": "10"
+    }
+  ],
+  "identity": {
+    "emirates-id": {
+      "state": "pending",
+      "uploadedAt": "2026-11-10T09:00:00.000Z",
+      "note": ""
+    },
+    "trade-license": {
+      "state": "pending",
+      "uploadedAt": "2026-11-10T09:00:00.000Z",
+      "note": ""
+    }
+  },
+  "steps": [
+    {
+      "key": "basics",
+      "number": 1,
+      "state": "done",
+      "required": [],
+      "recommended": []
+    },
+    {
+      "key": "about",
+      "number": 2,
+      "state": "done",
+      "required": [],
+      "recommended": []
+    },
+    {
+      "key": "places",
+      "number": 3,
+      "state": "done",
+      "required": [],
+      "recommended": []
+    },
+    {
+      "key": "links",
+      "number": 4,
+      "state": "done",
+      "required": [],
+      "recommended": []
+    },
+    {
+      "key": "samples",
+      "number": 5,
+      "state": "done",
+      "required": [],
+      "recommended": []
+    },
+    {
+      "key": "calendar",
+      "number": 6,
+      "state": "done",
+      "required": [],
+      "recommended": []
+    },
+    {
+      "key": "identity",
+      "number": 7,
+      "state": "done",
+      "required": [],
+      "recommended": []
+    }
+  ],
+  "options": {
+    "professions": [
+      {
+        "id": "1",
+        "name": "Photographer"
+      },
+      {
+        "id": "2",
+        "name": "Videographer"
+      }
+    ],
+    "specialties": [
+      {
+        "id": "10",
+        "name": "Weddings",
+        "professionIds": [
+          "1",
+          "2"
+        ]
+      },
+      {
+        "id": "11",
+        "name": "Corporate",
+        "professionIds": [
+          "1"
+        ]
+      }
+    ],
+    "emirates": [
+      {
+        "id": "20",
+        "name": "Dubai"
+      },
+      {
+        "id": "21",
+        "name": "Abu Dhabi"
+      }
+    ],
+    "languages": [
+      {
+        "code": "en",
+        "name": "English"
+      },
+      {
+        "code": "ar",
+        "name": "Arabic"
+      }
+    ],
+    "countries": [
+      {
+        "code": "AE",
+        "name": "United Arab Emirates"
+      },
+      {
+        "code": "EG",
+        "name": "Egypt"
+      }
+    ]
+  },
+  "limits": {
+    "samples": 12,
+    "identityBytes": 5242880
+  }
+}

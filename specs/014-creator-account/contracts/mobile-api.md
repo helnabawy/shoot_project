@@ -6,7 +6,7 @@ under `/api/mobile/v1`. The zod file `packages/domain/src/api/v1/creator-account
 | Id | Route | Body | Answer |
 |---|---|---|---|
 | `creatorAccount` | `GET /me/creator/account` | none | `creatorAccountV1` |
-| `creatorProfile` | `GET /me/creator/profile` | none | `myProfileV1` |
+| `myCreatorProfile` | `GET /me/creator/profile` | none | `myProfileV1` |
 | `creatorProfileSave` | `PATCH /me/creator/profile` | `profilePatchV1` | `myProfileV1` |
 | `creatorProfileSubmit` | `POST /me/creator/profile/submit` | none | `myProfileV1` |
 | `creatorProfileVisibility` | `PUT /me/creator/profile/visibility` | `{ hidden }` | `myProfileV1` |

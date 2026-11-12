@@ -1,5 +1,22 @@
 import { z } from 'zod'
 import { authRefreshV1, authTokenV1, meV1, otpChallengeV1, otpRequestV1, otpVerifyV1 } from './auth'
+import {
+  answerV1,
+  availabilitySetV1,
+  availabilityV1,
+  creatorAccountV1,
+  creatorBookingsV1,
+  creatorDateParamV1,
+  creatorIdParamV1,
+  creatorIndexParamV1,
+  creatorKindParamV1,
+  creatorRefParamV1,
+  myProfileV1,
+  profilePatchV1,
+  sampleAddV1,
+  uploadV1,
+  visibilityV1,
+} from './creator-account'
 import { creatorListV1, creatorProfileRequestV1, creatorProfileV1, creatorsRequestV1, specialtyPageV1, specialtyRequestV1 } from './creators'
 import { hirePageRequestV1, hirePageV1 } from './hire'
 import {
@@ -23,6 +40,9 @@ export { defineEndpoint, noContentV1, type Auth, type CacheClass, type Endpoint,
 
 const noInput = z.object({})
 const publicRead = { method: 'GET', auth: 'none', cache: 'public', input: noInput } as const
+
+const mine = { method: 'POST', auth: 'required', cache: 'no-store', input: noInput } as const
+const mineRead = { ...mine, method: 'GET' } as const
 
 /**
  * Every v1 endpoint, by id (contracts/mobile-api.md "Endpoint inventory"). Each story registers its
@@ -129,6 +149,22 @@ export const endpoints = {
     output: legalVersionV1,
     examples: ['legal-version'],
   }),
+  // 014: the creator's own account (specs/014-creator-account/contracts/mobile-api.md).
+  creatorAccount: defineEndpoint({ ...mineRead, id: 'creatorAccount', path: '/api/mobile/v1/me/creator/account', output: creatorAccountV1, examples: ['creator-account'] }),
+  myCreatorProfile: defineEndpoint({ ...mineRead, id: 'myCreatorProfile', path: '/api/mobile/v1/me/creator/profile', output: myProfileV1, examples: ['creator-profile-draft', 'creator-profile-ready', 'creator-profile-review'] }),
+  creatorProfileSave: defineEndpoint({ ...mine, id: 'creatorProfileSave', method: 'PATCH', path: '/api/mobile/v1/me/creator/profile', input: z.object({ body: profilePatchV1 }), output: myProfileV1, examples: ['creator-profile-saved'], requestExamples: ['creator-profile-patch'] }),
+  creatorProfileSubmit: defineEndpoint({ ...mine, id: 'creatorProfileSubmit', method: 'POST', path: '/api/mobile/v1/me/creator/profile/submit', input: noInput, output: myProfileV1, examples: ['creator-profile-submitted'] }),
+  creatorProfileVisibility: defineEndpoint({ ...mine, id: 'creatorProfileVisibility', method: 'PUT', path: '/api/mobile/v1/me/creator/profile/visibility', input: z.object({ body: visibilityV1 }), output: myProfileV1, examples: ['creator-profile-hidden'], requestExamples: ['creator-visibility'] }),
+  creatorPhotoUpload: defineEndpoint({ ...mine, id: 'creatorPhotoUpload', method: 'PUT', path: '/api/mobile/v1/me/creator/profile/photo', input: z.object({ body: uploadV1 }), output: myProfileV1, examples: ['creator-photo-result'], requestExamples: ['creator-upload-photo'] }),
+  creatorSampleAdd: defineEndpoint({ ...mine, id: 'creatorSampleAdd', method: 'POST', path: '/api/mobile/v1/me/creator/profile/samples', input: z.object({ body: sampleAddV1 }), output: myProfileV1, examples: ['creator-sample-result'], requestExamples: ['creator-sample-add'] }),
+  creatorSampleRemove: defineEndpoint({ ...mine, id: 'creatorSampleRemove', method: 'DELETE', path: '/api/mobile/v1/me/creator/profile/samples/{index}', input: z.object({ params: creatorIndexParamV1 }), output: myProfileV1, examples: ['creator-sample-removed'] }),
+  creatorIdentityUpload: defineEndpoint({ ...mine, id: 'creatorIdentityUpload', method: 'PUT', path: '/api/mobile/v1/me/creator/identity/{kind}', input: z.object({ params: creatorKindParamV1, body: uploadV1 }), output: myProfileV1, examples: ['creator-identity-result'], requestExamples: ['creator-upload-identity'] }),
+  creatorAvailability: defineEndpoint({ ...mineRead, id: 'creatorAvailability', path: '/api/mobile/v1/me/creator/availability', output: availabilityV1, examples: ['creator-availability'] }),
+  creatorAvailabilitySet: defineEndpoint({ ...mine, id: 'creatorAvailabilitySet', method: 'PUT', path: '/api/mobile/v1/me/creator/availability/{date}', input: z.object({ params: creatorDateParamV1, body: availabilitySetV1 }), output: availabilityV1, examples: ['creator-availability-set-result'], requestExamples: ['creator-availability-set'] }),
+  creatorBookings: defineEndpoint({ ...mineRead, id: 'creatorBookings', path: '/api/mobile/v1/me/creator/bookings', output: creatorBookingsV1, examples: ['creator-bookings'] }),
+  creatorBookingAnswer: defineEndpoint({ ...mine, id: 'creatorBookingAnswer', method: 'POST', path: '/api/mobile/v1/me/creator/bookings/{ref}/answer', input: z.object({ params: creatorRefParamV1, body: answerV1 }), output: creatorBookingsV1, examples: ['creator-bookings-answered'], requestExamples: ['creator-answer'] }),
+  creatorBookingDeliver: defineEndpoint({ ...mine, id: 'creatorBookingDeliver', method: 'POST', path: '/api/mobile/v1/me/creator/bookings/{ref}/deliver', input: z.object({ params: creatorRefParamV1 }), output: creatorBookingsV1, examples: ['creator-bookings-delivered'] }),
+  creatorUpdateRead: defineEndpoint({ ...mine, id: 'creatorUpdateRead', method: 'POST', path: '/api/mobile/v1/me/creator/updates/{id}/read', input: z.object({ params: creatorIdParamV1 }), output: creatorBookingsV1, examples: ['creator-bookings-read'] }),
 } satisfies Record<string, Endpoint>
 
 /** The registry as a list, in declaration order. */

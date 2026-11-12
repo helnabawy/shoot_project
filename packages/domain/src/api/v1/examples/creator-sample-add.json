@@ -1,0 +1,13 @@
+{
+  "kind": "image",
+  "caption": {
+    "en": "Wedding",
+    "ar": "زفاف"
+  },
+  "specialty": "10",
+  "file": {
+    "contentType": "image/jpeg",
+    "filename": "photo.jpg",
+    "data": "/9j/4AAQSkZJRg=="
+  }
+}
