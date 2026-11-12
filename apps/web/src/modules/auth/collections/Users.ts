@@ -113,6 +113,14 @@ export const Users: CollectionConfig = {
       admin: { condition: (data) => data?.accountType === 'provider' },
     },
     {
+      // Feature 013 (FR-020): when "Finish your account" was first shown; it opens on its own once.
+      // Written only by the account update command (overrideAccess), never by the member directly.
+      name: 'accountFinishDismissedAt',
+      type: 'date',
+      access: { create: () => false, update: () => false, read: selfOrAdminField },
+      admin: { readOnly: true, position: 'sidebar' },
+    },
+    {
       // Unverified contact number (booking details); never used to find an account (FR-013).
       name: 'phone',
       type: 'text',

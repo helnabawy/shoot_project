@@ -31,6 +31,10 @@ export const PROBLEM_CODES = [
   'auth.errors.personaRequired',
   'auth.errors.personaInactive',
   'auth.errors.acceptTerms',
+  // 013: the client account.
+  'account.errors.emailInvalid',
+  'account.errors.emailInUse',
+  'account.errors.nameLength',
 ] as const
 export type ProblemCode = (typeof PROBLEM_CODES)[number]
 
