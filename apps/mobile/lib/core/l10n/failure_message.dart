@@ -57,7 +57,13 @@ enum ProblemCode {
   bookingUnavailable('booking.errors.unavailable'),
   bookingCreatorUnavailable('booking.errors.creatorUnavailable'),
   bookingTerminal('booking.errors.terminal'),
-  bookingExpiredQuotation('booking.errors.expired-quotation');
+  bookingExpiredQuotation('booking.errors.expired-quotation'),
+  // 010: recording a brief.
+  briefRequired('brief.errors.required'),
+  briefOptionGone('brief.errors.optionGone'),
+  briefPastDate('brief.errors.pastDate'),
+  briefTooMany('brief.errors.tooMany'),
+  briefGeneric('brief.errors.generic');
 
   const ProblemCode(this.wire);
 
@@ -129,6 +135,11 @@ enum ProblemCode {
       bookingUnavailable || bookingCreatorUnavailable => l10n.qmErrUnavailable,
       bookingTerminal => l10n.qmErrNotAllowed,
       bookingExpiredQuotation => l10n.qmErrExpired,
+      briefRequired => l10n.mlBriefRequired,
+      briefOptionGone => l10n.mlBriefOptionGone,
+      briefPastDate => l10n.mlBriefPastDate,
+      briefTooMany => l10n.mlBriefRateLimited,
+      briefGeneric => l10n.mlBriefGeneric,
     };
   }
 }

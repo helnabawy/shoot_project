@@ -22,6 +22,21 @@ enum ShootIcons {
   back('<path d="m15 6-6 6 6 6"/>', directional: true),
   whatsapp('<path d="M21 12a9 9 0 0 1-13.2 8L3 21l1.1-4.6A9 9 0 1 1 21 12z"/>'),
   home('<path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/>'),
+
+  /// Feature 010 (menu and landing header).
+  close('<path d="M6 6l12 12M18 6 6 18"/>'),
+  menu('<path d="M4 7h16M4 12h16M4 17h16"/>'),
+  creators(
+    '<circle cx="9" cy="8" r="3.5"/>'
+    '<path d="M2 20a7 7 0 0 1 14 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6 6 0 0 1 4 6"/>',
+  ),
+  guides(
+    '<path d="M5 4h13v16H7a2 2 0 0 1-2-2z"/><path d="M5 18a2 2 0 0 1 2-2h11"/>',
+  ),
+  lines('<path d="M4 6h10M4 12h16M4 18h7"/>'),
+  camera(
+    '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  ),
   refresh(
     '<path d="M20 11a8 8 0 0 0-14.9-3M4 5v4h4M4 13a8 8 0 0 0 14.9 3M20 19v-4h-4"/>',
   ),

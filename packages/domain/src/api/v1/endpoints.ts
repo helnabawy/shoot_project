@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { accountHomeV1, accountPageRequestV1, bookingListV1, briefListV1, meUpdateV1 } from './account'
+import { briefReceiptV1, briefRecordV1 } from './brief'
 import { authRefreshV1, authTokenV1, meV1, otpChallengeV1, otpRequestV1, otpVerifyV1 } from './auth'
 import {
   answerV1,
@@ -73,6 +74,18 @@ export const endpoints = {
     examples: ['brief-builder', 'brief-builder.ar'],
   }),
   landing: defineEndpoint({ ...publicRead, id: 'landing', path: '/api/mobile/v1/landing', output: landingV1, examples: ['landing'] }),
+  // 010: recording a brief from the app (specs/010-first-visit-landing/contracts/briefs-api.md).
+  briefRecord: defineEndpoint({
+    id: 'briefRecord',
+    method: 'POST',
+    path: '/api/mobile/v1/briefs',
+    auth: 'optional',
+    cache: 'no-store',
+    input: z.object({ body: briefRecordV1 }),
+    output: briefReceiptV1,
+    examples: ['brief-receipt'],
+    requestExamples: ['brief-record'],
+  }),
   // 009: sign-in by mobile number and one-time code (specs/009-otp-sign-in/contracts/auth-api.md).
   otpRequest: defineEndpoint({
     id: 'otpRequest',

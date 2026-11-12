@@ -10,10 +10,14 @@ import 'package:shoot_mobile/core/routing/app_router.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_accent.dart';
 import 'package:shoot_mobile/core/theme/shoot_colors.dart';
+import 'package:shoot_mobile/features/landing/domain/repositories/landing_repository.dart';
 import 'package:shoot_mobile/features/service_health/domain/entities/service_health.dart';
 import 'package:shoot_mobile/features/service_health/domain/repositories/service_health_repository.dart';
+import 'package:shoot_mobile/features/service_health/presentation/pages/service_health_page.dart';
+import 'package:shoot_mobile/features/site/domain/repositories/site_repository.dart';
 
 import 'helpers/in_memory_preferences_store.dart';
+import 'helpers/ml_harness.dart';
 
 class _HealthyRepository implements ServiceHealthRepository {
   @override
@@ -26,7 +30,8 @@ void main() {
     await getIt.reset();
     configureDependencies(
       const AppConfig(apiBaseUrl: 'http://api.test', environment: 'test'),
-      InMemoryPreferencesStore(saved),
+      // The welcome steps are seen, so these tests start at the home screen.
+      InMemoryPreferencesStore({PreferenceKeys.welcomeSeen: 'true', ...?saved}),
     );
     // Swap the HTTP-backed repository for a fake: everything else (router,
     // DI, use case, cubit, l10n, theme) is the real thing.
@@ -34,7 +39,19 @@ void main() {
     getIt.registerLazySingleton<ServiceHealthRepository>(
       _HealthyRepository.new,
     );
+    // Feature 010: the landing reads its content through these two repositories.
+    await getIt.unregister<LandingRepository>();
+    await getIt.unregister<SiteRepository>();
+    getIt
+      ..registerLazySingleton<LandingRepository>(
+        () => FakeLandingRepository(Ok(exampleLanding())),
+      )
+      ..registerLazySingleton<SiteRepository>(FakeSiteRepository.new);
   }
+
+  /// The shell around the 007 health page, which carries the appearance button.
+  Widget shellWithHealthPage() =>
+      ShootApp(home: (_) => const ServiceHealthPage());
 
   setUp(boot);
 
@@ -44,16 +61,19 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(const ShootApp());
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
 
+    // The first screen is the landing (feature 010), its words from the CMS.
     expect(find.text('Shoot'), findsOneWidget);
-    expect(find.text('Everything is running.'), findsOneWidget);
+    expect(find.text('You brief. We shoot.'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
   });
 
   testWidgets('the language button switches the app to Arabic (RTL)', (
     tester,
   ) async {
-    await tester.pumpWidget(const ShootApp());
+    await tester.pumpWidget(shellWithHealthPage());
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('عربي'));
@@ -117,7 +137,7 @@ void main() {
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAllTestValues);
 
-    await tester.pumpWidget(const ShootApp());
+    await tester.pumpWidget(shellWithHealthPage());
     await tester.pumpAndSettle();
     expect(
       tester
@@ -138,7 +158,7 @@ void main() {
   });
 
   testWidgets('motion on: the theme cross-fades by default', (tester) async {
-    await tester.pumpWidget(const ShootApp());
+    await tester.pumpWidget(shellWithHealthPage());
     await tester.pumpAndSettle();
     expect(
       tester
