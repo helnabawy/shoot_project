@@ -32,11 +32,11 @@ screen. Feature 010 owns recording a brief; this feature reads a brief by refere
 - [x] T005 [P] Add JSON examples (`match.json`, `match-none-free.json`, `quotation-request.json`, `quotation-issued.json`, `booking-view-quoted.json`, `booking-view-confirmed.json`, `booking-view-delivered.json`, `booking-view-expired.json`, `fresh-quotation.json`) in `domain/api/v1/examples/`.
 - [x] T006 Register the eight endpoints in `domain/api/v1/endpoints.ts` and export `booking.ts` from `index.ts`; regenerate `specs/contracts/mobile-api/v1.schema.json` (additive only).
 - [x] T007 Extract `web/src/modules/booking/commands/` from `actions.ts`: `access.ts` (private-key + owner access), `accept-quotation.ts`, `confirm-delivery.ts`, `report-problem.ts`, `fresh-quotation.ts`, `pick-another.ts`, each returning a result (`ok` or reason) instead of redirecting; rewrite the website actions in `actions.ts` as wrappers (behaviour unchanged). (Done: `commands/client-actions.ts` holds accept, cancel, fresh, pick-another, confirm-delivery and report; `commands/issue-quotation.ts` holds the quotation body; the website actions are wrappers. A repeated confirm-delivery or report is harmless, as accept already was.)
-- [ ] T008 Existing website suites stay green: `pnpm --filter web test:int -- booking`.
+- [ ] T008 Existing website suites stay green: `pnpm --filter web test:int -- booking`. (deferred to post-merge integration run; the suite is written in `mobile-api-booking.int.test.ts`)
 
 ## Phase 3: User Story 1 — Choose a creator who is free (P1)
 
-- [x] T009 [P] [US1] Integration tests `web/tests/integration/mobile-api-booking-match.int.test.ts`: `MQ-US1-S1` (free creators, same price, includes), `S5` (blocked and booked creators hidden), `S6` (nearby days with real counts), `S7`/`S8` (date change, any date), `S9` (price on request), unknown key 404. (Done in one file, `mobile-api-booking.int.test.ts`, which also covers T016, T021, T025 and T028.)
+- [ ] T009 [P] [US1] Integration tests `web/tests/integration/mobile-api-booking-match.int.test.ts`: `MQ-US1-S1` (free creators, same price, includes), `S5` (blocked and booked creators hidden), `S6` (nearby days with real counts), `S7`/`S8` (date change, any date), `S9` (price on request), unknown key 404. (Done in one file, `mobile-api-booking.int.test.ts`, which also covers T016, T021, T025 and T028.) (deferred to post-merge integration run; the suite is written in `mobile-api-booking.int.test.ts`)
 - [x] T010 [P] [US1] `web/src/modules/booking/commands/match.ts` (step 2 read over `getMatchPage`, date and duration override, nearby counts, gallery thumbs) and `web/src/modules/booking/wire.ts` mappers. (Done: the mapping is in `commands/match.ts`; `matchV1` also carries `durations` and `whatsappUrl`.)
 - [x] T011 [US1] `web/src/modules/booking/api.ts` `getMatchV1` and the route `web/src/app/(payload)/api/mobile/v1/match/[ref]/[key]/route.ts`.
 - [x] T012 [P] [US1] Dart: models and fixtures decoding the examples (`mobile/lib/features/quick_match/data/models/match_models.dart`, entities, repository, data source) with `test/features/quick_match/data/match_models_test.dart`.
@@ -46,7 +46,7 @@ screen. Feature 010 owns recording a brief; this feature reads a brief by refere
 
 ## Phase 4: User Story 2 — Details, number at the end, WhatsApp (P1)
 
-- [x] T016 [P] [US2] Integration tests `mobile-api-booking-issue.int.test.ts`: `MQ-US2-S8` (issues for signed-in member, details stored, client name and number from the account), `S4` (invalid date/time/venue → 422 fields), `S10` (token required → 401), `S3` (creator no longer free → 409), idempotent no half-saved booking (R3), rate limit.
+- [ ] T016 [P] [US2] Integration tests `mobile-api-booking-issue.int.test.ts`: `MQ-US2-S8` (issues for signed-in member, details stored, client name and number from the account), `S4` (invalid date/time/venue → 422 fields), `S10` (token required → 401), `S3` (creator no longer free → 409), idempotent no half-saved booking (R3), rate limit. (deferred to post-merge integration run; the suite is written in `mobile-api-booking.int.test.ts`)
 - [x] T017 [US2] `commands/issue-quotation.ts` (move the body of `requestQuotation`, take client from the user, store `details`, delete the booking on failure, compose `whatsappUrl`); `api.ts` `issueQuotationV1`; route `match/[ref]/[key]/quotation/route.ts`.
 - [x] T018 [P] [US2] `BookFlowCubit` (details validation `MQ-US2-S1`…`S4`, price follows duration `S2`, signed-in skips 10/11 `S10`, send code `S6`, name only for a number with no account `S7`, wrong code `S9`, verify then issue then open WhatsApp `S8`, resume to quotation `S11`).
 - [ ] T019 [US2] Screens 09, 10, 11 (`details_page.dart`, `number_page.dart`, `code_page.dart`) reusing 009's `PhoneField`, `OtpCodeInput`, `RequestCode`, `VerifyCode`; routes `/match/:ref/:key/{details,number,code}` built; widget tests. (Built and widget-tested; one file `number_code_pages.dart` for 10 and 11; open until T030. The optional name on 11 is always shown, because the app cannot know before verifying whether the account has a name; MQ-US2-S7 has no test.)
@@ -54,20 +54,20 @@ screen. Feature 010 owns recording a brief; this feature reads a brief by refere
 
 ## Phase 5: User Story 3 — Accept the quotation or get a fresh one (P1)
 
-- [x] T021 [P] [US3] Integration tests `mobile-api-booking-accept.int.test.ts`: `MQ-US3-S1` view, `S2` accept, `S3` double accept, `S4` discount line, `S5` expired view and accept refused, `S6` fresh quotation, `S7` wrong key / other account 404, `S8` let-us-pick.
+- [ ] T021 [P] [US3] Integration tests `mobile-api-booking-accept.int.test.ts`: `MQ-US3-S1` view, `S2` accept, `S3` double accept, `S4` discount line, `S5` expired view and accept refused, `S6` fresh quotation, `S7` wrong key / other account 404, `S8` let-us-pick. (deferred to post-merge integration run; the suite is written in `mobile-api-booking.int.test.ts`)
 - [x] T022 [US3] `commands/quotation-view.ts` read model + `wire.ts` `toWireBookingView`; `api.ts` view, accept, fresh handlers; routes under `quotations/[ref]/[key]/`.
 - [x] T023 [P] [US3] `BookingViewCubit` (load, accept, fresh, refresh on resume) with tests.
 - [ ] T024 [US3] Screens 12 and 40 in `booking_page.dart` with `QuoteLines`, `StatusBadge`; "Download PDF" opens the website page (research R1); route `/q/:ref/:key` built. (Built and widget-tested in `booking_page.dart`; "Download PDF" opens the website's quotation page in the browser, research R1, owner decision pending; open until T030.)
 
 ## Phase 6: User Story 4 — Follow the booking and arrange payment (P2)
 
-- [x] T025 [P] [US4] Integration tests `mobile-api-booking-status.int.test.ts` (`MQ-US4-S1`…`S7`): confirmed → awaiting payment, paid, declined → replacements and pick-another, cancelled/on-hold reason, no payment fields.
+- [ ] T025 [P] [US4] Integration tests `mobile-api-booking-status.int.test.ts` (`MQ-US4-S1`…`S7`): confirmed → awaiting payment, paid, declined → replacements and pick-another, cancelled/on-hold reason, no payment fields. (deferred to post-merge integration run; the suite is written in `mobile-api-booking.int.test.ts`)
 - [x] T026 [US4] `commands/pick-another` wiring and pick-another endpoint/route; progress and next-step mapping in `toWireBookingView`.
 - [ ] T027 [US4] Screen 13 and the board-less states (accepted, declined or lapsed, paid, scheduled, completed, cancelled, on hold) in the same layout; WhatsApp primary; tests `MQ-US4-*`; assert no payment widgets (`MQ-US4-S6`). (Built and widget-tested in the same `booking_page.dart`; open until T030. Payment instructions from site settings are NOT yet written into the WhatsApp message: the server sends the receipt text only.)
 
 ## Phase 7: User Story 5 — Confirm delivery or report a problem (P2)
 
-- [x] T028 [P] [US5] Integration tests `mobile-api-booking-delivery.int.test.ts` (`MQ-US5-S1`…`S4`).
+- [ ] T028 [P] [US5] Integration tests `mobile-api-booking-delivery.int.test.ts` (`MQ-US5-S1`…`S4`). (deferred to post-merge integration run; the suite is written in `mobile-api-booking.int.test.ts`)
 - [x] T029 [US5] Confirm-delivery and report endpoints and routes; screen 14 and the report sheet; tests.
 
 ## Phase 8: Polish
