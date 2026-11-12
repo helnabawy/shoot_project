@@ -96,6 +96,8 @@ export interface MatchPage {
   total: QuoteResult
   /** Other days with someone free, when a section is empty on the chosen date (US1-S2). */
   nearby: string[]
+  /** How many creators are free on each nearby day (the fewest across types), for the app's step 2. */
+  nearbyFree: Record<string, number>
 }
 
 /** Labels for the travel and discount lines, frozen in both languages. */
@@ -108,7 +110,7 @@ export async function lineLabels(promoCode?: string) {
 }
 
 /** Step 2: per professional type the fixed price and the creators free that day (US1, FR-002, FR-003). */
-export async function getMatchPage(brief: BriefRecord, locale: Locale, now: Date, options: { date?: string | null } = {}): Promise<MatchPage> {
+export async function getMatchPage(brief: BriefRecord, locale: Locale, now: Date, options: { date?: string | null; duration?: string | null } = {}): Promise<MatchPage> {
   const [landing, personas, creators, locations, rules, labels] = await Promise.all([
     getLandingPage({ locale }),
     getActivePersonas(locale),
@@ -118,6 +120,8 @@ export async function getMatchPage(brief: BriefRecord, locale: Locale, now: Date
     lineLabels(),
   ])
   const facts = briefFacts(brief, landing.briefBuilder?.slots ?? [])
+  // 012: the app's details step prices another duration of the same brief.
+  if (options.duration) facts.duration = { value: options.duration, custom: false }
   const date = options.date !== undefined ? options.date : facts.date
   const emirate = facts.location && !facts.location.custom ? (locations.find((l) => l.slug === facts.location?.value && !l.parentId)?.id ?? null) : null
   const base = { duration: facts.duration?.value ?? '', location: facts.location?.value ?? '', custom: { duration: facts.duration?.custom, location: facts.location?.custom }, labels, now }
@@ -137,7 +141,8 @@ export async function getMatchPage(brief: BriefRecord, locale: Locale, now: Date
     date && sections.some((s) => s.creators.length === 0)
       ? nearbyDates(date, (day) => sections.every((s) => freeFor(s.persona.id, day).length > 0), { today })
       : []
-  return { brief, facts, sections, total: quotePrice(rules, { ...base, personaIds: sections.map((s) => s.persona.id) }), nearby }
+  const nearbyFree = Object.fromEntries(nearby.map((day) => [day, Math.min(...sections.map((s) => freeFor(s.persona.id, day).length))]))
+  return { brief, facts, sections, total: quotePrice(rules, { ...base, personaIds: sections.map((s) => s.persona.id) }), nearby, nearbyFree }
 }
 
 /**

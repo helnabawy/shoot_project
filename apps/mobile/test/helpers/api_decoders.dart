@@ -5,6 +5,7 @@ import 'package:shoot_mobile/features/content/data/models/guide_models.dart';
 import 'package:shoot_mobile/features/content/data/models/legal_models.dart';
 import 'package:shoot_mobile/features/creators/data/models/creator_models.dart';
 import 'package:shoot_mobile/features/landing/data/models/landing_model.dart';
+import 'package:shoot_mobile/features/quick_match/data/models/quick_match_models.dart';
 import 'package:shoot_mobile/features/sign_in/data/models/otp_models.dart';
 import 'package:shoot_mobile/features/site/data/models/audience_model.dart';
 import 'package:shoot_mobile/features/site/data/models/brief_builder_model.dart';
@@ -42,6 +43,24 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'legal': (json) => LegalDocumentModel.fromJson(json).toEntity(),
   'legal-versions': (json) => LegalVersionsModel.fromJson(json).toEntity(),
   'legal-version': (json) => LegalDocumentModel.fromJson(json).toEntity(),
+  // 012: Quick Match and booking.
+  'match': (json) => MatchPageModel.fromJson(json).toEntity(),
+  'match-none-free': (json) => MatchPageModel.fromJson(json).toEntity(),
+  'quotation-issued': (json) => QuotationIssuedModel.fromJson(json).toEntity(),
+  'fresh-quotation': (json) => FreshQuotationModel.fromJson(json).toEntity(),
+  'booking-view-quoted': (json) => BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-accepted': (json) => BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-lapsed': (json) => BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-reassigned': (json) => BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-confirmed': (json) => BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-delivered': (json) => BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-completed': (json) => BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-expired': (json) => BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-on-hold': (json) => BookingViewModel.fromJson(json).toEntity(),
+  // The bodies the app sends: each must read as the shapes the app builds.
+  'quotation-request': (json) => json['picks']! as List,
+  'report-request': (json) => json['reason']! as String,
+  'pick-another-request': (json) => json['code']! as String,
 };
 
 /// `site.ar` → `site`.
