@@ -18,6 +18,7 @@
     "./brief/message": "./src/brief/message.ts",
     "./pricing": "./src/pricing/index.ts",
     "./booking": "./src/booking/index.ts",
+    "./account": "./src/account/index.ts",
     "./api/v1": "./src/api/v1/index.ts"
   },
   "scripts": {

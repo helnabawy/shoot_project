@@ -1,0 +1,15 @@
+{
+  "person": { "name": null, "phone": "+971501234567" },
+  "upNext": null,
+  "places": { "bookings": { "waiting": 0, "open": 0 }, "briefs": { "open": 0 } },
+  "briefs": [],
+  "finish": {
+    "items": [
+      { "key": "number", "done": true, "value": "+971501234567" },
+      { "key": "name", "done": false, "value": null },
+      { "key": "email", "done": false, "value": null }
+    ],
+    "autoOpen": false
+  },
+  "about": []
+}

@@ -56,6 +56,10 @@ Cache:
 | `authRefresh` | `POST /auth/refresh` | req | no-store | — | `authRefreshV1` | `auth` `refresh-session` (009) | — |
 | `authLogout` | `POST /auth/logout` | req | no-store | — | 204 | `auth` `end-session` (009) | — |
 | `me` | `GET /me` | req | no-store | — | `meV1` | `auth` `toWireMe` (009) | — |
+| `meAccount` | `GET /me/account` | req | no-store | — | `accountHomeV1` | `account` `read-account` (013) | — |
+| `meBookings` | `GET /me/bookings` | req | no-store | `accountPageRequestV1` | `bookingListV1` | `account` `list-bookings` (013) | — |
+| `meBriefs` | `GET /me/briefs` | req | no-store | `accountPageRequestV1` | `briefListV1` | `account` `list-briefs` (013) | — |
+| `meUpdate` | `PATCH /me` | req | no-store | `meUpdateV1` | `meV1` | `account` `update-me` (013) | — |
 | — | any other address under `/api/mobile` | none | no-store | — | `problemV1` | catch-all | always |
 
 App links, at the site root and outside v1:

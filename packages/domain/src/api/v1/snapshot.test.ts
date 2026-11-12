@@ -104,7 +104,7 @@ describe('the committed snapshot (specs/contracts/mobile-api/v1.schema.json)', (
 
   it('MR-US1-S6 names no internal property', () => {
     // 009: the member's own account (`GET me`, and the `user` of `otp/verify`) carries their own email.
-    const OWN_ACCOUNT = new Set(['me', 'otpVerify'])
+    const OWN_ACCOUNT = new Set(['me', 'otpVerify', 'meUpdate'])
     const names = propertyNames({ ...next, endpoints: Object.fromEntries(Object.entries(next.endpoints).filter(([id]) => !OWN_ACCOUNT.has(id))) })
     expect(INTERNAL.filter((n) => names.has(n))).toEqual([])
     expect(names.has('quickMatchEnabled')).toBe(true)

@@ -105,6 +105,14 @@ export const SiteSettings: GlobalConfig = {
                 { name: 'providerLabel', type: 'text', localized: true },
               ],
             },
+            {
+              // Feature 013 (FR-027): "What your account does" on the app's finish-your-account screen.
+              name: 'accountAbout',
+              type: 'array',
+              maxRows: 4,
+              admin: { description: 'Short lines on what a client account does. Shown in the app on "Finish your account".' },
+              fields: [{ name: 'line', type: 'text', required: true, localized: true, maxLength: 120 }],
+            },
           ],
         },
         {

@@ -1,11 +1,9 @@
 {
   "@@locale": "en",
-
   "appTitle": "Shoot",
   "@appTitle": {
     "description": "Brand name: app bar title, task switcher and accessibility label."
   },
-
   "languageSwitchAction": "عربي",
   "@languageSwitchAction": {
     "description": "Language button label: the OTHER language's name, written in that language."
@@ -14,7 +12,6 @@
   "@languageSwitchTooltip": {
     "description": "Tooltip and screen-reader label for the language button."
   },
-
   "appearanceTitle": "Appearance",
   "@appearanceTitle": {
     "description": "Heading of the Appearance sheet, where the person picks the theme and the accent colour."
@@ -63,7 +60,6 @@
   "@themeDark": {
     "description": "Theme option: always dark."
   },
-
   "serviceHealthTitle": "Service status",
   "@serviceHealthTitle": {
     "description": "Heading of the example screen that checks the Shoot web API."
@@ -84,7 +80,6 @@
   "@serviceHealthRetry": {
     "description": "The screen's one primary action: run the health check again."
   },
-
   "failureNetwork": "We can't reach the service. Check your connection and try again.",
   "@failureNetwork": {
     "description": "Generic message when the device cannot reach the server."
@@ -121,7 +116,6 @@
   "@problemUnexpected": {
     "description": "The server failed unexpectedly (problem code api.errors.unexpected, HTTP 500)."
   },
-
   "notFoundCode": "404",
   "@notFoundCode": {
     "description": "Small line above the not-found heading (screen 37): the HTTP status, as on the web."
@@ -150,7 +144,6 @@
   "@notFoundAction": {
     "description": "The not-found screen's one primary action (Top Hit): start a brief. Same words as the web."
   },
-
   "errorTitle": "Something went wrong",
   "@errorTitle": {
     "description": "Heading of the error screen (screen 39), shown when a screen fails to load. Never shows technical detail."
@@ -171,7 +164,6 @@
   "@errorRetry": {
     "description": "The error screen's one primary action (Top Hit): run the failed step again."
   },
-
   "problemPhoneInvalid": "Enter a UAE mobile number, like 50 123 4567.",
   "@problemPhoneInvalid": {
     "description": "The number is not a UAE mobile number (problem field code auth.errors.phoneInvalid). Same words as the website."
@@ -919,5 +911,397 @@
   "mcLoadMore": "Loading more creators",
   "@mcLoadMore": {
     "description": "Screen-reader name of the busy state of Show more."
+  },
+  "accountButtonLabel": "My account",
+  "@accountButtonLabel": {
+    "description": "Header account button (screens 24, 26)."
+  },
+  "accountClient": "Client",
+  "@accountClient": {
+    "description": "The role shown under the name on My account."
+  },
+  "accountNameFallback": "Your account",
+  "@accountNameFallback": {
+    "description": "Where the name would be when the account has none (FR-023)."
+  },
+  "accountUpNext": "Up next",
+  "@accountUpNext": {
+    "description": "Group label of the one thing that needs the client."
+  },
+  "accountInYourAccount": "In your account",
+  "@accountInYourAccount": {
+    "description": "Group label of the account rows."
+  },
+  "accountYourBriefs": "Your briefs",
+  "@accountYourBriefs": {
+    "description": "Group label and row of the client's briefs."
+  },
+  "accountStartBrief": "Start a brief",
+  "@accountStartBrief": {
+    "description": "Opens the brief builder at its first step."
+  },
+  "accountLogOut": "Log out",
+  "@accountLogOut": {
+    "description": "Signs this device out."
+  },
+  "accountRowBookings": "Bookings",
+  "@accountRowBookings": {
+    "description": "Row of My account."
+  },
+  "accountRowDetails": "Your details",
+  "@accountRowDetails": {
+    "description": "Row of My account; opens Finish your account."
+  },
+  "accountRowPreferences": "Language and theme",
+  "@accountRowPreferences": {
+    "description": "Row of My account; opens the appearance sheet."
+  },
+  "accountWaitingForYou": "{count, plural, =1{1 waiting for you} other{{count} waiting for you}}",
+  "@accountWaitingForYou": {
+    "description": "Status of the Bookings row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountOpenCount": "{count, plural, =1{1 open} other{{count} open}}",
+  "@accountOpenCount": {
+    "description": "Status of a row with open items.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountProgress": "{done} of {total}",
+  "@accountProgress": {
+    "description": "Progress of the account checklist.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "accountPrefsStatus": "{language} · {mode}",
+  "@accountPrefsStatus": {
+    "description": "Status of the language and theme row.",
+    "placeholders": {
+      "language": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "accountLanguageEnglish": "English",
+  "@accountLanguageEnglish": {
+    "description": "The English language name, always in English."
+  },
+  "accountLanguageArabic": "العربية",
+  "@accountLanguageArabic": {
+    "description": "The Arabic language name, always in Arabic."
+  },
+  "accountThemeAuto": "auto",
+  "@accountThemeAuto": {
+    "description": "Theme follows the device."
+  },
+  "accountThemeLight": "light",
+  "@accountThemeLight": {
+    "description": "Light theme."
+  },
+  "accountThemeDark": "dark",
+  "@accountThemeDark": {
+    "description": "Dark theme."
+  },
+  "accountBriefSent": "Sent {date}",
+  "@accountBriefSent": {
+    "description": "The date a brief was sent.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "accountBriefsEmpty": "No briefs yet.",
+  "@accountBriefsEmpty": {
+    "description": "Empty briefs list."
+  },
+  "briefStatusNew": "We received it",
+  "@briefStatusNew": {
+    "description": "Brief status new."
+  },
+  "briefStatusContacted": "We replied",
+  "@briefStatusContacted": {
+    "description": "Brief status contacted."
+  },
+  "briefStatusClosed": "Closed",
+  "@briefStatusClosed": {
+    "description": "Brief status closed."
+  },
+  "upNextQuoteTitle": "Your quotation is ready",
+  "@upNextQuoteTitle": {
+    "description": "Up next: a quotation to accept."
+  },
+  "upNextDeliveryTitle": "Your delivery is ready to confirm",
+  "@upNextDeliveryTitle": {
+    "description": "Up next: a delivery to confirm."
+  },
+  "upNextPaymentTitle": "Your booking is waiting for payment",
+  "@upNextPaymentTitle": {
+    "description": "Up next: awaiting payment."
+  },
+  "upNextDeclinedTitle": "Your professional can't make it",
+  "@upNextDeclinedTitle": {
+    "description": "Up next: the professional declined."
+  },
+  "upNextQuoteAction": "Review the quotation",
+  "@upNextQuoteAction": {
+    "description": "Primary action for a quotation."
+  },
+  "upNextDeliveryAction": "Review the delivery",
+  "@upNextDeliveryAction": {
+    "description": "Primary action for a delivery."
+  },
+  "upNextOpenAction": "Open your booking",
+  "@upNextOpenAction": {
+    "description": "Primary action for a booking."
+  },
+  "bookingStatusAwaitingAcceptance": "Awaiting your acceptance",
+  "@bookingStatusAwaitingAcceptance": {
+    "description": "Booking badge."
+  },
+  "bookingStatusWaitingProfessional": "Waiting for the professional",
+  "@bookingStatusWaitingProfessional": {
+    "description": "Booking badge."
+  },
+  "bookingStatusAwaitingPayment": "Awaiting payment",
+  "@bookingStatusAwaitingPayment": {
+    "description": "Booking badge."
+  },
+  "bookingStatusPaid": "Paid",
+  "@bookingStatusPaid": {
+    "description": "Booking badge."
+  },
+  "bookingStatusScheduled": "Scheduled",
+  "@bookingStatusScheduled": {
+    "description": "Booking badge."
+  },
+  "bookingStatusDelivered": "Delivered",
+  "@bookingStatusDelivered": {
+    "description": "Booking badge."
+  },
+  "bookingStatusCompleted": "Completed",
+  "@bookingStatusCompleted": {
+    "description": "Booking badge."
+  },
+  "bookingStatusCancelled": "Cancelled",
+  "@bookingStatusCancelled": {
+    "description": "Booking badge."
+  },
+  "bookingStatusExpired": "Expired",
+  "@bookingStatusExpired": {
+    "description": "Booking badge."
+  },
+  "bookingStatusOnHold": "On hold",
+  "@bookingStatusOnHold": {
+    "description": "Booking badge."
+  },
+  "bookingStatusDeclined": "Professional declined",
+  "@bookingStatusDeclined": {
+    "description": "Booking badge."
+  },
+  "bookingStatusUnknown": "In progress",
+  "@bookingStatusUnknown": {
+    "description": "Booking badge for a state this build does not know."
+  },
+  "bookingsTitle": "Your bookings",
+  "@bookingsTitle": {
+    "description": "Title of screen 26."
+  },
+  "bookingsSignedInAs": "Signed in as {phone}",
+  "@bookingsSignedInAs": {
+    "description": "Under the title of screen 26.",
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingsTabsLabel": "Account",
+  "@bookingsTabsLabel": {
+    "description": "Accessible name of the tab bar."
+  },
+  "bookingsTabBookings": "Bookings",
+  "@bookingsTabBookings": {
+    "description": "Tab."
+  },
+  "bookingsTabBriefs": "Briefs",
+  "@bookingsTabBriefs": {
+    "description": "Tab."
+  },
+  "bookingsTabSettings": "Settings",
+  "@bookingsTabSettings": {
+    "description": "Tab."
+  },
+  "bookingsUpcoming": "Upcoming",
+  "@bookingsUpcoming": {
+    "description": "Group label."
+  },
+  "bookingsPast": "Past",
+  "@bookingsPast": {
+    "description": "Group label."
+  },
+  "bookingsEmpty": "You have no bookings yet.",
+  "@bookingsEmpty": {
+    "description": "Empty state of screen 26."
+  },
+  "bookingsStartNew": "Start a new brief",
+  "@bookingsStartNew": {
+    "description": "Primary action of screen 26."
+  },
+  "bookingsShowMore": "Show more",
+  "@bookingsShowMore": {
+    "description": "Loads the next page."
+  },
+  "bookingFallbackTitle": "Booking",
+  "@bookingFallbackTitle": {
+    "description": "Row title when a booking has no occasion."
+  },
+  "bookingPageSoon": "This booking page opens in the next update.",
+  "@bookingPageSoon": {
+    "description": "Stand-in until feature 012 builds the booking pages."
+  },
+  "settingsNumber": "Mobile number",
+  "@settingsNumber": {
+    "description": "Settings row."
+  },
+  "settingsName": "Name",
+  "@settingsName": {
+    "description": "Settings row."
+  },
+  "settingsEmail": "Email",
+  "@settingsEmail": {
+    "description": "Settings row."
+  },
+  "finishTitle": "Finish your account",
+  "@finishTitle": {
+    "description": "Title of screen 25."
+  },
+  "finishLater": "Later",
+  "@finishLater": {
+    "description": "Closes screen 25 for good."
+  },
+  "finishBody": "{done} done, {left} to go. Each takes seconds, and your bookings and quotes stay in one place.",
+  "@finishBody": {
+    "description": "Intro of screen 25.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "finishAllDone": "Everything is done. Your bookings and quotes stay in one place.",
+  "@finishAllDone": {
+    "description": "Screen 25 with every item done."
+  },
+  "finishProgressLabel": "Account completion",
+  "@finishProgressLabel": {
+    "description": "Accessible name of the progress bar."
+  },
+  "finishStepsLabel": "Steps",
+  "@finishStepsLabel": {
+    "description": "Accessible name of the checklist."
+  },
+  "finishItemNumber": "Mobile number verified",
+  "@finishItemNumber": {
+    "description": "Checklist item."
+  },
+  "finishItemName": "Your name",
+  "@finishItemName": {
+    "description": "Checklist item."
+  },
+  "finishItemEmail": "Email for quotes and receipts",
+  "@finishItemEmail": {
+    "description": "Checklist item."
+  },
+  "finishItemPrefs": "Language and theme",
+  "@finishItemPrefs": {
+    "description": "Checklist item."
+  },
+  "finishNameHint": "The name creators see on your requests.",
+  "@finishNameHint": {
+    "description": "Meta of the name item."
+  },
+  "finishEmailHint": "Optional. We never send marketing.",
+  "@finishEmailHint": {
+    "description": "Meta of the email item."
+  },
+  "finishActionEdit": "Edit",
+  "@finishActionEdit": {
+    "description": "Item action."
+  },
+  "finishActionAdd": "Add",
+  "@finishActionAdd": {
+    "description": "Item action."
+  },
+  "finishActionSet": "Set",
+  "@finishActionSet": {
+    "description": "Item action."
+  },
+  "finishPrimaryAddEmail": "Add email",
+  "@finishPrimaryAddEmail": {
+    "description": "Primary action: first unfinished item."
+  },
+  "finishPrimaryAddName": "Add your name",
+  "@finishPrimaryAddName": {
+    "description": "Primary action: first unfinished item."
+  },
+  "finishPrimarySetPrefs": "Set language and theme",
+  "@finishPrimarySetPrefs": {
+    "description": "Primary action: first unfinished item."
+  },
+  "finishPrimaryDone": "Back to my account",
+  "@finishPrimaryDone": {
+    "description": "Primary action when everything is done."
+  },
+  "finishAboutLabel": "What your account does",
+  "@finishAboutLabel": {
+    "description": "Group label of the CMS lines."
+  },
+  "finishNameField": "Your name",
+  "@finishNameField": {
+    "description": "Name field label."
+  },
+  "finishEmailField": "Email",
+  "@finishEmailField": {
+    "description": "Email field label."
+  },
+  "finishSave": "Save",
+  "@finishSave": {
+    "description": "Saves a field."
+  },
+  "finishCancel": "Cancel",
+  "@finishCancel": {
+    "description": "Closes a field without saving."
+  },
+  "problemEmailInvalid": "Enter an email like name@example.com.",
+  "@problemEmailInvalid": {
+    "description": "account.errors.emailInvalid."
+  },
+  "problemEmailInUse": "Another account already uses this email.",
+  "@problemEmailInUse": {
+    "description": "account.errors.emailInUse."
+  },
+  "problemNameLength": "Use 2 to 80 characters for your name.",
+  "@problemNameLength": {
+    "description": "account.errors.nameLength."
   }
 }

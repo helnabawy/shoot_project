@@ -12,6 +12,9 @@ import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
+import 'package:shoot_mobile/features/account/presentation/account_routes.dart';
+import 'package:shoot_mobile/features/account/presentation/cubit/account_cubit.dart';
+import 'package:shoot_mobile/features/account/presentation/cubit/bookings_cubit.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/service_health/presentation/pages/service_health_page.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/cubit/sign_in_flow_cubit.dart';
@@ -36,6 +39,10 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         links: getIt<WebsiteLinks>(),
       ),
       ...creatorsRoutesFrom(getIt),
+      ...accountRoutes(
+        createAccount: getIt.call<AccountCubit>,
+        createBookings: getIt.call<BookingsCubit>,
+      ),
     ],
     home: (_) => const ServiceHealthPage(),
   );

@@ -12,6 +12,7 @@ import * as migration_20261108_074725_user_multiple_personas from './20261108_07
 import * as migration_20261108_112308_media_storage_fields from './20261108_112308_media_storage_fields';
 import * as migration_20261110_154146_specialty_tile_scene from './20261110_154146_specialty_tile_scene';
 import * as migration_20261111_210154_users_phone_identity from './20261111_210154_users_phone_identity';
+import * as migration_20261112_062929_account_finish from './20261112_062929_account_finish';
 
 export const migrations = [
   {
@@ -82,6 +83,11 @@ export const migrations = [
   {
     up: migration_20261111_210154_users_phone_identity.up,
     down: migration_20261111_210154_users_phone_identity.down,
-    name: '20261111_210154_users_phone_identity'
+    name: '20261111_210154_users_phone_identity',
+  },
+  {
+    up: migration_20261112_062929_account_finish.up,
+    down: migration_20261112_062929_account_finish.down,
+    name: '20261112_062929_account_finish'
   },
 ];

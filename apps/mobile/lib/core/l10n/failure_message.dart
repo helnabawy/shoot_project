@@ -26,7 +26,11 @@ enum ProblemCode {
   numberTaken('auth.errors.numberTaken'),
   personaRequired('auth.errors.personaRequired'),
   personaInactive('auth.errors.personaInactive'),
-  acceptTerms('auth.errors.acceptTerms');
+  acceptTerms('auth.errors.acceptTerms'),
+  // 013: the client account.
+  emailInvalid('account.errors.emailInvalid'),
+  emailInUse('account.errors.emailInUse'),
+  nameLength('account.errors.nameLength');
 
   const ProblemCode(this.wire);
 
@@ -76,6 +80,9 @@ enum ProblemCode {
       personaRequired => l10n.problemPersonaRequired,
       personaInactive => l10n.problemPersonaInactive,
       acceptTerms => l10n.problemAcceptTerms,
+      emailInvalid => l10n.problemEmailInvalid,
+      emailInUse => l10n.problemEmailInUse,
+      nameLength => l10n.problemNameLength,
     };
   }
 }
