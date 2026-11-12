@@ -23,12 +23,10 @@ final class ProfileData extends Equatable {
 /// Screen 16 (MC-US1). A creator who is not listed is [LoadMissing] (screen 37).
 class ProfileCubit extends Cubit<LoadState<ProfileData>> {
   ProfileCubit({
-    required GetCreatorProfile getProfile,
-    required GetWhatsappNumber getWhatsappNumber,
+    required this._getProfile,
+    required this._getWhatsappNumber,
     required this.code,
-  }) : _getProfile = getProfile,
-       _getWhatsappNumber = getWhatsappNumber,
-       super(const LoadInProgress());
+  }) : super(const LoadInProgress());
 
   final GetCreatorProfile _getProfile;
   final GetWhatsappNumber _getWhatsappNumber;

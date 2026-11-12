@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
+import 'package:shoot_mobile/features/creators/domain/usecases/get_brief_context.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/book_hire_cubits.dart';
-import 'package:shoot_mobile/features/creators/presentation/cubit/profile_cubit.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/brief_cubit.dart';
+import 'package:shoot_mobile/features/creators/presentation/cubit/profile_cubit.dart';
 import 'package:shoot_mobile/features/creators/presentation/pages/book_page.dart';
 import 'package:shoot_mobile/features/creators/presentation/pages/profile_page.dart';
 import 'package:shoot_mobile/features/creators/presentation/pages/sample_viewer.dart';
-import 'package:shoot_mobile/features/creators/domain/usecases/get_brief_context.dart';
 import 'package:shoot_mobile/features/site/data/models/brief_builder_model.dart';
 
 import '../../../../helpers/api_examples.dart';
@@ -15,7 +15,6 @@ import '../../../../helpers/creators_fixtures.dart';
 
 ProfileView _profileView(
   ProfileData data, {
-  void Function(Uri)? onOpen,
   void Function(String)? onLink,
   void Function(List<dynamic>, int)? onSample,
   VoidCallback? onBook,

@@ -279,8 +279,9 @@ final class BriefRules {
     var last = 0;
     final template = config.sentence;
     for (final m in _token.allMatches(template)) {
-      if (m.start > last)
+      if (m.start > last) {
         parts.add(SentenceText(template.substring(last, m.start)));
+      }
       final slot = _slot(m.group(1)!);
       if (slot == null) {
         parts.add(SentenceText(m.group(0)!));
@@ -296,8 +297,9 @@ final class BriefRules {
       }
       last = m.end;
     }
-    if (last < template.length)
+    if (last < template.length) {
       parts.add(SentenceText(template.substring(last)));
+    }
     return parts;
   }
 
@@ -368,8 +370,9 @@ final class BriefRules {
     final parts = <_Part>[];
     var last = 0;
     for (final m in _token.allMatches(template)) {
-      if (m.start > last)
+      if (m.start > last) {
         parts.add(_Part.text(template.substring(last, m.start)));
+      }
       parts.add(_Part.token(m.group(1)!));
       last = m.end;
     }

@@ -23,12 +23,10 @@ final class BookData extends Equatable {
 /// Loads screen 17's data; the brief itself is a `BriefCubit` made once this is done.
 class BookCubit extends Cubit<LoadState<BookData>> {
   BookCubit({
-    required GetCreatorProfile getProfile,
-    required GetBriefContext getContext,
+    required this._getProfile,
+    required this._getContext,
     required this.code,
-  }) : _getProfile = getProfile,
-       _getContext = getContext,
-       super(const LoadInProgress());
+  }) : super(const LoadInProgress());
 
   final GetCreatorProfile _getProfile;
   final GetBriefContext _getContext;
@@ -81,12 +79,10 @@ final class HireData extends Equatable {
 /// Screen 19 (MC-US5).
 class HireCubit extends Cubit<LoadState<HireData>> {
   HireCubit({
-    required GetHirePage getHirePage,
-    required GetWhatsappNumber getWhatsappNumber,
+    required this._getHirePage,
+    required this._getWhatsappNumber,
     required this.slug,
-  }) : _getHirePage = getHirePage,
-       _getWhatsappNumber = getWhatsappNumber,
-       super(const LoadInProgress());
+  }) : super(const LoadInProgress());
 
   final GetHirePage _getHirePage;
   final GetWhatsappNumber _getWhatsappNumber;

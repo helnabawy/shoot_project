@@ -68,9 +68,8 @@ class BriefCubit extends Cubit<BriefState> {
     required BriefRules rules,
     required String today,
     Map<String, String> initial = const {},
-    BriefDraft? draft,
-  }) : _draft = draft,
-       super(
+    this._draft,
+  }) : super(
          BriefState(
            rules: rules,
            today: today,
