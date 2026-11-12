@@ -167,6 +167,8 @@ export function defineHandler<I extends EndpointInput, O extends z.ZodType>(spec
       const e = error instanceof Error ? error : new Error(String(error))
       const entry: Record<string, unknown> = { route, requestId, errorName: e.name, status: 500 }
       if (process.env.NODE_ENV !== 'production') entry.stack = e.stack
+      // A misconfigured deployment: the message names the variables and rules only, never their values.
+      if (e.message.startsWith('Invalid environment configuration')) entry.message = e.message
       if (payload) payload.logger.error(entry, 'mobile api: handler failed')
       else console.error('mobile api: handler failed', entry)
       return fail(problem(500, 'api.errors.unexpected'))
