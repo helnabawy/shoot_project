@@ -12,27 +12,31 @@ class SecondaryButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.icon,
+    this.loading = false,
   });
 
   final String label;
   final VoidCallback? onPressed;
   final ShootIcons? icon;
 
+  /// A request is running: the label stays, a spinner follows it and taps are ignored.
+  final bool loading;
+
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final enabled = onPressed != null;
-    final ink = enabled ? c.ink : c.mute;
+    final enabled = onPressed != null && !loading;
+    final ink = enabled || loading ? c.ink : c.mute;
     return Semantics(
       button: true,
       enabled: enabled,
       label: label,
-      onTap: onPressed,
+      onTap: enabled ? onPressed : null,
       excludeSemantics: true,
       child: Material(
         type: MaterialType.transparency,
         child: InkWell(
-          onTap: onPressed,
+          onTap: enabled ? onPressed : null,
           borderRadius: BorderRadius.circular(ShootRadius.row),
           highlightColor: c.selectedHover,
           child: Container(
@@ -56,6 +60,16 @@ class SecondaryButton extends StatelessWidget {
                     style: ShootType.button.copyWith(color: ink),
                   ),
                 ),
+                if (loading) ...[
+                  const SizedBox(width: ShootSpace.s3),
+                  SizedBox.square(
+                    dimension: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: ink,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
