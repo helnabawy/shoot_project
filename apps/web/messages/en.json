@@ -754,7 +754,9 @@
       "creatorUnavailable": "Your creator is no longer available. Please choose someone else.",
       "notYours": "This booking is not assigned to you.",
       "not-assigned": "This booking is not assigned to you.",
-      "not-pending": "You have already answered this request."
+      "not-pending": "You have already answered this request.",
+      "startTime": "Enter the start time as hours and minutes, like 18:30.",
+      "venue": "Tell us where the shoot will be."
     }
   },
   "availability": {
