@@ -130,13 +130,15 @@ Versions are pinned exactly in `pubspec.yaml` (no `^`), like `payload`/`next`/`r
 | `intl` + `flutter_localizations` | 0.20.3 / SDK | Localization: ARB files and generated, type-safe `AppLocalizations` |
 | `flutter_svg` | 2.3.0 | Icons and scene drawn from the boards' SVG, copied verbatim (feature 007) |
 | `shared_preferences` | 2.5.6 | Saves appearance choices on the device (accent, theme mode, language; feature 006) |
+| `flutter_secure_storage` | 11.2.0 | The session token lives in the iOS Keychain / Android Keystore (feature 009, FR-023); `shared_preferences` is plain text and hand-written platform channels are more native code to own |
+| `url_launcher` | 6.3.3 | Opens the legal documents a person accepts and the website's email sign-in in the browser (feature 009); 012 reuses it for WhatsApp. Hiding the links fails 005's legal rule; a hand-written channel duplicates a first-party package |
 | `shared_preferences_platform_interface` (dev) | 2.4.2 | `InMemorySharedPreferencesAsync`, the in-memory store the preference tests run against |
 | `bloc_test` (dev) | 10.0.0 | Asserts the sequence of states a cubit emits |
 | `mocktail` (dev) | 1.0.5 | Mocks without code generation |
 | `flutter_lints` (dev) | 6.0.0 | Base lint set; `analysis_options.yaml` adds the strict rules on top |
 
 There is deliberately no code generation (`build_runner`, `injectable`, `freezed`,
-`json_serializable`) and no storage package beyond `shared_preferences` (appearance choices only).
+`json_serializable`) and no storage package beyond `shared_preferences` (appearance choices, first-run flags, the install id) and `flutter_secure_storage` (the session token only).
 Add one when a spec needs it, with a Complexity Tracking entry in that spec's plan.
 
 ## Languages

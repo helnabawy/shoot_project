@@ -78,5 +78,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<!-- url_launcher (feature 009): legal pages and email sign-in open on the website. -->
+		<string>https</string>
+	</array>
 </dict>
 </plist>
