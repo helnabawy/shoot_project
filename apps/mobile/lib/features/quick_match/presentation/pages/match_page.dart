@@ -28,7 +28,12 @@ import 'package:shoot_mobile/features/quick_match/presentation/widgets/qm_parts.
 /// are free on the brief's day as a carousel, the one primary action following the chosen card;
 /// when nobody is free, the nearest other days.
 class MatchScreen extends StatefulWidget {
-  const MatchScreen({super.key, required this.ref, required this.accessKey, this.openUrl = openInBrowser});
+  const MatchScreen({
+    super.key,
+    required this.ref,
+    required this.accessKey,
+    this.openUrl = openInBrowser,
+  });
 
   final String ref;
   final String accessKey;
@@ -71,11 +76,15 @@ class _MatchScreenState extends State<MatchScreen> {
       builder: (context, state) {
         switch (state.status) {
           case MatchStatus.loading:
-            return const ShootScaffold(child: Center(child: CircularProgressIndicator()));
+            return const ShootScaffold(
+              child: Center(child: CircularProgressIndicator()),
+            );
           case MatchStatus.notFound:
             return const NotFoundPage();
           case MatchStatus.failed:
-            return ErrorPage(onRetry: () => unawaited(context.read<MatchCubit>().load()));
+            return ErrorPage(
+              onRetry: () => unawaited(context.read<MatchCubit>().load()),
+            );
           case MatchStatus.ready:
             final page = state.page!;
             return ShootScaffold(
@@ -86,14 +95,17 @@ class _MatchScreenState extends State<MatchScreen> {
                     child: page.noneFree
                         ? _NoneFree(
                             page: page,
-                            onDay: (day) => unawaited(context.read<MatchCubit>().changeDay(day)),
+                            onDay: (day) => unawaited(
+                              context.read<MatchCubit>().changeDay(day),
+                            ),
                             onChat: () => _chat(page),
                           )
                         : _Choose(
                             state: state,
                             onContinue: () => _continue(state),
                             onChat: () => _chat(page),
-                            onProfile: (code) => context.push('/creators/$code'),
+                            onProfile: (code) =>
+                                context.push('/creators/$code'),
                             onLetUsPick: () {
                               context.read<MatchCubit>().letTeamPick();
                               _continue(context.read<MatchCubit>().state);
@@ -151,11 +163,15 @@ class _Choose extends StatelessWidget {
             spacing: 6,
             children: [
               QmStepLine(step: 2, summary: page.sentence, onEdit: onEdit),
-              Text(l10n.qmChooseTitle, style: ShootType.title.copyWith(color: c.ink, fontSize: 28)),
+              Text(
+                l10n.qmChooseTitle,
+                style: ShootType.title.copyWith(color: c.ink, fontSize: 28),
+              ),
             ],
           ),
         ),
-        for (var s = 0; s < sections.length; s++) _SectionRail(state: state, index: s, showTitle: sections.length > 1),
+        for (var s = 0; s < sections.length; s++)
+          _SectionRail(state: state, index: s, showTitle: sections.length > 1),
       ],
       bottom: Column(
         mainAxisSize: MainAxisSize.min,
@@ -170,7 +186,10 @@ class _Choose extends StatelessWidget {
           ),
           if (!onRequest && sections.length == 1 && first != null)
             Center(
-              child: TextLink(label: l10n.qmSeeWork(first.firstName), onTap: () => onProfile(first.code)),
+              child: TextLink(
+                label: l10n.qmSeeWork(first.firstName),
+                onTap: () => onProfile(first.code),
+              ),
             ),
           if (!onRequest) _LetUsPickRow(onTap: onLetUsPick),
         ],
@@ -180,7 +199,11 @@ class _Choose extends StatelessWidget {
 }
 
 class _SectionRail extends StatelessWidget {
-  const _SectionRail({required this.state, required this.index, required this.showTitle});
+  const _SectionRail({
+    required this.state,
+    required this.index,
+    required this.showTitle,
+  });
 
   final MatchState state;
   final int index;
@@ -204,7 +227,10 @@ class _SectionRail extends StatelessWidget {
             if (showTitle)
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 20, 8),
-                child: Text(section.persona.plural, style: ShootType.heading.copyWith(color: context.colors.ink)),
+                child: Text(
+                  section.persona.plural,
+                  style: ShootType.heading.copyWith(color: context.colors.ink),
+                ),
               ),
             SnapCarousel(
               height: 366 * scale,
@@ -215,7 +241,9 @@ class _SectionRail extends StatelessWidget {
                   _CreatorCardView(
                     creator: creator,
                     section: section,
-                    chosen: chosen == null ? false : identical(chosen, creator) || chosen == creator,
+                    chosen: chosen == null
+                        ? false
+                        : identical(chosen, creator) || chosen == creator,
                     scene: i,
                     onTap: () => cubit.choose(index, i),
                   ),
@@ -265,10 +293,17 @@ class _CreatorCardView extends StatelessWidget {
             if (thumb != null && thumb.isVideo)
               Center(
                 child: DecoratedBox(
-                  decoration: BoxDecoration(color: c.photoScrim, shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                    color: c.photoScrim,
+                    shape: BoxShape.circle,
+                  ),
                   child: const SizedBox.square(
                     dimension: 32,
-                    child: Icon(Icons.play_arrow, size: 16, color: Colors.white),
+                    child: Icon(
+                      Icons.play_arrow,
+                      size: 16,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -278,7 +313,12 @@ class _CreatorCardView extends StatelessWidget {
     }
 
     return CreatorCard(
-      label: [card.name, card.displayCode, facts, if (price != null) Money.format(price / 100)].join(', '),
+      label: [
+        card.name,
+        card.displayCode,
+        facts,
+        if (price != null) Money.format(price / 100),
+      ].join(', '),
       chosen: chosen,
       onTap: onTap,
       children: [
@@ -316,7 +356,11 @@ class _CreatorCardView extends StatelessWidget {
                 children: [
                   Text(
                     card.name,
-                    style: ShootType.action.copyWith(color: c.ink, fontWeight: FontWeight.w600, height: 1.3),
+                    style: ShootType.action.copyWith(
+                      color: c.ink,
+                      fontWeight: FontWeight.w600,
+                      height: 1.3,
+                    ),
                   ),
                   Text('\u2066${card.displayCode}\u2069 · $where', style: meta),
                 ],
@@ -328,7 +372,11 @@ class _CreatorCardView extends StatelessWidget {
           facts,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: ShootType.row.copyWith(fontSize: 14, color: c.ink, height: 1.4),
+          style: ShootType.row.copyWith(
+            fontSize: 14,
+            color: c.ink,
+            height: 1.4,
+          ),
         ),
         DecoratedBox(
           decoration: BoxDecoration(
@@ -341,15 +389,25 @@ class _CreatorCardView extends StatelessWidget {
               textBaseline: TextBaseline.alphabetic,
               children: [
                 if (price == null)
-                  Text(l10n.qmPriceOnRequest, style: ShootType.heading.copyWith(color: c.ink))
+                  Text(
+                    l10n.qmPriceOnRequest,
+                    style: ShootType.heading.copyWith(color: c.ink),
+                  )
                 else
                   Money(
                     amount: price / 100,
-                    style: ShootType.heading.copyWith(color: c.ink, fontWeight: FontWeight.w700),
+                    style: ShootType.heading.copyWith(
+                      color: c.ink,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 const Spacer(),
                 Flexible(
-                  child: Text(section.includes.take(1).join(' · '), textAlign: TextAlign.end, style: meta),
+                  child: Text(
+                    section.includes.take(1).join(' · '),
+                    textAlign: TextAlign.end,
+                    style: meta,
+                  ),
                 ),
               ],
             ),
@@ -390,13 +448,21 @@ class _LetUsPickRow extends StatelessWidget {
                 width: 30,
                 height: 30,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(color: c.tile, borderRadius: BorderRadius.circular(ShootRadius.tile)),
+                decoration: BoxDecoration(
+                  color: c.tile,
+                  borderRadius: BorderRadius.circular(ShootRadius.tile),
+                ),
                 child: ShootIcon(ShootIcons.search, size: 16, color: c.tileInk),
               ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text(l10n.qmNotSure, style: ShootType.body.copyWith(color: c.ink, height: 1.3))],
+                  children: [
+                    Text(
+                      l10n.qmNotSure,
+                      style: ShootType.body.copyWith(color: c.ink, height: 1.3),
+                    ),
+                  ],
                 ),
               ),
               ShootIcon(ShootIcons.chevron, size: 16, color: c.mute),
@@ -410,7 +476,11 @@ class _LetUsPickRow extends StatelessWidget {
 
 /// Screen 08: nobody is free that day.
 class _NoneFree extends StatelessWidget {
-  const _NoneFree({required this.page, required this.onDay, required this.onChat});
+  const _NoneFree({
+    required this.page,
+    required this.onDay,
+    required this.onChat,
+  });
 
   final MatchPage page;
   final ValueChanged<String> onDay;
@@ -430,8 +500,14 @@ class _NoneFree extends StatelessWidget {
             spacing: 6,
             children: [
               QmStepLine(step: 2, summary: page.sentence),
-              Text(l10n.qmNoneTitle, style: ShootType.title.copyWith(color: c.ink, fontSize: 28)),
-              Text(l10n.qmNoneBody, style: ShootType.body.copyWith(color: c.bodyInk, height: 1.5)),
+              Text(
+                l10n.qmNoneTitle,
+                style: ShootType.title.copyWith(color: c.ink, fontSize: 28),
+              ),
+              Text(
+                l10n.qmNoneBody,
+                style: ShootType.body.copyWith(color: c.bodyInk, height: 1.5),
+              ),
             ],
           ),
         ),
@@ -440,7 +516,11 @@ class _NoneFree extends StatelessWidget {
           child: Column(
             children: [
               for (final day in days)
-                _DayRow(label: qmDay(context, day.date), free: l10n.qmDayFree(day.free), onTap: () => onDay(day.date)),
+                _DayRow(
+                  label: qmDay(context, day.date),
+                  free: l10n.qmDayFree(day.free),
+                  onTap: () => onDay(day.date),
+                ),
             ],
           ),
         ),
@@ -457,7 +537,10 @@ class _NoneFree extends StatelessWidget {
               onPressed: () => onDay(days.first.date),
             ),
           Center(
-            child: TextLink(label: l10n.qmAskWhatsApp, onTap: page.whatsappUrl == null ? null : onChat),
+            child: TextLink(
+              label: l10n.qmAskWhatsApp,
+              onTap: page.whatsappUrl == null ? null : onChat,
+            ),
           ),
         ],
       ),

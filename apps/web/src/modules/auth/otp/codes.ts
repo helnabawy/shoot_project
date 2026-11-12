@@ -17,6 +17,9 @@ const hmac = (input: string) => crypto.createHmac('sha256', secret()).update(inp
 
 /** Six uniform digits from the CSPRNG. */
 export function generateCode(): string {
+  // Local testing only: env() refuses OTP_FIXED_CODE in a production deployment.
+  const fixed = env().OTP_FIXED_CODE
+  if (fixed) return fixed
   return formatCode(crypto.randomInt(0, 1_000_000))
 }
 

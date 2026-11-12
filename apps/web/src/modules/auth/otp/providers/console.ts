@@ -17,6 +17,8 @@ export function consoleProvider(dir = OUTBOX_DIR): OtpProvider {
       if (signal.aborted) return { ok: false, reason: 'unavailable' }
       if (message.to.endsWith('9999999')) return { ok: false, reason: 'unavailable' }
       if (message.channel === 'whatsapp' && message.to.endsWith('0000000')) return { ok: false, reason: 'unreachable' }
+      // Fixed-code test deployments: the code is known, and a serverless disk is read-only.
+      if (process.env.OTP_FIXED_CODE) return { ok: true, ref: null }
       try {
         await mkdir(dir, { recursive: true })
         const { challengeId, channel, to, code, locale, text } = message
