@@ -47,6 +47,7 @@ export const envSchema = z
     APP_ANDROID_PACKAGE: optional.refine((v) => v === undefined || ANDROID_PACKAGE.test(v), 'must be a package name, e.g. ae.shoot.app'),
     OTP_PROVIDER: z.enum(['console', 'unifonic'], { message: 'must be console or unifonic' }).optional(),
     OTP_HMAC_SECRET: optional.refine((v) => v === undefined || v.length >= 32, 'must be at least 32 characters (openssl rand -hex 32)'),
+    OTP_RATE_LIMIT_MULTIPLIER: optional.refine((v) => v === undefined || /^[1-9]\d{0,3}$/.test(v), 'must be a whole number from 1 to 9999'),
     OTP_ALLOW_FIXED_CODE: z.enum(['1']).optional(),
     OTP_FIXED_CODE: optional.refine((v) => v === undefined || /^\d{6}$/.test(v), 'must be six digits'),
     UNIFONIC_APP_SID: optional,
