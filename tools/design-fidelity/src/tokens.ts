@@ -35,6 +35,36 @@ export function rolesByValue(css = readFileSync(tokensPath, 'utf8')): Record<str
   return out
 }
 
+/**
+ * A shadow's key: its colour key and its lengths in px, wherever the colour sits, so
+ * `0 1px 2px rgba(0,0,0,.06)` and `rgba(0, 0, 0, 0.06) 0px 1px 2px` match. One shadow only.
+ */
+export function shadowKey(value: string): string | null {
+  const colour = /rgba?\([^)]*\)|#[0-9a-f]{3,6}\b/i.exec(value)
+  if (!colour || value.includes(',') && value.replace(/rgba?\([^)]*\)/gi, '').includes(',')) return null
+  const key = colourKey(colour[0])
+  if (!key) return null
+  const lengths = value
+    .replace(colour[0], ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((l) => Number.parseFloat(l))
+  if (lengths.some(Number.isNaN)) return null
+  return `${key}|${lengths.join(' ')}`
+}
+
+/** Light-theme shadow roles (`--shadow`, `--shadow-panel`, `--shadow-sheet`) by [shadowKey]. */
+export function shadowsByValue(css = readFileSync(tokensPath, 'utf8')): Record<string, string> {
+  const root = css.slice(css.indexOf(':root {'), css.indexOf('.dark,'))
+  const out: Record<string, string> = {}
+  for (const m of root.matchAll(/--(shadow[a-z-]*):\s*([^;]+);/g)) {
+    const key = shadowKey(m[2]!)
+    if (key) out[key] ??= m[1]!
+  }
+  return out
+}
+
 /** tokens.css without the Tailwind `@theme` block, ready to inject into a board. */
 export function tokensCss(css = readFileSync(tokensPath, 'utf8')): string {
   const at = css.indexOf('@theme inline')
