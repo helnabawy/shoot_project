@@ -8,29 +8,11 @@ import 'package:shoot_mobile/core/l10n/failure_message.dart';
 import 'package:shoot_mobile/core/l10n/generated/app_localizations.dart';
 
 const _snapshot = '../../specs/contracts/mobile-api/v1.schema.json';
-const _problemsTs = '../../packages/domain/src/api/v1/problems.ts';
 
-/// Every problem code v1 lists: the snapshot's `problems` once it is
-/// committed, else `PROBLEM_CODES` in the domain package's `problems.ts`.
+/// Every problem code v1 lists, from the committed contract snapshot.
 List<String> _contractCodes() {
-  final snapshot = File(_snapshot);
-  if (snapshot.existsSync()) {
-    final problems =
-        (jsonDecode(snapshot.readAsStringSync()) as Map)['problems'];
-    final codes = <String>[
-      if (problems is Map) ...problems.keys.cast<String>(),
-      if (problems is List)
-        for (final p in problems)
-          if (p is String) p else if (p is Map) p['code'] as String,
-    ];
-    if (codes.isNotEmpty) return codes;
-  }
-  final source = File(_problemsTs).readAsStringSync();
-  final list = RegExp(
-    r'PROBLEM_CODES = \[(.*?)\] as const',
-    dotAll: true,
-  ).firstMatch(source)!.group(1)!;
-  return [for (final m in RegExp(r"'([^']+)'").allMatches(list)) m.group(1)!];
+  final snapshot = jsonDecode(File(_snapshot).readAsStringSync()) as Map;
+  return (snapshot['problems'] as List).cast<String>();
 }
 
 void main() {
