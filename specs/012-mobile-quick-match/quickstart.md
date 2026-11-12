@@ -12,8 +12,12 @@ Prerequisites: `nvm use` (Node 24), Docker, `pnpm db:migrate`, `pnpm seed`.
 
 | Scenario | Test |
 |---|---|
-| MQ-US1-S1..S10 | `mobile-api-booking-match.int.test.ts`, `match_cubit_test.dart`, `match_page_test.dart` |
-| MQ-US2-S1..S11 | `mobile-api-booking-issue.int.test.ts`, `book_flow_cubit_test.dart`, `details_page_test.dart` |
-| MQ-US3-S1..S8 | `mobile-api-booking-accept.int.test.ts`, `booking_view_cubit_test.dart` |
-| MQ-US4-S1..S7 | `mobile-api-booking-status.int.test.ts`, `booking_page_test.dart` |
-| MQ-US5-S1..S4 | `mobile-api-booking-delivery.int.test.ts`, `booking_page_test.dart` |
+| MQ-US1-S1..S9 | `apps/web/tests/integration/mobile-api-booking.int.test.ts`, `test/features/quick_match/presentation/cubit/match_cubit_test.dart`, `.../pages/quick_match_pages_test.dart` |
+| MQ-US2-S1..S11 | the same integration file, `.../cubit/book_flow_cubit_test.dart`, `.../pages/quick_match_pages_test.dart` |
+| MQ-US3-S1..S8 | the same integration file, `.../cubit/booking_view_cubit_test.dart`, `.../pages/quick_match_pages_test.dart` |
+| MQ-US4-S1..S7 | the same files |
+| MQ-US5-S1..S4 | the same files |
+
+Not yet covered by a test: MQ-US1-S3 (the profile link keeps the choice on return) and MQ-US1-S10
+(Edit reopens the brief with its answers), which need feature 010's brief screens; the pixel diff of
+screens 07 to 14 and 40 (task T030).

@@ -29,6 +29,15 @@ const SAMPLE_PARAMS: Record<string, Record<string, string>> = {
   legal: { kind: 'terms' },
   legalVersions: { kind: 'terms' },
   legalVersion: { kind: 'terms', version: '1' },
+  // 012: an unknown reference and key
+  match: { ref: 'B-NONE', key: 'x' },
+  quotationIssue: { ref: 'B-NONE', key: 'x' },
+  quotationView: { ref: 'Q-NONE', key: 'x' },
+  quotationAccept: { ref: 'Q-NONE', key: 'x' },
+  quotationConfirmDelivery: { ref: 'Q-NONE', key: 'x' },
+  quotationReport: { ref: 'Q-NONE', key: 'x' },
+  quotationFresh: { ref: 'Q-NONE', key: 'x' },
+  quotationPickAnother: { ref: 'Q-NONE', key: 'x' },
 }
 /** Endpoints whose sample params name nothing in the seed: a 404 problem is the declared answer. */
 const NOT_IN_SEED = new Set<string>([

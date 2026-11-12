@@ -49,7 +49,13 @@ number and one-time code (module `apps/web/src/modules/auth/` `otp/`, `commands/
 `packages/domain/src/auth/otp.ts`; the verified number is the users `username` via `loginWithUsername`; console
 provider outbox read with `pnpm --filter web otp:last`; the website's `/login`, `/login/code`, `/login/email`,
 `/register` by code; the app's `core/auth/` and `features/sign_in/`, screens 20–23). Open in its `tasks.md`: the
-vendor (owner approval, T006, T051, T056, T092) and the manual and review gates. Of the rest, none is implemented.
+vendor (owner approval, T006, T051, T056, T092) and the manual and review gates. Feature 012
+(`specs/012-mobile-quick-match/`, test-id prefix `MQ-`) is implemented on its branch: Quick Match
+steps 2–4 and the booking pages in the app (`apps/mobile/lib/features/quick_match/`, screens 07–14
+and 40) over eight additive endpoints (`/api/mobile/v1/match/…`, `/quotations/…`; commands in
+`apps/web/src/modules/booking/commands/`, shared with the website's actions); open in its `tasks.md`:
+the golden and pixel-diff proof, the Arabic review and the device walkthrough. Of the rest, none is
+implemented.
 007, 008 and 009 are planned (spec, plan, research, data model, contracts,
 quickstart, tasks: 73, 95 and 93 tasks); 010–015 are draft specs (plan and tasks when next).
 `specs/ROADMAP.md` has the screens per feature:

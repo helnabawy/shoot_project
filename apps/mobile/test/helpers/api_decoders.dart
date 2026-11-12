@@ -62,7 +62,8 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'booking-view-expired': (json) => BookingViewModel.fromJson(json).toEntity(),
   'booking-view-on-hold': (json) => BookingViewModel.fromJson(json).toEntity(),
   // The bodies the app sends: each must read as the shapes the app builds.
-  'quotation-request': (json) => json['picks']! as List,
+  'quotation-request': (json) =>
+      ((json['picks']! as List).length, (json['details']! as Map)['venue']),
   'report-request': (json) => json['reason']! as String,
   'pick-another-request': (json) => json['code']! as String,
 };

@@ -26,7 +26,13 @@ enum ProblemCode {
   numberTaken('auth.errors.numberTaken'),
   personaRequired('auth.errors.personaRequired'),
   personaInactive('auth.errors.personaInactive'),
-  acceptTerms('auth.errors.acceptTerms');
+  acceptTerms('auth.errors.acceptTerms'),
+  // 012: Quick Match and booking (contracts/booking-api.md).
+  bookingUnavailable('booking.errors.unavailable'),
+  bookingCreatorUnavailable('booking.errors.creatorUnavailable'),
+  bookingNotAllowed('booking.errors.not-allowed'),
+  bookingTerminal('booking.errors.terminal'),
+  bookingExpiredQuotation('booking.errors.expired-quotation');
 
   const ProblemCode(this.wire);
 
@@ -76,6 +82,9 @@ enum ProblemCode {
       personaRequired => l10n.problemPersonaRequired,
       personaInactive => l10n.problemPersonaInactive,
       acceptTerms => l10n.problemAcceptTerms,
+      bookingUnavailable || bookingCreatorUnavailable => l10n.qmErrUnavailable,
+      bookingNotAllowed || bookingTerminal => l10n.qmErrNotAllowed,
+      bookingExpiredQuotation => l10n.qmErrExpired,
     };
   }
 }
