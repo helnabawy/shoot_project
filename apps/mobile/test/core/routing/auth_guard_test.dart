@@ -70,7 +70,7 @@ void main() {
   );
 
   testWidgets(
-    'OT-US3-S6 an unsafe next is ignored after sign-in: home until 013 builds the account',
+    'OT-US3-S6 an unsafe next is ignored after sign-in: the account (013 built it)',
     (tester) async {
       final router = await open(
         tester,
@@ -78,8 +78,7 @@ void main() {
       );
       await session.signIn(signedIn);
       await tester.pumpAndSettle();
-      expect(location(router), '/');
-      expect(find.text('home'), findsOneWidget);
+      expect(location(router), AppRoutes.account);
     },
   );
 
@@ -103,28 +102,31 @@ void main() {
     expect(find.text('home'), findsOneWidget);
   });
 
-  test('afterSignIn: account pages once built, home until then', () {
-    const user = SessionUser(
-      id: '1',
-      name: null,
-      accountType: AccountType.provider,
-    );
-    expect(afterSignIn(user), AppRoutes.home);
-    expect(
-      afterSignIn(
-        user,
-        table: [
-          ...AppRoutes.table.where((r) => r.path != AppRoutes.accountProfile),
-          const AppRoute(
-            AppRoutes.accountProfile,
-            owner: '014',
-            example: '/account/profile',
-            built: true,
-            auth: true,
-          ),
-        ],
-      ),
-      AppRoutes.accountProfile,
-    );
-  });
+  test(
+    'afterSignIn: the creator profile once built, the account until then',
+    () {
+      const user = SessionUser(
+        id: '1',
+        name: null,
+        accountType: AccountType.provider,
+      );
+      expect(afterSignIn(user), AppRoutes.account);
+      expect(
+        afterSignIn(
+          user,
+          table: [
+            ...AppRoutes.table.where((r) => r.path != AppRoutes.accountProfile),
+            const AppRoute(
+              AppRoutes.accountProfile,
+              owner: '014',
+              example: '/account/profile',
+              built: true,
+              auth: true,
+            ),
+          ],
+        ),
+        AppRoutes.accountProfile,
+      );
+    },
+  );
 }

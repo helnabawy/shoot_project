@@ -170,6 +170,11 @@
     }
   },
   "account": {
+    "errors": {
+      "emailInvalid": "Enter an email like name@example.com.",
+      "emailInUse": "Another account already uses this email.",
+      "nameLength": "Use 2 to 80 characters for your name."
+    },
     "title": "My account",
     "persona": "Profession",
     "briefs": "Your briefs",
