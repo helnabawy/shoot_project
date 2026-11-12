@@ -1,9 +1,10 @@
-import { HIRE_CREATOR_LIMIT, SITE_PATH, type HirePageV1, type LinkV1, type NavigationV1 } from '@shoot/domain/api/v1'
+import { HIRE_CREATOR_LIMIT, SITE_PATH, type HirePageV1, type LinkV1, type NavigationV1, type PageV1 } from '@shoot/domain/api/v1'
 import { toWireBriefBuilder } from '@/modules/brief/wire'
 import type { Lookups } from '@/modules/creators/describe'
 import { toWireCreatorCard } from '@/modules/creators/wire'
 import { toWireSections, type SectionContext } from '@/modules/landing/wire'
 import { toWireLink, toWireRichText } from '@/shared/api/wire'
+import type { Page } from '@/payload-types'
 import type { Locale } from '@/shared/lib/locale'
 import type { IntentPage } from './intent'
 import type { Navigation, NavigationLink } from './queries'
@@ -41,4 +42,9 @@ export function toWireHirePage(intent: IntentPage, ctx: SectionContext & { direc
     creatorTotal: intent.creatorTotal,
     faq: intent.faq.map((f) => ({ question: f.question, answer: toWireRichText(f.answer, ctx.base) })),
   }
+}
+
+/** An editor-built page at its current address in the answer's language, with its resolved sections (FR-028). */
+export function toWirePage(page: Pick<Page, 'title' | 'sections'>, path: string, ctx: SectionContext): PageV1 {
+  return { locale: ctx.locale, path, title: page.title, sections: toWireSections(page.sections, ctx) }
 }

@@ -1,0 +1,19 @@
+{
+  "locale": "en",
+  "kind": "terms",
+  "title": "Terms & Conditions",
+  "versions": [
+    {
+      "version": 2,
+      "from": "2026-06-01T00:00:00.000Z",
+      "until": null,
+      "changeSummary": "Clearer words on cancellations."
+    },
+    {
+      "version": 1,
+      "from": "2026-01-01T00:00:00.000Z",
+      "until": "2026-06-01T00:00:00.000Z",
+      "changeSummary": null
+    }
+  ]
+}

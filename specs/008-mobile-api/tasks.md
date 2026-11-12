@@ -611,14 +611,14 @@ and `legal/{kind}/versions/{version}`.
 
 ### Tests first
 
-- [ ] T065 [P] [US4] Write `v1/content.test.ts`. The schemas accept their examples;
+- [x] T065 [P] [US4] Write `v1/content.test.ts`. The schemas accept their examples;
   `legalKindV1` refuses `cookies`; `params.version` refuses `0` and `10000`.
-- [ ] T066 [P] [US4] Write the mapper tests:
+- [x] T066 [P] [US4] Write the mapper tests:
   - `web/modules/guides/wire.test.ts`: the cover goes through `toWireImage`, the body through
     `toWireRichText`, and `inRequestedLanguage` comes from the query;
   - `web/modules/legal/wire.test.ts`;
   - extend `web/modules/pages/wire.test.ts` for `toWirePage`.
-- [ ] T067 [P] [US4] Write `wtest/integration/mobile-api-content.int.test.ts` with the pages and
+- [x] T067 [P] [US4] Write `wtest/integration/mobile-api-content.int.test.ts` with the pages and
   guides fixtures (`wtest/integration/setup/pages.ts`).
   - **`MR-US4-S1`**:
     - `GET guides` lists newest first with pagination;
@@ -640,7 +640,7 @@ and `legal/{kind}/versions/{version}`.
     - `legal/terms/versions` lists both with dates and change summaries;
     - `legal/terms/versions/1` returns version 1;
     - `versions/3` gives 404.
-- [ ] T068 [P] [US4] Write the Dart content tests.
+- [x] T068 [P] [US4] Write the Dart content tests.
   - `mobile/test/core/content/rich_text_model_test.dart` (**`MR-US4-S2`**): the `guide.json` body
     decodes into every block and inline kind, and an unknown kind gives `Unknown*`.
   - `mobile/test/features/content/data/models/content_models_test.dart`.
@@ -649,29 +649,35 @@ and `legal/{kind}/versions/{version}`.
 
 ### Implementation
 
-- [ ] T069 [US4] Create `v1/content.ts` per data-model.md. Register `guides`, `guide`, `page`,
+- [x] T069 [US4] Create `v1/content.ts` per data-model.md. Register `guides`, `guide`, `page`,
   `legal`, `legalVersions` and `legalVersion`.
-- [ ] T070 [P] [US4] Write the examples `guides.json`, `guide.json` ("How to brief a wedding
+- [x] T070 [P] [US4] Write the examples `guides.json`, `guide.json` ("How to brief a wedding
   photographer", with every node kind), `page.json` ("How it works"), `legal.json`,
   `legal-versions.json` and `legal-version.json`. T065 passes.
-- [ ] T071 [P] [US4] In `web/modules/guides/`:
+- [x] T071 [P] [US4] In `web/modules/guides/`:
   - `wire.ts`;
   - `api.ts` (`getGuidesV1` over `listArticles`, `listCategories` and `getAuthor`; `getGuideV1`
     over `getArticle` with `now: ctx.now()`, never `draft`);
   - export from `index.ts`.
-- [ ] T072 [P] [US4] In `web/modules/legal/`:
+- [x] T072 [P] [US4] In `web/modules/legal/`:
   - `wire.ts`;
   - `api.ts` (`getLegalV1`, `getLegalVersionsV1`, `getLegalVersionV1`);
   - export from `index.ts`.
-- [ ] T073 [US4] In `web/modules/pages/`, add `toWirePage` and `getPageV1` (over
+- [x] T073 [US4] In `web/modules/pages/`, add `toWirePage` and `getPageV1` (over
   `getPageBySlug(kind: 'standard')`, never `draft`, with a redirect giving the current `path`).
   Export it from `index.ts`.
-- [ ] T074 [US4] Create the route files `guides/route.ts`, `guides/[slug]/route.ts`,
+- [x] T074 [US4] Create the route files `guides/route.ts`, `guides/[slug]/route.ts`,
   `pages/[slug]/route.ts`, `legal/[kind]/route.ts`, `legal/[kind]/versions/route.ts` and
   `legal/[kind]/versions/[version]/route.ts`. T066 and T067 pass.
-- [ ] T075 [US4] Create `mobile/lib/features/content/` (entities, `ContentRepository`, models,
+- [x] T075 [US4] Create `mobile/lib/features/content/` (entities, `ContentRepository`, models,
   datasource, repository impl) and `content_injection.dart`. T068 passes.
-- [ ] T076 [US4] Run `api:snapshot` and commit. Add the US4 examples to `api_examples_test.dart`.
+- [x] T076 [US4] Run `api:snapshot` and commit. Add the US4 examples to `api_examples_test.dart`.
+  - Done notes: the US4 rows are in `test/helpers/api_decoders.dart` (the table `api_examples_test.dart`
+    reads). `Pagination`/`PaginationModel` is new in `mobile/lib/core/content/pagination.dart` for US3 to
+    reuse. `ArticleSummary` in `web/modules/guides/queries.ts` gained `coverMedia` (every stored size) and
+    `readingMinutes`; `AuthorEntry` gained `photoMedia`. `articleSummaryV1.author` is nullable (the
+    relationship is required in the CMS, but an unreadable author must not fail the list). The scheduled
+    case fakes only `Date` (`vi.useFakeTimers({ toFake: ['Date'] })`), which is what `ctx.now()` reads.
 
 **Checkpoint**: MR-US4-S1 to S5 pass.
 

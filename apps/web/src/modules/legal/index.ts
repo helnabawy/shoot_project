@@ -3,3 +3,6 @@ export { currentVersions, getLegalDocument, getLegalForRegistration, getLegalLin
 export type { LegalLink, LegalVersionView, LegalView } from './queries'
 export { acceptedKinds, recordAcceptances } from './record'
 export { legalPath } from './paths'
+// The mobile API (008).
+export { getLegalV1, getLegalVersionV1, getLegalVersionsV1 } from './api'
+export { toWireLegalDocument, toWireLegalVersion, toWireLegalVersions } from './wire'

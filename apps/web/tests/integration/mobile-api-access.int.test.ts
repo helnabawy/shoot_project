@@ -23,12 +23,20 @@ const SAMPLE_PARAMS: Record<string, Record<string, string>> = {
   specialty: { specialty: 'portrait' },
   creatorProfile: { code: 'ZZZZZ' },
   hirePage: { slug: 'not-seeded' },
+  // US4
+  guide: { slug: 'not-seeded' },
+  page: { slug: 'studios' },
+  legal: { kind: 'terms' },
+  legalVersions: { kind: 'terms' },
+  legalVersion: { kind: 'terms', version: '1' },
 }
 /** Endpoints whose sample params name nothing in the seed: a 404 problem is the declared answer. */
 const NOT_IN_SEED = new Set<string>([
   // US3
   'creatorProfile',
   'hirePage',
+  // US4: the seed has no guides (demo guides are opt-in).
+  'guide',
 ])
 
 async function handlerOf(e: Endpoint): Promise<RouteHandler | undefined> {

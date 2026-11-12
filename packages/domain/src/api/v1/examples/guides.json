@@ -1,0 +1,132 @@
+{
+  "locale": "en",
+  "items": [
+    {
+      "slug": "brief-a-wedding-photographer",
+      "title": "How to brief a wedding photographer",
+      "summary": "What to say before the day, so nothing that matters is missed.",
+      "cover": {
+        "alt": "A couple on a terrace at sunset",
+        "width": 1600,
+        "height": 1200,
+        "sizes": [
+          {
+            "url": "https://shoot.example/api/media/file/guide-wedding-400.webp",
+            "width": 400,
+            "height": 300
+          },
+          {
+            "url": "https://shoot.example/api/media/file/guide-wedding-800.webp",
+            "width": 800,
+            "height": 600
+          },
+          {
+            "url": "https://shoot.example/api/media/file/guide-wedding-1600.webp",
+            "width": 1600,
+            "height": 1200
+          }
+        ]
+      },
+      "publishedAt": "2026-10-01T08:00:00.000Z",
+      "readingMinutes": 4,
+      "categories": [
+        {
+          "slug": "weddings",
+          "name": "Weddings"
+        }
+      ],
+      "author": {
+        "slug": "sara",
+        "name": "Sara Khan"
+      },
+      "inRequestedLanguage": true
+    },
+    {
+      "slug": "plan-a-shoot-day",
+      "title": "How to plan a shoot day",
+      "summary": "A simple running order for a day on location.",
+      "cover": {
+        "alt": "",
+        "width": 1600,
+        "height": 1200,
+        "sizes": [
+          {
+            "url": "https://shoot.example/api/media/file/guide-shoot-day-400.webp",
+            "width": 400,
+            "height": 300
+          },
+          {
+            "url": "https://shoot.example/api/media/file/guide-shoot-day-800.webp",
+            "width": 800,
+            "height": 600
+          },
+          {
+            "url": "https://shoot.example/api/media/file/guide-shoot-day-1600.webp",
+            "width": 1600,
+            "height": 1200
+          }
+        ]
+      },
+      "publishedAt": "2026-09-20T08:00:00.000Z",
+      "readingMinutes": 3,
+      "categories": [
+        {
+          "slug": "planning",
+          "name": "Planning"
+        }
+      ],
+      "author": {
+        "slug": "sara",
+        "name": "Sara Khan"
+      },
+      "inRequestedLanguage": true
+    },
+    {
+      "slug": "product-photos-that-sell",
+      "title": "Product photos that sell",
+      "summary": "What to ask for when the photos go on a shop page.",
+      "cover": null,
+      "publishedAt": "2026-09-02T08:00:00.000Z",
+      "readingMinutes": 5,
+      "categories": [
+        {
+          "slug": "products",
+          "name": "Products"
+        }
+      ],
+      "author": {
+        "slug": "sara",
+        "name": "Sara Khan"
+      },
+      "inRequestedLanguage": true
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 3,
+    "pageSize": 12
+  },
+  "categories": [
+    {
+      "slug": "planning",
+      "name": "Planning",
+      "description": "Getting the day right.",
+      "count": 1
+    },
+    {
+      "slug": "products",
+      "name": "Products",
+      "description": null,
+      "count": 1
+    },
+    {
+      "slug": "weddings",
+      "name": "Weddings",
+      "description": "Briefs for the big day.",
+      "count": 1
+    }
+  ],
+  "category": null,
+  "author": null
+}

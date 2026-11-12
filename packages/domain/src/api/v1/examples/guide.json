@@ -1,0 +1,363 @@
+{
+  "slug": "brief-a-wedding-photographer",
+  "title": "How to brief a wedding photographer",
+  "summary": "What to say before the day, so nothing that matters is missed.",
+  "cover": {
+    "alt": "A couple on a terrace at sunset",
+    "width": 1600,
+    "height": 1200,
+    "sizes": [
+      {
+        "url": "https://shoot.example/api/media/file/guide-wedding-400.webp",
+        "width": 400,
+        "height": 300
+      },
+      {
+        "url": "https://shoot.example/api/media/file/guide-wedding-800.webp",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "url": "https://shoot.example/api/media/file/guide-wedding-1600.webp",
+        "width": 1600,
+        "height": 1200
+      }
+    ]
+  },
+  "publishedAt": "2026-10-01T08:00:00.000Z",
+  "readingMinutes": 4,
+  "categories": [
+    {
+      "slug": "weddings",
+      "name": "Weddings"
+    }
+  ],
+  "author": {
+    "slug": "sara",
+    "name": "Sara Khan"
+  },
+  "inRequestedLanguage": true,
+  "body": {
+    "nodes": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A good brief is short. It tells the photographer ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          },
+          {
+            "type": "text",
+            "text": "what matters",
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "code": false
+          },
+          {
+            "type": "text",
+            "text": " and leaves the rest to them.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "children": [
+          {
+            "type": "text",
+            "text": "Start with the day",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          }
+        ]
+      },
+      {
+        "type": "list",
+        "ordered": true,
+        "items": [
+          [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "text": "The date and the places, with times.",
+                  "bold": false,
+                  "italic": false,
+                  "underline": false,
+                  "code": false
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "text": "The people who must be in the photos.",
+                  "bold": false,
+                  "italic": false,
+                  "underline": false,
+                  "code": false
+                }
+              ]
+            },
+            {
+              "type": "list",
+              "ordered": false,
+              "items": [
+                [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "text": "Family, by name",
+                        "bold": false,
+                        "italic": false,
+                        "underline": false,
+                        "code": false
+                      }
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "text": "Friends travelling in",
+                        "bold": false,
+                        "italic": false,
+                        "underline": false,
+                        "code": false
+                      }
+                    ]
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "text": "Anything that cannot be repeated.",
+                  "bold": false,
+                  "italic": false,
+                  "underline": false,
+                  "code": false
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      {
+        "type": "quote",
+        "children": [
+          {
+            "type": "text",
+            "text": "Tell me who you will be looking for in the photos in ten years.",
+            "bold": false,
+            "italic": true,
+            "underline": false,
+            "code": false
+          }
+        ]
+      },
+      {
+        "type": "image",
+        "image": {
+          "alt": "Rings on a table",
+          "width": 1600,
+          "height": 1200,
+          "sizes": [
+            {
+              "url": "https://shoot.example/api/media/file/guide-wedding-detail-400.webp",
+              "width": 400,
+              "height": 300
+            },
+            {
+              "url": "https://shoot.example/api/media/file/guide-wedding-detail-800.webp",
+              "width": 800,
+              "height": 600
+            },
+            {
+              "url": "https://shoot.example/api/media/file/guide-wedding-detail-1600.webp",
+              "width": 1600,
+              "height": 1200
+            }
+          ]
+        }
+      },
+      {
+        "type": "heading",
+        "level": 3,
+        "children": [
+          {
+            "type": "text",
+            "text": "Then the style",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Share two or three photos you like, or ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          },
+          {
+            "type": "link",
+            "href": "/creators",
+            "children": [
+              {
+                "type": "text",
+                "text": "look through the creators",
+                "bold": false,
+                "italic": false,
+                "underline": false,
+                "code": false
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " first.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          },
+          {
+            "type": "lineBreak"
+          },
+          {
+            "type": "text",
+            "text": "Questions? Write to ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          },
+          {
+            "type": "link",
+            "href": "mailto:hello@shoot.example",
+            "children": [
+              {
+                "type": "text",
+                "text": "hello@shoot.example",
+                "bold": false,
+                "italic": false,
+                "underline": false,
+                "code": false
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": ".",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "level": 4,
+        "children": [
+          {
+            "type": "text",
+            "text": "On the day",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Keep your phone on, and name one person who knows the plan.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "code": false
+          }
+        ]
+      }
+    ]
+  },
+  "related": [
+    {
+      "slug": "plan-a-shoot-day",
+      "title": "How to plan a shoot day",
+      "summary": "A simple running order for a day on location.",
+      "cover": {
+        "alt": "",
+        "width": 1600,
+        "height": 1200,
+        "sizes": [
+          {
+            "url": "https://shoot.example/api/media/file/guide-shoot-day-400.webp",
+            "width": 400,
+            "height": 300
+          },
+          {
+            "url": "https://shoot.example/api/media/file/guide-shoot-day-800.webp",
+            "width": 800,
+            "height": 600
+          },
+          {
+            "url": "https://shoot.example/api/media/file/guide-shoot-day-1600.webp",
+            "width": 1600,
+            "height": 1200
+          }
+        ]
+      },
+      "publishedAt": "2026-09-20T08:00:00.000Z",
+      "readingMinutes": 3,
+      "categories": [
+        {
+          "slug": "planning",
+          "name": "Planning"
+        }
+      ],
+      "author": {
+        "slug": "sara",
+        "name": "Sara Khan"
+      },
+      "inRequestedLanguage": true
+    }
+  ]
+}

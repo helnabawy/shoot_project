@@ -27,6 +27,10 @@ export interface ArticleSummary {
   /** The reader's language has no text for this guide yet: the English text is shown. */
   translated: boolean
   cover: CoverImage | null
+  /** The cover's media document with every stored size, for the app (008 research R9). */
+  coverMedia: Media | null
+  /** Minutes to read the body, rounded up. */
+  readingMinutes: number
   author: { slug: string; name: string } | null
   categories: { slug: string; name: string }[]
 }
@@ -49,6 +53,8 @@ function summarise(doc: Article, translated: boolean): ArticleSummary {
     publishedAt: doc.publishedAt,
     translated,
     cover: cover(doc.cover),
+    coverMedia: asMedia(doc.cover),
+    readingMinutes: readingMinutes(lexicalToText(doc.body)),
     author: author ? { slug: author.slug, name: author.name } : null,
     categories: (doc.categories ?? []).flatMap((c) => (typeof c === 'object' ? [{ slug: (c as ArticleCategory).slug, name: (c as ArticleCategory).name }] : [])),
   }
@@ -85,7 +91,6 @@ export function listArticles({ locale, page, category, author, now = new Date() 
 
 export interface ArticleDetail extends ArticleSummary {
   body: Article['body']
-  readingMinutes: number
   updatedAt: string
   seo: Article['seo']
   ogImage: CoverImage | null
@@ -134,7 +139,6 @@ export function getArticle(slug: string, locale: Locale, { now = new Date(), dra
         article: {
           ...summary,
           body: doc.body,
-          readingMinutes: readingMinutes(lexicalToText(doc.body)),
           updatedAt: doc.updatedAt,
           seo: doc.seo,
           ogImage: cover(doc.seo?.ogImage),
@@ -179,6 +183,8 @@ export interface AuthorEntry {
   name: string
   bio: string | null
   photo: CoverImage | null
+  /** The photo's media document with every stored size, for the app. */
+  photoMedia: Media | null
   count: number
 }
 
@@ -190,7 +196,7 @@ export function getAuthor(slug: string, locale: Locale, now = new Date()): Promi
     if (live.totalDocs === 0) return null
     const found = await payload.find({ collection: 'authors', where: { slug: { equals: slug } }, limit: 1, depth: 1, locale, fallbackLocale: 'en', overrideAccess: false })
     const author = found.docs[0]
-    return author ? { slug: author.slug, name: author.name, bio: author.bio ?? null, photo: cover(author.photo), count: live.totalDocs } : null
+    return author ? { slug: author.slug, name: author.name, bio: author.bio ?? null, photo: cover(author.photo), photoMedia: asMedia(author.photo), count: live.totalDocs } : null
   })
 }
 

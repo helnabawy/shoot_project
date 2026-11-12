@@ -110,7 +110,7 @@ rule for it. Feature 011 adds `fromPrice` additively.
 | Shape | Fields | Source |
 |---|---|---|
 | `guidesRequestV1` | `query: { page?, category?, author? }` | |
-| `articleSummaryV1` | `slug`, `title`, `summary`, `cover: imageV1 \| null`, `publishedAt`, `readingMinutes`, `categories: [{ slug, name }]`, `author: { slug, name }`, `inRequestedLanguage` | `ArticleSummary` |
+| `articleSummaryV1` | `slug`, `title`, `summary`, `cover: imageV1 \| null`, `publishedAt`, `readingMinutes`, `categories: [{ slug, name }]`, `author: { slug, name } \| null`, `inRequestedLanguage` | `ArticleSummary` |
 | `guideListV1` | `locale`, `items: articleSummaryV1[]`, `pagination`, `categories: [{ slug, name, description, count }]`, `category: { slug, name, description } \| null`, `author: { slug, name, bio, photo } \| null` | `listArticles`, `listCategories`, `getAuthor` |
 | `articleV1` | `articleSummaryV1` + `body: richTextV1`, `related: articleSummaryV1[]` | `getArticle` (scheduled items only from `now`) |
 | `pageV1` | `locale`, `path`, `title`, `sections: sectionV1[]` | `getPageBySlug(kind: 'standard')`, never drafts |
