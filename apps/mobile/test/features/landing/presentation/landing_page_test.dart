@@ -114,7 +114,7 @@ void main() {
       await pumpLanding(tester);
       expect(find.text('You brief. We shoot.'), findsOneWidget);
       expect(find.byKey(const ValueKey('briefBar')), findsOneWidget);
-      expect(find.text("See price and who's free"), findsOneWidget);
+      expect(find.text("Type what you're looking for"), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
     },
   );

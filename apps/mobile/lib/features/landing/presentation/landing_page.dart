@@ -382,6 +382,12 @@ class _Hero extends StatelessWidget {
                                 onReopen: brief.reopen,
                                 onTakeBack: brief.takeBack,
                                 onSubmit: () => unawaited(brief.submit()),
+                                onWhatsapp: onWhatsapp,
+                                onProvider: (slug) => unawaited(
+                                  context.push(
+                                    '/register?type=provider&persona=$slug',
+                                  ),
+                                ),
                               )
                             : (b.load == BriefLoad.loading ||
                                   b.load == BriefLoad.idle)
