@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-11
 
-**Status**: Draft (spec only; plan and tasks follow when the feature is next)
+**Status**: Planned (plan, tasks and implementation on branch `claude/015-mobile-content`)
 
 **Input**: User description: "Feature 015 "mobile-content" (test-id prefix MG-) for the Flutter app in apps/mobile. Build canvas screens 33 guides, 34 guide article, 35 editor-built page (How it works), 36 legal (Terms, Professional terms, Privacy) and 38 page removed, at the website's paths (/guides, /guides/{slug}, /{slug}, /terms, /terms/professional, /privacy). All text comes from the CMS: guides with topics and pages, articles with long-form text, editor-built pages from sections, versioned legal documents with their effective dates and earlier versions, and a removed notice distinct from not found. Business rules mirror the website's marketing and legal pages (005). Depends on 007 and 008."
 
@@ -216,10 +216,9 @@ three ways on; open an address that never existed and see 37 instead.
 - **FR-021**: The app MUST draw at least these section types as board 35 shows them: numbered steps,
   questions and answers (expandable), long-form text, and a call to action; the page's primary
   action MUST be "Start a brief" unless the page's own call to action names another action.
-- **FR-022**: A section of a type the app does not draw MUST be [NEEDS CLARIFICATION: Editor-built
-  pages can use any landing section type (005 FR-001). When a page contains a type the app does not
-  draw (for example a logos band or a persona band), should the app skip that section, show a "see
-  this on the website" row in its place, or open the whole page on the website?]
+- **FR-022**: A section of a type the app does not draw MUST be skipped; when a page has nothing the
+  app draws, it MUST show one row that opens the page on the website (plan research R1; the owner may
+  change this to a per-section row or opening the whole page on the website).
 - **FR-023**: A draft page MUST be indistinguishable from an unknown address (not-found, 37); a page
   whose address changed MUST open from its old address at its new one (005 FR-003).
 - **FR-024**: Published changes MUST show in the app within 60 seconds, with no app update.

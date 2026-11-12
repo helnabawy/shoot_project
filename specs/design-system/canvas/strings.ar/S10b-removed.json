@@ -1,0 +1,11 @@
+{
+  "_note": "Arabic for the derived ar-light and ar-dark references (feature 007, research R6): each English text node of the board, trimmed, to the same Arabic as app_ar.arb. Written with feature 015; needs review by an Arabic writer.",
+  "Shoot": "شوت",
+  "عربي": "English",
+  "This page has been removed": "تمت إزالة هذه الصفحة",
+  "It used to be here, but it is gone. Start from one of these.": "كانت هنا، لكنها لم تعد موجودة. ابدأ من أحد هذه الخيارات.",
+  "Read the guides": "اقرأ الأدلة",
+  "Ask us on WhatsApp": "اسألنا على واتساب",
+  "Start a brief": "ابدأ طلباً",
+  "keep": ["410"]
+}
