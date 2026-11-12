@@ -175,6 +175,34 @@ void main() {
     );
 
     testWidgets(
+      'MQ-US2-S10 MQ-US2-S11 a signed-in person saves in one tap, WhatsApp opens and the quotation shows',
+      (tester) async {
+        when(() => repository.issueQuotation(any(), any(), any(), any()))
+            .thenAnswer((_) async => Ok(exampleIssued()));
+        final opener = RecordingOpener();
+        final router = await pumpQuickMatch(
+          tester,
+          repository: repository,
+          location: '$match/details',
+          signedIn: true,
+          opener: opener,
+        );
+        await tester.pumpAndSettle();
+        final flow = tester
+            .element(find.byType(DetailsPage))
+            .read<BookFlowCubit>();
+        flow
+          ..dateChanged('2026-12-20')
+          ..startTimeChanged('18:30')
+          ..venueChanged('Dubai Marina');
+        await tester.runAsync(() => flow.continueSignedIn());
+        await tester.pumpAndSettle();
+        expect(opener.opened.single.host, 'wa.me');
+        expect(locationOf(router), '/q/Q-4F8Z2/${'k' * 43}');
+      },
+    );
+
+    testWidgets(
       'MQ-FR-046 the code step opened with no code on its way goes back to the number',
       (tester) async {
         final router = await pumpQuickMatch(
@@ -230,7 +258,7 @@ void main() {
     });
 
     testWidgets(
-      'MQ-US4-S1 MQ-US4-S6 confirmed shows the chat as the action and offers no way to pay',
+      'MQ-US4-S1 MQ-US4-S6 MQ-US4-S7 confirmed shows the chat, offers no way to pay and points date changes to the chat',
       (tester) async {
         when(() => repository.getBooking(any(), any()))
             .thenAnswer((_) async => Ok(exampleView('confirmed')));
@@ -245,6 +273,22 @@ void main() {
           ),
           findsNothing,
         );
+      },
+    );
+
+    testWidgets(
+      'MQ-US4-S5 an on-hold booking shows its status and reason, with WhatsApp as the way to reach a person',
+      (tester) async {
+        when(() => repository.getBooking(any(), any()))
+            .thenAnswer((_) async => Ok(exampleView('on-hold')));
+        await pumpQuickMatch(tester, repository: repository, location: quote);
+        await tester.pumpAndSettle();
+        expect(find.text('On hold'), findsOneWidget);
+        expect(
+          find.text('Reported: The photos never arrived.'),
+          findsOneWidget,
+        );
+        expect(find.text('Open the WhatsApp chat'), findsOneWidget);
       },
     );
 

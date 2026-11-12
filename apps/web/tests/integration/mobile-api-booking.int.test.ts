@@ -188,7 +188,7 @@ describe('MQ mobile Quick Match and booking', () => {
       await unblock()
     })
 
-    it('MQ-US2-S8 "let us pick" issues without a creator', async () => {
+    it('MQ-US2-S8 MQ-US3-S8 "let us pick" issues without a creator and the quotation says the team is choosing', async () => {
       const q = await issued(null)
       expect((await view(q)).professionals).toEqual([{ type: expect.any(String), name: null, code: null }])
     })
