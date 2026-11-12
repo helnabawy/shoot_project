@@ -12,11 +12,11 @@
   "@languageSwitchTooltip": {
     "description": "Tooltip and screen-reader label for the language button."
   },
-  "appearanceTitle": "Appearance",
+  "appearanceTitle": "Accent colour",
   "@appearanceTitle": {
     "description": "Heading of the Appearance sheet, where the person picks the theme and the accent colour."
   },
-  "appearanceButtonTooltip": "Appearance",
+  "appearanceButtonTooltip": "Accent colour",
   "@appearanceButtonTooltip": {
     "description": "Tooltip and screen-reader label for the app bar button that opens the Appearance sheet."
   },
@@ -27,6 +27,10 @@
   "accentGroupLabel": "Accent colour",
   "@accentGroupLabel": {
     "description": "Group label above the accent colour options in the Appearance sheet."
+  },
+  "accentDefault": "Default",
+  "@accentDefault": {
+    "description": "Accent colour option name: the original look with the brand red buttons."
   },
   "accentBlue": "Blue",
   "@accentBlue": {

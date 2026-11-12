@@ -4,10 +4,10 @@ import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_accent.dart';
+import 'package:shoot_mobile/core/theme/shoot_colors.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
-import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 
-/// Opens the Appearance sheet: the theme and the accent colour, applied on
+/// Opens the accent colour sheet (the theme is chosen in the menu), applied on
 /// tap, the sheet staying open so the person can compare.
 Future<void> showAppearanceSheet(BuildContext context) {
   return showModalBottomSheet<void>(
@@ -20,7 +20,7 @@ Future<void> showAppearanceSheet(BuildContext context) {
   );
 }
 
-/// The sheet's content: a Theme group and an Accent colour group in the Brief
+/// The sheet's content: the accent colour group in the Brief
 /// Bar row grammar (44 px rows, a 30 px leading tile, a trailing check).
 class AppearanceSheet extends StatelessWidget {
   const AppearanceSheet({super.key = const Key('appearance-sheet')});
@@ -28,23 +28,12 @@ class AppearanceSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final mode = context.watch<ThemeModeCubit>().state;
     final accent = context.watch<AccentCubit>().state;
-    final themeCubit = context.read<ThemeModeCubit>();
     final accentCubit = context.read<AccentCubit>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    String themeName(ThemeMode m) => switch (m) {
-      ThemeMode.system => l10n.themeSystem,
-      ThemeMode.light => l10n.themeLight,
-      ThemeMode.dark => l10n.themeDark,
-    };
-    IconData themeIcon(ThemeMode m) => switch (m) {
-      ThemeMode.system => Icons.brightness_auto_outlined,
-      ThemeMode.light => Icons.light_mode_outlined,
-      ThemeMode.dark => Icons.dark_mode_outlined,
-    };
     String accentName(ShootAccent a) => switch (a) {
+      ShootAccent.brand => l10n.accentDefault,
       ShootAccent.blue => l10n.accentBlue,
       ShootAccent.teal => l10n.accentTeal,
       ShootAccent.violet => l10n.accentViolet,
@@ -74,16 +63,6 @@ class AppearanceSheet extends StatelessWidget {
                     ?.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
-            _GroupLabel(l10n.themeGroupLabel),
-            for (final m in ThemeMode.values)
-              _OptionRow(
-                optionKey: Key('theme-option-${m.name}'),
-                name: themeName(m),
-                selected: m == mode,
-                onTap: () => themeCubit.select(m),
-                leading: _OptionTile(icon: themeIcon(m)),
-              ),
-            _GroupLabel(l10n.accentGroupLabel),
             for (final a in ShootAccent.values)
               _OptionRow(
                 optionKey: Key('accent-option-${a.id}'),
@@ -91,37 +70,12 @@ class AppearanceSheet extends StatelessWidget {
                 selected: a == accent,
                 onTap: () => accentCubit.select(a),
                 leading: _OptionTile(
-                  swatch: (isDark ? a.dark : a.light).accent,
+                  swatch: a == ShootAccent.brand
+                      ? (isDark ? ShootColors.dark : ShootColors.light).primary
+                      : (isDark ? a.dark : a.light).accent,
                 ),
               ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GroupLabel extends StatelessWidget {
-  const _GroupLabel(this.label);
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      container: true,
-      header: true,
-      child: Padding(
-        padding: const EdgeInsetsDirectional.only(
-          top: ShootSpace.s5,
-          bottom: ShootSpace.s1,
-        ),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            color: context.colors.mute,
-            fontWeight: FontWeight.w600,
-          ),
         ),
       ),
     );
@@ -208,13 +162,11 @@ class _OptionRow extends StatelessWidget {
   }
 }
 
-/// The 30 px leading tile: an accent's swatch, or a theme's icon on the
-/// resting tile.
+/// The 30 px leading tile: an accent's swatch.
 class _OptionTile extends StatelessWidget {
-  const _OptionTile({this.swatch, this.icon});
+  const _OptionTile({required this.swatch});
 
-  final Color? swatch;
-  final IconData? icon;
+  final Color swatch;
 
   @override
   Widget build(BuildContext context) {
@@ -222,14 +174,11 @@ class _OptionTile extends StatelessWidget {
     return DecoratedBox(
       key: const Key('option-tile'),
       decoration: BoxDecoration(
-        color: swatch ?? c.tile,
+        color: swatch,
         borderRadius: BorderRadius.circular(ShootRadius.tile),
-        border: swatch == null ? null : Border.all(color: c.hair),
+        border: Border.all(color: c.hair),
       ),
-      child: SizedBox.square(
-        dimension: ShootSize.tile,
-        child: icon == null ? null : Icon(icon, size: 18, color: c.tileInk),
-      ),
+      child: const SizedBox.square(dimension: ShootSize.tile),
     );
   }
 }

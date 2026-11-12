@@ -11,7 +11,7 @@ import 'package:shoot_mobile/core/widgets/app_bar_actions.dart';
 
 import '../../helpers/pump_app.dart';
 
-const _accentIds = ['blue', 'teal', 'violet', 'magenta', 'graphite'];
+const _accentIds = ['brand', 'blue', 'teal', 'violet', 'magenta', 'graphite'];
 
 /// A screen with the app bar's Appearance button, like every real screen.
 Widget _screen() => Scaffold(
@@ -22,7 +22,6 @@ Widget _screen() => Scaffold(
 );
 
 Finder _accent(String id) => find.byKey(Key('accent-option-$id'));
-Finder _theme(String id) => find.byKey(Key('theme-option-$id'));
 
 ShootColors _colors(WidgetTester tester) =>
     Theme.of(tester.element(find.text('Host'))).extension<ShootColors>()!;
@@ -52,33 +51,24 @@ void main() {
   for (final MapEntry(key: sizeName, value: size) in sizes.entries) {
     group('at $sizeName', () {
       testWidgets(
-        'MA-US1-S1 first launch lists the accents in order, Blue first and selected',
+        'MA-US1-S1 first launch lists the accents in order, Default first and selected',
         (tester) async {
           _setSize(tester, size);
           await tester.pumpApp(_screen(), themeMode: ThemeMode.system);
           await _open(tester);
 
           expect(find.byKey(const Key('appearance-sheet')), findsOneWidget);
-          expect(find.text('Appearance'), findsWidgets);
-          expect(find.text('Theme'), findsOneWidget);
-          expect(find.text('Accent colour'), findsOneWidget);
-
-          // Match device is the theme default and is the checked theme row.
-          expect(_theme('system'), findsOneWidget);
-          expect(_theme('light'), findsOneWidget);
-          expect(_theme('dark'), findsOneWidget);
-          expect(_isChecked(tester, _theme('system')), isTrue);
-          expect(_isChecked(tester, _theme('light')), isFalse);
-          expect(_isChecked(tester, _theme('dark')), isFalse);
+          expect(find.text('Accent colour'), findsWidgets);
+          expect(find.text('Theme'), findsNothing);
 
           // The five accents, in order, only Blue checked.
           final tops = [
             for (final id in _accentIds) tester.getTopLeft(_accent(id)).dy,
           ];
           expect(tops, orderedEquals([...tops]..sort()));
-          expect(tops.toSet(), hasLength(5));
+          expect(tops.toSet(), hasLength(6));
           for (final id in _accentIds) {
-            expect(_isChecked(tester, _accent(id)), id == 'blue', reason: id);
+            expect(_isChecked(tester, _accent(id)), id == 'brand', reason: id);
           }
           expect(tester.takeException(), isNull);
         },
@@ -122,11 +112,11 @@ void main() {
         );
         await _open(tester);
 
-        for (final name in ['أزرق', 'فيروزي', 'بنفسجي', 'فوشي', 'فحمي']) {
+        for (final name in ['الافتراضي', 'أزرق', 'فيروزي', 'بنفسجي', 'فوشي', 'فحمي']) {
           expect(find.text(name), findsOneWidget);
         }
-        expect(find.text('السمة'), findsOneWidget);
-        expect(find.text('لون التمييز'), findsOneWidget);
+        expect(find.text('السمة'), findsNothing);
+        expect(find.text('لون التمييز'), findsWidgets);
 
         final sheet = find.byKey(const Key('appearance-sheet'));
         expect(Directionality.of(tester.element(sheet)), TextDirection.rtl);
@@ -170,9 +160,7 @@ void main() {
         await _open(tester);
 
         final names = {
-          _theme('system'): 'Match device',
-          _theme('light'): 'Light',
-          _theme('dark'): 'Dark',
+          _accent('brand'): 'Default',
           _accent('blue'): 'Blue',
           _accent('teal'): 'Teal',
           _accent('violet'): 'Violet',
@@ -180,8 +168,7 @@ void main() {
           _accent('graphite'): 'Graphite',
         };
         for (final MapEntry(key: row, value: name) in names.entries) {
-          final selected =
-              name == 'Match device' || name == 'Blue'; // the defaults
+          final selected = name == 'Default'; // the default
           expect(
             tester.getSemantics(row),
             isSemantics(
@@ -215,52 +202,29 @@ void main() {
         expect(_accent(id), findsOneWidget);
         expect(tester.getSize(_accent(id)).height, greaterThanOrEqualTo(44));
       }
-      // The long group label wraps instead of truncating or overflowing.
-      expect(find.text('Accent colour'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
 
-  testWidgets('a theme row applies at once and keeps the sheet open', (
-    tester,
-  ) async {
+  testWidgets('device theme changes: Violet applies Violet dark roles '
+      'without another choice', (tester) async {
     await tester.pumpApp(_screen(), themeMode: ThemeMode.system);
+    await tester.pumpAndSettle();
     await _open(tester);
+    await tester.tap(_accent('violet'));
+    await tester.pumpAndSettle();
+    expect(_colors(tester).accent, ShootAccent.violet.light.accent);
 
-    await tester.tap(_theme('dark'));
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+    addTearDown(tester.platformDispatcher.clearAllTestValues);
     await tester.pumpAndSettle();
 
+    expect(_colors(tester).accent, ShootAccent.violet.dark.accent);
     expect(
-      Theme.of(tester.element(find.text('Host'))).brightness,
-      Brightness.dark,
+      Theme.of(tester.element(find.text('Host'))).extension<ShootColors>()!,
+      isNot(same(AppTheme.dark.extension<ShootColors>())),
     );
-    expect(find.byKey(const Key('appearance-sheet')), findsOneWidget);
-    expect(_isChecked(tester, _theme('dark')), isTrue);
-    expect(_isChecked(tester, _theme('system')), isFalse);
   });
-
-  testWidgets(
-    'device theme changes: Match device and Violet apply Violet dark roles '
-    'without another choice',
-    (tester) async {
-      await tester.pumpApp(_screen(), themeMode: ThemeMode.system);
-      await tester.pumpAndSettle();
-      await _open(tester);
-      await tester.tap(_accent('violet'));
-      await tester.pumpAndSettle();
-      expect(_colors(tester).accent, ShootAccent.violet.light.accent);
-
-      tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
-      addTearDown(tester.platformDispatcher.clearAllTestValues);
-      await tester.pumpAndSettle();
-
-      expect(_colors(tester).accent, ShootAccent.violet.dark.accent);
-      expect(
-        Theme.of(tester.element(find.text('Host'))).extension<ShootColors>()!,
-        isNot(same(AppTheme.dark.extension<ShootColors>())),
-      );
-    },
-  );
 
   testWidgets('the last row clears the system bar at the bottom', (
     tester,
@@ -295,7 +259,8 @@ void main() {
     }
 
     expect(swatch('teal'), ShootAccent.teal.light.accent);
-    await tester.tap(_theme('dark'));
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+    addTearDown(tester.platformDispatcher.clearAllTestValues);
     await tester.pumpAndSettle();
     expect(swatch('teal'), ShootAccent.teal.dark.accent);
   });

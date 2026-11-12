@@ -7,7 +7,7 @@ import '../../helpers/in_memory_preferences_store.dart';
 
 void main() {
   test('starts at Blue', () {
-    expect(AccentCubit(InMemoryPreferencesStore()).state, ShootAccent.blue);
+    expect(AccentCubit(InMemoryPreferencesStore()).state, ShootAccent.brand);
   });
 
   blocTest<AccentCubit, ShootAccent>(
@@ -20,7 +20,7 @@ void main() {
   blocTest<AccentCubit, ShootAccent>(
     'selecting the current accent emits nothing',
     build: () => AccentCubit(InMemoryPreferencesStore()),
-    act: (cubit) => cubit.select(ShootAccent.blue),
+    act: (cubit) => cubit.select(ShootAccent.brand),
     expect: () => <ShootAccent>[],
   );
 }

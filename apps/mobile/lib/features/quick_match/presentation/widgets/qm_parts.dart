@@ -111,8 +111,8 @@ String? qmFieldText(BuildContext context, String? code) {
   };
 }
 
-/// A screen's body: the content scrolls and the one primary action stays at the foot, in view
-/// however long the content is (the boards' `margin-top: auto`).
+/// A screen's body: the content and the one primary action scroll together, the action following
+/// the content instead of sticking to the foot of the screen.
 class QmBody extends StatelessWidget {
   const QmBody({super.key, required this.content, required this.bottom});
 
@@ -121,27 +121,22 @@ class QmBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: content,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ...content,
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(
+              ShootSpace.s3,
+              ShootSpace.s4,
+              ShootSpace.s3,
+              ShootSpace.s4,
             ),
+            child: bottom,
           ),
-        ),
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(
-            ShootSpace.s3,
-            ShootSpace.s4,
-            ShootSpace.s3,
-            ShootSpace.s4,
-          ),
-          child: bottom,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

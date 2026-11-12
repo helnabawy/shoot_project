@@ -155,7 +155,6 @@ class _Choose extends StatelessWidget {
         : sections.length == 1 && first != null
         ? l10n.qmContinueWith(first.firstName)
         : l10n.qmContinueLabel;
-    final lead = sections.first;
     return QmBody(
       content: [
         Padding(
@@ -168,14 +167,6 @@ class _Choose extends StatelessWidget {
               Text(
                 l10n.qmChooseTitle,
                 style: ShootType.title.copyWith(color: c.ink, fontSize: 28),
-              ),
-              Text(
-                l10n.qmChooseBody(
-                  lead.creators.length,
-                  lead.persona.singular.toLowerCase(),
-                  lead.persona.plural.toLowerCase(),
-                ),
-                style: ShootType.body.copyWith(color: c.bodyInk, height: 1.5),
               ),
             ],
           ),
@@ -227,7 +218,7 @@ class _SectionRail extends StatelessWidget {
     final chosen = state.chosenIn(index);
     final scale = MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0);
     return Padding(
-      padding: const EdgeInsetsDirectional.only(top: 16),
+      padding: const EdgeInsetsDirectional.only(top: 12),
       child: Semantics(
         container: true,
         label: l10n.qmCarouselLabel,
@@ -243,7 +234,7 @@ class _SectionRail extends StatelessWidget {
                 ),
               ),
             SnapCarousel(
-              height: 392 * scale,
+              height: 366 * scale,
               positionLabel: l10n.qmPosition,
               onChanged: (i) => cubit.choose(index, i),
               children: [
@@ -287,8 +278,7 @@ class _CreatorCardView extends StatelessWidget {
     final c = context.colors;
     final card = creator.card;
     final price = section.priceFils;
-    final facts = card.specialties.join(' · ');
-    final langs = card.languages.join(', ');
+    final facts = card.specialties.take(2).join(' · ');
     final place = [...card.places].join(', ');
     final years = card.yearsExperience;
     final where = [place, ?(years == null ? null : '$years')].join(' · ');
@@ -334,17 +324,17 @@ class _CreatorCardView extends StatelessWidget {
       onTap: onTap,
       children: [
         SizedBox(
-          height: 168,
+          height: 176,
           child: Row(
             spacing: 6,
             children: [
-              Expanded(flex: 2, child: tile(0, 168)),
+              Expanded(flex: 2, child: tile(0, 176)),
               Expanded(
                 child: Column(
                   spacing: 6,
                   children: [
-                    Expanded(child: tile(1, 81)),
-                    Expanded(child: tile(2, 81)),
+                    Expanded(child: tile(1, 85)),
+                    Expanded(child: tile(2, 85)),
                   ],
                 ),
               ),
@@ -354,7 +344,7 @@ class _CreatorCardView extends StatelessWidget {
         Row(
           spacing: 10,
           children: [
-            PhotoTile(size: 40, variant: scene, label: null),
+            PhotoTile(size: 36, variant: scene, label: null),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -373,27 +363,22 @@ class _CreatorCardView extends StatelessWidget {
             ),
           ],
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 1,
-          children: [
-            Text(
-              facts,
-              style: ShootType.row.copyWith(
-                fontSize: 14,
-                color: c.ink,
-                height: 1.45,
-              ),
-            ),
-            if (langs.isNotEmpty) Text(langs, style: meta),
-          ],
+        Text(
+          facts,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: ShootType.row.copyWith(
+            fontSize: 14,
+            color: c.ink,
+            height: 1.4,
+          ),
         ),
         DecoratedBox(
           decoration: BoxDecoration(
             border: Border(top: BorderSide(color: c.hair)),
           ),
           child: Padding(
-            padding: const EdgeInsetsDirectional.only(top: 10),
+            padding: const EdgeInsetsDirectional.only(top: 8),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
@@ -414,7 +399,7 @@ class _CreatorCardView extends StatelessWidget {
                 const Spacer(),
                 Flexible(
                   child: Text(
-                    section.includes.take(2).join(' · '),
+                    section.includes.take(1).join(' · '),
                     textAlign: TextAlign.end,
                     style: meta,
                   ),
@@ -471,10 +456,6 @@ class _LetUsPickRow extends StatelessWidget {
                     Text(
                       l10n.qmNotSure,
                       style: ShootType.body.copyWith(color: c.ink, height: 1.3),
-                    ),
-                    Text(
-                      l10n.qmNotSureHint,
-                      style: ShootType.meta.copyWith(color: c.mute),
                     ),
                   ],
                 ),

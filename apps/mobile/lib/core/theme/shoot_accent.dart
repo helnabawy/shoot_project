@@ -38,6 +38,26 @@ final class AccentRoles {
   final Color focus;
 }
 
+const _blueLight = AccentRoles(
+  accent: Color(0xFF0A60FF),
+  onAccent: Color(0xFFFFFFFF),
+  accentInk: Color(0xFF0848C2),
+  selected: Color.fromRGBO(10, 96, 255, 0.12),
+  selectedHover: Color.fromRGBO(10, 96, 255, 0.18),
+  selectionWash: Color.fromRGBO(10, 96, 255, 0.1),
+  focus: Color(0xFF0A60FF),
+);
+
+const _blueDark = AccentRoles(
+  accent: Color(0xFF2B6BEB),
+  onAccent: Color(0xFFFFFFFF),
+  accentInk: Color(0xFFB7D0FF),
+  selected: Color.fromRGBO(77, 141, 255, 0.24),
+  selectedHover: Color.fromRGBO(77, 141, 255, 0.32),
+  selectionWash: Color.fromRGBO(43, 107, 235, 0.14),
+  focus: Color(0xFF7AA7FF),
+);
+
 /// The curated accents, in the order the Appearance sheet lists them. Blue is
 /// first and the fallback; its values are the app's original colours.
 ///
@@ -46,27 +66,9 @@ final class AccentRoles {
 /// `accent_palette_test.dart` proves the contrast pairs. Ids are saved on the
 /// device: never change one once shipped.
 enum ShootAccent {
-  blue(
-    id: 'blue',
-    light: AccentRoles(
-      accent: Color(0xFF0A60FF),
-      onAccent: Color(0xFFFFFFFF),
-      accentInk: Color(0xFF0848C2),
-      selected: Color.fromRGBO(10, 96, 255, 0.12),
-      selectedHover: Color.fromRGBO(10, 96, 255, 0.18),
-      selectionWash: Color.fromRGBO(10, 96, 255, 0.1),
-      focus: Color(0xFF0A60FF),
-    ),
-    dark: AccentRoles(
-      accent: Color(0xFF2B6BEB),
-      onAccent: Color(0xFFFFFFFF),
-      accentInk: Color(0xFFB7D0FF),
-      selected: Color.fromRGBO(77, 141, 255, 0.24),
-      selectedHover: Color.fromRGBO(77, 141, 255, 0.32),
-      selectionWash: Color.fromRGBO(43, 107, 235, 0.14),
-      focus: Color(0xFF7AA7FF),
-    ),
-  ),
+  /// The default: blue selection roles and the brand red primary action.
+  brand(id: 'brand', light: _blueLight, dark: _blueDark),
+  blue(id: 'blue', light: _blueLight, dark: _blueDark),
   teal(
     id: 'teal',
     light: AccentRoles(
@@ -163,7 +165,7 @@ enum ShootAccent {
   final AccentRoles light;
   final AccentRoles dark;
 
-  static ShootAccent get fallback => blue;
+  static ShootAccent get fallback => brand;
 
   /// The accent saved under [id], or `null` for a missing or unknown id.
   static ShootAccent? fromId(String? id) {

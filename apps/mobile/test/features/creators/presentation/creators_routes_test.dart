@@ -101,7 +101,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp.router(
         routerConfig: router,
-        theme: AppTheme.of(ShootAccent.blue, Brightness.light),
+        theme: AppTheme.of(ShootAccent.brand, Brightness.light),
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
       ),

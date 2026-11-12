@@ -138,7 +138,7 @@ Future<GoRouter> pumpContent(
         builder: (context, chosen) => MaterialApp.router(
           routerConfig: router,
           locale: chosen,
-          theme: AppTheme.of(ShootAccent.blue, brightness),
+          theme: AppTheme.of(ShootAccent.brand, brightness),
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
         ),

@@ -93,6 +93,7 @@ Widget landingScreen(Variant v, {int creators = 5}) {
       motion: LandingMotionStore(InMemoryPreferencesStore()),
       clock: FixedClock(DateTime.utc(2026, 12, 5, 10)),
       links: const WebsiteLinks(testConfig),
+      fullScreenHero: false,
     ),
     brief: brief,
   );

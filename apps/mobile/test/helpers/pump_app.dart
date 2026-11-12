@@ -20,7 +20,7 @@ extension PumpApp on WidgetTester {
     Widget widget, {
     Locale locale = const Locale('en'),
     ThemeMode themeMode = ThemeMode.light,
-    ShootAccent accent = ShootAccent.blue,
+    ShootAccent accent = ShootAccent.brand,
     PreferencesStore? store,
   }) {
     final prefs = store ?? InMemoryPreferencesStore();

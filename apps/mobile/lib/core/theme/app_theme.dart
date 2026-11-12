@@ -9,8 +9,9 @@ import 'package:shoot_mobile/core/theme/shoot_type.dart';
 /// stock widgets pick up the tokens and custom widgets read the roles
 /// directly through [ShootThemeX.colors].
 ///
-/// The accent decides the selection roles; the primary action colour is fixed
-/// (`primary`), so it is the same under every accent.
+/// The accent decides the selection roles and the primary action colour, so
+/// the choice is visible on every screen. The default ([ShootAccent.brand])
+/// keeps the brand red primary.
 abstract final class AppTheme {
   static final Map<(ShootAccent, Brightness), ThemeData> _cache = {};
 
@@ -18,15 +19,26 @@ abstract final class AppTheme {
   static ThemeData of(ShootAccent accent, Brightness brightness) {
     return _cache.putIfAbsent((accent, brightness), () {
       final dark = brightness == Brightness.dark;
-      final colors = dark
-          ? ShootColors.dark.withAccent(accent.dark)
-          : ShootColors.light.withAccent(accent.light);
+      final roles = dark ? accent.dark : accent.light;
+      var colors = (dark ? ShootColors.dark : ShootColors.light).withAccent(
+        roles,
+      );
+      if (accent == ShootAccent.brand) return _build(colors, brightness);
+      final hsl = HSLColor.fromColor(roles.accent);
+      final hover = hsl
+          .withLightness((hsl.lightness + (dark ? 0.06 : -0.06)).clamp(0, 1))
+          .toColor();
+      colors = colors.copyWith(
+        primary: roles.accent,
+        primaryHover: hover,
+        onPrimary: roles.onAccent,
+      );
       return _build(colors, brightness);
     });
   }
 
-  static final ThemeData light = of(ShootAccent.blue, Brightness.light);
-  static final ThemeData dark = of(ShootAccent.blue, Brightness.dark);
+  static final ThemeData light = of(ShootAccent.brand, Brightness.light);
+  static final ThemeData dark = of(ShootAccent.brand, Brightness.dark);
 
   static ThemeData _build(ShootColors c, Brightness brightness) {
     final isDark = brightness == Brightness.dark;

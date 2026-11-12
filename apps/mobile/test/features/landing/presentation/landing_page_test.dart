@@ -5,6 +5,7 @@ import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/core/preferences/preferences_store.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
+import 'package:shoot_mobile/core/widgets/golden_hour_scene.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/landing/domain/entities/landing.dart';
 import 'package:shoot_mobile/features/landing/presentation/landing_cubit.dart';
@@ -45,6 +46,8 @@ Future<Rig> pumpLanding(
   Locale locale = const Locale('en'),
   bool reduceMotion = false,
   BriefCubit? brief,
+  Size size = const Size(360, 3200),
+  bool fullScreenHero = false,
 }) async {
   final prefs = store ?? InMemoryPreferencesStore();
   final site = FakeSiteRepository(builderResult: builder);
@@ -66,6 +69,7 @@ Future<Rig> pumpLanding(
       clock: FixedClock(DateTime.utc(2026, 12, 5, 10)),
       links: const WebsiteLinks(testConfig),
       open: opener.call,
+      fullScreenHero: fullScreenHero,
     ),
     stubs: ['/menu', '/login', '/register', '/creators', '/creators/:code'],
   );
@@ -75,7 +79,7 @@ Future<Rig> pumpLanding(
     store: prefs,
     locale: locale,
     brief: briefCubit,
-    size: const Size(360, 3200),
+    size: size,
     reduceMotion: reduceMotion,
   );
   await tester.pump();
@@ -84,6 +88,26 @@ Future<Rig> pumpLanding(
 }
 
 void main() {
+  testWidgets(
+    'ML-US1-S1 on a phone the hero and its scene fill the first screen',
+    (tester) async {
+      await pumpLanding(
+        tester,
+        size: const Size(360, 800),
+        fullScreenHero: true,
+      );
+      final hero = tester.getRect(find.byType(GoldenHourScene));
+      expect(hero.top, 0);
+      expect(hero.height, greaterThanOrEqualTo(800));
+      // The brief bar stays on the first screen, anchored at its foot.
+      expect(
+        tester.getRect(find.byKey(const ValueKey('briefBar'))).bottom,
+        lessThanOrEqualTo(800),
+      );
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
   testWidgets(
     'ML-US1-S1 the hero shows the CMS headline, the bar and the one primary action',
     (tester) async {

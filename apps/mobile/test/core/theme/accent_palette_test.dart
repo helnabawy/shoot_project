@@ -97,15 +97,15 @@ void main() {
     },
   );
 
-  test('accent ids are unique, lower-case letters, Blue first', () {
+  test('accent ids are unique, lower-case letters, Default first', () {
     final ids = ShootAccent.values.map((a) => a.id).toList();
     expect(ids.toSet(), hasLength(ids.length));
     for (final id in ids) {
       expect(id, matches(RegExp(r'^[a-z]+$')));
     }
-    expect(ShootAccent.values.first, ShootAccent.blue);
-    expect(ShootAccent.fallback, ShootAccent.blue);
-    expect(ids, ['blue', 'teal', 'violet', 'magenta', 'graphite']);
+    expect(ShootAccent.values.first, ShootAccent.brand);
+    expect(ShootAccent.fallback, ShootAccent.brand);
+    expect(ids, ['brand', 'blue', 'teal', 'violet', 'magenta', 'graphite']);
   });
 
   test('fromId finds a known accent and nothing for an unknown one', () {
@@ -117,7 +117,7 @@ void main() {
   });
 
   test('Blue keeps the values the app had before accents existed', () {
-    const light = ShootAccent.blue;
+    const light = ShootAccent.brand;
     expect(light.light.accent, const Color(0xFF0A60FF));
     expect(light.light.onAccent, const Color(0xFFFFFFFF));
     expect(light.light.accentInk, const Color(0xFF0848C2));

@@ -166,7 +166,7 @@ Future<void> pumpRouter(
         BlocProvider(create: (_) => LocaleCubit(prefs)..select(locale)),
         BlocProvider(create: (_) => ThemeModeCubit(prefs)..select(themeMode)),
         BlocProvider(
-          create: (_) => AccentCubit(prefs)..select(ShootAccent.blue),
+          create: (_) => AccentCubit(prefs)..select(ShootAccent.brand),
         ),
         BlocProvider<SessionCubit>.value(value: session),
         BlocProvider<BriefCubit>.value(value: brief ?? makeBrief()),
@@ -175,8 +175,8 @@ Future<void> pumpRouter(
         builder: (context) => MaterialApp.router(
           routerConfig: router,
           locale: context.watch<LocaleCubit>().state,
-          theme: AppTheme.of(ShootAccent.blue, Brightness.light),
-          darkTheme: AppTheme.of(ShootAccent.blue, Brightness.dark),
+          theme: AppTheme.of(ShootAccent.brand, Brightness.light),
+          darkTheme: AppTheme.of(ShootAccent.brand, Brightness.dark),
           themeMode: context.watch<ThemeModeCubit>().state,
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

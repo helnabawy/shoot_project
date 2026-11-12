@@ -60,8 +60,12 @@ class LandingPage extends StatefulWidget {
     required this.clock,
     required this.links,
     this.open = openInBrowser,
+    this.fullScreenHero = true,
   });
 
+  /// The hero and its scene fill the first screen. Tests and goldens that render the whole page on one
+  /// tall surface turn it off so the hero keeps its board height.
+  final bool fullScreenHero;
   final LandingCubit landing;
   final BriefCubit brief;
   final LandingMotionStore motion;
@@ -181,6 +185,7 @@ class _LandingPageState extends State<LandingPage> {
                       brief: widget.brief,
                       scroll: _scroll,
                       clock: widget.clock,
+                      fullScreenHero: widget.fullScreenHero,
                       onWhatsapp: () => unawaited(
                         _openWhatsapp(
                           state.site?.whatsapp.number,
@@ -202,9 +207,11 @@ class _LandingView extends StatelessWidget {
     required this.brief,
     required this.scroll,
     required this.clock,
+    required this.fullScreenHero,
     required this.onWhatsapp,
   });
 
+  final bool fullScreenHero;
   final LandingState state;
   final BriefCubit brief;
   final ScrollController scroll;
@@ -215,32 +222,36 @@ class _LandingView extends StatelessWidget {
   Widget build(BuildContext context) {
     final sections = state.sections;
     final c = context.colors;
-    return SingleChildScrollView(
-      key: const ValueKey('landing:scroll'),
-      controller: scroll,
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: ShootSize.maxColumn),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _Hero(
-                state: state,
-                brief: brief,
-                clock: clock,
-                onWhatsapp: onWhatsapp,
-                // With no creators section the Pause control sits near the hero (spec FR-031).
-                pauseNearHero: sections.creators == null,
-              ),
-              if (sections.occasions case final s?)
-                _Occasions(section: s, brief: brief),
-              if (sections.creators case final s?) _Creators(section: s),
-              if (sections.band case final s?) _Band(section: s),
-              if (sections.closing case final s?)
-                _Closing(section: s, brief: brief),
-              SizedBox(height: MediaQuery.paddingOf(context).bottom + 32),
-              ColoredBox(color: c.ground),
-            ],
+    // The hero (and its golden-hour scene) fills the screen on first view; sections follow below.
+    return LayoutBuilder(
+      builder: (context, box) => SingleChildScrollView(
+        key: const ValueKey('landing:scroll'),
+        controller: scroll,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: ShootSize.maxColumn),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _Hero(
+                  minHeight: fullScreenHero ? box.maxHeight : 0,
+                  state: state,
+                  brief: brief,
+                  clock: clock,
+                  onWhatsapp: onWhatsapp,
+                  // With no creators section the Pause control sits near the hero (spec FR-031).
+                  pauseNearHero: sections.creators == null,
+                ),
+                if (sections.occasions case final s?)
+                  _Occasions(section: s, brief: brief),
+                if (sections.creators case final s?) _Creators(section: s),
+                if (sections.band case final s?) _Band(section: s),
+                if (sections.closing case final s?)
+                  _Closing(section: s, brief: brief),
+                SizedBox(height: MediaQuery.paddingOf(context).bottom + 32),
+                ColoredBox(color: c.ground),
+              ],
+            ),
           ),
         ),
       ),
@@ -250,6 +261,7 @@ class _LandingView extends StatelessWidget {
 
 class _Hero extends StatelessWidget {
   const _Hero({
+    required this.minHeight,
     required this.state,
     required this.brief,
     required this.clock,
@@ -257,6 +269,7 @@ class _Hero extends StatelessWidget {
     required this.pauseNearHero,
   });
 
+  final double minHeight;
   final LandingState state;
   final BriefCubit brief;
   final Clock clock;
@@ -271,116 +284,137 @@ class _Hero extends StatelessWidget {
     final session = context.watch<SessionCubit>().state;
     return Stack(
       children: [
-        const Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 650,
-          child: GoldenHourScene(),
-        ),
-        SafeArea(
-          bottom: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ShootHeader(
-                leading: Wordmark(label: l10n.appTitle),
-                trailing: [
-                  const LanguageAction(),
-                  ShootIconButton(
-                    icon: ShootIcons.person,
-                    label: l10n.mlAccountButton,
-                    onPressed: () => unawaited(
-                      context.push(
-                        session is SignedIn
-                            ? afterSignIn(session.user)
-                            : AppRoutes.login,
-                      ),
-                    ),
-                  ),
-                  ShootIconButton(
-                    icon: ShootIcons.menu,
-                    label: l10n.mlOpenMenu,
-                    onPressed: () => unawaited(context.push('/menu')),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(20, 22, 20, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        const Positioned.fill(child: GoldenHourScene(animated: true)),
+        ConstrainedBox(
+          constraints: BoxConstraints(minHeight: minHeight),
+          child: SafeArea(
+            bottom: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              // Any spare screen height sits between the headline and the brief bar.
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      hero.headline,
-                      style: ShootType.display.copyWith(
-                        fontSize: 46,
-                        height: 1,
-                        letterSpacing: -0.035 * 46,
-                        color: c.ink,
-                      ),
-                    ),
-                    if (hero.subheadline case final sub?)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 14),
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 270),
-                          child: Text(
-                            sub,
-                            style: ShootType.body.copyWith(
-                              fontSize: 16,
-                              height: 1.45,
-                              color: c.bodyInk,
+                    ShootHeader(
+                      leading: Wordmark(label: l10n.appTitle),
+                      trailing: [
+                        const LanguageAction(),
+                        ShootIconButton(
+                          icon: ShootIcons.person,
+                          label: l10n.mlAccountButton,
+                          onPressed: () => unawaited(
+                            context.push(
+                              session is SignedIn
+                                  ? afterSignIn(session.user)
+                                  : AppRoutes.login,
                             ),
                           ),
                         ),
+                        ShootIconButton(
+                          icon: ShootIcons.menu,
+                          label: l10n.mlOpenMenu,
+                          onPressed: () => unawaited(context.push('/menu')),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                        20,
+                        22,
+                        20,
+                        0,
                       ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            hero.headline,
+                            style: ShootType.display.copyWith(
+                              fontSize: 46,
+                              height: 1,
+                              letterSpacing: -0.035 * 46,
+                              color: c.ink,
+                            ),
+                          ),
+                          if (hero.subheadline case final sub?)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 14),
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 270,
+                                ),
+                                child: Text(
+                                  sub,
+                                  style: ShootType.body.copyWith(
+                                    fontSize: 16,
+                                    height: 1.45,
+                                    color: c.bodyInk,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 28),
-              Padding(
-                padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
-                child: BlocBuilder<BriefCubit, BriefState>(
-                  bloc: brief,
-                  builder: (context, b) => b.load == BriefLoad.ready
-                      ? BriefBar(
-                          state: b,
-                          clock: clock.now,
-                          onTouch: brief.touch,
-                          onChoose: brief.choose,
-                          onContinue: brief.continueStep,
-                          onSkip: brief.skip,
-                          onDate: brief.setDate,
-                          onReopen: brief.reopen,
-                          onTakeBack: brief.takeBack,
-                          onSubmit: () => unawaited(brief.submit()),
-                        )
-                      : (b.load == BriefLoad.loading ||
-                            b.load == BriefLoad.idle)
-                      ? const SizedBox(height: 120)
-                      // No builder or no options: the headline stays, the one action is WhatsApp
-                      // (spec edge case). The failure is reported, never hidden by built-in options.
-                      : TopHit(
-                          label: l10n.mlMenuWhatsapp,
-                          leading: ShootIcons.whatsapp,
-                          chevron: true,
-                          onPressed: onWhatsapp,
-                        ),
-                ),
-              ),
-              if (pauseNearHero)
-                Align(
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 12, top: 8),
-                    child: AmbientPauseButton(
-                      pauseLabel: l10n.mlPauseMotion,
-                      playLabel: l10n.mlPlayMotion,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 28),
+                    Padding(
+                      padding: const EdgeInsetsDirectional.symmetric(
+                        horizontal: 12,
+                      ),
+                      child: BlocBuilder<BriefCubit, BriefState>(
+                        bloc: brief,
+                        builder: (context, b) => b.load == BriefLoad.ready
+                            ? BriefBar(
+                                state: b,
+                                clock: clock.now,
+                                onTouch: brief.touch,
+                                onChoose: brief.choose,
+                                onContinue: brief.continueStep,
+                                onSkip: brief.skip,
+                                onDate: brief.setDate,
+                                onReopen: brief.reopen,
+                                onTakeBack: brief.takeBack,
+                                onSubmit: () => unawaited(brief.submit()),
+                              )
+                            : (b.load == BriefLoad.loading ||
+                                  b.load == BriefLoad.idle)
+                            ? const SizedBox(height: 120)
+                            // No builder or no options: the headline stays, the one action is WhatsApp
+                            // (spec edge case). The failure is reported, never hidden by built-in options.
+                            : TopHit(
+                                label: l10n.mlMenuWhatsapp,
+                                leading: ShootIcons.whatsapp,
+                                chevron: true,
+                                onPressed: onWhatsapp,
+                              ),
+                      ),
                     ),
-                  ),
+                    if (pauseNearHero)
+                      Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                            end: 12,
+                            top: 8,
+                          ),
+                          child: AmbientPauseButton(
+                            pauseLabel: l10n.mlPauseMotion,
+                            playLabel: l10n.mlPlayMotion,
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 48),
+                  ],
                 ),
-              const SizedBox(height: 48),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -448,7 +482,7 @@ class _Occasions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 64),
+      padding: const EdgeInsets.only(bottom: 64, top: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
