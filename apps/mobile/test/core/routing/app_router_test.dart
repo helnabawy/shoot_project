@@ -95,7 +95,7 @@ void main() {
     tester,
   ) async {
     final unbuilt = AppRoutes.table.where((r) => !r.built);
-    expect(unbuilt, isNotEmpty);
+    // Every owned route is built once 010–015 land; the loop then has nothing to check.
     for (final route in unbuilt) {
       await open(tester, route.example);
       expect(

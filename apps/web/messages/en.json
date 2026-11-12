@@ -71,7 +71,9 @@
       "notAnOption": "Choose one of the options.",
       "tooMany": "You've sent several briefs already. Please try again in an hour, or WhatsApp us directly.",
       "generic": "Something went wrong sending your brief. Please try again, or WhatsApp us directly.",
-      "creatorPersona": "This professional does not offer that. Choose one of their types."
+      "creatorPersona": "This professional does not offer that. Choose one of their types.",
+      "optionGone": "That option is no longer available. Choose another.",
+      "pastDate": "Pick today or a later date."
     },
     "showMore": "Show {count} more",
     "successNextTitle": "What happens next",

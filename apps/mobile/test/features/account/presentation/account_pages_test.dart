@@ -120,8 +120,8 @@ void main() {
         final repository = FakeAccountRepository()
           ..home = const Err(NotFoundFailure());
         final app = await pumpAccount(tester, repository: repository);
-        expect(locationOf(app.router), '/');
-        expect(_text('landing'), findsOneWidget);
+        // 014 built the creator's own account: a creator lands on their profile.
+        expect(locationOf(app.router), '/account/profile');
       },
     );
 
