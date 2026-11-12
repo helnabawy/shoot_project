@@ -30,25 +30,30 @@ Future<Map<String, Object?>> apiGet(
     );
   } on DioException catch (error) {
     if (isConnectivityError(error)) throw const NetworkException();
-    throw _fromErrorResponse(error.response);
+    throw serverExceptionFrom(error.response);
   }
 
-  final body = _asObject(response.data);
+  final body = jsonObjectOf(response.data);
   if (body == null) throw ServerException(statusCode: response.statusCode);
   return body;
 }
 
-ServerException _fromErrorResponse(Response<Object?>? response) {
+/// The [ServerException] for an error answer: its status and, when the body
+/// is a problem document, its `code`, `fields` and `retryAfter`. Shared by
+/// every API helper (`apiGet`, `apiPost`).
+ServerException serverExceptionFrom(Response<Object?>? response) {
   final status = response?.statusCode;
-  final problem = _asObject(response?.data);
+  final problem = jsonObjectOf(response?.data);
   final code = problem?['code'];
   if (problem == null || code is! String) {
     return ServerException(statusCode: status);
   }
   final fields = problem['fields'];
+  final retryAfter = problem['retryAfter'];
   return ServerException(
     statusCode: status,
     code: code,
+    retryAfter: retryAfter is int ? retryAfter : null,
     fields: [
       if (fields is List)
         for (final field in fields)
@@ -60,7 +65,7 @@ ServerException _fromErrorResponse(Response<Object?>? response) {
 
 /// The body as a JSON object, decoding text when the server sent it with a
 /// content type Dio does not parse; `null` for anything else.
-Map<String, Object?>? _asObject(Object? data) {
+Map<String, Object?>? jsonObjectOf(Object? data) {
   if (data is Map) return data.cast<String, Object?>();
   if (data is String && data.isNotEmpty) {
     try {
