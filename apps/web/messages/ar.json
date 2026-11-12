@@ -170,6 +170,11 @@
     }
   },
   "account": {
+    "errors": {
+      "emailInvalid": "أدخل بريداً إلكترونياً مثل name@example.com.",
+      "emailInUse": "يستخدم حساب آخر هذا البريد بالفعل.",
+      "nameLength": "استخدم من 2 إلى 80 حرفاً للاسم."
+    },
     "title": "حسابي",
     "persona": "المهنة",
     "briefs": "طلباتك",

@@ -1,5 +1,6 @@
 import 'package:shoot_mobile/core/auth/session.dart';
 import 'package:shoot_mobile/core/network/json_read.dart';
+import 'package:shoot_mobile/features/account/data/models/account_models.dart';
 import 'package:shoot_mobile/features/content/data/models/editor_page_model.dart';
 import 'package:shoot_mobile/features/content/data/models/guide_models.dart';
 import 'package:shoot_mobile/features/content/data/models/legal_models.dart';
@@ -30,6 +31,13 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'auth-request': (json) => OtpRequestModel.fromJson(json).toJson(),
   'auth-verify-seeker': (json) => OtpVerifyModel.fromJson(json).toJson(),
   'auth-verify-provider': (json) => OtpVerifyModel.fromJson(json).toJson(),
+  // 013: the client account.
+  'me-account': (json) => AccountHomeModel.fromJson(json).toEntity(),
+  'me-account-empty': (json) => AccountHomeModel.fromJson(json).toEntity(),
+  'me-bookings': (json) => BookingListModel.fromJson(json).toEntity(),
+  'me-briefs': (json) => BriefListModel.fromJson(json).toEntity(),
+  'me-updated': SessionUser.fromMe,
+  'me-update-request': (json) => MeUpdateModel.fromJson(json).toJson(),
   // US3
   'creators': (json) => CreatorListModel.fromJson(json).toEntity(),
   'creator-profile': (json) => CreatorProfileModel.fromJson(json).toEntity(),

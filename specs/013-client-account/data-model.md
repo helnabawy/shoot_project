@@ -7,7 +7,7 @@
 
 ## Wire shapes (`packages/domain/src/api/v1/account.ts`)
 
-- `bookingStatusV1`: `awaitingAcceptance | waitingProfessional | awaitingPayment | confirmed | paid | scheduled | delivered | completed | cancelled | expired | onHold | declined` (the app reads an unknown value as a neutral badge).
+- `bookingStatusV1`: `awaitingAcceptance | waitingProfessional | awaitingPayment | paid | scheduled | delivered | completed | cancelled | expired | onHold | declined` (the app reads an unknown value as a neutral badge).
 - `bookingSummaryV1`: `{ reference, status, occasion|null, place|null, date|null (YYYY-MM-DD), startTime|null, professional|null, totalFils|null }`.
 - `briefSummaryV1`: `{ reference, sentence, sentAt (ISO), status: new|contacted|closed, bookingReference|null }`.
 - `upNextV1` or `null`: `{ kind: quote|delivery|payment|declined, booking: bookingSummaryV1 }`.
