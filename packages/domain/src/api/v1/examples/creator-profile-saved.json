@@ -1,0 +1,178 @@
+{
+  "code": "SH-0087",
+  "status": "draft",
+  "submittedAt": null,
+  "reviewNote": "",
+  "strength": 43,
+  "canSubmit": false,
+  "hasPendingChanges": false,
+  "fields": {
+    "displayName": {
+      "en": "Omar K.",
+      "ar": "عمر ك."
+    },
+    "bio": {
+      "en": "",
+      "ar": ""
+    },
+    "gender": null,
+    "nationality": null,
+    "yearsExperience": null,
+    "professions": [
+      "1"
+    ],
+    "specialties": [
+      "10"
+    ],
+    "emirates": [
+      "20"
+    ],
+    "languages": [],
+    "social": []
+  },
+  "photo": null,
+  "samples": [],
+  "identity": {
+    "emirates-id": {
+      "state": "missing",
+      "uploadedAt": null,
+      "note": ""
+    },
+    "trade-license": {
+      "state": "missing",
+      "uploadedAt": null,
+      "note": ""
+    }
+  },
+  "steps": [
+    {
+      "key": "basics",
+      "number": 1,
+      "state": "recommended",
+      "required": [],
+      "recommended": [
+        "photo",
+        "bio"
+      ]
+    },
+    {
+      "key": "about",
+      "number": 2,
+      "state": "needs",
+      "required": [
+        "gender"
+      ],
+      "recommended": [
+        "nationality",
+        "yearsExperience"
+      ]
+    },
+    {
+      "key": "places",
+      "number": 3,
+      "state": "needs",
+      "required": [
+        "languages"
+      ],
+      "recommended": []
+    },
+    {
+      "key": "links",
+      "number": 4,
+      "state": "recommended",
+      "required": [],
+      "recommended": [
+        "link"
+      ]
+    },
+    {
+      "key": "samples",
+      "number": 5,
+      "state": "recommended",
+      "required": [],
+      "recommended": [
+        "sample"
+      ]
+    },
+    {
+      "key": "calendar",
+      "number": 6,
+      "state": "done",
+      "required": [],
+      "recommended": []
+    },
+    {
+      "key": "identity",
+      "number": 7,
+      "state": "needs",
+      "required": [
+        "emiratesId",
+        "tradeLicense"
+      ],
+      "recommended": []
+    }
+  ],
+  "options": {
+    "professions": [
+      {
+        "id": "1",
+        "name": "Photographer"
+      },
+      {
+        "id": "2",
+        "name": "Videographer"
+      }
+    ],
+    "specialties": [
+      {
+        "id": "10",
+        "name": "Weddings",
+        "professionIds": [
+          "1",
+          "2"
+        ]
+      },
+      {
+        "id": "11",
+        "name": "Corporate",
+        "professionIds": [
+          "1"
+        ]
+      }
+    ],
+    "emirates": [
+      {
+        "id": "20",
+        "name": "Dubai"
+      },
+      {
+        "id": "21",
+        "name": "Abu Dhabi"
+      }
+    ],
+    "languages": [
+      {
+        "code": "en",
+        "name": "English"
+      },
+      {
+        "code": "ar",
+        "name": "Arabic"
+      }
+    ],
+    "countries": [
+      {
+        "code": "AE",
+        "name": "United Arab Emirates"
+      },
+      {
+        "code": "EG",
+        "name": "Egypt"
+      }
+    ]
+  },
+  "limits": {
+    "samples": 12,
+    "identityBytes": 5242880
+  }
+}

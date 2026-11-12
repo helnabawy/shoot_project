@@ -1,0 +1,59 @@
+{
+  "updates": [
+    {
+      "id": "7",
+      "event": "accepted",
+      "ref": "B-2026-0142",
+      "createdAt": "2026-11-12T07:00:00.000Z",
+      "read": false
+    }
+  ],
+  "waiting": [
+    {
+      "ref": "B-2026-0142",
+      "quotation": "Q-2026-0142",
+      "occasion": "Wedding, Dubai, 4 hours",
+      "emirate": "Dubai",
+      "date": "2026-12-14",
+      "profession": "Photographer",
+      "client": "Layla",
+      "respondBy": "2026-11-13T18:00:00.000Z",
+      "state": "accepted",
+      "answer": "pending",
+      "canDeliver": false,
+      "paid": false
+    }
+  ],
+  "upcoming": [
+    {
+      "ref": "B-2026-0120",
+      "quotation": "Q-2026-0120",
+      "occasion": "Wedding, Dubai, 4 hours",
+      "emirate": "Dubai",
+      "date": "2026-11-30",
+      "profession": "Photographer",
+      "client": "Layla",
+      "respondBy": null,
+      "state": "scheduled",
+      "answer": "confirmed",
+      "canDeliver": false,
+      "paid": true
+    }
+  ],
+  "done": [
+    {
+      "ref": "B-2026-0101",
+      "quotation": "Q-2026-0101",
+      "occasion": "Wedding, Dubai, 4 hours",
+      "emirate": "Dubai",
+      "date": "2026-10-20",
+      "profession": "Photographer",
+      "client": "Layla",
+      "respondBy": null,
+      "state": "completed",
+      "answer": "confirmed",
+      "canDeliver": false,
+      "paid": true
+    }
+  ]
+}

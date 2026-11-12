@@ -1,0 +1,35 @@
+{
+  "name": "Omar K.",
+  "code": "SH-0087",
+  "professions": [
+    "Photographer"
+  ],
+  "status": "draft",
+  "strength": 43,
+  "needs": [
+    {
+      "step": "about",
+      "required": [
+        "gender"
+      ],
+      "recommended": [
+        "nationality"
+      ]
+    },
+    {
+      "step": "identity",
+      "required": [
+        "emiratesId",
+        "tradeLicense"
+      ],
+      "recommended": []
+    }
+  ],
+  "waiting": null,
+  "deliverable": null,
+  "counts": {
+    "waiting": 0,
+    "upcoming": 0,
+    "blockedDays": 1
+  }
+}

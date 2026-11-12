@@ -1,0 +1,15 @@
+{
+  "today": "2026-11-12",
+  "windowDays": 90,
+  "days": [
+    {
+      "date": "2026-11-20",
+      "state": "blocked"
+    },
+    {
+      "date": "2026-11-30",
+      "state": "booked"
+    }
+  ],
+  "blockedCount": 1
+}

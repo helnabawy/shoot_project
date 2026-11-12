@@ -104,8 +104,9 @@ describe('the committed snapshot (specs/contracts/mobile-api/v1.schema.json)', (
 
   it('MR-US1-S6 names no internal property', () => {
     // 009: the member's own account (`GET me`, and the `user` of `otp/verify`) carries their own email.
+    // 014: the creator's own profile carries their own gender (never public; FR-016).
     const OWN_ACCOUNT = new Set(['me', 'otpVerify', 'meUpdate'])
-    const names = propertyNames({ ...next, endpoints: Object.fromEntries(Object.entries(next.endpoints).filter(([id]) => !OWN_ACCOUNT.has(id))) })
+    const names = propertyNames({ ...next, endpoints: Object.fromEntries(Object.entries(next.endpoints).filter(([id, e]) => !OWN_ACCOUNT.has(id) && !e.path.includes('/me/creator/'))) })
     expect(INTERNAL.filter((n) => names.has(n))).toEqual([])
     expect(names.has('quickMatchEnabled')).toBe(true)
   })

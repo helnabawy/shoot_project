@@ -30,7 +30,29 @@ enum ProblemCode {
   // 013: the client account.
   emailInvalid('account.errors.emailInvalid'),
   emailInUse('account.errors.emailInUse'),
-  nameLength('account.errors.nameLength');
+  nameLength('account.errors.nameLength'),
+  // 014: the creator's own account (specs/014-creator-account/contracts/mobile-api.md).
+  creatorNotProvider('creators.errors.notProvider'),
+  creatorNoProfile('creators.errors.noProfile'),
+  creatorGeneric('creators.errors.generic'),
+  creatorRequired('creators.errors.required'),
+  creatorSubmitIncomplete('creators.submit.incomplete'),
+  identityKind('creators.identity.kind'),
+  identityFile('creators.identity.file'),
+  identityType('creators.identity.type'),
+  identitySize('creators.identity.size'),
+  sampleLimit('creators.samples.limit'),
+  sampleImage('creators.samples.image'),
+  samplePoster('creators.samples.poster'),
+  sampleCategory('creators.samples.category'),
+  uploadType('media.upload.type'),
+  uploadSize('media.upload.size'),
+  availabilityNotYours('availability.errors.notYours'),
+  availabilityGeneric('availability.errors.generic'),
+  bookingNotYours('booking.errors.notYours'),
+  bookingNotAllowed('booking.errors.not-allowed'),
+  bookingNotFound('booking.errors.not-found'),
+  bookingDateTaken('booking.errors.dateTaken');
 
   const ProblemCode(this.wire);
 
@@ -83,6 +105,22 @@ enum ProblemCode {
       emailInvalid => l10n.problemEmailInvalid,
       emailInUse => l10n.problemEmailInUse,
       nameLength => l10n.problemNameLength,
+      creatorNotProvider => l10n.problemNotProvider,
+      creatorNoProfile => l10n.problemNoProfile,
+      creatorGeneric => l10n.problemCreatorGeneric,
+      creatorRequired => l10n.problemFieldRequired,
+      creatorSubmitIncomplete => l10n.problemSubmitIncomplete,
+      identityKind || identityFile => l10n.problemInvalidInput,
+      identityType || uploadType => l10n.problemFileWrongType,
+      identitySize || uploadSize => l10n.problemFileTooLarge,
+      sampleLimit => l10n.problemSampleLimit,
+      sampleImage || samplePoster => l10n.problemSampleImage,
+      sampleCategory => l10n.problemSampleCategory,
+      availabilityNotYours || availabilityGeneric => l10n.problemDayRefused,
+      bookingNotYours => l10n.problemBookingNotYours,
+      bookingNotAllowed => l10n.problemBookingNotAllowed,
+      bookingNotFound => l10n.problemNotFound,
+      bookingDateTaken => l10n.problemDateTaken,
     };
   }
 }

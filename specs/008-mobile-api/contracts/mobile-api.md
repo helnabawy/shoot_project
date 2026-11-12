@@ -60,6 +60,21 @@ Cache:
 | `meBookings` | `GET /me/bookings` | req | no-store | `accountPageRequestV1` | `bookingListV1` | `account` `list-bookings` (013) | — |
 | `meBriefs` | `GET /me/briefs` | req | no-store | `accountPageRequestV1` | `briefListV1` | `account` `list-briefs` (013) | — |
 | `meUpdate` | `PATCH /me` | req | no-store | `meUpdateV1` | `meV1` | `account` `update-me` (013) | — |
+| `creatorAccount` | `GET /me/creator/account` | req | no-store | — | `creatorAccountV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `myCreatorProfile` | `GET /me/creator/profile` | req | no-store | — | `myProfileV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorProfileSave` | `PATCH /me/creator/profile` | req | no-store | — | `myProfileV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorProfileSubmit` | `POST /me/creator/profile/submit` | req | no-store | — | `myProfileV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorProfileVisibility` | `PUT /me/creator/profile/visibility` | req | no-store | — | `myProfileV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorPhotoUpload` | `PUT /me/creator/profile/photo` | req | no-store | — | `myProfileV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorSampleAdd` | `POST /me/creator/profile/samples` | req | no-store | — | `myProfileV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorSampleRemove` | `DELETE /me/creator/profile/samples/{index}` | req | no-store | — | `myProfileV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorIdentityUpload` | `PUT /me/creator/identity/{kind}` | req | no-store | — | `myProfileV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorAvailability` | `GET /me/creator/availability` | req | no-store | — | `availabilityV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorAvailabilitySet` | `PUT /me/creator/availability/{date}` | req | no-store | — | `availabilityV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorBookings` | `GET /me/creator/bookings` | req | no-store | — | `creatorBookingsV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorBookingAnswer` | `POST /me/creator/bookings/{ref}/answer` | req | no-store | — | `creatorBookingsV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorBookingDeliver` | `POST /me/creator/bookings/{ref}/deliver` | req | no-store | — | `creatorBookingsV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `creatorUpdateRead` | `POST /me/creator/updates/{id}/read` | req | no-store | — | `creatorBookingsV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
 | — | any other address under `/api/mobile` | none | no-store | — | `problemV1` | catch-all | always |
 
 App links, at the site root and outside v1:
