@@ -18,12 +18,14 @@ import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
+import 'package:shoot_mobile/features/brief/brief_injection.dart';
 import 'package:shoot_mobile/features/content/content_injection.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/landing/landing_injection.dart';
 import 'package:shoot_mobile/features/service_health/service_health_injection.dart';
 import 'package:shoot_mobile/features/sign_in/sign_in_injection.dart';
 import 'package:shoot_mobile/features/site/site_injection.dart';
+import 'package:shoot_mobile/features/welcome/welcome_injection.dart';
 
 /// The service locator. Only the composition root (this file, `main.dart`
 /// and route builders) reads from it; classes take their dependencies through
@@ -65,6 +67,8 @@ void configureDependencies(
   registerContentFeature(getIt);
   registerCreatorsFeature(getIt);
   registerSignInFeature(getIt);
+  registerBriefFeature(getIt);
+  registerWelcomeFeature(getIt);
 }
 
 /// Feature 009: the session, its own Dio (no auth interceptor, so a refresh never recurses)

@@ -39,8 +39,8 @@ abstract final class AppRoutes {
   /// Every path the app knows, built or not (contracts/routes.md).
   static const table = <AppRoute>[
     AppRoute(home, owner: '010', example: '/', built: true),
-    AppRoute(welcome, owner: '010', example: '/welcome/1'),
-    AppRoute('/menu', owner: '010', example: '/menu'),
+    AppRoute(welcome, owner: '010', example: '/welcome/1', built: true),
+    AppRoute('/menu', owner: '010', example: '/menu', built: true),
     AppRoute(creators, owner: '011', example: '/creators'),
     AppRoute('/creators/:code', owner: '011', example: '/creators/SH-0087'),
     AppRoute('/book/:code', owner: '011', example: '/book/SH-0087'),

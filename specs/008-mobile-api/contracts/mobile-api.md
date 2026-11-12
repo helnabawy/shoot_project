@@ -56,6 +56,7 @@ Cache:
 | `authRefresh` | `POST /auth/refresh` | req | no-store | — | `authRefreshV1` | `auth` `refresh-session` (009) | — |
 | `authLogout` | `POST /auth/logout` | req | no-store | — | 204 | `auth` `end-session` (009) | — |
 | `me` | `GET /me` | req | no-store | — | `meV1` | `auth` `toWireMe` (009) | — |
+| `briefRecord` | `POST /briefs` | opt | no-store | `briefRecordV1` | `briefReceiptV1` | `brief` `record-brief` (010) | — |
 | — | any other address under `/api/mobile` | none | no-store | — | `problemV1` | catch-all | always |
 
 App links, at the site root and outside v1:

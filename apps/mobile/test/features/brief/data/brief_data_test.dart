@@ -4,6 +4,7 @@ import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/features/brief/data/brief_data.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_draft.dart';
+import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
 
 import '../../../helpers/brief_fixtures.dart';
 import '../../../helpers/scripted_adapter.dart';
@@ -44,7 +45,7 @@ void main() {
     );
     final repo = BriefRepositoryImpl(Dio()..httpClientAdapter = adapter);
     final result = await repo.record(fxConfig(), const BriefDraft());
-    final receipt = (result as Ok).value;
+    final receipt = (result as Ok<BriefReceipt>).value;
     expect(receipt.matchPath, '/match/B-9/k');
     expect(adapter.lastRequest!.path, endsWith('/api/mobile/v1/briefs'));
     expect(adapter.lastRequest!.method, 'POST');
