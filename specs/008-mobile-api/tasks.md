@@ -509,18 +509,18 @@ app, with `ShootImage`.
 
 ### Tests first
 
-- [ ] T052 [P] [US3] Write `v1/creators.test.ts`.
+- [x] T052 [P] [US3] Write `v1/creators.test.ts`.
   - The schemas accept their examples and refuse a missing `displayCode`.
   - `creatorsRequestV1` accepts `page: '2'` and ignores unknown keys.
   - `params.code` is 1–16 characters.
-- [ ] T053 [P] [US3] Write `web/modules/creators/wire.test.ts` (**`MR-US3-S1`**).
+- [x] T053 [P] [US3] Write `web/modules/creators/wire.test.ts` (**`MR-US3-S1`**).
   - Cards come from `describeCreator`.
   - `matchValues`, `gender`, `personaIds` and `listing` state are never present.
   - The photo goes through `toWireImage`.
 
   Also extend `web/modules/pages/wire.test.ts` for `toWireHirePage`: the preset, at most six
   creators and the FAQ as rich text.
-- [ ] T054 [P] [US3] Write `wtest/integration/mobile-api-creators.int.test.ts` with the creators
+- [x] T054 [P] [US3] Write `wtest/integration/mobile-api-creators.int.test.ts` with the creators
   fixtures (`wtest/integration/setup/creators.ts`): listed, unlisted, suspended and featured.
   - **`MR-US3-S1`**:
     - only listed creators appear, featured first, then newest;
@@ -540,14 +540,14 @@ app, with `ShootImage`.
       `creatorTotal` and the FAQ;
     - the other language's slug answers with the current `path`;
     - a draft gives 404.
-- [ ] T055 [P] [US3] Write the Dart creators tests.
+- [x] T055 [P] [US3] Write the Dart creators tests.
   - `mobile/test/features/creators/data/models/creator_models_test.dart` (**`MR-US3-S4`**): the
     `creators`, `creator-profile` (English and Arabic), `specialty` and `hire-page` examples decode
     and map to entities.
   - `mobile/test/features/creators/data/repositories/creators_repository_impl_test.dart`:
     - **`MR-US3-S1`**: filters and page are passed as query values;
     - **`MR-US3-S2`**: a 404 gives `NotFoundFailure`, and network and server errors map as in US1.
-- [ ] T056 [P] [US3] Write `mobile/test/core/widgets/shoot_image_test.dart`.
+- [x] T056 [P] [US3] Write `mobile/test/core/widgets/shoot_image_test.dart`.
   - **`MR-US3-S5`**: at width 120 the image requests the 400 size at DPR 2 and DPR 3, and the 1600
     size at width 700 and DPR 3. `cacheWidth` is set. Use a fake `HttpClient` through
     `HttpOverrides`, so there is no network.
@@ -557,9 +557,11 @@ app, with `ShootImage`.
 
 ### Implementation
 
-- [ ] T057 [US3] Create `v1/creators.ts` per data-model.md. Register `creators`,
+- [x] T057 [US3] Create `v1/creators.ts` per data-model.md. Register `creators`,
   `creatorProfile`, `specialty` and `hirePage`.
-- [ ] T058 [P] [US3] Write the examples:
+  - Done note: `hirePageV1` (and `hirePageRequestV1`, `HIRE_CREATOR_LIMIT`) is in `v1/hire.ts`:
+    `landing.ts` imports the card from `creators.ts`, so `creators.ts` cannot import `sectionV1`.
+- [x] T058 [P] [US3] Write the examples:
   - `creators.json` and `.ar.json`, `creator-profile.json` and `.ar.json`, `specialty.json` and
     `hire-page.json`;
   - use Omar K., Mariam A. and Yusuf R. with their board places, specialties and languages, and
@@ -567,29 +569,32 @@ app, with `ShootImage`.
   - image URLs use `https://example.test/api/media/file/…`, with sizes 400, 800 and 1600.
 
   T052 passes.
-- [ ] T059 [US3] In `web/modules/creators/`:
+- [x] T059 [US3] In `web/modules/creators/`:
   - `wire.ts` (`toWireCreatorCard`, `toWireCreatorList`, `toWireCreatorProfile`,
     `toWireSpecialtyPage`);
   - `api.ts` (`getCreatorsV1` over `getPublicCreators`, `getDirectoryContext` and
     `buildDirectory`; `getCreatorProfileV1`; `getSpecialtyV1`);
   - export them from `index.ts`.
-- [ ] T060 [US3] In `web/modules/pages/`:
+- [x] T060 [US3] In `web/modules/pages/`:
   - `wire.ts` gains `toWireHirePage`, which uses `toWireSection` from `@/modules/landing` and
     `toWireCreatorCard` from `@/modules/creators`;
   - `api.ts` gains `getHirePageV1` over `getIntentPage`;
   - export it from `index.ts`.
-- [ ] T061 [US3] Create the route files `creators/route.ts`, `creators/[code]/route.ts`,
+- [x] T061 [US3] Create the route files `creators/route.ts`, `creators/[code]/route.ts`,
   `work/[specialty]/route.ts` and `hire/[slug]/route.ts`. T053 and T054 pass.
-- [ ] T062 [US3] Create `mobile/lib/features/creators/` (entities, `CreatorsRepository`, models,
+- [x] T062 [US3] Create `mobile/lib/features/creators/` (entities, `CreatorsRepository`, models,
   datasource, repository impl) and `creators_injection.dart`. T055 passes.
-- [ ] T063 [P] [US3] Create `mobile/lib/core/widgets/shoot_image.dart`.
+  - Done note: `Pagination`/`PaginationModel` went to `core/content/pagination.dart` (US4 reuses it).
+    `HirePageModel` decodes `briefBuilderConfigV1` with a local copy of the site decoder (a feature
+    never imports another feature's `data/`); move it to `core/` with feature 011's hire screen.
+- [x] T063 [P] [US3] Create `mobile/lib/core/widgets/shoot_image.dart`.
   - `ShootImage(image, {width, height, fit, sceneIndex})` uses `LayoutBuilder` for the rendered
     width, `ImageRef.pick(width × dpr)` and `Image.network` with `cacheWidth`.
   - `frameBuilder` and `errorBuilder` show `SceneTile(index: sceneIndex)`.
   - `Semantics(label: alt)`, excluded when alt is empty.
 
   T056 passes.
-- [ ] T064 [US3] Run `pnpm --filter @shoot/domain api:snapshot` and commit the snapshot. Add the US3
+- [x] T064 [US3] Run `pnpm --filter @shoot/domain api:snapshot` and commit the snapshot. Add the US3
   examples to `mobile/test/api_examples_test.dart`.
 
 **Checkpoint**: MR-US3-S1 to S6 pass; the creator reads are in the contract.

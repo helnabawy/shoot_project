@@ -2,6 +2,7 @@ import 'server-only'
 import { formatCreatorCode, isListed, normaliseCode, orderCreators, pickSpecialtySamples, specialtyCounts, type CreatorSummary, type SpecialtyCounts } from '@shoot/domain/creators'
 import { getActivePersonas, getCategoriesForAudience } from '@/modules/personas/queries'
 import { getSiteSettings } from '@/modules/site-settings/queries'
+import type { Media } from '@/payload-types'
 import { cachedQuery } from '@/shared/lib/cache'
 import type { Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
@@ -138,6 +139,8 @@ export interface CreatorProfilePage {
   canBook: boolean
   /** Slugs of the creator's professional types that the site offers (the booking's allowed types). */
   personaSlugs: string[]
+  /** The published document the view was built from; the mobile API reads every stored image size from it (008). */
+  doc: RawProfileDoc
 }
 
 /** A public creator's full profile for the profile and booking pages; null unless they are public. */
@@ -153,8 +156,10 @@ export async function getCreatorProfile(rawCode: string, locale: Locale): Promis
     getDirectoryContext(locale),
     getActivePersonas(locale),
   ])
+  const raw = doc as unknown as RawProfileDoc
   return {
-    view: buildProfileView(doc as unknown as RawProfileDoc, context.lookups, locale),
+    doc: raw,
+    view: buildProfileView(raw, context.lookups, locale),
     displayCode: formatCreatorCode(context.prefix, creator.code),
     canBook,
     personaSlugs: personas.filter((p) => creator.personaIds.includes(p.id)).map((p) => p.slug),
@@ -177,6 +182,8 @@ export interface SpecialtySample {
   alt: string
   caption: string
   kind: 'image' | 'video'
+  /** The sample's media document, so the mobile API can send every stored size (008). */
+  media?: Media | null
 }
 
 export interface SpecialtyPage {
@@ -228,9 +235,11 @@ export async function getSpecialtyPage(slug: string, locale: Locale): Promise<Sp
       publishedAt: byId.get(d.id)!.publishedAt,
       samples: d.samples.map((s, i) => sampleView(s, i, context.lookups)).filter((s) => s !== null),
     }))
+  const mediaOf = new Map<string, Media | null>(docs.flatMap((d) => d.samples.map((s, i) => [`${d.id}-${s.id ?? String(i)}`, s.image && typeof s.image === 'object' ? s.image : null] as const)))
   const samples: SpecialtySample[] = pickSpecialtySamples(entries).map(({ creatorId, sample }) => {
     const creator = byId.get(creatorId)!
-    return { id: `${creatorId}-${sample.id}`, creatorId, creatorName: creator.displayName, code: creator.code, thumb: sample.thumb, alt: sample.alt, caption: sample.caption, kind: sample.kind }
+    const id = `${creatorId}-${sample.id}`
+    return { id, creatorId, creatorName: creator.displayName, code: creator.code, thumb: sample.thumb, alt: sample.alt, caption: sample.caption, kind: sample.kind, media: mediaOf.get(id) ?? null }
   })
   return {
     category: { id: category.id, slug: category.slug, name: category.name },

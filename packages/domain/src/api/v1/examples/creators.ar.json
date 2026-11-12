@@ -1,0 +1,160 @@
+{
+  "locale": "ar",
+  "items": [
+    {
+      "code": "0087",
+      "displayCode": "SH-0087",
+      "name": "عمر ك.",
+      "initials": "عك",
+      "photo": {
+        "alt": "عمر ك.",
+        "width": 800,
+        "height": 1000,
+        "sizes": [
+          {
+            "url": "https://example.test/api/media/file/creator-0087-400.webp",
+            "width": 400,
+            "height": 500
+          },
+          {
+            "url": "https://example.test/api/media/file/creator-0087-800.webp",
+            "width": 800,
+            "height": 1000
+          }
+        ]
+      },
+      "types": "مصوّر ومصوّر فيديو",
+      "places": [
+        "الشارقة",
+        "دبي"
+      ],
+      "specialties": [
+        "أعراس",
+        "فعاليات",
+        "بورتريه"
+      ],
+      "languages": [
+        "العربية",
+        "الإنجليزية"
+      ],
+      "yearsExperience": 6,
+      "sampleCount": 8,
+      "featured": true
+    },
+    {
+      "code": "0421",
+      "displayCode": "SH-0421",
+      "name": "مريم أ.",
+      "initials": "مأ",
+      "photo": null,
+      "types": "مصوّرة",
+      "places": [
+        "دبي"
+      ],
+      "specialties": [
+        "أعراس",
+        "عائلة",
+        "مواليد"
+      ],
+      "languages": [
+        "العربية",
+        "الإنجليزية",
+        "الأردية"
+      ],
+      "yearsExperience": 4,
+      "sampleCount": 6,
+      "featured": false
+    },
+    {
+      "code": "0233",
+      "displayCode": "SH-0233",
+      "name": "يوسف ر.",
+      "initials": "ير",
+      "photo": null,
+      "types": "مصوّر فيديو",
+      "places": [
+        "دبي",
+        "أبوظبي"
+      ],
+      "specialties": [
+        "أعراس",
+        "خطوبة"
+      ],
+      "languages": [
+        "الإنجليزية",
+        "الهندية"
+      ],
+      "yearsExperience": 9,
+      "sampleCount": 5,
+      "featured": false
+    }
+  ],
+  "filters": [
+    {
+      "key": "type",
+      "label": "المحترف",
+      "options": [
+        {
+          "slug": "photographer",
+          "name": "مصوّرون",
+          "count": 2,
+          "selected": false
+        },
+        {
+          "slug": "videographer",
+          "name": "مصوّرو فيديو",
+          "count": 2,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "key": "specialty",
+      "label": "التخصص",
+      "options": [
+        {
+          "slug": "weddings",
+          "name": "أعراس",
+          "count": 12,
+          "selected": true
+        },
+        {
+          "slug": "events",
+          "name": "فعاليات",
+          "count": 4,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "key": "place",
+      "label": "الإمارة",
+      "options": [
+        {
+          "slug": "dubai",
+          "name": "دبي",
+          "count": 10,
+          "selected": false
+        },
+        {
+          "slug": "abu-dhabi",
+          "name": "أبوظبي",
+          "count": 3,
+          "selected": false
+        },
+        {
+          "slug": "sharjah",
+          "name": "الشارقة",
+          "count": 2,
+          "selected": false
+        }
+      ]
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageCount": 4,
+    "total": 12,
+    "pageSize": 3
+  }
+}

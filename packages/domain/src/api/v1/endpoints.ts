@@ -1,5 +1,7 @@
 import { z } from 'zod'
 import { authRefreshV1, authTokenV1, meV1, otpChallengeV1, otpRequestV1, otpVerifyV1 } from './auth'
+import { creatorListV1, creatorProfileRequestV1, creatorProfileV1, creatorsRequestV1, specialtyPageV1, specialtyRequestV1 } from './creators'
+import { hirePageRequestV1, hirePageV1 } from './hire'
 import { landingV1 } from './landing'
 import { defineEndpoint, noContentV1, type Endpoint } from './registry'
 import { briefBuilderV1, navigationV1, personasV1, siteV1 } from './site'
@@ -81,6 +83,18 @@ export const endpoints = {
     output: meV1,
     examples: ['me-seeker', 'me-provider'],
   }),
+  // US3: creators, specialty pages and hire pages.
+  creators: defineEndpoint({ ...publicRead, id: 'creators', path: '/api/mobile/v1/creators', input: creatorsRequestV1, output: creatorListV1, examples: ['creators', 'creators.ar'] }),
+  creatorProfile: defineEndpoint({
+    ...publicRead,
+    id: 'creatorProfile',
+    path: '/api/mobile/v1/creators/{code}',
+    input: creatorProfileRequestV1,
+    output: creatorProfileV1,
+    examples: ['creator-profile', 'creator-profile.ar'],
+  }),
+  specialty: defineEndpoint({ ...publicRead, id: 'specialty', path: '/api/mobile/v1/work/{specialty}', input: specialtyRequestV1, output: specialtyPageV1, examples: ['specialty'] }),
+  hirePage: defineEndpoint({ ...publicRead, id: 'hirePage', path: '/api/mobile/v1/hire/{slug}', input: hirePageRequestV1, output: hirePageV1, examples: ['hire-page'] }),
 } satisfies Record<string, Endpoint>
 
 /** The registry as a list, in declaration order. */

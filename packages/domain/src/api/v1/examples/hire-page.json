@@ -1,0 +1,312 @@
+{
+  "locale": "en",
+  "path": "/hire/wedding-photographer-dubai",
+  "title": "Wedding photographer in Dubai",
+  "intro": "Tell us the date and the place. We send you who is free, with one fixed price, and you book on WhatsApp.",
+  "sections": [
+    {
+      "type": "richText",
+      "anchor": null,
+      "content": {
+        "nodes": [
+          {
+            "type": "heading",
+            "level": 2,
+            "children": [
+              {
+                "type": "text",
+                "text": "What the day covers",
+                "bold": false,
+                "italic": false,
+                "underline": false,
+                "code": false
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "text": "Getting ready, the ceremony, portraits and the first hours of the reception.",
+                "bold": false,
+                "italic": false,
+                "underline": false,
+                "code": false
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "builder": {
+    "sentence": "I need {persona} for {occasion} in {location} on {date}.",
+    "slots": [
+      {
+        "token": "persona",
+        "kind": "persona",
+        "groupLabel": "who",
+        "placeholder": "which professional",
+        "defaultValue": "photographer",
+        "required": true,
+        "allowCustom": false,
+        "multiple": false,
+        "options": [
+          {
+            "value": "photographer",
+            "label": "Photographer",
+            "sentenceLabel": "a photographer",
+            "glyph": "PH",
+            "personaSlugs": []
+          },
+          {
+            "value": "videographer",
+            "label": "Videographer",
+            "sentenceLabel": "a videographer",
+            "glyph": "VI",
+            "personaSlugs": []
+          }
+        ]
+      },
+      {
+        "token": "occasion",
+        "kind": "options",
+        "groupLabel": "what",
+        "placeholder": "what occasion",
+        "defaultValue": "wedding",
+        "required": true,
+        "allowCustom": true,
+        "multiple": false,
+        "options": [
+          {
+            "value": "wedding",
+            "label": "Weddings",
+            "sentenceLabel": "a wedding",
+            "glyph": "W",
+            "personaSlugs": []
+          },
+          {
+            "value": "event",
+            "label": "Events",
+            "sentenceLabel": "an event",
+            "glyph": "E",
+            "personaSlugs": []
+          },
+          {
+            "value": "portrait",
+            "label": "Portraits",
+            "sentenceLabel": "a portrait session",
+            "glyph": "P",
+            "personaSlugs": [
+              "photographer"
+            ]
+          }
+        ]
+      },
+      {
+        "token": "location",
+        "kind": "options",
+        "groupLabel": "where",
+        "placeholder": "which emirate",
+        "defaultValue": "dubai",
+        "required": true,
+        "allowCustom": false,
+        "multiple": false,
+        "options": [
+          {
+            "value": "dubai",
+            "label": "Dubai",
+            "sentenceLabel": "Dubai",
+            "glyph": "DXB",
+            "personaSlugs": []
+          },
+          {
+            "value": "abu-dhabi",
+            "label": "Abu Dhabi",
+            "sentenceLabel": "Abu Dhabi",
+            "glyph": "AUH",
+            "personaSlugs": []
+          },
+          {
+            "value": "sharjah",
+            "label": "Sharjah",
+            "sentenceLabel": "Sharjah",
+            "glyph": "SHJ",
+            "personaSlugs": []
+          }
+        ]
+      },
+      {
+        "token": "date",
+        "kind": "date",
+        "groupLabel": "when",
+        "placeholder": "any date",
+        "defaultValue": "",
+        "required": false,
+        "allowCustom": false,
+        "multiple": false,
+        "options": []
+      }
+    ],
+    "submitLabel": "See price and who's free",
+    "helperText": "No account needed. Price shown next.",
+    "whatsappTemplate": "Hi! I need {persona} for {occasion} in {location} on {date}.",
+    "successMessage": "We have your brief and will find who is free.",
+    "steps": [
+      {
+        "title": "Your shoot",
+        "description": "Describe it in one line."
+      },
+      {
+        "title": "Your professional",
+        "description": "We find who is free that day."
+      },
+      {
+        "title": "Your details",
+        "description": "We confirm on WhatsApp."
+      },
+      {
+        "title": "Your quote",
+        "description": "One clear price before you book."
+      }
+    ]
+  },
+  "preset": {
+    "persona": "photographer",
+    "occasion": "wedding",
+    "location": "dubai"
+  },
+  "creators": [
+    {
+      "code": "0087",
+      "displayCode": "SH-0087",
+      "name": "Omar K.",
+      "initials": "OK",
+      "photo": {
+        "alt": "Omar K.",
+        "width": 800,
+        "height": 1000,
+        "sizes": [
+          {
+            "url": "https://example.test/api/media/file/creator-0087-400.webp",
+            "width": 400,
+            "height": 500
+          },
+          {
+            "url": "https://example.test/api/media/file/creator-0087-800.webp",
+            "width": 800,
+            "height": 1000
+          }
+        ]
+      },
+      "types": "Photographer and videographer",
+      "places": [
+        "Sharjah",
+        "Dubai"
+      ],
+      "specialties": [
+        "Weddings",
+        "Events",
+        "Portraits"
+      ],
+      "languages": [
+        "Arabic",
+        "English"
+      ],
+      "yearsExperience": 6,
+      "sampleCount": 8,
+      "featured": true
+    },
+    {
+      "code": "0421",
+      "displayCode": "SH-0421",
+      "name": "Mariam A.",
+      "initials": "MA",
+      "photo": null,
+      "types": "Photographer",
+      "places": [
+        "Dubai"
+      ],
+      "specialties": [
+        "Weddings",
+        "Family",
+        "Newborn"
+      ],
+      "languages": [
+        "Arabic",
+        "English",
+        "Urdu"
+      ],
+      "yearsExperience": 4,
+      "sampleCount": 6,
+      "featured": false
+    },
+    {
+      "code": "0233",
+      "displayCode": "SH-0233",
+      "name": "Yusuf R.",
+      "initials": "YR",
+      "photo": null,
+      "types": "Videographer",
+      "places": [
+        "Dubai",
+        "Abu Dhabi"
+      ],
+      "specialties": [
+        "Weddings",
+        "Engagements"
+      ],
+      "languages": [
+        "English",
+        "Hindi"
+      ],
+      "yearsExperience": 9,
+      "sampleCount": 5,
+      "featured": false
+    }
+  ],
+  "creatorTotal": 12,
+  "faq": [
+    {
+      "question": "How soon do we get the photos?",
+      "answer": {
+        "nodes": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "text": "A first selection within three days, the full set within two weeks.",
+                "bold": false,
+                "italic": false,
+                "underline": false,
+                "code": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "question": "Can the photographer speak Arabic?",
+      "answer": {
+        "nodes": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "text": "Yes. Each profile lists the languages the creator speaks.",
+                "bold": false,
+                "italic": false,
+                "underline": false,
+                "code": false
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

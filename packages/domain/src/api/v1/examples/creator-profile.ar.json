@@ -1,0 +1,198 @@
+{
+  "locale": "ar",
+  "code": "0087",
+  "displayCode": "SH-0087",
+  "name": "عمر ك.",
+  "initials": "عك",
+  "bio": "أصوّر الأعراس والمناسبات العائلية كما عاشها أصحابها: اللقطات العفوية أولاً، ثم الصور التي يريدها الجميع على الجدار. بالعربية والإنجليزية يوم المناسبة.",
+  "photo": {
+    "alt": "عمر ك.",
+    "width": 800,
+    "height": 1000,
+    "sizes": [
+      {
+        "url": "https://example.test/api/media/file/creator-0087-400.webp",
+        "width": 400,
+        "height": 500
+      },
+      {
+        "url": "https://example.test/api/media/file/creator-0087-800.webp",
+        "width": 800,
+        "height": 1000
+      }
+    ]
+  },
+  "types": "مصوّر ومصوّر فيديو",
+  "places": [
+    "الشارقة",
+    "دبي"
+  ],
+  "specialties": [
+    "أعراس",
+    "فعاليات",
+    "بورتريه"
+  ],
+  "languages": [
+    "العربية",
+    "الإنجليزية"
+  ],
+  "nationality": "الإمارات العربية المتحدة",
+  "yearsExperience": 6,
+  "samples": [
+    {
+      "id": "s1",
+      "kind": "image",
+      "thumb": {
+        "alt": "حفل في الحديقة",
+        "width": 1600,
+        "height": 1200,
+        "sizes": [
+          {
+            "url": "https://example.test/api/media/file/sample-0087-1-400.webp",
+            "width": 400,
+            "height": 300
+          },
+          {
+            "url": "https://example.test/api/media/file/sample-0087-1-800.webp",
+            "width": 800,
+            "height": 600
+          }
+        ]
+      },
+      "large": {
+        "alt": "حفل في الحديقة",
+        "width": 1600,
+        "height": 1200,
+        "sizes": [
+          {
+            "url": "https://example.test/api/media/file/sample-0087-1-400.webp",
+            "width": 400,
+            "height": 300
+          },
+          {
+            "url": "https://example.test/api/media/file/sample-0087-1-800.webp",
+            "width": 800,
+            "height": 600
+          },
+          {
+            "url": "https://example.test/api/media/file/sample-0087-1-1600.webp",
+            "width": 1600,
+            "height": 1200
+          }
+        ]
+      },
+      "alt": "حفل في الحديقة",
+      "caption": "حفل في الحديقة",
+      "specialty": "أعراس",
+      "videoUrl": null,
+      "provider": null
+    },
+    {
+      "id": "s2",
+      "kind": "image",
+      "thumb": {
+        "alt": "الرقصة الأولى",
+        "width": 1600,
+        "height": 1200,
+        "sizes": [
+          {
+            "url": "https://example.test/api/media/file/sample-0087-2-400.webp",
+            "width": 400,
+            "height": 300
+          },
+          {
+            "url": "https://example.test/api/media/file/sample-0087-2-800.webp",
+            "width": 800,
+            "height": 600
+          }
+        ]
+      },
+      "large": {
+        "alt": "الرقصة الأولى",
+        "width": 1600,
+        "height": 1200,
+        "sizes": [
+          {
+            "url": "https://example.test/api/media/file/sample-0087-2-400.webp",
+            "width": 400,
+            "height": 300
+          },
+          {
+            "url": "https://example.test/api/media/file/sample-0087-2-800.webp",
+            "width": 800,
+            "height": 600
+          },
+          {
+            "url": "https://example.test/api/media/file/sample-0087-2-1600.webp",
+            "width": 1600,
+            "height": 1200
+          }
+        ]
+      },
+      "alt": "الرقصة الأولى",
+      "caption": "الرقصة الأولى",
+      "specialty": "أعراس",
+      "videoUrl": null,
+      "provider": null
+    },
+    {
+      "id": "s3",
+      "kind": "video",
+      "thumb": {
+        "alt": "فيلم العرس",
+        "width": 1600,
+        "height": 1200,
+        "sizes": [
+          {
+            "url": "https://example.test/api/media/file/sample-0087-3-400.webp",
+            "width": 400,
+            "height": 300
+          },
+          {
+            "url": "https://example.test/api/media/file/sample-0087-3-800.webp",
+            "width": 800,
+            "height": 600
+          }
+        ]
+      },
+      "large": {
+        "alt": "فيلم العرس",
+        "width": 1600,
+        "height": 1200,
+        "sizes": [
+          {
+            "url": "https://example.test/api/media/file/sample-0087-3-400.webp",
+            "width": 400,
+            "height": 300
+          },
+          {
+            "url": "https://example.test/api/media/file/sample-0087-3-800.webp",
+            "width": 800,
+            "height": 600
+          },
+          {
+            "url": "https://example.test/api/media/file/sample-0087-3-1600.webp",
+            "width": 1600,
+            "height": 1200
+          }
+        ]
+      },
+      "alt": "فيلم العرس",
+      "caption": "فيلم العرس",
+      "specialty": "أعراس",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "provider": "YouTube"
+    }
+  ],
+  "social": [
+    {
+      "label": "Instagram",
+      "url": "https://instagram.com/omar.k.shoots"
+    }
+  ],
+  "canBook": true,
+  "personaSlugs": [
+    "photographer",
+    "videographer"
+  ]
+}
