@@ -48,36 +48,30 @@ Future<BriefCubit> pumpBar(
 
 void main() {
   testWidgets(
-    'ML-US1-S1 the bar writes an example once, the primary action shows, no answers',
+    'ML-US1-S1 the bar opens like the website: search prompt, first step, actions, no answers',
     (tester) async {
       final cubit = await pumpBar(tester);
-      expect(find.text("See price and who's free"), findsOneWidget);
-      expect(find.text('No account needed. Price shown next.'), findsOneWidget);
-      // Placeholders to begin with; the example fills the slots in turn from the CMS defaults.
-      expect(find.text('which professional'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 4));
-      expect(find.text('which professional'), findsNothing);
-      expect(find.textContaining('hotographer'), findsOneWidget);
-      // An illustration, never an answer.
+      expect(find.text("Type what you're looking for"), findsOneWidget);
+      // The asked step shows from the start, with its glyph tiles and position.
+      expect(find.text('Photographer'), findsOneWidget);
+      expect(find.text('PH'), findsOneWidget);
+      expect(find.text('1 of 4'), findsOneWidget);
+      expect(find.text('ACTIONS'), findsOneWidget);
+      // The primary action waits for the last step.
+      expect(find.text("See price and who's free"), findsNothing);
       expect(cubit.state.draft.isEmpty, isTrue);
-      expect(find.byKey(const ValueKey('briefBar:search')), findsNothing);
       await tester.pumpWidget(const SizedBox());
     },
   );
 
   testWidgets(
-    'ML-US1-S2 touching the bar stops the example and shows only the first step',
+    'ML-US1-S2 only the first step lists its options, not the later ones',
     (tester) async {
-      final cubit = await pumpBar(tester);
-      await tester.tap(find.byKey(const ValueKey('briefBar:sentence')));
-      await tester.pump();
-      expect(cubit.state.example, isFalse);
+      await pumpBar(tester);
       expect(find.byKey(const ValueKey('briefBar:search')), findsOneWidget);
       expect(find.text('Photographer'), findsOneWidget);
       expect(find.text('Videographer'), findsOneWidget);
-      // Only the first step's list: no occasion options yet.
       expect(find.text('Weddings'), findsNothing);
-      expect(find.text('which professional'), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
     },
   );
@@ -86,8 +80,6 @@ void main() {
     'ML-US1-S3 a choice is printed into the sentence and the next step shows',
     (tester) async {
       final cubit = await pumpBar(tester);
-      cubit.touch();
-      await tester.pump();
       await tester.tap(
         find.byKey(const ValueKey('briefBar:option:persona:photographer')),
       );
@@ -111,8 +103,6 @@ void main() {
 
   testWidgets('ML-US1-S3 typing searches every step at once', (tester) async {
     final cubit = await pumpBar(tester);
-    cubit.touch();
-    await tester.pump();
     await tester.enterText(
       find.byKey(const ValueKey('briefBar:search')),
       'dub',
@@ -134,6 +124,7 @@ void main() {
       ..choose('location', 'dubai');
     await tester.pump();
     expect(cubit.state.active, 'date');
+    await tester.pump(const Duration(milliseconds: 100));
     expect(find.byKey(const ValueKey('briefBar:skip')), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('briefBar:skip')));
     await tester.pump();
@@ -145,8 +136,8 @@ void main() {
     'ML-US1-S5 an incomplete brief shows a one-line message naming the step',
     (tester) async {
       final cubit = await pumpBar(tester);
-      await tester.tap(find.text("See price and who's free"));
-      await tester.pump();
+      await cubit.submit();
+      await tester.pump(const Duration(milliseconds: 100));
       expect(cubit.state.active, 'persona');
       expect(find.textContaining('Choose which professional'), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
@@ -158,19 +149,17 @@ void main() {
     (tester) async {
       final cubit = await pumpBar(tester, locale: const Locale('ar'));
       final ar = exampleBuilder(arabic: true).builder!;
-      expect(find.text(ar.submitLabel), findsOneWidget);
+      expect(find.text('اكتب ما تبحث عنه'), findsOneWidget);
       expect(
         Directionality.of(
           tester.element(find.byKey(const ValueKey('briefBar'))),
         ),
         TextDirection.rtl,
       );
-      cubit.touch();
-      await tester.pump();
       final firstOption = ar.slots.first.options.first.label;
       expect(find.text(firstOption), findsOneWidget);
-      await tester.tap(find.text(ar.submitLabel));
-      await tester.pump();
+      await cubit.submit();
+      await tester.pump(const Duration(milliseconds: 100));
       expect(find.textContaining('اختر'), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
     },
@@ -186,8 +175,9 @@ void main() {
     cubit
       ..choose('persona', 'photographer')
       ..choose('occasion', 'wedding')
-      ..choose('location', 'dubai');
-    await tester.pump();
+      ..choose('location', 'dubai')
+      ..skip('date');
+    await tester.pump(const Duration(milliseconds: 100));
     await tester.tap(find.text("See price and who's free"));
     await tester.pump();
     await tester.pump();

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
-import 'package:shoot_mobile/core/motion/ambient_pause.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
+import 'package:shoot_mobile/core/widgets/group_label.dart';
 import 'package:shoot_mobile/core/widgets/inline_error.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
@@ -11,10 +11,11 @@ import 'package:shoot_mobile/features/brief/domain/brief_draft.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
-/// The Brief Bar (board 05, ui-design "The Brief Bar"): the brief as one sentence you build a word
-/// at a time. Before the first touch it writes an example (an illustration, never answers); the
-/// first touch ends it and shows only the first step's list. Every word comes from the CMS config.
-class BriefBar extends StatelessWidget {
+/// The Brief Bar, as on the website: one panel with a search field ("Type what you're looking
+/// for"), the asked step as a group of glyph-tile rows ("PROFESSIONAL · pick one or more", "1 of
+/// 6"), and an Actions group (WhatsApp, "I'm a …"). Answered words print as tappable tokens in the
+/// field. The primary action shows once every step is answered. Every word comes from the CMS config.
+class BriefBar extends StatefulWidget {
   const BriefBar({
     super.key,
     required this.state,
@@ -27,6 +28,8 @@ class BriefBar extends StatelessWidget {
     required this.onTakeBack,
     required this.onSubmit,
     required this.clock,
+    this.onWhatsapp,
+    this.onProvider,
   });
 
   final BriefState state;
@@ -40,16 +43,59 @@ class BriefBar extends StatelessWidget {
   final VoidCallback onSubmit;
   final DateTime Function() clock;
 
+  /// "WhatsApp us instead"; the row is left out when `null`.
+  final VoidCallback? onWhatsapp;
+
+  /// "I'm a {persona}" with the first persona's slug; the row is left out when `null`.
+  final void Function(String personaSlug)? onProvider;
+
+  @override
+  State<BriefBar> createState() => _BriefBarState();
+}
+
+class _BriefBarState extends State<BriefBar> {
+  final _search = TextEditingController();
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickDate() async {
+    final today = businessToday(widget.clock());
+    final first = DateTime.parse(today);
+    final picked = await showDatePicker(
+      context: context,
+      firstDate: first,
+      lastDate: first.add(const Duration(days: 730)),
+      initialDate: first,
+    );
+    if (picked == null) return;
+    widget.onDate(formatIsoDate(picked.year, picked.month, picked.day));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final state = widget.state;
     final config = state.config!;
     final engine = BriefEngine(config);
     final c = context.colors;
     final l10n = context.l10n;
-    final active = state.active == null ? null : engine.slot(state.active!);
+    final draft = state.draft;
+    // The asked step shows from the start (the website's bar has no example mode).
+    final activeToken = state.active ?? engine.nextStep(draft)?.token;
+    final active = activeToken == null ? null : engine.slot(activeToken);
+    final complete = active == null;
+    final query = _search.text.trim();
+    final searching = query.isNotEmpty;
+    final personaSlot = engine.slots
+        .where((s) => s.kind == SlotKind.persona && s.options.isNotEmpty)
+        .firstOrNull;
+    final firstPersona = personaSlot?.options.first;
+
     return Container(
       key: const ValueKey('briefBar'),
-      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: c.panel,
         border: Border.all(color: c.hair),
@@ -62,62 +108,89 @@ class BriefBar extends StatelessWidget {
           ),
         ],
       ),
+      clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _Sentence(
+          _Field(
             state: state,
             engine: engine,
-            onTouch: onTouch,
-            onReopen: onReopen,
+            controller: _search,
+            onChanged: () => setState(() {}),
+            onReopen: widget.onReopen,
+            onTakeBack: widget.onTakeBack,
           ),
-          if (!state.example && active != null) ...[
-            Divider(height: 1, color: c.hair),
-            _StepList(
-              slot: active,
-              state: state,
-              engine: engine,
-              onChoose: onChoose,
-              onContinue: onContinue,
-              onSkip: onSkip,
-              onDate: onDate,
-              clock: clock,
-            ),
-          ],
+          Divider(height: 1, color: c.hair),
           if (state.message != null)
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: InlineError(_messageText(context, state, engine)),
             ),
-          if (!state.example && !state.draft.isEmpty)
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: TextButton(
-                key: const ValueKey('briefBar:takeBack'),
-                onPressed: onTakeBack,
-                style: TextButton.styleFrom(
-                  minimumSize: const Size(44, 44),
-                  foregroundColor: c.accentInk,
-                ),
-                child: Text(l10n.mlBriefTakeBack),
-              ),
-            ),
-          const SizedBox(height: 8),
-          TopHit(
-            label: config.submitLabel,
-            chevron: true,
-            leading: ShootIcons.search,
-            loading: state.submitting,
-            onPressed: onSubmit,
-          ),
-          if (config.helperText.isNotEmpty)
+          if (complete && !searching) ...[
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 4),
-              child: Text(
-                config.helperText,
-                style: ShootType.meta.copyWith(color: c.mute),
-              ),
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
+              child: GroupLabel(l10n.mlBriefTopHit),
             ),
+            TopHit(
+              label: config.submitLabel,
+              chevron: true,
+              leading: ShootIcons.search,
+              loading: state.submitting,
+              onPressed: widget.onSubmit,
+            ),
+            if (config.helperText.isNotEmpty)
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 4),
+                child: Text(
+                  config.helperText,
+                  style: ShootType.meta.copyWith(color: c.mute),
+                ),
+              ),
+            const SizedBox(height: 8),
+          ] else if (searching)
+            _Hits(
+              hits: engine.search(draft, query),
+              draft: draft,
+              onChoose: (slot, option) {
+                widget.onChoose(slot.token, option.value);
+                _search.clear();
+                setState(() {});
+              },
+            )
+          else
+            _StepList(
+              slot: active!,
+              stepNo: engine.slots.indexOf(active) + 1,
+              total: engine.slots.length,
+              state: state,
+              engine: engine,
+              onChoose: widget.onChoose,
+              onContinue: widget.onContinue,
+              onSkip: widget.onSkip,
+              onPickDate: _pickDate,
+            ),
+          if (!searching) ...[
+            Divider(height: 1, color: c.hair),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
+              child: GroupLabel(l10n.mlBriefActions),
+            ),
+            if (widget.onWhatsapp case final onWhatsapp?)
+              _OptionRow(
+                key: const ValueKey('briefBar:whatsapp'),
+                label: l10n.mlBriefWhatsappInstead,
+                icon: ShootIcons.whatsapp,
+                onTap: onWhatsapp,
+              ),
+            if (widget.onProvider != null && firstPersona != null)
+              _OptionRow(
+                key: const ValueKey('briefBar:provider'),
+                label: l10n.mlBriefImA(firstPersona.label),
+                text: '+',
+                onTap: () => widget.onProvider!(firstPersona.value),
+              ),
+            const SizedBox(height: 8),
+          ],
         ],
       ),
     );
@@ -142,336 +215,342 @@ class BriefBar extends StatelessWidget {
   }
 }
 
-/// The sentence with its `{token}` slots: answered ones print their words as a tappable word;
-/// the open one is highlighted; before the first touch the example plays.
-class _Sentence extends StatelessWidget {
-  const _Sentence({
+/// The field: the magnifier, the words chosen so far as tappable tokens, and the search input
+/// ("Type what you're looking for").
+class _Field extends StatelessWidget {
+  const _Field({
     required this.state,
     required this.engine,
-    required this.onTouch,
+    required this.controller,
+    required this.onChanged,
     required this.onReopen,
+    required this.onTakeBack,
   });
 
   final BriefState state;
   final BriefEngine engine;
-  final VoidCallback onTouch;
+  final TextEditingController controller;
+  final VoidCallback onChanged;
   final void Function(String token) onReopen;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    final style = ShootType.heading.copyWith(
-      fontSize: 20,
-      fontWeight: FontWeight.w500,
-      height: 1.5,
-      color: c.ink,
-    );
-    final sentence = engine.config.sentence;
-    final parts = RegExp(r'\{(\w+)\}').allMatches(sentence).toList();
-
-    Widget build(double t) {
-      final spans = <InlineSpan>[];
-      var cursor = 0;
-      var index = 0;
-      for (final m in parts) {
-        if (m.start > cursor) {
-          spans.add(TextSpan(text: sentence.substring(cursor, m.start)));
-        }
-        final slot = engine.slot(m.group(1)!);
-        spans.add(
-          slot == null
-              ? TextSpan(text: m.group(0))
-              : _slotSpan(context, slot, index, t),
-        );
-        cursor = m.end;
-        index++;
-      }
-      if (cursor < sentence.length) {
-        spans.add(TextSpan(text: sentence.substring(cursor)));
-      }
-      return Text.rich(TextSpan(children: spans), style: style);
-    }
-
-    final content = state.example
-        ? Ambient(
-            period: const Duration(seconds: 12),
-            builder: (context, t) => build(t),
-          )
-        : build(0);
-    return Semantics(
-      button: state.example,
-      textField: false,
-      label: engine.config.sentence.replaceAllMapped(
-        RegExp(r'\{(\w+)\}'),
-        (m) => engine.slot(m.group(1)!)?.placeholder ?? '',
-      ),
-      excludeSemantics: state.example,
-      child: GestureDetector(
-        key: const ValueKey('briefBar:sentence'),
-        behavior: HitTestBehavior.opaque,
-        onTap: state.example ? onTouch : null,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 52),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(8, 10, 8, 14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(top: 5, end: 10),
-                  child: ShootIcon(ShootIcons.search, size: 20, color: c.mute),
-                ),
-                Expanded(child: content),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// One slot's words. In the example, slot [index] fills with the slot's default option in turn
-  /// (an illustration from the CMS's own defaults, never an answer); otherwise the person's
-  /// answer, or the CMS placeholder.
-  InlineSpan _slotSpan(
-    BuildContext context,
-    BuilderSlot slot,
-    int index,
-    double t,
-  ) {
-    final c = context.colors;
-    final answered = engine.isAnswered(slot, state.draft);
-    final isActive = state.active == slot.token && !state.example;
-    String words;
-    var filled = answered;
-    if (state.example) {
-      final shown = t >= 0.07 + index * 0.09 && t < 0.9;
-      final example = slot.defaultValue.isEmpty
-          ? null
-          : engine.sentenceWord(slot, slot.defaultValue);
-      words = shown && example != null ? example : slot.placeholder;
-      filled = shown && example != null;
-    } else if (slot.kind == SlotKind.date) {
-      words = state.draft.date ?? slot.placeholder;
-    } else {
-      words = answered
-          ? state.draft
-                .valuesOf(slot.token)
-                .map((v) => engine.sentenceWord(slot, v))
-                .join(', ')
-          : slot.placeholder;
-    }
-    final color = filled ? c.accentInk : c.mute;
-    final decoration = BoxDecoration(
-      color: filled || isActive ? c.selected : null,
-      borderRadius: BorderRadius.circular(ShootRadius.keyHint),
-      border: filled
-          ? null
-          : Border(
-              bottom: BorderSide(color: c.mute.withValues(alpha: .6), width: 2),
-            ),
-    );
-    return WidgetSpan(
-      alignment: PlaceholderAlignment.baseline,
-      baseline: TextBaseline.alphabetic,
-      child: GestureDetector(
-        key: ValueKey('briefBar:slot:${slot.token}'),
-        behavior: HitTestBehavior.opaque,
-        onTap: state.example ? onTouch : () => onReopen(slot.token),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6),
-          decoration: decoration,
-          child: Text(
-            words,
-            style: ShootType.heading.copyWith(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              height: 1.5,
-              color: color,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _StepList extends StatefulWidget {
-  const _StepList({
-    required this.slot,
-    required this.state,
-    required this.engine,
-    required this.onChoose,
-    required this.onContinue,
-    required this.onSkip,
-    required this.onDate,
-    required this.clock,
-  });
-
-  final BuilderSlot slot;
-  final BriefState state;
-  final BriefEngine engine;
-  final void Function(String token, String value) onChoose;
-  final VoidCallback onContinue;
-  final void Function(String token) onSkip;
-  final void Function(String? iso) onDate;
-  final DateTime Function() clock;
-
-  @override
-  State<_StepList> createState() => _StepListState();
-}
-
-class _StepListState extends State<_StepList> {
-  final _search = TextEditingController();
-
-  @override
-  void dispose() {
-    _search.dispose();
-    super.dispose();
-  }
-
-  Future<void> _pickDate() async {
-    final today = businessToday(widget.clock());
-    final first = DateTime.parse(today);
-    final picked = await showDatePicker(
-      context: context,
-      firstDate: first,
-      lastDate: first.add(const Duration(days: 730)),
-      initialDate: first,
-    );
-    if (picked == null) return;
-    widget.onDate(formatIsoDate(picked.year, picked.month, picked.day));
-  }
+  final VoidCallback onTakeBack;
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
     final l10n = context.l10n;
-    final slot = widget.slot;
-    final draft = widget.state.draft;
-    final query = _search.text;
-    final hits = widget.engine.search(draft, query);
-    final chosen = draft.valuesOf(slot.token);
-
-    Widget option(
-      BuilderSlot s,
-      BuilderOption o, {
-      required bool on,
-      required String key,
-    }) => _OptionRow(
-      key: ValueKey(key),
-      label: o.label,
-      on: on,
-      onTap: () => widget.onChoose(s.token, o.value),
+    final style = ShootType.heading.copyWith(
+      fontSize: 20,
+      fontWeight: FontWeight.w500,
+      height: 1.35,
+      letterSpacing: -0.2,
+      color: c.ink,
     );
-
+    final tokens = _tokens(context, style);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Semantics(
-            textField: true,
-            label: l10n.mlBriefSearchLabel,
-            child: TextField(
-              key: const ValueKey('briefBar:search'),
-              controller: _search,
-              onChanged: (_) => setState(() {}),
-              style: ShootType.body.copyWith(color: c.ink),
-              decoration: InputDecoration(
-                isDense: true,
-                border: InputBorder.none,
-                hintText: l10n.mlBriefPlaceholder,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 10,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsetsDirectional.only(top: 3, end: 12),
+                child: ShootIcon(
+                  ShootIcons.search,
+                  size: 22,
+                  strokeWidth: 2.25,
+                  color: c.ink,
                 ),
+              ),
+              Expanded(
+                child: Semantics(
+                  textField: true,
+                  label: l10n.mlBriefSearchLabel,
+                  child: TextField(
+                    key: const ValueKey('briefBar:search'),
+                    controller: controller,
+                    onChanged: (_) => onChanged(),
+                    textInputAction: TextInputAction.search,
+                    style: style,
+                    cursorColor: c.accent,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                      hintText: l10n.mlBriefSearchPrompt,
+                      hintStyle: style.copyWith(color: c.mute),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (tokens != null)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 34, top: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: tokens),
+                  if (!state.draft.isEmpty)
+                    TextButton(
+                      key: const ValueKey('briefBar:takeBack'),
+                      onPressed: onTakeBack,
+                      style: TextButton.styleFrom(
+                        minimumSize: const Size(44, 44),
+                        foregroundColor: c.accentInk,
+                      ),
+                      child: Text(l10n.mlBriefTakeBack),
+                    ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// The sentence with only its answered words; an unanswered slot drops with the text before it.
+  Widget? _tokens(BuildContext context, TextStyle style) {
+    final c = context.colors;
+    final sentence = engine.config.sentence;
+    final parts = RegExp(r'\{(\w+)\}').allMatches(sentence).toList();
+    final spans = <InlineSpan>[];
+    var cursor = 0;
+    var any = false;
+    for (final m in parts) {
+      final slot = engine.slot(m.group(1)!);
+      final answered = slot != null && engine.isAnswered(slot, state.draft);
+      if (answered) {
+        any = true;
+        if (m.start > cursor) {
+          spans.add(
+            TextSpan(
+              text: sentence.substring(cursor, m.start),
+              style: style.copyWith(color: c.mute),
+            ),
+          );
+        }
+        final words = slot.kind == SlotKind.date
+            ? (state.draft.date ?? '')
+            : state.draft
+                  .valuesOf(slot.token)
+                  .map((v) => engine.sentenceWord(slot, v))
+                  .join(', ');
+        spans.add(
+          WidgetSpan(
+            alignment: PlaceholderAlignment.baseline,
+            baseline: TextBaseline.alphabetic,
+            child: GestureDetector(
+              key: ValueKey('briefBar:slot:${slot.token}'),
+              behavior: HitTestBehavior.opaque,
+              onTap: () => onReopen(slot.token),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                decoration: BoxDecoration(
+                  color: c.selected,
+                  borderRadius: BorderRadius.circular(6),
+                  border: state.active == slot.token
+                      ? Border.all(color: c.accent, width: 1.5)
+                      : null,
+                ),
+                child: Text(words, style: style),
               ),
             ),
           ),
-          if (query.trim().isNotEmpty)
-            for (final hit in hits)
-              option(
-                hit.slot,
-                hit.option,
-                on: draft.valuesOf(hit.slot.token).contains(hit.option.value),
-                key: 'briefBar:hit:${hit.slot.token}:${hit.option.value}',
-              )
-          else ...[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-              child: Text(
-                slot.groupLabel.toUpperCase(),
-                style: ShootType.groupLabel.copyWith(color: c.mute),
+        );
+      }
+      cursor = m.end;
+    }
+    if (!any) return null;
+    if (cursor < sentence.length) {
+      spans.add(
+        TextSpan(
+          text: sentence.substring(cursor),
+          style: style.copyWith(color: c.mute),
+        ),
+      );
+    }
+    return Text.rich(TextSpan(children: spans), style: style);
+  }
+}
+
+/// A search over every step at once (typing): matching options, each in its own step.
+class _Hits extends StatelessWidget {
+  const _Hits({
+    required this.hits,
+    required this.draft,
+    required this.onChoose,
+  });
+
+  final List<({BuilderSlot slot, BuilderOption option})> hits;
+  final BriefDraft draft;
+  final void Function(BuilderSlot slot, BuilderOption option) onChoose;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 6, bottom: 8),
+      child: Column(
+        children: [
+          for (final hit in hits)
+            _OptionRow(
+              key: ValueKey(
+                'briefBar:hit:${hit.slot.token}:${hit.option.value}',
               ),
+              label: hit.option.label,
+              text: hit.option.glyph,
+              on: draft.valuesOf(hit.slot.token).contains(hit.option.value),
+              onTap: () => onChoose(hit.slot, hit.option),
             ),
-            if (slot.kind == SlotKind.date)
-              _OptionRow(
-                key: const ValueKey('briefBar:pickDate'),
-                label: draft.date ?? slot.placeholder,
-                on: draft.date != null,
-                onTap: _pickDate,
-              )
-            else
-              for (final o in widget.engine.visibleOptions(slot, draft))
-                option(
-                  slot,
-                  o,
-                  on: chosen.contains(o.value),
-                  key: 'briefBar:option:${slot.token}:${o.value}',
-                ),
-            if (slot.multiple && chosen.isNotEmpty)
-              Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: TextButton(
-                  key: const ValueKey('briefBar:continue'),
-                  onPressed: widget.onContinue,
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size(44, 44),
-                    foregroundColor: c.accentInk,
-                  ),
-                  child: Text(l10n.mlBriefContinue),
-                ),
-              ),
-            if (!slot.required)
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: TextButton(
-                  key: const ValueKey('briefBar:skip'),
-                  onPressed: () => widget.onSkip(slot.token),
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size(44, 44),
-                    foregroundColor: c.accentInk,
-                  ),
-                  child: Text(
-                    slot.placeholder.isEmpty
-                        ? l10n.mlBriefAnyDate
-                        : slot.placeholder,
-                  ),
-                ),
-              ),
-          ],
         ],
       ),
     );
   }
 }
 
+class _StepList extends StatelessWidget {
+  const _StepList({
+    required this.slot,
+    required this.stepNo,
+    required this.total,
+    required this.state,
+    required this.engine,
+    required this.onChoose,
+    required this.onContinue,
+    required this.onSkip,
+    required this.onPickDate,
+  });
+
+  final BuilderSlot slot;
+  final int stepNo;
+  final int total;
+  final BriefState state;
+  final BriefEngine engine;
+  final void Function(String token, String value) onChoose;
+  final VoidCallback onContinue;
+  final void Function(String token) onSkip;
+  final VoidCallback onPickDate;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final l10n = context.l10n;
+    final draft = state.draft;
+    final chosen = draft.valuesOf(slot.token);
+    final arabic = Localizations.localeOf(context).languageCode == 'ar';
+    final label = arabic ? slot.groupLabel : slot.groupLabel.toUpperCase();
+    final labelStyle = ShootType.groupLabel.copyWith(
+      color: c.mute,
+      letterSpacing: arabic ? 0 : null,
+    );
+    final plain = ShootType.meta.copyWith(
+      color: c.mute,
+      fontWeight: FontWeight.w400,
+    );
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, bottom: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Expanded(
+                  child: Semantics(
+                    header: true,
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: label, style: labelStyle),
+                          if (slot.multiple)
+                            TextSpan(
+                              text: ' · ${l10n.mlBriefPickAny}',
+                              style: plain,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Text(
+                  l10n.mlBriefStepOf(stepNo, total),
+                  style: ShootType.num(plain),
+                ),
+              ],
+            ),
+          ),
+          if (slot.kind == SlotKind.date)
+            _OptionRow(
+              key: const ValueKey('briefBar:pickDate'),
+              label: draft.date ?? slot.placeholder,
+              icon: ShootIcons.calendar,
+              on: draft.date != null,
+              onTap: onPickDate,
+            )
+          else
+            for (final o in engine.visibleOptions(slot, draft))
+              _OptionRow(
+                key: ValueKey('briefBar:option:${slot.token}:${o.value}'),
+                label: o.label,
+                text: o.glyph,
+                on: chosen.contains(o.value),
+                onTap: () => onChoose(slot.token, o.value),
+              ),
+          if (slot.multiple && chosen.isNotEmpty)
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: TextButton(
+                key: const ValueKey('briefBar:continue'),
+                onPressed: onContinue,
+                style: TextButton.styleFrom(
+                  minimumSize: const Size(44, 44),
+                  foregroundColor: c.accentInk,
+                ),
+                child: Text(l10n.mlBriefContinue),
+              ),
+            ),
+          if (!slot.required)
+            _OptionRow(
+              key: const ValueKey('briefBar:skip'),
+              label: slot.placeholder.isEmpty
+                  ? l10n.mlBriefAnyDate
+                  : slot.placeholder,
+              icon: ShootIcons.chevron,
+              onTap: () => onSkip(slot.token),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A result row (web `rowClass` + `RowContent`): 30 px glyph tile, label, and "set" when chosen.
 class _OptionRow extends StatelessWidget {
   const _OptionRow({
     super.key,
     required this.label,
-    required this.on,
     required this.onTap,
+    this.icon,
+    this.text,
+    this.on = false,
   });
 
   final String label;
+  final ShootIcons? icon;
+  final String? text;
   final bool on;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = context.l10n;
+    final tileInk = on ? c.onAccent : c.tileInk;
     return Semantics(
       button: true,
       selected: on,
@@ -482,18 +561,51 @@ class _OptionRow extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(
-          height: ShootSize.rowHeight,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          constraints: const BoxConstraints(minHeight: ShootSize.rowHeight),
+          margin: const EdgeInsets.symmetric(horizontal: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           decoration: BoxDecoration(
             color: on ? c.selected : null,
             borderRadius: BorderRadius.circular(ShootRadius.row),
           ),
           child: Row(
             children: [
-              Expanded(
-                child: Text(label, style: ShootType.row.copyWith(color: c.ink)),
+              Container(
+                width: ShootSize.tile,
+                height: ShootSize.tile,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: on ? c.accent : c.tile,
+                  borderRadius: BorderRadius.circular(ShootRadius.tile),
+                ),
+                child: on
+                    ? ShootIcon(ShootIcons.check, size: 15, color: tileInk)
+                    : icon != null
+                    ? ShootIcon(icon!, size: 16, color: tileInk)
+                    : Text(
+                        text == null || text!.isEmpty ? '' : text!,
+                        style: ShootType.groupLabel.copyWith(
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.2,
+                          color: tileInk,
+                        ),
+                      ),
               ),
-              if (on) ShootIcon(ShootIcons.check, size: 16, color: c.accentInk),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  label,
+                  style: ShootType.row.copyWith(
+                    color: c.ink,
+                    fontWeight: on ? FontWeight.w600 : null,
+                  ),
+                ),
+              ),
+              if (on)
+                Text(
+                  l10n.mlBriefSet,
+                  style: ShootType.meta.copyWith(color: c.accentInk),
+                ),
             ],
           ),
         ),

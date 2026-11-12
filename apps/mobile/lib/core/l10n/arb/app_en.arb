@@ -3056,6 +3056,22 @@
   "@mlBriefSearchLabel": {
     "description": "Screen-reader label of the brief bar's search field."
   },
+  "mlBriefSearchPrompt": "Type what you're looking for",
+  "@mlBriefSearchPrompt": {"description": "The brief bar's search field prompt (the website's brief.searchPrompt)."},
+  "mlBriefPickAny": "pick one or more",
+  "@mlBriefPickAny": {"description": "Suffix of a multiple-choice step's group label."},
+  "mlBriefStepOf": "{step} of {total}",
+  "@mlBriefStepOf": {"description": "The asked step's position.", "placeholders": {"step": {"type": "int"}, "total": {"type": "int"}}},
+  "mlBriefActions": "Actions",
+  "@mlBriefActions": {"description": "Group label of the brief bar's side actions."},
+  "mlBriefWhatsappInstead": "WhatsApp us instead",
+  "@mlBriefWhatsappInstead": {"description": "Brief bar action: talk on WhatsApp instead of building the brief."},
+  "mlBriefImA": "I'm a {persona}",
+  "@mlBriefImA": {"description": "Brief bar action: sign up as a provider of this persona.", "placeholders": {"persona": {"type": "String"}}},
+  "mlBriefTopHit": "Top hit",
+  "@mlBriefTopHit": {"description": "Group label above the brief bar's primary action."},
+  "mlBriefSet": "set",
+  "@mlBriefSet": {"description": "Trailing word of a chosen option row."},
   "mlBriefContinue": "Continue",
   "@mlBriefContinue": {
     "description": "Brief bar: finishes a step that takes several choices."
