@@ -132,6 +132,7 @@ Versions are pinned exactly in `pubspec.yaml` (no `^`), like `payload`/`next`/`r
 | `shared_preferences` | 2.5.6 | Saves appearance choices on the device (accent, theme mode, language; feature 006) |
 | `flutter_secure_storage` | 11.2.0 | The session token lives in the iOS Keychain / Android Keystore (feature 009, FR-023); `shared_preferences` is plain text and hand-written platform channels are more native code to own |
 | `url_launcher` | 6.3.3 | Opens the legal documents a person accepts and the website's email sign-in in the browser (feature 009); 012 reuses it for WhatsApp. Hiding the links fails 005's legal rule; a hand-written channel duplicates a first-party package |
+| `share_plus` | 13.3.1 | The system share sheet for a creator profile link (feature 011, FR-013); `Clipboard` alone is not a share sheet |
 | `shared_preferences_platform_interface` (dev) | 2.4.2 | `InMemorySharedPreferencesAsync`, the in-memory store the preference tests run against |
 | `bloc_test` (dev) | 10.0.0 | Asserts the sequence of states a cubit emits |
 | `mocktail` (dev) | 1.0.5 | Mocks without code generation |
