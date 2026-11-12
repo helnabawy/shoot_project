@@ -11,10 +11,17 @@ import 'package:shoot_mobile/core/routing/app_router.dart';
 import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
+import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
-import 'package:shoot_mobile/features/service_health/presentation/pages/service_health_page.dart';
+import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
+import 'package:shoot_mobile/features/landing/presentation/landing_cubit.dart';
+import 'package:shoot_mobile/features/landing/presentation/landing_page.dart';
+import 'package:shoot_mobile/features/menu/menu_routes.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/cubit/sign_in_flow_cubit.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/sign_in_routes.dart';
+import 'package:shoot_mobile/features/site/domain/repositories/site_repository.dart';
+import 'package:shoot_mobile/features/welcome/presentation/welcome_cubit.dart';
+import 'package:shoot_mobile/features/welcome/welcome_routes.dart';
 
 /// The app shell: language, theme and router. No feature logic here.
 class ShootApp extends StatefulWidget {
@@ -29,11 +36,28 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
     onArabicLink: () => getIt<LocaleCubit>().select(AppLocales.arabic),
     welcomeSeen: () => getIt<FirstRunStore>().welcomeSeen,
     session: getIt<SessionCubit>(),
-    routes: signInRoutes(
-      createFlow: getIt.call<SignInFlowCubit>,
+    routes: [
+      ...signInRoutes(
+        createFlow: getIt.call<SignInFlowCubit>,
+        links: getIt<WebsiteLinks>(),
+      ),
+      // Feature 010: the first visit and the menu.
+      welcomeRoute(
+        createWelcome: getIt.call<WelcomeCubit>,
+        brief: getIt<BriefCubit>(),
+      ),
+      menuRoute(
+        loadSite: getIt<SiteRepository>().getSite,
+        links: getIt<WebsiteLinks>(),
+      ),
+    ],
+    home: (_) => LandingPage(
+      landing: getIt<LandingCubit>(),
+      brief: getIt<BriefCubit>(),
+      motion: getIt<LandingMotionStore>(),
+      clock: getIt<Clock>(),
       links: getIt<WebsiteLinks>(),
     ),
-    home: (_) => const ServiceHealthPage(),
   );
 
   @override
@@ -67,6 +91,7 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         BlocProvider<ThemeModeCubit>.value(value: getIt<ThemeModeCubit>()),
         BlocProvider<AccentCubit>.value(value: getIt<AccentCubit>()),
         BlocProvider<SessionCubit>.value(value: getIt<SessionCubit>()),
+        BlocProvider<BriefCubit>.value(value: getIt<BriefCubit>()),
       ],
       child: Builder(
         builder: (context) {

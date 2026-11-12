@@ -49,21 +49,27 @@ void main() {
       ),
     ];
 
-    test('is inactive until feature 010 builds the welcome steps', () {
+    test('is inactive while the welcome route is not built', () {
       expect(
-        firstRunRedirect(isFirstNavigation: true, welcomeSeen: false),
+        firstRunRedirect(
+          isFirstNavigation: true,
+          welcomeSeen: false,
+          table: const [
+            AppRoute(AppRoutes.welcome, owner: '010', example: '/welcome/1'),
+          ],
+        ),
         isNull,
       );
     });
 
-    test('a plain first launch goes to the first step, once', () {
+    test('ML-US2-S1 a plain first launch goes to the splash, once', () {
       expect(
         firstRunRedirect(
           isFirstNavigation: true,
           welcomeSeen: false,
           table: built,
         ),
-        '/welcome/1',
+        '/welcome/0',
       );
       expect(
         firstRunRedirect(

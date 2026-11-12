@@ -30,6 +30,9 @@ abstract final class PreferenceKeys {
   /// store (which survives an uninstall on iOS) is wiped (feature 009, SecureSessionStore).
   static const installSeen = 'install.seen';
 
+  /// `true` while the landing's loops are paused (feature 010, `LandingMotionStore`).
+  static const landingMotionPaused = 'landing.motionPaused';
+
   static const all = {
     accent,
     themeMode,
@@ -37,5 +40,6 @@ abstract final class PreferenceKeys {
     welcomeSeen,
     installId,
     installSeen,
+    landingMotionPaused,
   };
 }

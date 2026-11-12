@@ -221,6 +221,98 @@
       },
       "path": "/api/mobile/v1/brief-builder"
     },
+    "briefRecord": {
+      "auth": "optional",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "body": {
+            "properties": {
+              "date": {
+                "anyOf": [
+                  {
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "selections": {
+                "items": {
+                  "properties": {
+                    "token": {
+                      "maxLength": 60,
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "value": {
+                      "maxLength": 200,
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                "maxItems": 40,
+                "minItems": 1,
+                "type": "array"
+              }
+            },
+            "required": [
+              "selections"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "matchPath": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reference": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "sentence": {
+            "type": "string"
+          },
+          "whatsappUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "reference",
+          "sentence",
+          "whatsappUrl",
+          "matchPath"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/briefs"
+    },
     "creatorProfile": {
       "auth": "none",
       "cache": "public",
@@ -10363,7 +10455,12 @@
     "auth.errors.resendTooSoon",
     "auth.errors.sendFailed",
     "auth.errors.tooManyRequests",
-    "auth.errors.useEmailSignIn"
+    "auth.errors.useEmailSignIn",
+    "brief.errors.generic",
+    "brief.errors.optionGone",
+    "brief.errors.pastDate",
+    "brief.errors.required",
+    "brief.errors.tooMany"
   ],
   "version": 1
 }
