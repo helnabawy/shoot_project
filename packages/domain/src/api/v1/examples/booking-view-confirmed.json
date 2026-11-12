@@ -1,0 +1,61 @@
+{
+  "locale": "en",
+  "reference": "Q-4F8Z2",
+  "state": "confirmed",
+  "nextStep": "pay",
+  "sentence": "A photographer for an event in Dubai, 2 hours, on 12 Dec",
+  "issuedAt": "2026-11-12T09:00:00.000Z",
+  "validUntil": "2026-11-19T09:00:00.000Z",
+  "shootDate": "2026-12-12",
+  "startTime": "18:30",
+  "totalFils": 95000,
+  "lines": [
+    {
+      "kind": "tier",
+      "label": "Photographer, 2 hours",
+      "amountFils": 95000,
+      "includes": [
+        "60 edited photos in 3 days"
+      ]
+    }
+  ],
+  "professionals": [
+    {
+      "type": "Photographer",
+      "name": "Omar K.",
+      "code": "0087"
+    }
+  ],
+  "progress": [
+    {
+      "key": "briefSent",
+      "at": "2026-11-12T09:00:00.000Z"
+    },
+    {
+      "key": "confirmed",
+      "at": "2026-11-13T10:00:00.000Z"
+    },
+    {
+      "key": "paid",
+      "at": null
+    },
+    {
+      "key": "shootDay",
+      "at": null
+    },
+    {
+      "key": "delivered",
+      "at": null
+    },
+    {
+      "key": "completed",
+      "at": null
+    }
+  ],
+  "canAccept": false,
+  "canConfirmDelivery": false,
+  "canReport": false,
+  "replacements": [],
+  "holdReason": null,
+  "whatsappUrl": "https://wa.me/971500000000?text=Hi%21%20About%20my%20quotation%20Q-4F8Z2."
+}
