@@ -455,15 +455,6 @@
   "@joinIAm": {
     "description": "Label above the profession choice on screen 23 (names from the CMS)."
   },
-  "joinCombined": "{count, plural, =2{Both} other{All}}",
-  "@joinCombined": {
-    "description": "The segment choosing every active profession; count is how many there are. Same rule as the website's auth.personaCombined.",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "joinAccept": "I accept the {terms}, the {professional} and the {privacy}.",
   "@joinAccept": {
     "description": "Checkbox line on screen 23; the three are links.",

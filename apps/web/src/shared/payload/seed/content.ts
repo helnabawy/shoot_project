@@ -143,7 +143,7 @@ export const BRIEF_SENTENCE: L = {
 
 /** Slots reference option sets by slug; the seed runner swaps slugs for ids. */
 export const briefSlots = [
-  { token: 'persona', kind: 'persona', defaultValue: 'photographer', required: true, allowCustom: false, multiple: true, groupLabel: { en: 'Professional', ar: 'المحترف' }, placeholder: { en: 'which professional', ar: 'أي محترف' } },
+  { token: 'persona', kind: 'persona', defaultValue: 'photographer', required: true, allowCustom: false, multiple: false, groupLabel: { en: 'Professional', ar: 'المحترف' }, placeholder: { en: 'which professional', ar: 'أي محترف' } },
   { token: 'occasion', kind: 'options', optionSet: 'occasions', defaultValue: 'event', required: true, allowCustom: true, groupLabel: { en: 'Occasion', ar: 'المناسبة' }, placeholder: { en: 'what occasion', ar: 'أي مناسبة' } },
   { token: 'date', kind: 'date', required: false, allowCustom: false, groupLabel: { en: 'When', ar: 'متى' }, placeholder: { en: 'any date', ar: 'أي تاريخ' } },
   { token: 'duration', kind: 'options', optionSet: 'durations', defaultValue: '2h', required: true, allowCustom: false, groupLabel: { en: 'How long', ar: 'المدة' }, placeholder: { en: 'how long', ar: 'كم من الوقت' } },
