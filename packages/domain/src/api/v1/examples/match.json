@@ -1,0 +1,340 @@
+{
+  "locale": "en",
+  "brief": {
+    "reference": "B-7K2M9",
+    "sentence": "A photographer for an event in Dubai, 2 hours, on 12 Dec",
+    "date": "2026-12-12",
+    "duration": "2h"
+  },
+  "date": "2026-12-12",
+  "priceOnRequest": false,
+  "durations": [
+    {
+      "value": "2h",
+      "label": "2 hours"
+    },
+    {
+      "value": "4h",
+      "label": "4 hours"
+    }
+  ],
+  "totalFils": 95000,
+  "sections": [
+    {
+      "persona": {
+        "slug": "photographer",
+        "singular": "Photographer",
+        "plural": "Photographers"
+      },
+      "priceFils": 95000,
+      "includes": [
+        "Two hours of shooting",
+        "60 edited photos in 3 days"
+      ],
+      "creators": [
+        {
+          "code": "0087",
+          "displayCode": "SH-0087",
+          "name": "Omar K.",
+          "initials": "OK",
+          "photo": {
+            "alt": "creator-0087",
+            "width": 800,
+            "height": 1000,
+            "sizes": [
+              {
+                "url": "https://example.test/api/media/file/creator-0087-400.webp",
+                "width": 400,
+                "height": 500
+              },
+              {
+                "url": "https://example.test/api/media/file/creator-0087-800.webp",
+                "width": 800,
+                "height": 1000
+              }
+            ]
+          },
+          "types": "Photographer",
+          "places": [
+            "Dubai"
+          ],
+          "specialties": [
+            "Weddings",
+            "Events"
+          ],
+          "languages": [
+            "Arabic",
+            "English"
+          ],
+          "yearsExperience": 6,
+          "sampleCount": 8,
+          "featured": false,
+          "gallery": [
+            {
+              "kind": "image",
+              "thumb": {
+                "alt": "work-0087-1",
+                "width": 800,
+                "height": 1000,
+                "sizes": [
+                  {
+                    "url": "https://example.test/api/media/file/work-0087-1-400.webp",
+                    "width": 400,
+                    "height": 500
+                  },
+                  {
+                    "url": "https://example.test/api/media/file/work-0087-1-800.webp",
+                    "width": 800,
+                    "height": 1000
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "image",
+              "thumb": {
+                "alt": "work-0087-2",
+                "width": 800,
+                "height": 1000,
+                "sizes": [
+                  {
+                    "url": "https://example.test/api/media/file/work-0087-2-400.webp",
+                    "width": 400,
+                    "height": 500
+                  },
+                  {
+                    "url": "https://example.test/api/media/file/work-0087-2-800.webp",
+                    "width": 800,
+                    "height": 1000
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "video",
+              "thumb": {
+                "alt": "work-0087-3",
+                "width": 800,
+                "height": 1000,
+                "sizes": [
+                  {
+                    "url": "https://example.test/api/media/file/work-0087-3-400.webp",
+                    "width": 400,
+                    "height": 500
+                  },
+                  {
+                    "url": "https://example.test/api/media/file/work-0087-3-800.webp",
+                    "width": 800,
+                    "height": 1000
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "code": "0421",
+          "displayCode": "SH-0421",
+          "name": "Mariam A.",
+          "initials": "MA",
+          "photo": {
+            "alt": "creator-0421",
+            "width": 800,
+            "height": 1000,
+            "sizes": [
+              {
+                "url": "https://example.test/api/media/file/creator-0421-400.webp",
+                "width": 400,
+                "height": 500
+              },
+              {
+                "url": "https://example.test/api/media/file/creator-0421-800.webp",
+                "width": 800,
+                "height": 1000
+              }
+            ]
+          },
+          "types": "Photographer",
+          "places": [
+            "Dubai"
+          ],
+          "specialties": [
+            "Weddings",
+            "Events"
+          ],
+          "languages": [
+            "Arabic",
+            "English"
+          ],
+          "yearsExperience": 6,
+          "sampleCount": 8,
+          "featured": false,
+          "gallery": [
+            {
+              "kind": "image",
+              "thumb": {
+                "alt": "work-0421-1",
+                "width": 800,
+                "height": 1000,
+                "sizes": [
+                  {
+                    "url": "https://example.test/api/media/file/work-0421-1-400.webp",
+                    "width": 400,
+                    "height": 500
+                  },
+                  {
+                    "url": "https://example.test/api/media/file/work-0421-1-800.webp",
+                    "width": 800,
+                    "height": 1000
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "image",
+              "thumb": {
+                "alt": "work-0421-2",
+                "width": 800,
+                "height": 1000,
+                "sizes": [
+                  {
+                    "url": "https://example.test/api/media/file/work-0421-2-400.webp",
+                    "width": 400,
+                    "height": 500
+                  },
+                  {
+                    "url": "https://example.test/api/media/file/work-0421-2-800.webp",
+                    "width": 800,
+                    "height": 1000
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "video",
+              "thumb": {
+                "alt": "work-0421-3",
+                "width": 800,
+                "height": 1000,
+                "sizes": [
+                  {
+                    "url": "https://example.test/api/media/file/work-0421-3-400.webp",
+                    "width": 400,
+                    "height": 500
+                  },
+                  {
+                    "url": "https://example.test/api/media/file/work-0421-3-800.webp",
+                    "width": 800,
+                    "height": 1000
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "code": "0112",
+          "displayCode": "SH-0112",
+          "name": "Sara H.",
+          "initials": "SH",
+          "photo": {
+            "alt": "creator-0112",
+            "width": 800,
+            "height": 1000,
+            "sizes": [
+              {
+                "url": "https://example.test/api/media/file/creator-0112-400.webp",
+                "width": 400,
+                "height": 500
+              },
+              {
+                "url": "https://example.test/api/media/file/creator-0112-800.webp",
+                "width": 800,
+                "height": 1000
+              }
+            ]
+          },
+          "types": "Photographer",
+          "places": [
+            "Dubai"
+          ],
+          "specialties": [
+            "Weddings",
+            "Events"
+          ],
+          "languages": [
+            "Arabic",
+            "English"
+          ],
+          "yearsExperience": 6,
+          "sampleCount": 8,
+          "featured": false,
+          "gallery": [
+            {
+              "kind": "image",
+              "thumb": {
+                "alt": "work-0112-1",
+                "width": 800,
+                "height": 1000,
+                "sizes": [
+                  {
+                    "url": "https://example.test/api/media/file/work-0112-1-400.webp",
+                    "width": 400,
+                    "height": 500
+                  },
+                  {
+                    "url": "https://example.test/api/media/file/work-0112-1-800.webp",
+                    "width": 800,
+                    "height": 1000
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "image",
+              "thumb": {
+                "alt": "work-0112-2",
+                "width": 800,
+                "height": 1000,
+                "sizes": [
+                  {
+                    "url": "https://example.test/api/media/file/work-0112-2-400.webp",
+                    "width": 400,
+                    "height": 500
+                  },
+                  {
+                    "url": "https://example.test/api/media/file/work-0112-2-800.webp",
+                    "width": 800,
+                    "height": 1000
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "video",
+              "thumb": {
+                "alt": "work-0112-3",
+                "width": 800,
+                "height": 1000,
+                "sizes": [
+                  {
+                    "url": "https://example.test/api/media/file/work-0112-3-400.webp",
+                    "width": 400,
+                    "height": 500
+                  },
+                  {
+                    "url": "https://example.test/api/media/file/work-0112-3-800.webp",
+                    "width": 800,
+                    "height": 1000
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "nearby": [],
+  "whatsappUrl": "https://wa.me/971500000000?text=A%20photographer%20for%20an%20event%20in%20Dubai"
+}

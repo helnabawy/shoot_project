@@ -52,7 +52,12 @@ enum ProblemCode {
   bookingNotYours('booking.errors.notYours'),
   bookingNotAllowed('booking.errors.not-allowed'),
   bookingNotFound('booking.errors.not-found'),
-  bookingDateTaken('booking.errors.dateTaken');
+  bookingDateTaken('booking.errors.dateTaken'),
+  // 012: Quick Match and booking (contracts/booking-api.md).
+  bookingUnavailable('booking.errors.unavailable'),
+  bookingCreatorUnavailable('booking.errors.creatorUnavailable'),
+  bookingTerminal('booking.errors.terminal'),
+  bookingExpiredQuotation('booking.errors.expired-quotation');
 
   const ProblemCode(this.wire);
 
@@ -121,6 +126,9 @@ enum ProblemCode {
       bookingNotAllowed => l10n.problemBookingNotAllowed,
       bookingNotFound => l10n.problemNotFound,
       bookingDateTaken => l10n.problemDateTaken,
+      bookingUnavailable || bookingCreatorUnavailable => l10n.qmErrUnavailable,
+      bookingTerminal => l10n.qmErrNotAllowed,
+      bookingExpiredQuotation => l10n.qmErrExpired,
     };
   }
 }

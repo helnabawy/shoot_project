@@ -638,6 +638,15 @@ export interface Booking {
     whatsapp?: string | null;
     locale?: ('en' | 'ar') | null;
   };
+  details?: {
+    /**
+     * HH:MM, 24 h
+     */
+    startTime?: string | null;
+    duration?: string | null;
+    venue?: string | null;
+    note?: string | null;
+  };
   /**
    * Shoot day (UAE), YYYY-MM-DD
    */
@@ -2025,6 +2034,14 @@ export interface BookingsSelect<T extends boolean = true> {
         name?: T;
         whatsapp?: T;
         locale?: T;
+      };
+  details?:
+    | T
+    | {
+        startTime?: T;
+        duration?: T;
+        venue?: T;
+        note?: T;
       };
   date?: T;
   location?: T;

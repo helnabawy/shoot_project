@@ -13,6 +13,7 @@ import * as migration_20261108_112308_media_storage_fields from './20261108_1123
 import * as migration_20261110_154146_specialty_tile_scene from './20261110_154146_specialty_tile_scene';
 import * as migration_20261111_210154_users_phone_identity from './20261111_210154_users_phone_identity';
 import * as migration_20261112_062929_account_finish from './20261112_062929_account_finish';
+import * as migration_20261112_063030_booking_details from './20261112_063030_booking_details';
 
 export const migrations = [
   {
@@ -88,6 +89,11 @@ export const migrations = [
   {
     up: migration_20261112_062929_account_finish.up,
     down: migration_20261112_062929_account_finish.down,
-    name: '20261112_062929_account_finish'
+    name: '20261112_062929_account_finish',
+  },
+  {
+    up: migration_20261112_063030_booking_details.up,
+    down: migration_20261112_063030_booking_details.down,
+    name: '20261112_063030_booking_details'
   },
 ];

@@ -57,6 +57,11 @@ export const PROBLEM_CODES = [
   'booking.errors.not-allowed',
   'booking.errors.not-found',
   'booking.errors.dateTaken',
+  // 012: Quick Match and booking (contracts/booking-api.md).
+  'booking.errors.unavailable',
+  'booking.errors.creatorUnavailable',
+  'booking.errors.terminal',
+  'booking.errors.expired-quotation',
 ] as const
 export type ProblemCode = (typeof PROBLEM_CODES)[number]
 

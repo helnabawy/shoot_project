@@ -25,6 +25,9 @@ import 'package:shoot_mobile/features/creator_account/presentation/cubit/booking
     as creator_bookings;
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/profile_cubit.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
+import 'package:shoot_mobile/features/quick_match/domain/repositories/quick_match_repository.dart';
+import 'package:shoot_mobile/features/quick_match/presentation/cubit/booking_view_cubit.dart';
+import 'package:shoot_mobile/features/quick_match/presentation/quick_match_routes.dart';
 import 'package:shoot_mobile/features/service_health/presentation/pages/service_health_page.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/cubit/sign_in_flow_cubit.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/sign_in_routes.dart';
@@ -59,6 +62,15 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         createProfile: getIt.call<ProfileCubit>,
         createBookings: getIt.call<creator_bookings.BookingsCubit>,
         createAvailability: getIt.call<AvailabilityCubit>,
+      ),
+      ...quickMatchRoutes(
+        flows: getIt<QuickMatchFlows>(),
+        createBooking: (ref, key) => BookingViewCubit(
+          repository: getIt<QuickMatchRepository>(),
+          ref: ref,
+          key: key,
+        ),
+        links: getIt<WebsiteLinks>(),
       ),
       // Feature 015's `/{slug}` page route stays last so it never shadows another route.
       editorPageRoute(getIt<ContentDeps>()),
