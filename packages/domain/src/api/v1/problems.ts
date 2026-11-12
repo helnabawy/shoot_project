@@ -31,6 +31,28 @@ export const PROBLEM_CODES = [
   'auth.errors.personaRequired',
   'auth.errors.personaInactive',
   'auth.errors.acceptTerms',
+  // 014: the creator's own account (contracts/mobile-api.md).
+  'creators.errors.notProvider',
+  'creators.errors.noProfile',
+  'creators.errors.generic',
+  'creators.errors.required',
+  'creators.submit.incomplete',
+  'creators.identity.kind',
+  'creators.identity.file',
+  'creators.identity.type',
+  'creators.identity.size',
+  'creators.samples.limit',
+  'creators.samples.image',
+  'creators.samples.poster',
+  'creators.samples.category',
+  'media.upload.type',
+  'media.upload.size',
+  'availability.errors.notYours',
+  'availability.errors.generic',
+  'booking.errors.notYours',
+  'booking.errors.not-allowed',
+  'booking.errors.not-found',
+  'booking.errors.dateTaken',
 ] as const
 export type ProblemCode = (typeof PROBLEM_CODES)[number]
 
