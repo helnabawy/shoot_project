@@ -70,7 +70,7 @@ void main() {
   );
 
   testWidgets(
-    'OT-US3-S6 an unsafe next is ignored after sign-in: home until 013 builds the account',
+    'OT-US3-S6 an unsafe next is ignored after sign-in: the creator profile (014 built it)',
     (tester) async {
       final router = await open(
         tester,
@@ -78,8 +78,7 @@ void main() {
       );
       await session.signIn(signedIn);
       await tester.pumpAndSettle();
-      expect(location(router), '/');
-      expect(find.text('home'), findsOneWidget);
+      expect(location(router), AppRoutes.accountProfile);
     },
   );
 
@@ -109,7 +108,7 @@ void main() {
       name: null,
       accountType: AccountType.provider,
     );
-    expect(afterSignIn(user), AppRoutes.home);
+    expect(afterSignIn(user), AppRoutes.accountProfile);
     expect(
       afterSignIn(
         user,
@@ -119,12 +118,11 @@ void main() {
             AppRoutes.accountProfile,
             owner: '014',
             example: '/account/profile',
-            built: true,
             auth: true,
           ),
         ],
       ),
-      AppRoutes.accountProfile,
+      AppRoutes.account,
     );
   });
 }

@@ -12,6 +12,11 @@ import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/creator_account_routes.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/account_cubit.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/availability_cubit.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/bookings_cubit.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/profile_cubit.dart';
 import 'package:shoot_mobile/features/service_health/presentation/pages/service_health_page.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/cubit/sign_in_flow_cubit.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/sign_in_routes.dart';
@@ -29,10 +34,19 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
     onArabicLink: () => getIt<LocaleCubit>().select(AppLocales.arabic),
     welcomeSeen: () => getIt<FirstRunStore>().welcomeSeen,
     session: getIt<SessionCubit>(),
-    routes: signInRoutes(
-      createFlow: getIt.call<SignInFlowCubit>,
-      links: getIt<WebsiteLinks>(),
-    ),
+    routes: [
+      ...signInRoutes(
+        createFlow: getIt.call<SignInFlowCubit>,
+        links: getIt<WebsiteLinks>(),
+      ),
+      ...creatorAccountRoutes(
+        session: getIt<SessionCubit>(),
+        createAccount: getIt.call<AccountCubit>,
+        createProfile: getIt.call<ProfileCubit>,
+        createBookings: getIt.call<BookingsCubit>,
+        createAvailability: getIt.call<AvailabilityCubit>,
+      ),
+    ],
     home: (_) => const ServiceHealthPage(),
   );
 

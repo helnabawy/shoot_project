@@ -1,11 +1,9 @@
 {
   "@@locale": "en",
-
   "appTitle": "Shoot",
   "@appTitle": {
     "description": "Brand name: app bar title, task switcher and accessibility label."
   },
-
   "languageSwitchAction": "عربي",
   "@languageSwitchAction": {
     "description": "Language button label: the OTHER language's name, written in that language."
@@ -14,7 +12,6 @@
   "@languageSwitchTooltip": {
     "description": "Tooltip and screen-reader label for the language button."
   },
-
   "appearanceTitle": "Appearance",
   "@appearanceTitle": {
     "description": "Heading of the Appearance sheet, where the person picks the theme and the accent colour."
@@ -63,7 +60,6 @@
   "@themeDark": {
     "description": "Theme option: always dark."
   },
-
   "serviceHealthTitle": "Service status",
   "@serviceHealthTitle": {
     "description": "Heading of the example screen that checks the Shoot web API."
@@ -84,7 +80,6 @@
   "@serviceHealthRetry": {
     "description": "The screen's one primary action: run the health check again."
   },
-
   "failureNetwork": "We can't reach the service. Check your connection and try again.",
   "@failureNetwork": {
     "description": "Generic message when the device cannot reach the server."
@@ -121,7 +116,6 @@
   "@problemUnexpected": {
     "description": "The server failed unexpectedly (problem code api.errors.unexpected, HTTP 500)."
   },
-
   "notFoundCode": "404",
   "@notFoundCode": {
     "description": "Small line above the not-found heading (screen 37): the HTTP status, as on the web."
@@ -150,7 +144,6 @@
   "@notFoundAction": {
     "description": "The not-found screen's one primary action (Top Hit): start a brief. Same words as the web."
   },
-
   "errorTitle": "Something went wrong",
   "@errorTitle": {
     "description": "Heading of the error screen (screen 39), shown when a screen fails to load. Never shows technical detail."
@@ -171,7 +164,6 @@
   "@errorRetry": {
     "description": "The error screen's one primary action (Top Hit): run the failed step again."
   },
-
   "problemPhoneInvalid": "Enter a UAE mobile number, like 50 123 4567.",
   "@problemPhoneInvalid": {
     "description": "The number is not a UAE mobile number (problem field code auth.errors.phoneInvalid). Same words as the website."
@@ -502,5 +494,860 @@
   "joinLogIn": "Log in",
   "@joinLogIn": {
     "description": "Link from screen 23 to screen 20."
+  },
+  "caAccountTitle": "My account",
+  "@caAccountTitle": {
+    "description": "Title of the creator account screen (27)."
+  },
+  "caUpNext": "Up next",
+  "@caUpNext": {
+    "description": "Group label above the one thing to do on screen 27."
+  },
+  "caInYourAccount": "In your account",
+  "@caInYourAccount": {
+    "description": "Group label above the account rows on screen 27."
+  },
+  "caBookings": "Bookings",
+  "@caBookings": {
+    "description": "Row and title for booking requests (screens 27, 32)."
+  },
+  "caMyProfile": "My profile",
+  "@caMyProfile": {
+    "description": "Row and title for the profile editor (screens 27, 28)."
+  },
+  "caAvailability": "Availability",
+  "@caAvailability": {
+    "description": "Row and title for the calendar (screens 27, 31)."
+  },
+  "caViewPublic": "View my public profile",
+  "@caViewPublic": {
+    "description": "Row that opens the public profile as clients see it."
+  },
+  "caOnlyYouUntilLive": "Only you, until live",
+  "@caOnlyYouUntilLive": {
+    "description": "Status of the public profile row while the profile is not live."
+  },
+  "caPublicProfileLive": "Live",
+  "@caPublicProfileLive": {
+    "description": "Status of the public profile row when live."
+  },
+  "caLogOut": "Log out",
+  "@caLogOut": {
+    "description": "Row that ends the session on screen 27."
+  },
+  "caFinishProfile": "Finish my profile",
+  "@caFinishProfile": {
+    "description": "The Up next action for a draft profile (screen 27)."
+  },
+  "caProfileIncompleteTitle": "Your profile isn't complete yet",
+  "@caProfileIncompleteTitle": {
+    "description": "Up next heading for a draft profile."
+  },
+  "caNeedsLine": "{step}: {need}",
+  "@caNeedsLine": {
+    "description": "One missing item in Up next: the step and what it needs.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      },
+      "need": {
+        "type": "String"
+      }
+    }
+  },
+  "caAnswerRequestAction": "Answer the request",
+  "@caAnswerRequestAction": {
+    "description": "Up next action that opens the waiting request."
+  },
+  "caAnswerRequestTitle": "A request is waiting for you",
+  "@caAnswerRequestTitle": {
+    "description": "Up next heading when a request waits."
+  },
+  "caMarkDeliveredTitle": "A shoot is ready to mark as delivered",
+  "@caMarkDeliveredTitle": {
+    "description": "Up next heading when a delivery can be marked."
+  },
+  "caMarkDeliveredAction": "Open bookings",
+  "@caMarkDeliveredAction": {
+    "description": "Up next action for a delivery."
+  },
+  "caNothingNext": "You're all set",
+  "@caNothingNext": {
+    "description": "Up next when there is nothing to do."
+  },
+  "caStatusDraft": "Draft",
+  "@caStatusDraft": {
+    "description": "Profile status: not yet sent."
+  },
+  "caStatusInReview": "Waiting for review",
+  "@caStatusInReview": {
+    "description": "Profile status: sent, the team is checking."
+  },
+  "caStatusLive": "Live",
+  "@caStatusLive": {
+    "description": "Profile status: public."
+  },
+  "caStatusLiveChanges": "Live, changes waiting",
+  "@caStatusLiveChanges": {
+    "description": "Profile status: public with unapproved changes."
+  },
+  "caStatusHidden": "Hidden",
+  "@caStatusHidden": {
+    "description": "Profile status: hidden by the creator."
+  },
+  "caStatusSuspended": "Suspended",
+  "@caStatusSuspended": {
+    "description": "Profile status: suspended by the team."
+  },
+  "caStatusDraftPercent": "Draft · {percent}%",
+  "@caStatusDraftPercent": {
+    "description": "Profile row status on screen 27: status and strength.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "caStatusPercent": "{status} · {percent}%",
+  "@caStatusPercent": {
+    "description": "Profile row status on screen 27 for non-draft profiles.",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "caNoneYet": "None yet",
+  "@caNoneYet": {
+    "description": "Bookings row status with nothing waiting or coming up."
+  },
+  "caBookingsCounts": "{waiting} waiting · {upcoming} coming up",
+  "@caBookingsCounts": {
+    "description": "Bookings row status on screen 27.",
+    "placeholders": {
+      "waiting": {
+        "type": "int"
+      },
+      "upcoming": {
+        "type": "int"
+      }
+    }
+  },
+  "caFreeEveryDay": "Free every day",
+  "@caFreeEveryDay": {
+    "description": "Availability row status with no blocked days."
+  },
+  "caBlockedDaysStatus": "{count, plural, one{1 day blocked} other{{count} days blocked}}",
+  "@caBlockedDaysStatus": {
+    "description": "Availability row status on screen 27.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "caStepBasics": "Name and photo",
+  "@caStepBasics": {
+    "description": "Step 1 name."
+  },
+  "caStepAbout": "About you",
+  "@caStepAbout": {
+    "description": "Step 2 name."
+  },
+  "caStepPlaces": "What you do and where",
+  "@caStepPlaces": {
+    "description": "Step 3 name."
+  },
+  "caStepLinks": "Links",
+  "@caStepLinks": {
+    "description": "Step 4 name."
+  },
+  "caStepSamples": "Work samples",
+  "@caStepSamples": {
+    "description": "Step 5 name."
+  },
+  "caStepCalendar": "Your calendar",
+  "@caStepCalendar": {
+    "description": "Step 6 name."
+  },
+  "caStepIdentity": "Verify your identity",
+  "@caStepIdentity": {
+    "description": "Step 7 name."
+  },
+  "caStepDone": "Done",
+  "@caStepDone": {
+    "description": "State line of a finished step."
+  },
+  "caStepSamplesCount": "{count, plural, one{1 sample} other{{count} samples}}",
+  "@caStepSamplesCount": {
+    "description": "State line of the samples step when it has samples.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "caNeedsDisplayName": "Needs your name",
+  "@caNeedsDisplayName": {
+    "description": "Required item missing: display name."
+  },
+  "caNeedsGender": "Needs your gender",
+  "@caNeedsGender": {
+    "description": "Required item missing: gender."
+  },
+  "caNeedsProfessions": "Needs what you do",
+  "@caNeedsProfessions": {
+    "description": "Required item missing: professional types."
+  },
+  "caNeedsSpecialties": "Needs specialties",
+  "@caNeedsSpecialties": {
+    "description": "Required item missing: specialties."
+  },
+  "caNeedsEmirates": "Needs emirates",
+  "@caNeedsEmirates": {
+    "description": "Required item missing: emirates."
+  },
+  "caNeedsLanguages": "Needs languages",
+  "@caNeedsLanguages": {
+    "description": "Required item missing: languages."
+  },
+  "caNeedsEmiratesId": "Needs your Emirates ID",
+  "@caNeedsEmiratesId": {
+    "description": "Required item missing: Emirates ID."
+  },
+  "caNeedsTradeLicense": "Needs your trade license",
+  "@caNeedsTradeLicense": {
+    "description": "Required item missing: trade license."
+  },
+  "caNeedsOther": "Needs attention",
+  "@caNeedsOther": {
+    "description": "Required item missing that this version does not know."
+  },
+  "caAddPhoto": "Add a photo",
+  "@caAddPhoto": {
+    "description": "Recommended item: photo."
+  },
+  "caAddBio": "Add a short bio",
+  "@caAddBio": {
+    "description": "Recommended item: bio."
+  },
+  "caAddNationality": "Add your nationality",
+  "@caAddNationality": {
+    "description": "Recommended item: nationality."
+  },
+  "caAddExperience": "Add your experience",
+  "@caAddExperience": {
+    "description": "Recommended item: years of experience."
+  },
+  "caAddLink": "Add a link",
+  "@caAddLink": {
+    "description": "Recommended item: a link."
+  },
+  "caAddSample": "Add a sample",
+  "@caAddSample": {
+    "description": "Recommended item: a work sample; also the add button."
+  },
+  "caProfileStepsLabel": "Profile steps",
+  "@caProfileStepsLabel": {
+    "description": "Screen-reader name of the step strip."
+  },
+  "caProfileStrengthLabel": "Profile strength",
+  "@caProfileStrengthLabel": {
+    "description": "Screen-reader name of the strength bar."
+  },
+  "caProfileDraftNote": "This profile is a draft only you can see.",
+  "@caProfileDraftNote": {
+    "description": "Line under the title of My profile while not live."
+  },
+  "caProfileCode": "Your code {code}",
+  "@caProfileCode": {
+    "description": "The creator code on My profile.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "caStrengthValue": "{percent}%",
+  "@caStrengthValue": {
+    "description": "The strength as one number.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "caIncompleteMessage": "Your profile isn't complete. Clients can't find or book you until the team approves it.",
+  "@caIncompleteMessage": {
+    "description": "The attention message on screen 28."
+  },
+  "caStepsNeedAttention": "{count, plural, one{1 step needs attention} other{{count} steps need attention}}",
+  "@caStepsNeedAttention": {
+    "description": "How many steps need attention, on screen 28.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "caBack": "Back",
+  "@caBack": {
+    "description": "Goes to the previous step."
+  },
+  "caNextStep": "Next: {step}",
+  "@caNextStep": {
+    "description": "Goes to the next step; names it.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "caSendForReview": "Send for review",
+  "@caSendForReview": {
+    "description": "The primary action of screen 29."
+  },
+  "caSendOffLine": "Still needed before review: {steps}",
+  "@caSendOffLine": {
+    "description": "Line under the off Send for review button.",
+    "placeholders": {
+      "steps": {
+        "type": "String"
+      }
+    }
+  },
+  "caNeededBeforeReview": "Needed before review",
+  "@caNeededBeforeReview": {
+    "description": "One-line reason on a ringed field."
+  },
+  "caAllHere": "Everything we need is here",
+  "@caAllHere": {
+    "description": "Heading of screen 29."
+  },
+  "caSaving": "Saving…",
+  "@caSaving": {
+    "description": "While a step is saved."
+  },
+  "caFieldNameEn": "Name (English)",
+  "@caFieldNameEn": {
+    "description": "Field label."
+  },
+  "caFieldNameAr": "Name (Arabic)",
+  "@caFieldNameAr": {
+    "description": "Field label."
+  },
+  "caFieldBioEn": "Short bio (English)",
+  "@caFieldBioEn": {
+    "description": "Field label."
+  },
+  "caFieldBioAr": "Short bio (Arabic)",
+  "@caFieldBioAr": {
+    "description": "Field label."
+  },
+  "caFieldGender": "Gender",
+  "@caFieldGender": {
+    "description": "Field label; never shown publicly."
+  },
+  "caGenderWoman": "Woman",
+  "@caGenderWoman": {
+    "description": "Gender choice."
+  },
+  "caGenderMan": "Man",
+  "@caGenderMan": {
+    "description": "Gender choice."
+  },
+  "caGenderNote": "Never shown on your profile.",
+  "@caGenderNote": {
+    "description": "Note under the gender choice."
+  },
+  "caFieldNationality": "Nationality",
+  "@caFieldNationality": {
+    "description": "Field label."
+  },
+  "caFieldExperience": "Years of experience",
+  "@caFieldExperience": {
+    "description": "Field label."
+  },
+  "caFieldProfessions": "What you do",
+  "@caFieldProfessions": {
+    "description": "Group label of the professional types."
+  },
+  "caFieldSpecialties": "Specialties",
+  "@caFieldSpecialties": {
+    "description": "Group label."
+  },
+  "caFieldEmirates": "Where you work",
+  "@caFieldEmirates": {
+    "description": "Group label of the emirates."
+  },
+  "caFieldLanguages": "Languages you speak",
+  "@caFieldLanguages": {
+    "description": "Group label."
+  },
+  "caFieldLinkUrl": "Link (https)",
+  "@caFieldLinkUrl": {
+    "description": "Field label for a social link."
+  },
+  "caPhoto": "Profile photo",
+  "@caPhoto": {
+    "description": "Group label of the photo."
+  },
+  "caTakePhoto": "Take a photo",
+  "@caTakePhoto": {
+    "description": "Camera choice."
+  },
+  "caChoosePhoto": "Choose from library",
+  "@caChoosePhoto": {
+    "description": "Photo library choice."
+  },
+  "caChooseFile": "Choose a file",
+  "@caChooseFile": {
+    "description": "File choice."
+  },
+  "caSampleLimit": "You can add up to {limit} samples.",
+  "@caSampleLimit": {
+    "description": "Line shown at the sample limit.",
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "caRemove": "Remove",
+  "@caRemove": {
+    "description": "Removes a sample."
+  },
+  "caCalendarStepBody": "Block the days you can't work. Every tap saves on its own.",
+  "@caCalendarStepBody": {
+    "description": "Step 6 text."
+  },
+  "caIdEmiratesId": "Emirates ID",
+  "@caIdEmiratesId": {
+    "description": "Document kind."
+  },
+  "caIdTradeLicense": "Trade license",
+  "@caIdTradeLicense": {
+    "description": "Document kind."
+  },
+  "caIdMissing": "Not uploaded",
+  "@caIdMissing": {
+    "description": "Document state."
+  },
+  "caIdPending": "Waiting for our check",
+  "@caIdPending": {
+    "description": "Document state."
+  },
+  "caIdVerified": "Verified",
+  "@caIdVerified": {
+    "description": "Document state."
+  },
+  "caIdRejected": "Not accepted",
+  "@caIdRejected": {
+    "description": "Document state."
+  },
+  "caIdUploadedOn": "Uploaded {date}",
+  "@caIdUploadedOn": {
+    "description": "Date of an uploaded document.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "caIdNote": "Note from the team: {note}",
+  "@caIdNote": {
+    "description": "The team note on a document that was not accepted.",
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "caUpload": "Upload",
+  "@caUpload": {
+    "description": "Uploads a document."
+  },
+  "caUploadAgain": "Upload again",
+  "@caUploadAgain": {
+    "description": "Replaces a document."
+  },
+  "caIdHint": "A photo or a PDF, up to 5 MB. Only our team sees it.",
+  "@caIdHint": {
+    "description": "Hint under the document upload."
+  },
+  "caFileTooLarge": "That file is larger than 5 MB.",
+  "@caFileTooLarge": {
+    "description": "Upload refused: size."
+  },
+  "caFileWrongType": "Choose a JPEG, PNG, WebP or PDF file.",
+  "@caFileWrongType": {
+    "description": "Upload refused: format."
+  },
+  "caAccessDenied": "Allow camera or photo access in Settings, or choose a file instead.",
+  "@caAccessDenied": {
+    "description": "Camera or photo access was refused."
+  },
+  "caSampleLimitReached": "You have reached the limit of {limit} samples.",
+  "@caSampleLimitReached": {
+    "description": "Notice when adding a sample at the limit.",
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "caInReviewTitle": "Waiting for review",
+  "@caInReviewTitle": {
+    "description": "Heading of screen 30."
+  },
+  "caSentOn": "Sent on {date}",
+  "@caSentOn": {
+    "description": "When the profile was sent.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "caStageSent": "Sent",
+  "@caStageSent": {
+    "description": "Stage 1 of the review."
+  },
+  "caStageChecking": "The team checks it",
+  "@caStageChecking": {
+    "description": "Stage 2 of the review."
+  },
+  "caStageLive": "Live",
+  "@caStageLive": {
+    "description": "Stage 3 of the review."
+  },
+  "caWhileYouWait": "While you wait",
+  "@caWhileYouWait": {
+    "description": "Group label of the rows on screen 30."
+  },
+  "caEditProfile": "Edit my profile",
+  "@caEditProfile": {
+    "description": "Opens the steps for editing."
+  },
+  "caEditNote": "Changes are checked too.",
+  "@caEditNote": {
+    "description": "Under Edit my profile."
+  },
+  "caHideProfile": "Hide my profile",
+  "@caHideProfile": {
+    "description": "Hides the profile everywhere."
+  },
+  "caShowProfile": "Show my profile",
+  "@caShowProfile": {
+    "description": "Shows a hidden profile again."
+  },
+  "caHideTitle": "Hide your profile?",
+  "@caHideTitle": {
+    "description": "Confirmation title."
+  },
+  "caHideBody": "Clients will not find you until you show it again.",
+  "@caHideBody": {
+    "description": "Confirmation text."
+  },
+  "caCancel": "Cancel",
+  "@caCancel": {
+    "description": "Closes a sheet."
+  },
+  "caSetCalendar": "Set your calendar",
+  "@caSetCalendar": {
+    "description": "The primary action of screen 30."
+  },
+  "caLiveTitle": "Your profile is live",
+  "@caLiveTitle": {
+    "description": "Heading when live."
+  },
+  "caLiveChangesNote": "Clients keep seeing your last approved version until your changes are approved.",
+  "@caLiveChangesNote": {
+    "description": "Shown when a live profile has changes."
+  },
+  "caHiddenTitle": "Your profile is hidden",
+  "@caHiddenTitle": {
+    "description": "Heading when hidden."
+  },
+  "caSuspendedTitle": "Your profile is suspended",
+  "@caSuspendedTitle": {
+    "description": "Heading when suspended."
+  },
+  "caReviewNote": "Note from the team: {note}",
+  "@caReviewNote": {
+    "description": "The review note.",
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "caAvailabilityIntro": "Tap a day to block or free it. Every tap saves at once.",
+  "@caAvailabilityIntro": {
+    "description": "Intro of screen 31."
+  },
+  "caSaved": "Saved.",
+  "@caSaved": {
+    "description": "Shown after a day is saved."
+  },
+  "caBlockedCount": "{count, plural, one{1 day blocked in the next 90 days} other{{count} days blocked in the next 90 days}}",
+  "@caBlockedCount": {
+    "description": "Count of blocked days.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "caLegendFree": "Free",
+  "@caLegendFree": {
+    "description": "Legend."
+  },
+  "caLegendBlocked": "Unavailable",
+  "@caLegendBlocked": {
+    "description": "Legend."
+  },
+  "caLegendBooked": "Booked",
+  "@caLegendBooked": {
+    "description": "Legend."
+  },
+  "caBookedLocked": "Booked days change only through the booking.",
+  "@caBookedLocked": {
+    "description": "Line after tapping a booked day."
+  },
+  "caOutsideWindow": "You can change days from today up to 90 days ahead.",
+  "@caOutsideWindow": {
+    "description": "Line after tapping a day outside the window."
+  },
+  "caPreviousMonth": "Previous month",
+  "@caPreviousMonth": {
+    "description": "Screen-reader name of the button."
+  },
+  "caNextMonth": "Next month",
+  "@caNextMonth": {
+    "description": "Screen-reader name of the button."
+  },
+  "caSeeList": "See every day as a list",
+  "@caSeeList": {
+    "description": "Switches to the list."
+  },
+  "caSeeCalendar": "Back to the calendar",
+  "@caSeeCalendar": {
+    "description": "Switches to the calendar."
+  },
+  "caDayFree": "{date}, free",
+  "@caDayFree": {
+    "description": "Screen-reader name of a free day.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "caDayBlocked": "{date}, unavailable",
+  "@caDayBlocked": {
+    "description": "Screen-reader name of a blocked day.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "caDayBooked": "{date}, booked",
+  "@caDayBooked": {
+    "description": "Screen-reader name of a booked day.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "caSaveFailed": "That didn't save. The day is back as it was.",
+  "@caSaveFailed": {
+    "description": "One line after a failed day save."
+  },
+  "caUpdates": "Updates",
+  "@caUpdates": {
+    "description": "Group label."
+  },
+  "caMarkRead": "Mark as read",
+  "@caMarkRead": {
+    "description": "Marks an update as read."
+  },
+  "caUpdateAccepted": "New request for {date}",
+  "@caUpdateAccepted": {
+    "description": "Update text.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "caUpdateOther": "Update on {ref}",
+  "@caUpdateOther": {
+    "description": "Update text for other events.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "caWaitingForYou": "Waiting for you",
+  "@caWaitingForYou": {
+    "description": "Group label."
+  },
+  "caComingUp": "Coming up",
+  "@caComingUp": {
+    "description": "Group label."
+  },
+  "caDoneGroup": "Done",
+  "@caDoneGroup": {
+    "description": "Group label."
+  },
+  "caAnswerBy": "Answer by {time}",
+  "@caAnswerBy": {
+    "description": "The deadline of a request.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "caConfirm": "Confirm",
+  "@caConfirm": {
+    "description": "Confirms a request."
+  },
+  "caDecline": "Decline",
+  "@caDecline": {
+    "description": "Declines a request."
+  },
+  "caLapsedLine": "This request lapsed.",
+  "@caLapsedLine": {
+    "description": "A request past its deadline."
+  },
+  "caClientName": "For {name}",
+  "@caClientName": {
+    "description": "The client by first name.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "caQuotationRef": "Quotation {ref}",
+  "@caQuotationRef": {
+    "description": "The quotation reference.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "caProfessionLine": "{profession} · {emirate}",
+  "@caProfessionLine": {
+    "description": "Profession and emirate of a request.",
+    "placeholders": {
+      "profession": {
+        "type": "String"
+      },
+      "emirate": {
+        "type": "String"
+      }
+    }
+  },
+  "caMarkDelivered": "Mark as delivered",
+  "@caMarkDelivered": {
+    "description": "Marks a shoot delivered."
+  },
+  "caDeclineTitle": "Decline this request?",
+  "@caDeclineTitle": {
+    "description": "Title of the decline sheet."
+  },
+  "caDeclineBody": "The client will be offered another creator.",
+  "@caDeclineBody": {
+    "description": "Text of the decline sheet."
+  },
+  "caDeclineReason": "Reason (optional)",
+  "@caDeclineReason": {
+    "description": "Field label in the decline sheet."
+  },
+  "caSendDecline": "Decline request",
+  "@caSendDecline": {
+    "description": "Sends the decline."
+  },
+  "caNoRequests": "No requests yet. They show here when a client picks you.",
+  "@caNoRequests": {
+    "description": "Empty state of screen 32."
+  },
+  "caCalendarStatus": "Your calendar",
+  "@caCalendarStatus": {
+    "description": "Row to Availability on screen 32."
+  },
+  "caPaid": "Paid",
+  "@caPaid": {
+    "description": "Payment state recorded by the team."
+  },
+  "caSomethingWrong": "Something went wrong.",
+  "@caSomethingWrong": {
+    "description": "Generic line."
+  },
+  "problemNotProvider": "This is only for creator accounts.",
+  "@problemNotProvider": {
+    "description": "Problem: the member is not a creator."
+  },
+  "problemNoProfile": "Start your profile first.",
+  "@problemNoProfile": {
+    "description": "Problem: no creator profile yet."
+  },
+  "problemCreatorGeneric": "That didn't save. Check the marked fields.",
+  "@problemCreatorGeneric": {
+    "description": "Problem: a profile save was refused."
+  },
+  "problemFieldRequired": "Needed before review.",
+  "@problemFieldRequired": {
+    "description": "Problem: a required field is empty."
+  },
+  "problemSubmitIncomplete": "Something required is still missing.",
+  "@problemSubmitIncomplete": {
+    "description": "Problem: sending for review while incomplete."
+  },
+  "problemFileTooLarge": "That file is too large.",
+  "@problemFileTooLarge": {
+    "description": "Problem: an upload is too large."
+  },
+  "problemFileWrongType": "That file type is not accepted.",
+  "@problemFileWrongType": {
+    "description": "Problem: an upload has the wrong format."
+  },
+  "problemSampleLimit": "You have reached the limit of samples.",
+  "@problemSampleLimit": {
+    "description": "Problem: sample limit reached."
+  },
+  "problemSampleImage": "Add an image for this sample.",
+  "@problemSampleImage": {
+    "description": "Problem: sample without an image."
+  },
+  "problemSampleCategory": "Choose a specialty you offer.",
+  "@problemSampleCategory": {
+    "description": "Problem: sample specialty not offered."
+  },
+  "problemDayRefused": "That day can't be changed.",
+  "@problemDayRefused": {
+    "description": "Problem: a calendar day change was refused."
+  },
+  "problemBookingNotYours": "That booking isn't yours.",
+  "@problemBookingNotYours": {
+    "description": "Problem: a booking of another creator."
+  },
+  "problemBookingNotAllowed": "That isn't possible any more.",
+  "@problemBookingNotAllowed": {
+    "description": "Problem: a booking change is not allowed."
+  },
+  "problemDateTaken": "You are already booked that day, so this request lapsed.",
+  "@problemDateTaken": {
+    "description": "Problem: the day was taken when confirming."
   }
 }

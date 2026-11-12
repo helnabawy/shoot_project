@@ -35,6 +35,7 @@ abstract final class AppRoutes {
   static const register = '/register';
   static const account = '/account';
   static const accountProfile = '/account/profile';
+  static const accountAvailability = '/account/availability';
 
   /// Every path the app knows, built or not (contracts/routes.md).
   static const table = <AppRoute>[
@@ -70,7 +71,13 @@ abstract final class AppRoutes {
     AppRoute(login, owner: '009', example: '/login', built: true),
     AppRoute(loginCode, owner: '009', example: '/login/code', built: true),
     AppRoute(register, owner: '009', example: '/register', built: true),
-    AppRoute('/account', owner: '013, 014', example: '/account', auth: true),
+    AppRoute(
+      '/account',
+      owner: '013, 014',
+      example: '/account',
+      built: true,
+      auth: true,
+    ),
     AppRoute(
       '/account/finish',
       owner: '013',
@@ -81,24 +88,28 @@ abstract final class AppRoutes {
       accountBookings,
       owner: '013, 014',
       example: '/account/bookings',
+      built: true,
       auth: true,
     ),
     AppRoute(
       '/account/bookings/:ref',
       owner: '013, 014',
       example: '/account/bookings/B-1',
+      built: true,
       auth: true,
     ),
     AppRoute(
       '/account/profile',
       owner: '014',
       example: '/account/profile',
+      built: true,
       auth: true,
     ),
     AppRoute(
       '/account/availability',
       owner: '014',
       example: '/account/availability',
+      built: true,
       auth: true,
     ),
     AppRoute('/guides', owner: '015', example: '/guides'),

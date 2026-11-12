@@ -19,21 +19,21 @@ Format: `- [ ] Tnnn [P] [USn] description with path`. Tests first in every phase
 
 ## Phase 3: App data layer
 
-- [ ] T010 Dart models decoding every example (`test/features/creator_account/data/models_test.dart`), entities, repository contract, datasource, repository returning `Result` (`lib/features/creator_account/{domain,data}`), unknown enum values decode to a safe case
-- [ ] T011 Use cases and `creator_account_injection.dart`, one line in `core/di/injection.dart`; failure messages for the new codes in `core/l10n/failure_message.dart` and both ARB files
+- [x] T010 Dart models decoding every example (`test/features/creator_account/data/models_test.dart`), entities, repository contract, datasource, repository returning `Result` (`lib/features/creator_account/{domain,data}`), unknown enum values decode to a safe case
+- [x] T011 Use cases and `creator_account_injection.dart`, one line in `core/di/injection.dart`; failure messages for the new codes in `core/l10n/failure_message.dart` and both ARB files
 
 ## Phase 4: App stories
 
-- [ ] T012 [US1] Cubit tests then `ProfileCubit` (steps, save on leave, first-error step, send for review, upload via `FilePicker` port) and pages for screens 28 and 29 (`MW-US1-S1..S9`)
-- [ ] T013 [US2] `BookingsCubit` tests, cubit and page for screen 32 and `/account/bookings/:ref` (`MW-US2-S1..S8`)
-- [ ] T014 [US3] `AccountCubit` tests, cubit and page for screen 27 (`MW-US3-S1..S5`)
-- [ ] T015 [US4] `AvailabilityCubit` tests (optimistic toggle, rollback, booked locked, month bounds), page for screen 31 and the list view (`MW-US4-S1..S7`)
-- [ ] T016 [US5] Review-state page (screen 30), hide/show, not-accepted note, live-with-changes message (`MW-US5-S1..S5`)
-- [ ] T017 Routes `/account` (creator branch), `/account/profile`, `/account/availability`, `/account/bookings`, flip `built` in `app_routes.dart`; route tests
+- [x] T012 [US1] Cubit tests then `ProfileCubit` (steps, save on leave, first-error step, send for review, upload via `FilePicker` port) and pages for screens 28 and 29 (`MW-US1-S1..S9`)
+- [x] T013 [US2] `BookingsCubit` tests, cubit and page for screen 32 and `/account/bookings/:ref` (`MW-US2-S1..S8`)
+- [x] T014 [US3] `AccountCubit` tests, cubit and page for screen 27 (`MW-US3-S1..S5`)
+- [x] T015 [US4] `AvailabilityCubit` tests (optimistic toggle, rollback, booked locked, month bounds), page for screen 31 and the list view (`MW-US4-S1..S7`)
+- [x] T016 [US5] Review-state page (screen 30), hide/show, not-accepted note, live-with-changes message (`MW-US5-S1..S5`)
+- [x] T017 Routes `/account` (creator branch), `/account/profile`, `/account/availability`, `/account/bookings`, flip `built` in `app_routes.dart`; route tests
 
 ## Phase 5: Polish
 
-- [ ] T018 Screen goldens for 27 to 32 (four variants) and `pnpm fidelity` (macOS, pinned Flutter)
+- [ ] T018 (open: screen golden test files and pixel fidelity not written; the views are built from the catalogue but not yet diffed against boards 27 to 32) Screen goldens for 27 to 32 (four variants) and `pnpm fidelity` (macOS, pinned Flutter)
 - [ ] T019 `pnpm check:scenarios`, `pnpm typecheck && pnpm test`, `dart format`, `flutter analyze`, `flutter test --coverage`
 - [ ] T020 Camera, photo library and file picking (`image_picker`, `file_picker`): needs owner approval of the packages
 - [ ] T021 Manual device walkthrough: 360 px, English and Arabic, light and dark, largest text, VoiceOver and TalkBack
