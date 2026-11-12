@@ -12,6 +12,7 @@ import 'package:shoot_mobile/core/preferences/preferences_store.dart';
 import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
+import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/landing/landing_injection.dart';
 import 'package:shoot_mobile/features/service_health/service_health_injection.dart';
 import 'package:shoot_mobile/features/site/site_injection.dart';
@@ -43,6 +44,7 @@ void configureDependencies(AppConfig config, PreferencesStore store) {
   registerServiceHealthFeature(getIt);
   registerSiteFeature(getIt);
   registerLandingFeature(getIt);
+  registerCreatorsFeature(getIt);
 }
 
 String _currentLanguageCode() {
