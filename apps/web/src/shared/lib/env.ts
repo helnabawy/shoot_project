@@ -47,6 +47,8 @@ export const envSchema = z
     APP_ANDROID_PACKAGE: optional.refine((v) => v === undefined || ANDROID_PACKAGE.test(v), 'must be a package name, e.g. ae.shoot.app'),
     OTP_PROVIDER: z.enum(['console', 'unifonic'], { message: 'must be console or unifonic' }).optional(),
     OTP_HMAC_SECRET: optional.refine((v) => v === undefined || v.length >= 32, 'must be at least 32 characters (openssl rand -hex 32)'),
+    OTP_ALLOW_FIXED_CODE: z.enum(['1']).optional(),
+    OTP_FIXED_CODE: optional.refine((v) => v === undefined || /^\d{6}$/.test(v), 'must be six digits'),
     UNIFONIC_APP_SID: optional,
     OTP_SMS_SENDER_ID: optional,
     OTP_WHATSAPP_SENDER: optional,
@@ -70,7 +72,7 @@ export const envSchema = z
       })
     }
     // The console provider writes codes to a local file: never in a deployment (research R9, OT-US2-S5).
-    if (deployed && (env.OTP_PROVIDER ?? 'console') === 'console') {
+    if (deployed && (env.OTP_PROVIDER ?? 'console') === 'console' && env.OTP_ALLOW_FIXED_CODE !== '1') {
       ctx.addIssue({
         code: 'custom',
         path: ['OTP_PROVIDER'],
@@ -79,6 +81,9 @@ export const envSchema = z
     }
     if (deployed && !env.OTP_HMAC_SECRET) {
       ctx.addIssue({ code: 'custom', path: ['OTP_HMAC_SECRET'], message: 'is required in production (openssl rand -hex 32)' })
+    }
+    if (deployed && env.OTP_FIXED_CODE && env.OTP_ALLOW_FIXED_CODE !== '1') {
+      ctx.addIssue({ code: 'custom', path: ['OTP_FIXED_CODE'], message: 'a fixed code is for local testing only; unset it in production (or set OTP_ALLOW_FIXED_CODE=1 on a throwaway test deployment)' })
     }
     const missingVendor = unifonicKeys.filter((k) => !env[k])
     const someVendor = missingVendor.length < unifonicKeys.length

@@ -97,6 +97,15 @@ class _MenuPageState extends State<MenuPage> {
     if (!opened) await widget.open(WhatsappLink.web(number, message: message));
   }
 
+  void _logOut() {
+    final router = GoRouter.of(context);
+    unawaited(
+      context.read<SessionCubit>().signOut().then(
+        (_) => router.go(AppRoutes.home),
+      ),
+    );
+  }
+
   String get _lang => Localizations.localeOf(context).languageCode;
 
   @override
@@ -185,14 +194,22 @@ class _MenuPageState extends State<MenuPage> {
                         _Section(
                           label: l10n.mlMenuYou,
                           children: [
-                            if (user != null)
+                            if (user != null) ...[
                               row(
                                 ShootIcons.person,
                                 l10n.mlMenuAccount,
                                 () => context.push(afterSignIn(user)),
                                 hint: user.name,
-                              )
-                            else ...[
+                              ),
+                              ShootRow(
+                                key: const ValueKey('menu:logOut'),
+                                label: l10n.accountLogOut,
+                                onTap: _logOut,
+                                chevron: false,
+                                divider: RowDivider.topAndBottom,
+                                leading: const IconTile(ShootIcons.logOut),
+                              ),
+                            ] else ...[
                               row(
                                 ShootIcons.person,
                                 l10n.mlMenuLogIn,

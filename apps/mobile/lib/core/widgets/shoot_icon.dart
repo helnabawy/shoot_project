@@ -51,7 +51,13 @@ enum ShootIcons {
   search('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'),
 
   /// A tick (board 21's selected row, stroke 2.4).
-  check('<path d="m5 12 5 5L20 7"/>');
+  check('<path d="m5 12 5 5L20 7"/>'),
+
+  /// Leaving through a door (the menu's Log out); the arrow points to the inline end.
+  logOut(
+    '<path d="M10 4H5v16h5"/><path d="m15 8 4 4-4 4M19 12H9"/>',
+    directional: true,
+  );
 
   const ShootIcons(this.body, {this.directional = false});
 

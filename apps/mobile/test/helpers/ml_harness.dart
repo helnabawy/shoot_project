@@ -143,6 +143,7 @@ Future<void> pumpRouter(
   BriefCubit? brief,
   Size size = const Size(360, 780),
   bool reduceMotion = false,
+  SessionCubit? session,
 }) async {
   tester.view
     ..physicalSize = size * 2
@@ -154,7 +155,7 @@ Future<void> pumpRouter(
   addTearDown(tester.view.reset);
   addTearDown(tester.platformDispatcher.clearAllTestValues);
   final prefs = store ?? InMemoryPreferencesStore();
-  final session = SessionCubit(
+  session ??= SessionCubit(
     store: MemorySessionStore(),
     api: MockAuthApi(),
     clock: examplesClock,

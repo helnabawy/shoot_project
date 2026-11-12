@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:shoot_mobile/core/auth/session_cubit.dart';
+import 'package:shoot_mobile/core/auth/session_store.dart';
 import 'package:shoot_mobile/core/config/app_config.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
@@ -10,6 +13,7 @@ import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
 import 'package:shoot_mobile/features/menu/presentation/menu_page.dart';
 
+import '../../helpers/auth_fixtures.dart';
 import '../../helpers/in_memory_preferences_store.dart';
 import '../../helpers/ml_harness.dart';
 import '../../helpers/sign_in_harness.dart';
@@ -24,6 +28,7 @@ Future<(RecordingOpener, RecordingOpener, InMemoryPreferencesStore)> pumpMenu(
   WidgetTester tester, {
   Locale locale = const Locale('en'),
   bool whatsappInstalled = true,
+  SessionCubit? session,
 }) async {
   final site = FakeSiteRepository();
   final web = RecordingOpener();
@@ -61,7 +66,13 @@ Future<(RecordingOpener, RecordingOpener, InMemoryPreferencesStore)> pumpMenu(
       ),
     ],
   );
-  await pumpRouter(tester, router, locale: locale, store: store);
+  await pumpRouter(
+    tester,
+    router,
+    locale: locale,
+    store: store,
+    session: session,
+  );
   await tester.tap(find.text('landing'));
   await tester.pumpAndSettle();
   return (web, wa, store);
@@ -145,6 +156,30 @@ void main() {
       expect(find.text('stub:/register'), findsOneWidget);
     },
   );
+
+  testWidgets('a signed-in person logs out from the menu and lands home', (
+    tester,
+  ) async {
+    final api = MockAuthApi();
+    when(() => api.logout(any())).thenAnswer((_) async {});
+    final session = SessionCubit(
+      store: MemorySessionStore(),
+      api: api,
+      clock: examplesClock,
+      restored: exampleSession(exp: DateTime.utc(2030)),
+      storeRead: true,
+    );
+    addTearDown(session.close);
+    await pumpMenu(tester, session: session);
+    expect(find.text('Log in'), findsNothing);
+    final logOut = find.byKey(const ValueKey('menu:logOut'));
+    await tester.ensureVisible(logOut);
+    await tester.tap(logOut);
+    await tester.pumpAndSettle();
+    verify(() => api.logout(any())).called(1);
+    expect(session.state, isA<SignedOut>());
+    expect(find.text('landing'), findsOneWidget);
+  });
 
   testWidgets(
     'ML-US3-S5 WhatsApp opens a chat with the site number and default message',
