@@ -14,6 +14,7 @@ import * as migration_20261110_154146_specialty_tile_scene from './20261110_1541
 import * as migration_20261111_210154_users_phone_identity from './20261111_210154_users_phone_identity';
 import * as migration_20261112_062929_account_finish from './20261112_062929_account_finish';
 import * as migration_20261112_063030_booking_details from './20261112_063030_booking_details';
+import * as migration_20261112_144241_account_finish_schema from './20261112_144241_account_finish_schema';
 
 export const migrations = [
   {
@@ -94,6 +95,11 @@ export const migrations = [
   {
     up: migration_20261112_063030_booking_details.up,
     down: migration_20261112_063030_booking_details.down,
-    name: '20261112_063030_booking_details'
+    name: '20261112_063030_booking_details',
+  },
+  {
+    up: migration_20261112_144241_account_finish_schema.up,
+    down: migration_20261112_144241_account_finish_schema.down,
+    name: '20261112_144241_account_finish_schema'
   },
 ];
