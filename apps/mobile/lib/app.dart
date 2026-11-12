@@ -17,6 +17,13 @@ import 'package:shoot_mobile/features/account/presentation/cubit/account_cubit.d
 import 'package:shoot_mobile/features/account/presentation/cubit/bookings_cubit.dart';
 import 'package:shoot_mobile/features/content/presentation/content_deps.dart';
 import 'package:shoot_mobile/features/content/presentation/content_routes.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/creator_account_routes.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/account_cubit.dart'
+    as creator_account;
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/availability_cubit.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/bookings_cubit.dart'
+    as creator_bookings;
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/profile_cubit.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/service_health/presentation/pages/service_health_page.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/cubit/sign_in_flow_cubit.dart';
@@ -46,6 +53,13 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         createBookings: getIt.call<BookingsCubit>,
       ),
       ...contentRoutes(getIt<ContentDeps>()),
+      ...creatorAccountRoutes(
+        session: getIt<SessionCubit>(),
+        createAccount: getIt.call<creator_account.AccountCubit>,
+        createProfile: getIt.call<ProfileCubit>,
+        createBookings: getIt.call<creator_bookings.BookingsCubit>,
+        createAvailability: getIt.call<AvailabilityCubit>,
+      ),
       // Feature 015's `/{slug}` page route stays last so it never shadows another route.
       editorPageRoute(getIt<ContentDeps>()),
     ],

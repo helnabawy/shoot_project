@@ -416,7 +416,8 @@
       "limits": "JPEG, PNG or WebP, up to 5 MB.",
       "video": "Video",
       "moved": "Sample moved to position {n}.",
-      "removed": "Sample removed."
+      "removed": "Sample removed.",
+      "limit": "You have reached the most samples a profile can have."
     },
     "err": {
       "nameLength": "Enter a name, 2 to 60 characters.",
@@ -535,7 +536,20 @@
       "upload": "Upload",
       "replace": "Upload a new file",
       "uploading": "Uploading…",
-      "uploaded": "Uploaded. Our team will check it."
+      "uploaded": "Uploaded. Our team will check it.",
+      "kind": "Choose Emirates ID or trade license.",
+      "file": "Choose a file to upload.",
+      "type": "Use a JPEG, PNG or WebP image, or a PDF.",
+      "size": "That file is over 5 MB. Choose a smaller one."
+    },
+    "errors": {
+      "notProvider": "Only professional accounts have a profile.",
+      "noProfile": "Save your details first, then add samples.",
+      "generic": "That didn't save. Check the highlighted parts and try again.",
+      "required": "This is needed before you can send it for review."
+    },
+    "submit": {
+      "incomplete": "Your profile isn't complete yet."
     }
   },
   "legal": {
@@ -789,6 +803,12 @@
       "tokenInvalid": "Your session has ended. Sign in again.",
       "rateLimited": "Too many tries. Wait a moment and try again.",
       "unexpected": "Something went wrong on our side. Try again."
+    }
+  },
+  "media": {
+    "upload": {
+      "type": "Use a JPEG, PNG or WebP image.",
+      "size": "That image is over 5 MB. Choose a smaller one."
     }
   }
 }
