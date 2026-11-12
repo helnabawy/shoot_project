@@ -5,7 +5,9 @@ Uri? whatsappLink(String number, [String? message]) {
       .firstMatch(number.trim())
       ?.group(1);
   if (digits == null) return null;
-  return Uri.https('wa.me', '/$digits', {
-    if (message != null && message.isNotEmpty) 'text': message,
-  });
+  return Uri.https(
+    'wa.me',
+    '/$digits',
+    message == null || message.isEmpty ? null : {'text': message},
+  );
 }

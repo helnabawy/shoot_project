@@ -16,7 +16,6 @@ import 'package:shoot_mobile/core/widgets/text_link.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/creators/domain/brief/brief_rules.dart';
 import 'package:shoot_mobile/features/creators/domain/entities/creators.dart';
-import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 import 'package:shoot_mobile/features/creators/domain/whatsapp_link.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/book_hire_cubits.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/brief_cubit.dart';
@@ -24,6 +23,7 @@ import 'package:shoot_mobile/features/creators/presentation/cubit/load_state.dar
 import 'package:shoot_mobile/features/creators/presentation/widgets/brief_bar.dart';
 import 'package:shoot_mobile/features/creators/presentation/widgets/brief_format.dart';
 import 'package:shoot_mobile/features/creators/presentation/widgets/creator_parts.dart';
+import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
 /// Screen 17, built to board `S06b-book`: a short brief with the creator fixed. The persona is
 /// limited to the creator's types, the place to the emirates they work in. A complete brief opens
@@ -277,8 +277,9 @@ class _BookViewState extends State<BookView> {
                                           ? () => unawaited(_send(plain: false))
                                           : () {
                                               final next = state.nextSlot;
-                                              if (next != null)
+                                              if (next != null) {
                                                 cubit.reopen(next);
+                                              }
                                             },
                                     ),
                                   )

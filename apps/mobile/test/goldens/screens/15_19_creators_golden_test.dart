@@ -5,12 +5,11 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shoot_mobile/features/creators/domain/entities/creators.dart';
+import 'package:shoot_mobile/features/creators/domain/usecases/get_brief_context.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/book_hire_cubits.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/brief_cubit.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/directory_cubit.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/specialty_cubit.dart';
-import 'package:shoot_mobile/features/creators/domain/usecases/get_brief_context.dart';
 import 'package:shoot_mobile/features/creators/presentation/pages/book_page.dart';
 import 'package:shoot_mobile/features/creators/presentation/pages/directory_page.dart';
 import 'package:shoot_mobile/features/creators/presentation/pages/hire_page.dart';
