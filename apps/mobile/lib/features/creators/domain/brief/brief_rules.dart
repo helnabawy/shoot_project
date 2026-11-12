@@ -138,7 +138,7 @@ final class BriefRules {
           if (c.personaSlugs.contains(o.value)) o,
       ];
     }
-    if (_isPlaceSlot(slot)) {
+    if (isPlaceSlot(slot)) {
       final names = {for (final p in c.places) p.trim().toLowerCase()};
       options = [
         for (final o in options)
@@ -149,7 +149,7 @@ final class BriefRules {
   }
 
   /// The place slot is the options slot whose options include one of the creator's emirates.
-  bool _isPlaceSlot(BuilderSlot slot) {
+  bool isPlaceSlot(BuilderSlot slot) {
     final c = creator;
     if (c == null || slot.kind != SlotKind.options) return false;
     final names = {for (final p in c.places) p.trim().toLowerCase()};
@@ -165,7 +165,7 @@ final class BriefRules {
     for (final slot in config.slots) {
       if (slot.multiple) continue;
       final offered = options(slot, next);
-      final restricted = slot.kind == SlotKind.persona || _isPlaceSlot(slot);
+      final restricted = slot.kind == SlotKind.persona || isPlaceSlot(slot);
       if (restricted && slot.required && offered.length == 1) {
         next[slot.token] = offered.single.value;
       }
