@@ -65,15 +65,15 @@ description: "Task list for feature 009 — sign in with a mobile number and a o
   - iOS: add a keychain access group to `mobile/ios/Runner/Runner.entitlements`; add the
     `LSApplicationQueriesSchemes` entries `https` needs for `url_launcher`.
   - Android: confirm `minSdkVersion` meets `flutter_secure_storage`'s minimum.
-- [ ] T002 [P] Add `OTP_PROVIDER`, `OTP_HMAC_SECRET`, `UNIFONIC_APP_SID`, `OTP_SMS_SENDER_ID`,
+- [x] T002 [P] Add `OTP_PROVIDER`, `OTP_HMAC_SECRET`, `UNIFONIC_APP_SID`, `OTP_SMS_SENDER_ID`,
   `OTP_WHATSAPP_SENDER` and `OTP_WHATSAPP_TEMPLATE` to `web/.env.example`, with comments from
   contracts/otp-provider.md. Add `.otp-outbox/` to `web/.gitignore`.
-- [ ] T003 [P] Add `node scripts/check-scenario-tests.mjs specs/009-otp-sign-in/quickstart.md` to
+- [x] T003 [P] Add `node scripts/check-scenario-tests.mjs specs/009-otp-sign-in/quickstart.md` to
   `check:scenarios` in the root `package.json`.
-- [ ] T004 [P] Create `web/scripts/otp-last.mjs`: prints the newest `web/.otp-outbox/*.json` code and
+- [x] T004 [P] Create `web/scripts/otp-last.mjs`: prints the newest `web/.otp-outbox/*.json` code and
   channel, the number masked to its last 4 digits; refuses when `NODE_ENV=production`. Add the
   `otp:last` script to `web/package.json`.
-- [ ] T005 [P] Confirm the 008 prerequisites listed above exist, under the names and paths in 008's
+- [x] T005 [P] Confirm the 008 prerequisites listed above exist, under the names and paths in 008's
   plan and contracts/handler.md. If any is missing, stop and report; do not re-implement 008 here.
 - [ ] T006 [P] Owner task, started now because of its lead time (research R10): approve the vendor
   in writing (price quote for UAE SMS and WhatsApp, data residency and retention, contract), start
@@ -91,7 +91,7 @@ token minting, and the app's session core. Every story needs them.
 
 ### Tests first
 
-- [ ] T007 [P] Write `domain/auth/otp.test.ts` (100 % of `otp.ts`):
+- [x] T007 [P] Write `domain/auth/otp.test.ts` (100 % of `otp.ts`):
   - `normaliseUaeMobile` accepts `0501234567`, `501234567`, `+971 50 123 4567`, `00971501234567`,
     `971-50-123-4567`; refuses `+97141234567` (landline), `+966501234567`, `05012345`, letters
     (**`OT-US1-S9`**);
@@ -99,25 +99,25 @@ token minting, and the app's session core. Every story needs them.
     a locked challenge is `locked` (**`OT-US1-S5`**); `now ≥ expiresAt` is `expired`
     (**`OT-US1-S6`**);
   - `canResend`/`resendAt` at 59 and 60 s; `formatCode` pads; `isCodeShape`; `maskPhone`.
-- [ ] T008 [P] Write `domain/api/v1/auth.test.ts`: every `examples/auth-*.json` parses with its
+- [x] T008 [P] Write `domain/api/v1/auth.test.ts`: every `examples/auth-*.json` parses with its
   schema; invalid variants fail with the codes in contracts/auth-api.md (bad phone, bad channel,
   5-digit code, provider signup without personas or `acceptTerms`, name of 1 or 81 characters).
-- [ ] T009 [P] Write `web/src/modules/auth/otp/codes.test.ts` (**`OT-US2-S3`**, unit part):
+- [x] T009 [P] Write `web/src/modules/auth/otp/codes.test.ts` (**`OT-US2-S3`**, unit part):
   - `generateCode` returns six digits from `crypto.randomInt` (spied);
   - `codeHash` and `phoneHash` are keyed (different keys, different digests) and bound to the
     challenge id;
   - `codesMatch` uses `timingSafeEqual` for right, wrong and malformed input (malformed compares
     against a dummy digest).
-- [ ] T010 [P] Extend `web/src/shared/lib/env.test.ts` (**`OT-US2-S5`**):
+- [x] T010 [P] Extend `web/src/shared/lib/env.test.ts` (**`OT-US2-S5`**):
   - production with a public `NEXT_PUBLIC_SITE_URL` and `OTP_PROVIDER` unset or `console` is
     refused with the message from contracts/otp-provider.md;
   - `localhost` production builds may use `console`;
   - `OTP_HMAC_SECRET` shorter than 32 is refused;
   - `OTP_PROVIDER=unifonic` with a missing vendor variable lists the missing ones.
-- [ ] T011 [P] Write `web/src/modules/auth/otp/providers/console.test.ts`: writes
+- [x] T011 [P] Write `web/src/modules/auth/otp/providers/console.test.ts`: writes
   `.otp-outbox/<challengeId>.json` with the documented fields; the documented failure numbers resolve
   `unreachable` and `unavailable`; a spy on `payload.logger` never receives the code or number.
-- [ ] T012 [P] Write `web/tests/integration/users-identity.int.test.ts`, against a database migrated
+- [x] T012 [P] Write `web/tests/integration/users-identity.int.test.ts`, against a database migrated
   with every committed migration and seeded with 001-era users (email and password, duplicate
   `phone` values, an editor):
   - all rows survive the migration; email logins still work; `username` is `NULL` for them;
@@ -128,7 +128,7 @@ token minting, and the app's session core. Every story needs them.
     no client number;
   - **`OT-US2-S9`**: `PATCH /api/users/:id` with `username` by the member themself, by REST create,
     and by an admin are all refused or ignored; only `overrideAccess` code sets it.
-- [ ] T013 [P] Write `web/tests/integration/mobile-api-auth-session.int.test.ts`, the tripwire for
+- [x] T013 [P] Write `web/tests/integration/mobile-api-auth-session.int.test.ts`, the tripwire for
   research R2 (**`OT-US3-S8`**):
   - `mintSession(user)` returns `{ token, exp }`; `payload.auth({ headers: Bearer })` returns the
     user with `_sid`; the token's protected header and claim keys equal those of a token from
@@ -139,9 +139,9 @@ token minting, and the app's session core. Every story needs them.
 
 ### Implementation
 
-- [ ] T014 Create `domain/auth/otp.ts` (research R4) and export it from `domain/auth/index.ts`.
+- [x] T014 Create `domain/auth/otp.ts` (research R4) and export it from `domain/auth/index.ts`.
   Make T007 pass at 100 %.
-- [ ] T015 Create `domain/api/v1/auth.ts`: `otpRequestV1`, `otpChallengeV1`, `otpVerifyV1`,
+- [x] T015 Create `domain/api/v1/auth.ts`: `otpRequestV1`, `otpChallengeV1`, `otpVerifyV1`,
   `signupV1`, `authTokenV1`, `authRefreshV1`, `meV1`, per contracts/auth-api.md. Write
   `domain/api/v1/examples/auth-request.json`, `auth-challenge.json`, `auth-verify-seeker.json`,
   `auth-verify-provider.json`, `auth-token.json`, `auth-refresh.json`, `me-seeker.json`,
@@ -151,20 +151,20 @@ token minting, and the app's session core. Every story needs them.
   `domain/api/v1/endpoints.ts` with the method, path, auth, `cache: 'no-store'`, `examples` and
   `requestExamples` from the contract's tables. Make T008 and 008's `endpoints.test.ts` and
   `examples.test.ts` pass.
-- [ ] T016 Add the new codes to `domain/api/v1/problems.ts`, and the statuses 403, 409 and 503 to
+- [x] T016 Add the new codes to `domain/api/v1/problems.ts`, and the statuses 403, 409 and 503 to
   `problemV1.status` and to `problem()`'s `ProblemStatus` in `web/src/shared/api/problem.ts`
   (additive); add English and Arabic strings to
   `web/messages/en.json` and `ar.json` (`auth.errors.*` from contracts/auth-api.md, `auth.otp.sms`
   from contracts/otp-provider.md; Arabic written by a person who writes Arabic). Regenerate
   `specs/contracts/mobile-api/v1.schema.json`; the snapshot test confirms the change is additive.
-- [ ] T017 Extend `web/src/shared/lib/env.ts` with the OTP variables and the production guard
+- [x] T017 Extend `web/src/shared/lib/env.ts` with the OTP variables and the production guard
   (research R9). Make T010 pass.
-- [ ] T018 [P] Create `web/src/modules/auth/otp/codes.ts` (`generateCode`, `codeHash`, `phoneHash`,
+- [x] T018 [P] Create `web/src/modules/auth/otp/codes.ts` (`generateCode`, `codeHash`, `phoneHash`,
   `codesMatch`, research R5), reading `OTP_HMAC_SECRET` through `env()`. Make T009 pass.
-- [ ] T019 [P] Create `web/src/modules/auth/collections/OtpChallenges.ts` per data-model.md
+- [x] T019 [P] Create `web/src/modules/auth/collections/OtpChallenges.ts` per data-model.md
   (deny-all access with the `nobody` helper, `admin.hidden`, indexes). Register it in
   `web/src/payload.config.ts`.
-- [ ] T020 Change `web/src/modules/auth/collections/Users.ts` (research R1):
+- [x] T020 Change `web/src/modules/auth/collections/Users.ts` (research R1):
   - `auth.loginWithUsername: { allowEmailLogin: true, requireEmail: false, requireUsername: false }`;
   - override `username` in `fields`: label "Sign-in number", read-only in the admin, field access
     `create`/`update` → `() => false`, `read` → self or admin;
@@ -172,25 +172,25 @@ token minting, and the app's session core. Every story needs them.
   - `name` no longer `required` (keep `minLength: 2`, `maxLength: 80`);
   - `hooks.beforeOperation`: on `login`, refuse when the data has `username` (FR-016);
   - `admin.useAsTitle: 'name'`, `defaultColumns` with `username`.
-- [ ] T021 Run `pnpm db:migration:create users_phone_identity`. Review the SQL against data-model.md
+- [x] T021 Run `pnpm db:migration:create users_phone_identity`. Review the SQL against data-model.md
   (no drop, no rewrite; down migration as documented) and write the review as a comment at the top
   of the migration. Run `pnpm --filter web payload generate:types`. Make T012 pass, except its creator-booking case,
   which T055 completes.
-- [ ] T022 Confirm (part of T005) that 008's T094 landed: `consumeAllowance` in
+- [x] T022 Confirm (part of T005) that 008's T094 landed: `consumeAllowance` in
   `web/src/shared/payload/rate-limit.ts` throws its 429 `APIError` with `data: { retryAfter }`
   (research R7). This feature does not change the function; if the field is missing, stop and
   report, as T005 says.
-- [ ] T023 Create `web/src/modules/auth/otp/challenges.ts` (research R6): `createChallenge`
+- [x] T023 Create `web/src/modules/auth/otp/challenges.ts` (research R6): `createChallenge`
   (supersedes live ones for the phone hash), `latestFor(phoneHash)`, `attempt(publicId)` and
   `markUsed(publicId)` as single conditional `UPDATE … RETURNING` statements through
   `payload.db.drizzle` with the generated table, and `stateOf(publicId)` for error codes.
-- [ ] T024 [P] Create `web/src/modules/auth/otp/providers/types.ts`, `console.ts` and `index.ts` per
+- [x] T024 [P] Create `web/src/modules/auth/otp/providers/types.ts`, `console.ts` and `index.ts` per
   contracts/otp-provider.md. Make T011 pass.
-- [ ] T025 Create `web/src/modules/auth/otp/mint.ts` (research R2): `mintSession(payload, user)`,
+- [x] T025 Create `web/src/modules/auth/otp/mint.ts` (research R2): `mintSession(payload, user)`,
   mirroring `addSessionToUser` from `payload/dist/auth/sessions.js` (cite the file and version in a
   comment), then `jwtSign` with `getFieldsToSign`. Make T013 pass. Add an "Upgrading Payload"
   note to `web/README.md` naming `sessions.js` and `mobile-api-auth-session.int.test.ts`.
-- [ ] T026 Extend `web/src/app/(payload)/api/cron/cleanup/route.ts` to delete `otp-challenges` whose
+- [x] T026 Extend `web/src/app/(payload)/api/cron/cleanup/route.ts` to delete `otp-challenges` whose
   `expiresAt` is older than 24 hours (FR-034), with a case in the existing cleanup test.
 
 ### Mobile core
@@ -239,7 +239,7 @@ again by WhatsApp into the same account; `pnpm fidelity --grep "20|21|22"` passe
 
 ### Tests first
 
-- [ ] T034 [P] [US1] Write `web/tests/integration/mobile-api-auth-otp.int.test.ts` with an injected
+- [x] T034 [P] [US1] Write `web/tests/integration/mobile-api-auth-otp.int.test.ts` with an injected
   recording provider and the fixed clock:
   - **`OT-US1-S1`**: `POST auth/otp/request` with `050 123 4567` → 202, body parses with
     `otpChallengeV1`, `phone` normalised, `resendAt = now + 60 s`, one SMS recorded with the
@@ -262,7 +262,7 @@ again by WhatsApp into the same account; `pnpm fidelity --grep "20|21|22"` passe
     `codeExpired`;
   - concurrency: two parallel verifies of one right code → exactly one 200; two first verifies of a
     new number with different challenges → one user.
-- [ ] T035 [P] [US1] Write `web/tests/e2e/ot-us1-api.spec.ts` (Playwright request spec against the
+- [ ] T035 (written: `tests/e2e/ot-us1-api.spec.ts` and `readOutboxCode`; not run here, the machine could not build and serve) [P] [US1] Write `web/tests/e2e/ot-us1-api.spec.ts` (Playwright request spec against the
   built server with the console provider): request, read the code with `readOutboxCode` (add it to
   `web/tests/e2e/helpers.ts`), verify, `GET me`, logout, `GET me` → 401. Name it with
   `OT-US1-S2` and `OT-US3-S3`.
@@ -297,15 +297,15 @@ again by WhatsApp into the same account; `pnpm fidelity --grep "20|21|22"` passe
 
 ### Implementation
 
-- [ ] T041 [US1] Create `web/src/modules/auth/commands/request-code.ts` (contracts/auth-api.md order of
+- [x] T041 [US1] Create `web/src/modules/auth/commands/request-code.ts` (contracts/auth-api.md order of
   work; allowances through `consumeAllowance` with the keys in data-model.md; provider from the
   context with a 5 s `AbortSignal`; a failed send supersedes the challenge and returns
   `sendFailed`).
-- [ ] T042 [US1] Create `web/src/modules/auth/otp/signup.ts` (seeker path: `roles: ['member']`,
+- [x] T042 [US1] Create `web/src/modules/auth/otp/signup.ts` (seeker path: `roles: ['member']`,
   random unusable password, `username` and `phone` set, optional `name`, `recordAcceptances` for
   `seeker`) and `web/src/modules/auth/commands/verify-code.ts` (order of work in the contract:
   attempt, compare, mark used, find or create with unique-violation retry, mint).
-- [ ] T043 [US1] Create `web/src/modules/auth/api.ts` with `requestCodeV1` and `verifyCodeV1`
+- [x] T043 [US1] Create `web/src/modules/auth/api.ts` with `requestCodeV1` and `verifyCodeV1`
   through `defineHandler`, spreading `endpoints.otpRequest` and `endpoints.otpVerify` (`auth:
   'none'`, `cache: 'no-store'`, the v1 schemas), and export them from
   `web/src/modules/auth/index.ts`. Add the route files
@@ -359,7 +359,7 @@ scan of the whole suite finds no number or code.
 - [ ] T051 [P] [US2] Write `web/src/modules/auth/otp/providers/unifonic.test.ts` (after owner approval,
   T006): request bodies for SMS and WhatsApp from recorded examples, status → reason mapping, timeout
   → `unavailable`, no number, code or text in thrown or logged output. No network.
-- [ ] T052 [P] [US2] Write `web/tests/integration/mobile-api-auth-protection.int.test.ts`:
+- [x] T052 [P] [US2] Write `web/tests/integration/mobile-api-auth-protection.int.test.ts`:
   - **`OT-US2-S1`**: requests for a number with an account and one without give the same status,
     the same keys and value shapes, and the same database reads (the user table is not queried; spy
     on `payload.find`);
@@ -378,10 +378,10 @@ scan of the whole suite finds no number or code.
 
 ### Implementation
 
-- [ ] T054 [US2] Make T052 pass: keep `request-code.ts` free of user reads; refuse admin and editor
+- [x] T054 [US2] Make T052 pass: keep `request-code.ts` free of user reads; refuse admin and editor
   accounts in `verify-code.ts` (research R13); route all `modules/auth/otp` and command logging
   through a helper that accepts only `challengeId`, provider name, reason and status.
-- [ ] T055 [US2] Make T012's `OT-US2-S8` booking case pass: audit the creator-facing booking and brief
+- [x] T055 [US2] Make T012's `OT-US2-S8` booking case pass: audit the creator-facing booking and brief
   reads in `web/src/modules/booking/` and `web/src/modules/creators/` (queries, pages under
   `/account/bookings`, notifications) and remove any client number from what a creator receives;
   list what was checked in the PR description.
@@ -405,7 +405,7 @@ the token (401), reinstall (signed out), open `/account` signed out (sign-in, th
 
 ### Tests first
 
-- [ ] T058 [P] [US3] Extend `web/tests/integration/mobile-api-auth-session.int.test.ts`:
+- [x] T058 [P] [US3] Extend `web/tests/integration/mobile-api-auth-session.int.test.ts`:
   - **`OT-US3-S2`**: `POST auth/refresh` with a live token → 200 `authRefreshV1`, same `sid`,
     `expiresAt` moved to now + 7 days; with a removed session → 401 `api.errors.tokenInvalid`;
     with no token → 401 `api.errors.unauthorized`;
@@ -437,7 +437,7 @@ the token (401), reinstall (signed out), open `/account` signed out (sign-in, th
 
 ### Implementation
 
-- [ ] T062 [US3] Create `web/src/modules/auth/commands/refresh-session.ts` (Payload's
+- [x] T062 [US3] Create `web/src/modules/auth/commands/refresh-session.ts` (Payload's
   `refreshOperation`) and `end-session.ts` (`logoutOperation`), add `refreshSessionV1`,
   `endSessionV1` and `getMeV1` (with `toWireMe` in `web/src/modules/auth/wire.ts`) to `api.ts`,
   spreading `endpoints.authRefresh`, `endpoints.authLogout` and `endpoints.me` (`auth: 'required'`),
@@ -469,7 +469,7 @@ kept; both create creator accounts with three acceptances.
 
 ### Tests first
 
-- [ ] T067 [P] [US4] Write `web/tests/integration/mobile-api-auth-join.int.test.ts`:
+- [x] T067 [P] [US4] Write `web/tests/integration/mobile-api-auth-join.int.test.ts`:
   - **`OT-US4-S1`**: verify with `signup: { accountType: 'provider', personas: ['photographer',
     'videographer'], acceptTerms: true }` → `isNew: true`, a provider with both personas in that
     order, and `terms`, `professional-terms` and `privacy` acceptances;
@@ -499,7 +499,7 @@ kept; both create creator accounts with three acceptances.
 
 ### Implementation
 
-- [ ] T071 [US4] Extend `web/src/modules/auth/otp/signup.ts` and `verify-code.ts` with the provider
+- [x] T071 [US4] Extend `web/src/modules/auth/otp/signup.ts` and `verify-code.ts` with the provider
   path (research R12): personas checked against the active personas with
   `isProviderRegistrationValid` before the attempt; acceptances for `provider`. Make T067 pass.
 - [ ] T072 [P] [US4] Create `mobile/lib/core/widgets/check_line.dart` with a gallery entry and
@@ -529,7 +529,7 @@ as an editor, link a number to an email account.
 
 ### Tests first
 
-- [ ] T076 [P] [US5] Write `web/tests/integration/auth-web.int.test.ts` (server actions with mocked
+- [x] T076 [P] [US5] Write `web/tests/integration/auth-web.int.test.ts` (server actions with mocked
   `cookies()` as the existing action tests do):
   - **`OT-US5-S1`**: the code actions set `payload-token` with `httpOnly`, `secure` (production),
     `sameSite: 'lax'`, `expires = exp`; `payload.auth` with the cookie returns the user;
@@ -541,36 +541,36 @@ as an editor, link a number to an email account.
     `username` and `phone` are set; a later code sign-in returns the same user id;
   - **`OT-US5-S6`**: linking a number that is another user's `username` → `auth.errors.numberTaken`,
     nothing changes.
-- [ ] T077 [P] [US5] Write `web/tests/e2e/ot-us5-web.spec.ts` (Playwright, console provider, 360 and
+- [ ] T077 (written: `tests/e2e/ot-us5-web.spec.ts`; 001/005 e2e specs moved to the code flow; not run here) [P] [US5] Write `web/tests/e2e/ot-us5-web.spec.ts` (Playwright, console provider, 360 and
   1440 px, English and Arabic): **`OT-US5-S1`** (number → code from the outbox → header shows the
   account) and **`OT-US5-S4`** (`/register` shows Join as a creator by code; no page has an email
   registration form). Add the code step's one-time-code `autocomplete` to the assertions.
-- [ ] T078 [P] [US5] Write component tests for the new web forms in
+- [x] T078 [P] [US5] Write component tests for the new web forms in
   `web/src/modules/auth/components/forms.test.tsx` (number step, code step with countdown and error,
   join form): labels, errors from message keys, RTL, logical CSS only.
 
 ### Implementation
 
-- [ ] T079 [US5] Amend `specs/001-landing-auth-cms/spec.md` (FR-019 to FR-022: registration by code,
+- [x] T079 [US5] Amend `specs/001-landing-auth-cms/spec.md` (FR-019 to FR-022: registration by code,
   email sign-in as a fallback) with a dated note pointing to 009, before changing code
   (Principle I).
-- [ ] T080 [US5] Create `web/src/modules/auth/commands/link-number.ts` (contracts/auth-api.md,
+- [x] T080 [US5] Create `web/src/modules/auth/commands/link-number.ts` (contracts/auth-api.md,
   "Linking"): it reuses `verify-code`'s steps 1–6 and then attaches the number, or answers
   `numberTaken`. Only the website's `linkNumberAction` calls it; the API's `otp/verify` stays
   `auth: 'none'` and never links.
-- [ ] T081 [US5] Rewrite `web/src/modules/auth/actions.ts` as adapters over the commands:
+- [x] T081 [US5] Rewrite `web/src/modules/auth/actions.ts` as adapters over the commands:
   `requestCodeAction`, `verifyCodeAction` (sets the cookie with the existing `setSessionCookie`),
   `joinAction`, `linkNumberAction`; keep `login` as the email action; remove `register`; `logout`
   calls `end-session` before deleting the cookie. Make T076 pass.
-- [ ] T082 [US5] Build the pages with the impeccable workflow in the Brief Bar world:
+- [x] T082 (built in the Brief Bar world from the existing bar kit; the impeccable detector and finish review are T086, not yet run) [US5] Build the pages with the impeccable workflow in the Brief Bar world:
   `web/src/app/(site)/[locale]/login/page.tsx` (number and channel), `login/code/page.tsx` (code
   cells with `autocomplete="one-time-code"`, countdown island, role rows), `login/email/page.tsx`
   (today's `LoginForm`), `register/page.tsx` (join as a creator), and "Add your mobile number" on the
   account page. Components in `web/src/modules/auth/components/`; delete `RegisterForm.tsx`. Strings
   in `web/messages/{en,ar}.json`. Make T077 and T078 pass.
-- [ ] T083 [US5] Change `users.access.create` to `isAdmin` in `Users.ts` (research R18) and update
+- [x] T083 [US5] Change `users.access.create` to `isAdmin` in `Users.ts` (research R18) and update
   the access tests in `web/tests/integration/auth.int.test.ts`.
-- [ ] T084 [US5] Update 001's tests that assumed email registration: `web/tests/e2e/us4-auth.spec.ts`,
+- [x] T084 [US5] Update 001's tests that assumed email registration: `web/tests/e2e/us4-auth.spec.ts`,
   `web/tests/integration/auth.int.test.ts` and `actions.int.test.ts` (registration cases move to the
   code flow or are deleted; email login and lockout stay). `pnpm check:scenarios` must still pass
   for 001's table.
@@ -590,12 +590,12 @@ as an editor, link a number to an email account.
   `auth/logout`, `me`; refresh ahead of expiry rather than on 401), and
   `.claude/skills/flutter-mobile/SKILL.md` (the interceptor rule, `ChoiceRowGroup`, `CheckLine`,
   `InlineError`, `url_launcher` in the package table).
-- [ ] T088 [P] Update `.claude/skills/payload-cms/SKILL.md` (`loginWithUsername`, the `username`
+- [x] T088 [P] Update `.claude/skills/payload-cms/SKILL.md` (`loginWithUsername`, the `username`
   override, `otp-challenges`, the mirrored session helper and its tripwire) and `CLAUDE.md` (the
   feature 009 line, test-id prefix `OT-`).
 - [ ] T089 [P] Update `mobile/README.md` (session and secure storage, sign-in feature, debug outbox
   workflow with `otp:last`) and `web/README.md` (OTP environment, console provider, the vendor).
-- [ ] T090 Prepare the constitution amendment proposal for Principle VII (research R3: native apps
+- [x] T090 (proposal in `specs/009-otp-sign-in/constitution-amendment-proposal.md`; the owner opens the separate PR) Prepare the constitution amendment proposal for Principle VII (research R3: native apps
   keep the CMS token in the platform secure store as a Bearer header) as a separate pull request for
   the owner; do not merge it with this feature. Let the owner choose PATCH (wording) or MINOR
   (expanded guidance), and include the note the Governance section requires for Principle VII

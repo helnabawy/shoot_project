@@ -103,22 +103,29 @@ export async function acceptQuote(ctx: ActorContext, input: AcceptQuoteInput): P
 
 ## Auth: Bearer tokens after OTP (feature 009)
 
-- Endpoints: `POST otp/request`, `POST otp/verify`, `POST refresh`, `POST logout`, `GET me`
-  (and, in 013, `PATCH me`).
-- `otp/verify` checks the challenge, finds or creates the user by phone, adds a session to the
-  user, and signs a Payload JWT with Payload's own `jwtSign` and `getFieldsToSign`, so the token is
-  the same kind Payload issues and `payload.auth` verifies. Returns `{ token, exp, user }`.
-- `refresh` issues a new token for a live session; `logout` removes the session, so the token stops
-  working before it expires.
-- The OTP rules (code length, expiry, attempts, resend cooldown) are pure functions in
-  `packages/domain/src/auth/otp.ts`. Challenges live in the `otp-challenges` collection with the
-  code stored only as an HMAC (see `payload-cms`). The SMS/WhatsApp provider sits behind an adapter;
-  the console adapter serves development and e2e and is refused at startup in production.
-- Phone identity (`loginWithUsername` or a unique `phone` on users) and the OTP vendor each get a
-  Complexity Tracking entry and a migration in 009.
-- Principle VII names HTTP-only cookies for auth. The app's Bearer token is still Payload's built-in
-  auth, but not a cookie; 009's Constitution Check records why (a native app keeps the token in the
-  Keychain / Keystore, never in web storage), or the constitution gets a PATCH amendment first.
+Built in `apps/web/src/modules/auth/` (contracts: `specs/009-otp-sign-in/contracts/auth-api.md`).
+
+- Endpoints (registry ids): `POST auth/otp/request` (`otpRequest`, 202 `otpChallengeV1`),
+  `POST auth/otp/verify` (`otpVerify`, `authTokenV1`), `POST auth/refresh` (`authRefresh`),
+  `POST auth/logout` (`authLogout`, 204), `GET me` (`me`, at `/api/mobile/v1/me` because 013 adds
+  `PATCH me`). All `cache: 'no-store'`; the signed-in three answer `private, no-store`.
+- Commands in `modules/auth/commands/` (`request-code`, `verify-code` with `proveCode`,
+  `refresh-session`, `end-session`, `link-number`) take an `ActorContext`; `api.ts` and the website's
+  `actions.ts` are thin adapters. `otp/verify` is `auth: 'none'`, ignores any token and never links;
+  linking a number is website-only (`link-number`).
+- `verify-code` proves the code (address allowance, provider personas before any attempt, atomic
+  attempt, constant-time comparison of code and number fingerprints, single use), then finds the
+  user by `username` or creates one from `signup`, refuses admins and editors (`useEmailSignIn`, 403)
+  and mints the session (`otp/mint.ts`, Payload's `jwtSign` + `getFieldsToSign`).
+- Problem codes are generic until the code is proven (`codeInvalid`, `codeExpired`, `codeLocked`);
+  `otp/request` never reads users, so its answer is the same with or without an account. Field
+  failures use `api.errors.invalidInput` with field codes (`body.phone` → `auth.errors.phoneInvalid`,
+  `body.signup.acceptTerms` → `auth.errors.acceptTerms`); 429s carry `retryAfter` and `Retry-After`.
+- **The app refreshes ahead of expiry, not on 401**: the `AuthInterceptor` (a `QueuedInterceptor`)
+  calls `auth/refresh` through a separate Dio when under 2 days are left; a 401 always means signed
+  out. Request and response bodies, headers and tokens of `auth/*` are never logged.
+- Principle VII names HTTP-only cookies; the app's Bearer token is justified in 009's Complexity
+  Tracking (the token lives in the Keychain / Keystore); the website keeps the `payload-token` cookie.
 
 ## Errors: `application/problem+json`
 

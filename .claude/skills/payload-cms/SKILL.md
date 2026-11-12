@@ -1,6 +1,6 @@
 ---
 name: payload-cms
-description: How to build and change the Payload CMS 3 layer of this project (PostgreSQL via Payload's Postgres adapter) — collections, globals, fields, blocks (page-builder sections), access control, hooks with Next.js on-demand revalidation, the Local API, media uploads, seed data, generated types, the auth-enabled Users collection (and, planned, Bearer and session tokens for the mobile app, the `otp-challenges` collection and phone identity), content localisation (English/Arabic with fallback, `localized` fields, locale-aware reads and seeds), the translated admin UI and the admin light/dark theme. Use this skill whenever a task touches payload.config.ts, anything under apps/web/src/modules/*/collections|globals|blocks, the /admin panel, the shape of CMS content, the WhatsApp number or other site settings, seeding, or how the site reads content from the CMS — even when the task is phrased as a frontend change that just "needs a new field".
+description: How to build and change the Payload CMS 3 layer of this project (PostgreSQL via Payload's Postgres adapter) — collections, globals, fields, blocks (page-builder sections), access control, hooks with Next.js on-demand revalidation, the Local API, media uploads, seed data, generated types, the auth-enabled Users collection (with Bearer and session tokens for the mobile app, the `otp-challenges` collection and phone identity by `loginWithUsername`), content localisation (English/Arabic with fallback, `localized` fields, locale-aware reads and seeds), the translated admin UI and the admin light/dark theme. Use this skill whenever a task touches payload.config.ts, anything under apps/web/src/modules/*/collections|globals|blocks, the /admin panel, the shape of CMS content, the WhatsApp number or other site settings, seeding, or how the site reads content from the CMS — even when the task is phrased as a frontend change that just "needs a new field".
 ---
 
 # Payload CMS in this project
@@ -283,43 +283,48 @@ The Users collection is auth-enabled. Registration, login, logout, session
 reads and lockout rules are documented in `references/auth.md`; read it
 before touching anything under `modules/auth`.
 
-## Mobile app auth: Bearer tokens, OTP and phone identity (planned, features 008–009)
+## Mobile app auth: Bearer tokens, OTP and phone identity (feature 009)
 
-The Flutter app signs in with a mobile number and a one-time code and then calls `/api/mobile/v1`
-with a Bearer token. Nothing below exists yet; feature 009's plan fixes the details. The API side
-(handlers, problem codes, cache headers) is in the `mobile-api-contract` skill.
+The Flutter app (and, from 009's User Story 5, the website) signs in with a UAE mobile number and a
+one-time code. The API side (handlers, problem codes, cache headers) is in the `mobile-api-contract`
+skill; the decisions are in `specs/009-otp-sign-in/research.md` (R1–R18).
 
-- **Bearer tokens.** The token is an ordinary Payload JWT, signed with Payload's own `jwtSign` and
-  `getFieldsToSign` after a successful OTP check, so `payload.auth({ headers })` verifies it exactly
-  as it verifies the `payload-token` cookie today (`modules/auth/session.ts`). Never add a second JWT
-  library or secret. The web keeps its HTTP-only cookie; only the app sends
-  `Authorization: Bearer`.
-- **Session tokens.** Each sign-in adds a session to the user, and the session id travels in the
-  JWT, so `logout` (removing the session) revokes a token before it expires and `refresh` issues a
-  new one only for a live session. Token lifetime follows the Users `auth.tokenExpiration`.
-  Principle VII names cookies; 009's Constitution Check records why the app uses a Bearer token.
-- **`otp-challenges` collection** (in `modules/auth/collections/`): one row per code sent, with the
-  E.164 phone, the code stored **only as an HMAC** keyed by a server secret from the environment
-  (validated at startup, documented in `.env.example`), expiry, attempt count, consumed time and the
-  install id. Access is deny for every operation (server code uses the Local API with
-  `overrideAccess`); admins may read for support, never the HMAC. Expired rows are deleted by a cron
-  route. The rules (length, expiry, attempts, resend cooldown) are pure functions in
-  `packages/domain/src/auth/otp.ts`; the collection only stores state.
-- **Rate limits and lockout.** Requests and verifications are limited per phone and per install id
-  through the existing `rate-limits` store; repeated wrong codes burn the challenge.
-- **Provider adapter.** SMS/WhatsApp sending sits behind an adapter interface. A console adapter
-  serves development and e2e and is refused at startup when `NODE_ENV=production`. The vendor gets a
-  Complexity Tracking entry. Phone numbers and codes never reach the logs (Principle VII).
-- **Phone identity.** A user is found or created by phone. Today `users.phone` is optional plain
-  text; 009 makes the phone an identity, either through Payload's `loginWithUsername` or a unique,
-  indexed, validated `phone` field, with a Complexity Tracking entry and a reviewed migration (existing
-  duplicates and empty values must be handled in the migration). Email/password stays as the
-  editor fallback for `/admin`.
+- **Phone identity: `loginWithUsername`.** `users.auth.loginWithUsername` is
+  `{ allowEmailLogin: true, requireEmail: false, requireUsername: false }`. The verified E.164 number
+  is the `username`, overridden in `fields` (label "Sign-in number", read-only in the admin) with field
+  access `create`/`update` → `false` (only server code with `overrideAccess` writes it:
+  `verify-code`, `link-number`) and `read` → self or admin. `email` and `name` are optional. The
+  existing `phone` stays the **unverified** contact number (booking details) and is never used to find
+  an account (FR-013); it is also readable by self or admin only. A `beforeOperation` hook refuses a
+  password login by `username` (FR-016), so `/api/users/login` cannot guess or lock code accounts.
+  Code accounts get a random 32-byte password nobody knows, `roles: ['member']`.
+- **`otp-challenges`** (`modules/auth/collections/OtpChallenges.ts`): deny-all, `admin.hidden`. Rows
+  hold `publicId` (the client's `challengeId`), `phoneHash` and `codeHash` (HMAC-SHA256 keyed by
+  `OTP_HMAC_SECRET`, never the number or the code), channel, locale, attempts, `expiresAt`,
+  `resendAt`, `usedAt`, `supersededAt`, `providerRef`. Only `modules/auth/otp/challenges.ts` touches
+  it: attempts and single use are one conditional `UPDATE … RETURNING` each through
+  `payload.db.drizzle` on `payload.db.tables.otp_challenges` (the Local API has no conditional update).
+  The cleanup cron deletes rows expired more than 24 hours ago.
+- **Minting (the mirrored internal).** `modules/auth/otp/mint.ts` adds a session the way Payload 3.93's
+  non-exported `addSessionToUser` does (`node_modules/payload/dist/auth/sessions.js`: uuid sid,
+  `expiresAt = now + tokenExpiration`, expired sessions dropped, `payload.db.updateOne` with
+  `updatedAt: null`) and signs with the exported `jwtSign` + `getFieldsToSign`. Refresh and logout use
+  the exported `refreshOperation` and `logoutOperation`. The tripwire is
+  `tests/integration/mobile-api-auth-session.int.test.ts` (OT-US3-S8); run it and re-read
+  `sessions.js` on every Payload upgrade (`apps/web/README.md`, "Upgrading Payload"). Never add a
+  second JWT library or secret.
+- **Providers.** `modules/auth/otp/providers/`: `console` (writes `apps/web/.otp-outbox/<challengeId>.json`,
+  read with `pnpm --filter web otp:last`) and, after the owner's approval, the vendor. `env()` refuses
+  the console provider (or none) in a production deployment. Logging in `modules/auth/otp` goes
+  through `logOtp` (challenge id, provider, reason, status only): no number, code or token in logs.
+- **Rate limits.** `consumeAllowance` keys `otp:phone:<phoneHash>` (5/h), `otp:ip:<address>` (20/h),
+  `otp:install:<installId>` (10/h), `otp-verify:ip:<address>` (30/h); the 60 s resend cooldown is read
+  from the newest challenge, not an allowance.
+- **Tests.** `tests/integration/mobile-api-auth-{otp,protection,session,join}.int.test.ts` and
+  `users-identity.int.test.ts`; integration tests swap the provider with `useOtpProvider()` from
+  `modules/auth/otp/providers` (helpers in `tests/integration/setup/otp.ts`).
 - **Reserved slug.** The app's routes live at `/api/mobile/v1/**`, beside Payload's `/api/[...slug]`;
   never give a collection the slug `mobile`.
-- **Tests.** Integration tests (Testcontainers PostgreSQL) cover `otp-challenges` access from the
-  three viewpoints, HMAC storage (the plain code is never persisted), expiry, attempts, session
-  revocation on logout, and a Bearer token accepted by `payload.auth`.
 
 ## Gotchas worth knowing before you hit them
 

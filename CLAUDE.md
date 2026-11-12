@@ -44,7 +44,13 @@ prefix `MA-`; implemented on this branch; open in its `tasks.md`: the rest of th
 
 Features 007–015 build the whole Flutter app from the approved design canvas (40 screens at 360 px,
 imported into `specs/design-system/canvas/` with `manifest.json`), pixel-perfect, after 006 lands.
-None is implemented. 007, 008 and 009 are planned (spec, plan, research, data model, contracts,
+Feature 009 (`specs/009-otp-sign-in/`, test-id prefix `OT-`) is implemented on its branch: sign-in by UAE mobile
+number and one-time code (module `apps/web/src/modules/auth/` `otp/`, `commands/`, `api.ts`; rules in
+`packages/domain/src/auth/otp.ts`; the verified number is the users `username` via `loginWithUsername`; console
+provider outbox read with `pnpm --filter web otp:last`; the website's `/login`, `/login/code`, `/login/email`,
+`/register` by code; the app's `core/auth/` and `features/sign_in/`, screens 20–23). Open in its `tasks.md`: the
+vendor (owner approval, T006, T051, T056, T092) and the manual and review gates. Of the rest, none is implemented.
+007, 008 and 009 are planned (spec, plan, research, data model, contracts,
 quickstart, tasks: 73, 95 and 93 tasks); 010–015 are draft specs (plan and tasks when next).
 `specs/ROADMAP.md` has the screens per feature:
 

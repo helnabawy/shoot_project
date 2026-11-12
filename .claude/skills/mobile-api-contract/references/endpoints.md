@@ -16,10 +16,10 @@ Cache: **public** (`public, s-maxage=60`, `Vary: Accept-Language`, private when 
 | 008 | `GET guides`, `GET guides/{slug}`, `GET pages/{slug}`, `GET legal/{kind}`, `GET legal/{kind}/versions[/{version}]` | none | public | guides, pages, legal queries; reduced rich-text tree for `RichContent` |
 | 008 | `GET resolve?path=` → `page` / `removed` / `notFound` / `private` (always 200) | none | public | `pages` `resolvePath` |
 | 008 | `GET /.well-known/apple-app-site-association`, `GET /.well-known/assetlinks.json` (site root, not under v1) | none | `public, max-age=3600` | env-configured app ids |
-| 009 otp-sign-in | `POST otp/request` | none | no-store | `domain/auth/otp.ts`, `otp-challenges`, provider adapter |
-| 009 | `POST otp/verify` → `{ token, exp, user }` | none | no-store | find-or-create by phone, session, `jwtSign` |
-| 009 | `POST refresh`, `POST logout` | req | no-store | user sessions |
-| 009 | `GET me` (at `/api/mobile/v1/me`, not under `auth/`) | req | no-store | users |
+| 009 otp-sign-in | `POST auth/otp/request` → 202 `{ challengeId, channel, phone, expiresAt, resendAt }` | none | no-store | `domain/auth/otp.ts`, `otp-challenges`, provider adapter |
+| 009 | `POST auth/otp/verify` → `{ token, exp, isNew, user }` | none | no-store | find-or-create by verified number (`username`), session, `jwtSign` |
+| 009 | `POST auth/refresh` → `{ token, exp }`, `POST auth/logout` → 204 | req | no-store (`private`) | Payload's `refreshOperation`, `logoutOperation` |
+| 009 | `GET me` (at `/api/mobile/v1/me`, not under `auth/`) | req | no-store (`private`) | `toWireMe` |
 | 010 first-visit-landing | `POST brief/preview` | opt | no-store | brief domain rules |
 | 011 mobile-creators | adds `fromPrice` to the 008 creator shapes (additive) | none | public | price rules |
 | 011 | `POST creators/{code}/book` | opt | no-store | book-this-creator command |
