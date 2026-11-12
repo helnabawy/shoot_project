@@ -502,5 +502,410 @@
   "joinLogIn": "Log in",
   "@joinLogIn": {
     "description": "Link from screen 23 to screen 20."
+  },
+  "mcDirectoryTitle": "Creators",
+  "@mcDirectoryTitle": {
+    "description": "Heading of the creators directory (screen 15) and the link back to it."
+  },
+  "mcTypeGroup": "Type",
+  "@mcTypeGroup": {
+    "description": "Screen-reader name of the group of professional-type chips on screen 15."
+  },
+  "mcFilterGroup": "Emirate and occasion",
+  "@mcFilterGroup": {
+    "description": "Screen-reader name of the group of emirate and occasion chips on screen 15."
+  },
+  "mcMore": "More",
+  "@mcMore": {
+    "description": "The dashed chip that opens the full list of emirates and occasions."
+  },
+  "mcLess": "Fewer",
+  "@mcLess": {
+    "description": "The dashed chip that folds the full list of emirates and occasions back."
+  },
+  "mcCountLine": "{count, plural, =1{1 creator matches} other{{count} creators match}} · featured first, then newest",
+  "@mcCountLine": {
+    "description": "Line under the filters on screen 15: how many creators match and in what order (the website order).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mcShowing": "Showing {shown} of {total}",
+  "@mcShowing": {
+    "description": "Under the creator cards on screen 15.",
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "mcShowMore": "Show more",
+  "@mcShowMore": {
+    "description": "Link that loads the next page of creators."
+  },
+  "mcMatchYou": "Tell us the shoot, we'll match you",
+  "@mcMatchYou": {
+    "description": "The one primary action on screen 15; opens the landing brief."
+  },
+  "mcMatchHint": "Faster than browsing: one sentence, one fixed price, who's free on your date.",
+  "@mcMatchHint": {
+    "description": "Under the primary action on screen 15."
+  },
+  "mcEmptyTitle": "No creators match these filters",
+  "@mcEmptyTitle": {
+    "description": "Empty state of the directory when the filters match nobody."
+  },
+  "mcCardLabel": "{name}, see profile",
+  "@mcCardLabel": {
+    "description": "Screen-reader name of one creator card, announced as a link.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mcCardProfile": "Profile",
+  "@mcCardProfile": {
+    "description": "The word at the foot of a creator card that opens the profile."
+  },
+  "mcYears": "{count, plural, =1{1 year} other{{count} years}}",
+  "@mcYears": {
+    "description": "Years of experience.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mcSpeaks": "Speaks {languages}",
+  "@mcSpeaks": {
+    "description": "Languages on a creator card.",
+    "placeholders": {
+      "languages": {
+        "type": "String"
+      }
+    }
+  },
+  "mcBackToCreators": "Back to creators",
+  "@mcBackToCreators": {
+    "description": "Screen-reader name of the back button on the profile."
+  },
+  "mcShareProfile": "Share profile",
+  "@mcShareProfile": {
+    "description": "Screen-reader name of the share button on the profile."
+  },
+  "mcNoPhoto": "No photo yet",
+  "@mcNoPhoto": {
+    "description": "Name of the scene tile shown until the creator uploads a photo."
+  },
+  "mcProfessional": "Professional",
+  "@mcProfessional": {
+    "description": "Label of the creator types fact on the profile."
+  },
+  "mcShoots": "Shoots",
+  "@mcShoots": {
+    "description": "Label of the specialties fact on the profile."
+  },
+  "mcWorksIn": "Works in",
+  "@mcWorksIn": {
+    "description": "Label of the emirates fact on the profile."
+  },
+  "mcBookWith": "Book with {name}",
+  "@mcBookWith": {
+    "description": "The one primary action on the profile; name is the first name.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mcActions": "Actions",
+  "@mcActions": {
+    "description": "Group label on the profile."
+  },
+  "mcSeeTheWork": "See the work",
+  "@mcSeeTheWork": {
+    "description": "Profile action that scrolls to the work samples."
+  },
+  "mcAskWhatsapp": "Ask on WhatsApp",
+  "@mcAskWhatsapp": {
+    "description": "Profile action that opens a WhatsApp chat."
+  },
+  "mcAbout": "About",
+  "@mcAbout": {
+    "description": "Group label on the profile."
+  },
+  "mcSpeaksLabel": "Speaks",
+  "@mcSpeaksLabel": {
+    "description": "Label of the languages fact on the profile."
+  },
+  "mcExperience": "Experience",
+  "@mcExperience": {
+    "description": "Label of the experience fact on the profile."
+  },
+  "mcFrom": "From",
+  "@mcFrom": {
+    "description": "Label of the nationality fact on the profile."
+  },
+  "mcWork": "Work",
+  "@mcWork": {
+    "description": "Heading of the work samples on the profile."
+  },
+  "mcPieces": "{count, plural, =1{1 piece} other{{count} pieces}}",
+  "@mcPieces": {
+    "description": "How many samples a creator has.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mcSampleLabel": "Sample {number} of {total}",
+  "@mcSampleLabel": {
+    "description": "Screen-reader name of a sample.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "mcSampleVideoLabel": "Sample {number} of {total}, video",
+  "@mcSampleVideoLabel": {
+    "description": "Screen-reader name of a video sample.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "mcAwaitingSamples": "Samples are on their way.",
+  "@mcAwaitingSamples": {
+    "description": "Shown instead of the grid when a creator has no samples."
+  },
+  "mcViewerClose": "Close",
+  "@mcViewerClose": {
+    "description": "Closes the full-screen sample viewer."
+  },
+  "mcPlayVideo": "Play video",
+  "@mcPlayVideo": {
+    "description": "Opens a video sample outside the app."
+  },
+  "mcAskMessage": "Hi! I'd like to ask about {name} ({code}).",
+  "@mcAskMessage": {
+    "description": "WhatsApp message from a creator profile; names the creator code.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "mcCreatorLineLabel": "Creator: {name} ({code})",
+  "@mcCreatorLineLabel": {
+    "description": "Line added to the brief message when the template has no creator placeholder.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "mcBookTitle": "Book {name}",
+  "@mcBookTitle": {
+    "description": "Heading of screen 17.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mcBookBody": "Describe the shoot and send it on WhatsApp.",
+  "@mcBookBody": {
+    "description": "Line under the heading of screen 17."
+  },
+  "mcBackToProfile": "Back to the profile of {name}",
+  "@mcBackToProfile": {
+    "description": "Screen-reader name of the back button on screen 17.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mcChange": "Change",
+  "@mcChange": {
+    "description": "Opens the directory to choose another creator."
+  },
+  "mcCreatorLine": "{types} · Code {code}",
+  "@mcCreatorLine": {
+    "description": "Under the creator name on screen 17.",
+    "placeholders": {
+      "types": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "mcWhereWorks": "Where {name} works",
+  "@mcWhereWorks": {
+    "description": "Group label over the emirate options on screen 17.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mcStepsLeft": "{count} left",
+  "@mcStepsLeft": {
+    "description": "Small hint on the primary action: unanswered brief steps.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mcNoAccountHint": "No account needed to send a brief. We ask for your number at the last step.",
+  "@mcNoAccountHint": {
+    "description": "Hint at the foot of screen 17."
+  },
+  "mcCannotComplete": "This creator can't be booked through the brief. Ask on WhatsApp instead.",
+  "@mcCannotComplete": {
+    "description": "Shown on screen 17 when no option fits the creator."
+  },
+  "mcBriefGroup": "Your brief",
+  "@mcBriefGroup": {
+    "description": "Screen-reader name of the brief panel."
+  },
+  "mcSpecialtyTitle": "{name} professionals",
+  "@mcSpecialtyTitle": {
+    "description": "Heading of screen 18 when the editor wrote no title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mcSamplesCount": "{count, plural, =1{1 sample} other{{count} samples}}",
+  "@mcSamplesCount": {
+    "description": "Count of samples on screen 18.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mcProsCount": "{count, plural, =1{1 pro} other{{count} pros}}",
+  "@mcProsCount": {
+    "description": "Count of professionals on screen 18.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mcEmirateGroup": "Emirate",
+  "@mcEmirateGroup": {
+    "description": "Screen-reader name of the emirate chips on screen 18."
+  },
+  "mcTopHit": "Top hit",
+  "@mcTopHit": {
+    "description": "Label over the first creator on screen 18; marks a result, not an action."
+  },
+  "mcEveryoneElse": "Everyone else",
+  "@mcEveryoneElse": {
+    "description": "Label over the other creators on screen 18."
+  },
+  "mcSeeAll": "See all {count}",
+  "@mcSeeAll": {
+    "description": "Opens the directory filtered to this specialty or brief.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mcRecentWork": "Recent work",
+  "@mcRecentWork": {
+    "description": "Label over the recent samples on screen 18."
+  },
+  "mcByCreator": ", by {name}",
+  "@mcByCreator": {
+    "description": "After a sample caption: who shot it.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mcSampleBy": "{caption}, by {name}",
+  "@mcSampleBy": {
+    "description": "Screen-reader name of a recent sample on screen 18.",
+    "placeholders": {
+      "caption": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mcStartBrief": "Start a {name} brief",
+  "@mcStartBrief": {
+    "description": "The one primary action on screen 18.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mcSeeWhoFree": "See who's free",
+  "@mcSeeWhoFree": {
+    "description": "The one primary action on screen 19."
+  },
+  "mcBriefPrefilled": "The brief is filled in for this page. Tap a word to change it.",
+  "@mcBriefPrefilled": {
+    "description": "Hint under the brief on screen 19."
+  },
+  "mcProsWhoCan": "{count, plural, =1{1 professional who can do this} other{{count} professionals who can do this}}",
+  "@mcProsWhoCan": {
+    "description": "Heading over the creators on screen 19.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mcQuestions": "Questions people ask",
+  "@mcQuestions": {
+    "description": "Heading over the questions on screen 19."
+  },
+  "mcExpanded": "expanded",
+  "@mcExpanded": {
+    "description": "Announced state of an open question."
+  },
+  "mcCollapsed": "collapsed",
+  "@mcCollapsed": {
+    "description": "Announced state of a closed question."
+  },
+  "mcContactNotAvailable": "WhatsApp is not available right now.",
+  "@mcContactNotAvailable": {
+    "description": "Shown when the site has no WhatsApp number."
   }
 }

@@ -35,7 +35,7 @@ strings). No web change.
 **Language/Version**: Dart 3.13 / Flutter 3.47.9 (pinned), `apps/mobile` only.
 
 **Primary Dependencies**: existing (`flutter_bloc`, `go_router`, `get_it`, `dio`, `url_launcher`);
-new: `share_plus` 12.0.2 (Complexity Tracking).
+new: `share_plus` 13.3.1 (Complexity Tracking).
 
 **Storage**: none (filters live in a cubit while the app is open).
 
@@ -73,7 +73,7 @@ out, not by writing placeholders.
 
 | Addition | Why | Simpler alternative rejected |
 |---|---|---|
-| `share_plus` 12.0.2 | FR-013 asks for the system share sheet | `Clipboard` only: not a share sheet; hand-written platform channels |
+| `share_plus` 13.3.1 | FR-013 asks for the system share sheet | `Clipboard` only: not a share sheet; hand-written platform channels |
 | Feature-local `BriefCubit` | 010 builds the landing brief in parallel and none is shared yet | waiting for 010 blocks 17 and 19; it reads only 008's `BriefBuilder` and moves to `core/` when 010 lands |
 
 ## Project Structure
