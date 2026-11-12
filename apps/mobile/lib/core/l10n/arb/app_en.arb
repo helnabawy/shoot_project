@@ -2382,5 +2382,514 @@
   "problemDateTaken": "You are already booked that day, so this request lapsed.",
   "@problemDateTaken": {
     "description": "Problem: the day was taken when confirming."
+  },
+  "qmStepLine": "Step {step} of 3 · {summary}",
+  "@qmStepLine": {
+    "description": "The step line on screens 07 to 11.",
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "qmEditAction": "Edit",
+  "@qmEditAction": {
+    "description": "Opens the brief again from the step line."
+  },
+  "qmChooseTitle": "Swipe to choose",
+  "@qmChooseTitle": {
+    "description": "Screen 07 title."
+  },
+  "qmChooseBody": "{count, plural, one{One {type} free on your day, picked for your brief.} other{{count} {types} free on your day, picked for your brief.}}",
+  "@qmChooseBody": {
+    "description": "Screen 07 sub-title; the professional words come from the API.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "type": {
+        "type": "String"
+      },
+      "types": {
+        "type": "String"
+      }
+    }
+  },
+  "qmCarouselLabel": "Your creators",
+  "@qmCarouselLabel": {
+    "description": "Carousel name for screen readers."
+  },
+  "qmPosition": "{n} of {m}",
+  "@qmPosition": {
+    "description": "Announced position in the carousel.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "qmContinueWith": "Continue with {name}",
+  "@qmContinueWith": {
+    "description": "Primary action on screen 07.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmSeeWork": "See {name}'s work and profile",
+  "@qmSeeWork": {
+    "description": "Link under the primary action on screen 07.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmNotSure": "Not sure? Let us pick",
+  "@qmNotSure": {
+    "description": "Continues without a creator."
+  },
+  "qmNotSureHint": "We introduce you on WhatsApp within the hour",
+  "@qmNotSureHint": {
+    "description": "Under the let-us-pick row."
+  },
+  "qmPriceOnRequest": "Price on request",
+  "@qmPriceOnRequest": {
+    "description": "A brief with no price rule."
+  },
+  "qmContinueOnWhatsApp": "Continue on WhatsApp",
+  "@qmContinueOnWhatsApp": {
+    "description": "Primary action for price on request."
+  },
+  "qmNoneTitle": "No one is free that day",
+  "@qmNoneTitle": {
+    "description": "Screen 08 title."
+  },
+  "qmNoneBody": "These days have free creators. Picking one changes only the date.",
+  "@qmNoneBody": {
+    "description": "Screen 08 body."
+  },
+  "qmDayFree": "{count, plural, one{1 free} other{{count} free}}",
+  "@qmDayFree": {
+    "description": "How many creators are free on a day.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qmContinueOn": "Continue on {day}",
+  "@qmContinueOn": {
+    "description": "Primary action on screen 08.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "qmAskWhatsApp": "Ask on WhatsApp",
+  "@qmAskWhatsApp": {
+    "description": "Keeps the date by asking the team."
+  },
+  "qmDetailsTitle": "Your shoot",
+  "@qmDetailsTitle": {
+    "description": "Screen 09 title."
+  },
+  "qmDateLabel": "Date",
+  "@qmDateLabel": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmTimeLabel": "Start time",
+  "@qmTimeLabel": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmTimeHint": "For example 18:30",
+  "@qmTimeHint": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmDurationLabel": "Duration",
+  "@qmDurationLabel": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmVenueLabel": "Venue or address",
+  "@qmVenueLabel": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNoteLabel": "Note for {name} (optional)",
+  "@qmNoteLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNoteLabelTeam": "Note for the creator (optional)",
+  "@qmNoteLabelTeam": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmContinueLabel": "Continue",
+  "@qmContinueLabel": {
+    "description": "Primary action on screen 09, with the price."
+  },
+  "qmErrDate": "Choose a day that is not in the past.",
+  "@qmErrDate": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmErrTime": "Enter the start time as hours and minutes, like 18:30.",
+  "@qmErrTime": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmErrVenue": "Where will the shoot be?",
+  "@qmErrVenue": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNumberTitle": "Your number",
+  "@qmNumberTitle": {
+    "description": "Screen 10 title."
+  },
+  "qmNumberBody": "We use it to sign you in and save this booking. {name} sees your name, never your number.",
+  "@qmNumberBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNumberBodyTeam": "We use it to sign you in and save this booking. The creator sees your name, never your number.",
+  "@qmNumberBodyTeam": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmSummaryCreator": "Creator",
+  "@qmSummaryCreator": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmSummaryWhen": "When",
+  "@qmSummaryWhen": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmSummaryTotal": "Price",
+  "@qmSummaryTotal": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmWeChoose": "We will choose",
+  "@qmWeChoose": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNameLabel": "What should {name} call you? (optional)",
+  "@qmNameLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNameLabelTeam": "What should the creator call you? (optional)",
+  "@qmNameLabelTeam": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmOpenWhatsApp": "Open WhatsApp",
+  "@qmOpenWhatsApp": {
+    "description": "Primary action on screen 11."
+  },
+  "qmSaving": "Saving your booking…",
+  "@qmSaving": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmQuoteTitle": "Quotation {reference}",
+  "@qmQuoteTitle": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmIssued": "Issued {date}",
+  "@qmIssued": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmValidUntil": "Valid until {date}",
+  "@qmValidUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmShootOn": "Shoot",
+  "@qmShootOn": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmProfessionals": "Your professionals",
+  "@qmProfessionals": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmTotal": "Total",
+  "@qmTotal": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmVatNote": "VAT included",
+  "@qmVatNote": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmAccept": "Accept quotation",
+  "@qmAccept": {
+    "description": "Primary action on screen 12."
+  },
+  "qmQuestions": "Questions? Ask on WhatsApp",
+  "@qmQuestions": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmDownloadPdf": "Download PDF",
+  "@qmDownloadPdf": {
+    "description": "Opens the quotation page in the browser, where it can be saved as PDF."
+  },
+  "qmTeamChoosing": "The team is choosing your {type}.",
+  "@qmTeamChoosing": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmStateQuoted": "Quotation",
+  "@qmStateQuoted": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmStateAccepted": "Waiting",
+  "@qmStateAccepted": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmStateConfirmed": "Awaiting payment",
+  "@qmStateConfirmed": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmStatePaid": "Paid",
+  "@qmStatePaid": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmStateScheduled": "Scheduled",
+  "@qmStateScheduled": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmStateDelivered": "Delivered",
+  "@qmStateDelivered": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmStateCompleted": "Completed",
+  "@qmStateCompleted": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmStateCancelled": "Cancelled",
+  "@qmStateCancelled": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmStateExpired": "Expired",
+  "@qmStateExpired": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmStateOnHold": "On hold",
+  "@qmStateOnHold": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextAccept": "Accept to ask {name} to confirm.",
+  "@qmNextAccept": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextAcceptTeam": "Accept and the team finds your creator.",
+  "@qmNextAcceptTeam": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextWait": "Waiting for {name} to confirm.",
+  "@qmNextWait": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextWaitTeam": "Waiting for your creator to confirm.",
+  "@qmNextWaitTeam": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextChooseAnother": "Your {type} is not available. Choose another at the same price.",
+  "@qmNextChooseAnother": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextPay": "Confirmed. Agree the payment in the chat; the team records it.",
+  "@qmNextPay": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextShootDay": "Your shoot day is {date}.",
+  "@qmNextShootDay": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextShootDayOpen": "Your shoot day is coming up.",
+  "@qmNextShootDayOpen": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextConfirmDelivery": "The work is delivered. Confirm it if you are happy.",
+  "@qmNextConfirmDelivery": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextCompleted": "All done. Thank you.",
+  "@qmNextCompleted": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextCancelled": "This booking was cancelled.",
+  "@qmNextCancelled": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextExpired": "This quotation expired.",
+  "@qmNextExpired": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmNextOnHold": "The team is looking into this.",
+  "@qmNextOnHold": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmProgressLabel": "Booking progress",
+  "@qmProgressLabel": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmProgBriefSent": "Brief sent",
+  "@qmProgBriefSent": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmProgConfirmed": "Professional confirmed",
+  "@qmProgConfirmed": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmProgPaid": "Payment recorded",
+  "@qmProgPaid": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmProgShootDay": "Shoot day",
+  "@qmProgShootDay": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmProgDelivered": "Delivered",
+  "@qmProgDelivered": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmProgCompleted": "Completed",
+  "@qmProgCompleted": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmOpenChat": "Open the WhatsApp chat",
+  "@qmOpenChat": {
+    "description": "Primary action on screen 13."
+  },
+  "qmChangeDate": "Need to change the date? Ask {name} in the chat",
+  "@qmChangeDate": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmChangeDateTeam": "Need to change the date? Ask in the chat",
+  "@qmChangeDateTeam": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmChooseAnotherWith": "Continue with {name}",
+  "@qmChooseAnotherWith": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmConfirmDelivery": "Confirm delivery",
+  "@qmConfirmDelivery": {
+    "description": "Primary action on screen 14."
+  },
+  "qmReportProblem": "Report a problem",
+  "@qmReportProblem": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmReportLabel": "What went wrong?",
+  "@qmReportLabel": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmReportSend": "Send to the team",
+  "@qmReportSend": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmHoldReason": "Reported: {reason}",
+  "@qmHoldReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    },
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmExpiredTitle": "This quotation expired",
+  "@qmExpiredTitle": {
+    "description": "Screen 40 title."
+  },
+  "qmExpiredNote": "Price and availability may have changed.",
+  "@qmExpiredNote": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmFreshAction": "Get a fresh quotation",
+  "@qmFreshAction": {
+    "description": "Primary action on screen 40."
+  },
+  "qmFreshNote": "Price and who is free may have changed since your last quotation.",
+  "@qmFreshNote": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmErrUnavailable": "That creator is no longer free that day. Choose again.",
+  "@qmErrUnavailable": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmErrNotAllowed": "That cannot be done now. The booking shows where it stands.",
+  "@qmErrNotAllowed": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmErrExpired": "This quotation has expired.",
+  "@qmErrExpired": {
+    "description": "Quick Match and booking (feature 012)."
+  },
+  "qmErrReason": "Tell us what went wrong in a few words.",
+  "@qmErrReason": {
+    "description": "Quick Match and booking (feature 012)."
   }
 }

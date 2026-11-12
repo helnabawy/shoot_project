@@ -23,6 +23,7 @@ import 'package:shoot_mobile/features/content/content_injection.dart';
 import 'package:shoot_mobile/features/creator_account/creator_account_injection.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/landing/landing_injection.dart';
+import 'package:shoot_mobile/features/quick_match/quick_match_injection.dart';
 import 'package:shoot_mobile/features/service_health/service_health_injection.dart';
 import 'package:shoot_mobile/features/sign_in/sign_in_injection.dart';
 import 'package:shoot_mobile/features/site/site_injection.dart';
@@ -69,6 +70,7 @@ void configureDependencies(
   registerSignInFeature(getIt);
   registerAccountFeature(getIt);
   registerCreatorAccountFeature(getIt);
+  registerQuickMatchFeature(getIt);
 }
 
 /// Feature 009: the session, its own Dio (no auth interceptor, so a refresh never recurses)
