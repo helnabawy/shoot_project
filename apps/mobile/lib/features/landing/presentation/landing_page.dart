@@ -289,137 +289,146 @@ class _Hero extends StatelessWidget {
           constraints: BoxConstraints(minHeight: minHeight),
           child: SafeArea(
             bottom: false,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              // Any spare screen height sits between the headline and the brief bar.
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ShootHeader(
-                      leading: Wordmark(label: l10n.appTitle),
-                      trailing: [
-                        const LanguageAction(),
-                        ShootIconButton(
-                          icon: ShootIcons.person,
-                          label: l10n.mlAccountButton,
-                          onPressed: () => unawaited(
-                            context.push(
-                              session is SignedIn
-                                  ? afterSignIn(session.user)
-                                  : AppRoutes.login,
-                            ),
-                          ),
-                        ),
-                        ShootIconButton(
-                          icon: ShootIcons.menu,
-                          label: l10n.mlOpenMenu,
-                          onPressed: () => unawaited(context.push('/menu')),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                        20,
-                        22,
-                        20,
-                        0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            hero.headline,
-                            style: ShootType.display.copyWith(
-                              fontSize: 46,
-                              height: 1,
-                              letterSpacing: -0.035 * 46,
-                              color: c.ink,
-                            ),
-                          ),
-                          if (hero.subheadline case final sub?)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 14),
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 270,
-                                ),
-                                child: Text(
-                                  sub,
-                                  style: ShootType.body.copyWith(
-                                    fontSize: 16,
-                                    height: 1.45,
-                                    color: c.bodyInk,
-                                  ),
-                                ),
+            // The intrinsic height lets the brief bar centre itself in the space that is left.
+            child: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ShootHeader(
+                        leading: Wordmark(label: l10n.appTitle),
+                        trailing: [
+                          const LanguageAction(),
+                          ShootIconButton(
+                            icon: ShootIcons.person,
+                            label: l10n.mlAccountButton,
+                            onPressed: () => unawaited(
+                              context.push(
+                                session is SignedIn
+                                    ? afterSignIn(session.user)
+                                    : AppRoutes.login,
                               ),
                             ),
+                          ),
+                          ShootIconButton(
+                            icon: ShootIcons.menu,
+                            label: l10n.mlOpenMenu,
+                            onPressed: () => unawaited(context.push('/menu')),
+                          ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 28),
-                    Padding(
-                      padding: const EdgeInsetsDirectional.symmetric(
-                        horizontal: 12,
-                      ),
-                      child: BlocBuilder<BriefCubit, BriefState>(
-                        bloc: brief,
-                        builder: (context, b) => b.load == BriefLoad.ready
-                            ? BriefBar(
-                                state: b,
-                                clock: clock.now,
-                                onTouch: brief.touch,
-                                onChoose: brief.choose,
-                                onContinue: brief.continueStep,
-                                onSkip: brief.skip,
-                                onDate: brief.setDate,
-                                onReopen: brief.reopen,
-                                onTakeBack: brief.takeBack,
-                                onSubmit: () => unawaited(brief.submit()),
-                                onWhatsapp: onWhatsapp,
-                                onProvider: (slug) => unawaited(
-                                  context.push(
-                                    '/register?type=provider&persona=$slug',
+                      Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                          20,
+                          22,
+                          20,
+                          0,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              hero.headline,
+                              style: ShootType.display.copyWith(
+                                fontSize: 46,
+                                height: 1,
+                                letterSpacing: -0.035 * 46,
+                                color: c.ink,
+                              ),
+                            ),
+                            if (hero.subheadline case final sub?)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 14),
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 270,
+                                  ),
+                                  child: Text(
+                                    sub,
+                                    style: ShootType.body.copyWith(
+                                      fontSize: 16,
+                                      height: 1.45,
+                                      color: c.bodyInk,
+                                    ),
                                   ),
                                 ),
-                              )
-                            : (b.load == BriefLoad.loading ||
-                                  b.load == BriefLoad.idle)
-                            ? const SizedBox(height: 120)
-                            // No builder or no options: the headline stays, the one action is WhatsApp
-                            // (spec edge case). The failure is reported, never hidden by built-in options.
-                            : TopHit(
-                                label: l10n.mlMenuWhatsapp,
-                                leading: ShootIcons.whatsapp,
-                                chevron: true,
-                                onPressed: onWhatsapp,
                               ),
-                      ),
-                    ),
-                    if (pauseNearHero)
-                      Align(
-                        alignment: AlignmentDirectional.centerEnd,
-                        child: Padding(
-                          padding: const EdgeInsetsDirectional.only(
-                            end: 12,
-                            top: 8,
-                          ),
-                          child: AmbientPauseButton(
-                            pauseLabel: l10n.mlPauseMotion,
-                            playLabel: l10n.mlPlayMotion,
-                          ),
+                          ],
                         ),
                       ),
-                    const SizedBox(height: 48),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsetsDirectional.symmetric(
+                                horizontal: 12,
+                              ),
+                              child: BlocBuilder<BriefCubit, BriefState>(
+                                bloc: brief,
+                                builder: (context, b) =>
+                                    b.load == BriefLoad.ready
+                                    ? BriefBar(
+                                        state: b,
+                                        clock: clock.now,
+                                        onTouch: brief.touch,
+                                        onChoose: brief.choose,
+                                        onContinue: brief.continueStep,
+                                        onSkip: brief.skip,
+                                        onDate: brief.setDate,
+                                        onReopen: brief.reopen,
+                                        onTakeBack: brief.takeBack,
+                                        onSubmit: () =>
+                                            unawaited(brief.submit()),
+                                        onWhatsapp: onWhatsapp,
+                                        onProvider: (slug) => unawaited(
+                                          context.push(
+                                            '/register?type=provider&persona=$slug',
+                                          ),
+                                        ),
+                                      )
+                                    : (b.load == BriefLoad.loading ||
+                                          b.load == BriefLoad.idle)
+                                    ? const SizedBox(height: 120)
+                                    // No builder or no options: the headline stays, the one action is WhatsApp
+                                    // (spec edge case). The failure is reported, never hidden by built-in options.
+                                    : TopHit(
+                                        label: l10n.mlMenuWhatsapp,
+                                        leading: ShootIcons.whatsapp,
+                                        chevron: true,
+                                        onPressed: onWhatsapp,
+                                      ),
+                              ),
+                            ),
+                            if (pauseNearHero)
+                              Align(
+                                alignment: AlignmentDirectional.centerEnd,
+                                child: Padding(
+                                  padding: const EdgeInsetsDirectional.only(
+                                    end: 12,
+                                    top: 8,
+                                  ),
+                                  child: AmbientPauseButton(
+                                    pauseLabel: l10n.mlPauseMotion,
+                                    playLabel: l10n.mlPlayMotion,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

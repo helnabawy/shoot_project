@@ -48,14 +48,23 @@ class _ProfilePageState extends State<ProfilePage> {
     return BlocProvider.value(
       value: _cubit,
       child: BlocBuilder<ProfileCubit, ProfileState>(
-        builder: (context, state) => ProfileView(state: state, cubit: _cubit, onOpen: (path) => context.push(path)),
+        builder: (context, state) => ProfileView(
+          state: state,
+          cubit: _cubit,
+          onOpen: (path) => context.push(path),
+        ),
       ),
     );
   }
 }
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({super.key, required this.state, required this.cubit, required this.onOpen});
+  const ProfileView({
+    super.key,
+    required this.state,
+    required this.cubit,
+    required this.onOpen,
+  });
 
   final ProfileState state;
   final ProfileCubit cubit;
@@ -102,7 +111,10 @@ class _Header extends StatelessWidget {
           spacing: 12,
           children: [
             Expanded(
-              child: ProgressBar(value: p.strength / 100, label: l10n.caProfileStrengthLabel),
+              child: ProgressBar(
+                value: p.strength / 100,
+                label: l10n.caProfileStrengthLabel,
+              ),
             ),
             MetaText(l10n.caStrengthValue(p.strength)),
           ],
@@ -114,7 +126,11 @@ class _Header extends StatelessWidget {
 
 /// Screens 28 and 29.
 class _EditView extends StatelessWidget {
-  const _EditView({required this.state, required this.cubit, required this.onOpen});
+  const _EditView({
+    required this.state,
+    required this.cubit,
+    required this.onOpen,
+  });
 
   final ProfileReady state;
   final ProfileCubit cubit;
@@ -135,18 +151,35 @@ class _EditView extends StatelessWidget {
               '${l10n.caIncompleteMessage} '
               '${l10n.caStepsNeedAttention(needing.length)}',
         ),
-      if (state.failure != null && state.errors.isEmpty) FailureLine(state.failure!),
+      if (state.failure != null && state.errors.isEmpty)
+        FailureLine(state.failure!),
     ];
     if (state.ready) {
       children
-        ..add(Text(l10n.caAllHere, style: ShootType.title.copyWith(color: context.colors.ink)))
+        ..add(
+          Text(
+            l10n.caAllHere,
+            style: ShootType.title.copyWith(color: context.colors.ink),
+          ),
+        )
         ..add(
           ShootPanel(
             padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
-            child: Column(children: [for (final (i, step) in p.steps.indexed) _stepRow(context, step, i)]),
+            child: Column(
+              children: [
+                for (final (i, step) in p.steps.indexed)
+                  _stepRow(context, step, i),
+              ],
+            ),
           ),
         )
-        ..add(TopHit(label: l10n.caSendForReview, loading: state.busy, onPressed: state.busy ? null : cubit.submit));
+        ..add(
+          TopHit(
+            label: l10n.caSendForReview,
+            loading: state.busy,
+            onPressed: state.busy ? null : cubit.submit,
+          ),
+        );
     } else {
       final last = state.step == StepKey.values.last;
       children
@@ -157,7 +190,8 @@ class _EditView extends StatelessWidget {
             actions: StepActions(
               edit: cubit.edit,
               pickPhoto: cubit.pickPhoto,
-              addSample: (source, specialty) => cubit.addSample(source, specialty: specialty),
+              addSample: (source, specialty) =>
+                  cubit.addSample(source, specialty: specialty),
               removeSample: cubit.removeSample,
               pickIdentity: cubit.pickIdentity,
               openCalendar: () => onOpen(AppRoutes.accountAvailability),
@@ -166,7 +200,13 @@ class _EditView extends StatelessWidget {
         )
         ..add(_nav(context, last));
       if (last && needing.isNotEmpty) {
-        children.add(MetaText(l10n.caSendOffLine(needing.map((s) => stepName(context, s.key)).join(', '))));
+        children.add(
+          MetaText(
+            l10n.caSendOffLine(
+              needing.map((s) => stepName(context, s.key)).join(', '),
+            ),
+          ),
+        );
       }
     }
     return CreatorShell(child: CreatorBody(children: children));
@@ -178,7 +218,11 @@ class _EditView extends StatelessWidget {
     return ShootRow(
       label: '${step.number}. ${stepName(context, step.key)}',
       divider: i == 0 ? RowDivider.none : RowDivider.top,
-      leading: ShootIcon(ShootIcons.check, size: 18, color: line.tone == StepTone.done ? c.accentInk : c.mute),
+      leading: ShootIcon(
+        ShootIcons.check,
+        size: 18,
+        color: line.tone == StepTone.done ? c.accentInk : c.mute,
+      ),
       trailing: MetaText(line.text),
       onTap: () => cubit.goTo(step.key),
     );
@@ -198,7 +242,8 @@ class _EditView extends StatelessWidget {
               final line = stepLine(context, step, p);
               final done = step.state == StepState.done;
               return (
-                label: '${done ? '✓' : step.number} ${stepName(context, step.key)}',
+                label:
+                    '${done ? '✓' : step.number} ${stepName(context, step.key)}',
                 state: line.text,
                 tone: line.tone,
               );
@@ -227,7 +272,10 @@ class _EditView extends StatelessWidget {
           children: [
             if (i > 0)
               Expanded(
-                child: SecondaryButton(label: l10n.caBack, onPressed: state.busy ? null : cubit.back),
+                child: SecondaryButton(
+                  label: l10n.caBack,
+                  onPressed: state.busy ? null : cubit.back,
+                ),
               ),
             if (next != null)
               Expanded(
@@ -248,7 +296,11 @@ class _EditView extends StatelessWidget {
 
 /// Screen 30: waiting for review (also live, hidden and suspended).
 class _ReviewView extends StatelessWidget {
-  const _ReviewView({required this.state, required this.cubit, required this.onOpen});
+  const _ReviewView({
+    required this.state,
+    required this.cubit,
+    required this.onOpen,
+  });
 
   final ProfileReady state;
   final ProfileCubit cubit;
@@ -270,15 +322,24 @@ class _ReviewView extends StatelessWidget {
         children: [
           _Header(state: state, title: title),
           if (state.failure != null) FailureLine(state.failure!),
-          if (p.reviewNote.isNotEmpty) MessageBanner(tone: BannerTone.attention, text: l10n.caReviewNote(p.reviewNote)),
-          if (p.status == ProfileStatus.liveWithChanges || p.hasPendingChanges) MetaText(l10n.caLiveChangesNote),
-          if (p.status == ProfileStatus.inReview) _Stages(sentAt: p.submittedAt),
+          if (p.reviewNote.isNotEmpty)
+            MessageBanner(
+              tone: BannerTone.attention,
+              text: l10n.caReviewNote(p.reviewNote),
+            ),
+          if (p.status == ProfileStatus.liveWithChanges || p.hasPendingChanges)
+            MetaText(l10n.caLiveChangesNote),
+          if (p.status == ProfileStatus.inReview)
+            _Stages(sentAt: p.submittedAt),
           GroupText(l10n.caWhileYouWait),
           ShootPanel(
             padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
             child: Column(
               children: [
-                ShootRow(label: l10n.caViewPublic, onTap: () => onOpen('/creators/${p.code}')),
+                ShootRow(
+                  label: l10n.caViewPublic,
+                  onTap: () => onOpen('/creators/${p.code}'),
+                ),
                 ShootRow(
                   label: l10n.caEditProfile,
                   trailing: MetaText(l10n.caEditNote),
@@ -290,12 +351,18 @@ class _ReviewView extends StatelessWidget {
                   chevron: false,
                   link: false,
                   divider: RowDivider.top,
-                  onTap: () => hidden ? cubit.setHidden(hidden: false) : _confirmHide(context),
+                  onTap: () => hidden
+                      ? cubit.setHidden(hidden: false)
+                      : _confirmHide(context),
                 ),
               ],
             ),
           ),
-          TopHit(label: l10n.caSetCalendar, chevron: true, onPressed: () => onOpen(AppRoutes.accountAvailability)),
+          TopHit(
+            label: l10n.caSetCalendar,
+            chevron: true,
+            onPressed: () => onOpen(AppRoutes.accountAvailability),
+          ),
         ],
       ),
     );
@@ -315,10 +382,19 @@ class _ReviewView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: 12,
             children: [
-              Text(l10n.caHideTitle, style: ShootType.heading.copyWith(color: sheet.colors.ink)),
+              Text(
+                l10n.caHideTitle,
+                style: ShootType.heading.copyWith(color: sheet.colors.ink),
+              ),
               MetaText(l10n.caHideBody),
-              SecondaryButton(label: l10n.caHideProfile, onPressed: () => Navigator.of(sheet).pop(true)),
-              TextLink(label: l10n.caCancel, onTap: () => Navigator.of(sheet).pop(false)),
+              SecondaryButton(
+                label: l10n.caHideProfile,
+                onPressed: () => Navigator.of(sheet).pop(true),
+              ),
+              TextLink(
+                label: l10n.caCancel,
+                onTap: () => Navigator.of(sheet).pop(false),
+              ),
             ],
           ),
         ),
@@ -339,7 +415,11 @@ class _Stages extends StatelessWidget {
     final l10n = context.l10n;
     final c = context.colors;
     final rows = [
-      (l10n.caStageSent, sentAt == null ? null : l10n.caSentOn(formatDay(context, sentAt!)), true),
+      (
+        l10n.caStageSent,
+        sentAt == null ? null : l10n.caSentOn(formatDay(context, sentAt!)),
+        true,
+      ),
       (l10n.caStageChecking, null, true),
       (l10n.caStageLive, null, false),
     ];
@@ -357,8 +437,16 @@ class _Stages extends StatelessWidget {
                   width: 24,
                   height: 24,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: reached ? c.selected : c.tile),
-                  child: Text('${i + 1}', style: ShootType.badge.copyWith(color: reached ? c.accentInk : c.tileInk)),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: reached ? c.selected : c.tile,
+                  ),
+                  child: Text(
+                    '${i + 1}',
+                    style: ShootType.badge.copyWith(
+                      color: reached ? c.accentInk : c.tileInk,
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: Column(

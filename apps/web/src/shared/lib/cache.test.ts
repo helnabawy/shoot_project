@@ -16,6 +16,17 @@ describe('cachedQuery', () => {
     })
   })
 
+  it('in development, expires after a few seconds so publishes from another server show up', async () => {
+    vi.mocked(unstable_cache).mockClear()
+    vi.stubEnv('NODE_ENV', 'development')
+    try {
+      await cachedQuery(['landing-page'], [], async () => 'dev')
+      expect(vi.mocked(unstable_cache).mock.calls[0]?.[2]).toEqual({ tags: ['landing-page'], revalidate: 5 })
+    } finally {
+      vi.unstubAllEnvs()
+    }
+  })
+
   it('bypasses the cache in draft mode', async () => {
     vi.mocked(unstable_cache).mockClear()
     const fn = vi.fn(async () => 'draft')

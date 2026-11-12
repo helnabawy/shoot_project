@@ -22,7 +22,8 @@ Dio createDio({
     BaseOptions(
       baseUrl: config.apiBaseUrl,
       connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 15),
+      // Debug builds wait longer: a dev server on a remote database answers a save in ~15 s.
+      receiveTimeout: const Duration(seconds: kReleaseMode ? 15 : 60),
       sendTimeout: const Duration(seconds: 15),
       headers: const {Headers.acceptHeader: Headers.jsonContentType},
       responseType: ResponseType.json,

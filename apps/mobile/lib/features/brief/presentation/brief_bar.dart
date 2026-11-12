@@ -278,36 +278,33 @@ class _Field extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Semantics(
-                  textField: true,
-                  label: l10n.mlBriefSearchLabel,
-                  child: TextField(
-                    key: const ValueKey('briefBar:search'),
-                    controller: controller,
-                    onChanged: (_) => onChanged(),
-                    textInputAction: TextInputAction.search,
-                    style: style,
-                    cursorColor: c.accent,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
-                      hintText: l10n.mlBriefSearchPrompt,
-                      hintStyle: style.copyWith(color: c.mute),
-                    ),
-                  ),
-                ),
+                child: tokens != null
+                    ? Padding(
+                        padding: const EdgeInsetsDirectional.only(top: 1),
+                        child: tokens,
+                      )
+                    : Semantics(
+                        textField: true,
+                        label: l10n.mlBriefSearchLabel,
+                        child: TextField(
+                          key: const ValueKey('briefBar:search'),
+                          controller: controller,
+                          onChanged: (_) => onChanged(),
+                          textInputAction: TextInputAction.search,
+                          style: style,
+                          cursorColor: c.accent,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                            hintText: l10n.mlBriefSearchPrompt,
+                            hintStyle: style.copyWith(color: c.mute),
+                          ),
+                        ),
+                      ),
               ),
             ],
           ),
-          if (tokens != null)
-            Padding(
-              padding: const EdgeInsetsDirectional.only(start: 34, top: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Expanded(child: tokens)],
-              ),
-            ),
         ],
       ),
     );
@@ -321,6 +318,7 @@ class _Field extends StatelessWidget {
     final spans = <InlineSpan>[];
     var cursor = 0;
     var any = false;
+    var tailAttached = false;
     for (final m in parts) {
       final slot = engine.slot(m.group(1)!);
       final answered = slot != null && engine.isAnswered(slot, state.draft);
@@ -340,6 +338,21 @@ class _Field extends StatelessWidget {
                   .valuesOf(slot.token)
                   .map((v) => engine.sentenceWord(slot, v))
                   .join(', ');
+        // Closing punctuation stays on the chip's last line instead of wrapping alone.
+        final tail = m == parts.last ? sentence.substring(m.end) : '';
+        final attach = tail.isNotEmpty && tail.trim().length <= 2;
+        tailAttached = attach;
+        final chip = Container(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          decoration: BoxDecoration(
+            color: c.selected,
+            borderRadius: BorderRadius.circular(6),
+            border: state.active == slot.token
+                ? Border.all(color: c.accent, width: 1.5)
+                : null,
+          ),
+          child: Text(words, style: style),
+        );
         spans.add(
           WidgetSpan(
             alignment: PlaceholderAlignment.baseline,
@@ -348,17 +361,16 @@ class _Field extends StatelessWidget {
               key: ValueKey('briefBar:slot:${slot.token}'),
               behavior: HitTestBehavior.opaque,
               onTap: () => onReopen(slot.token),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                decoration: BoxDecoration(
-                  color: c.selected,
-                  borderRadius: BorderRadius.circular(6),
-                  border: state.active == slot.token
-                      ? Border.all(color: c.accent, width: 1.5)
-                      : null,
-                ),
-                child: Text(words, style: style),
-              ),
+              child: attach
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Flexible(child: chip),
+                        Text(tail, style: style.copyWith(color: c.mute)),
+                      ],
+                    )
+                  : chip,
             ),
           ),
         );
@@ -366,7 +378,7 @@ class _Field extends StatelessWidget {
       cursor = m.end;
     }
     if (!any) return null;
-    if (cursor < sentence.length) {
+    if (!tailAttached && cursor < sentence.length) {
       spans.add(
         TextSpan(
           text: sentence.substring(cursor),
