@@ -1,5 +1,7 @@
+import 'package:shoot_mobile/core/auth/session.dart';
 import 'package:shoot_mobile/core/network/json_read.dart';
 import 'package:shoot_mobile/features/landing/data/models/landing_model.dart';
+import 'package:shoot_mobile/features/sign_in/data/models/otp_models.dart';
 import 'package:shoot_mobile/features/site/data/models/audience_model.dart';
 import 'package:shoot_mobile/features/site/data/models/brief_builder_model.dart';
 import 'package:shoot_mobile/features/site/data/models/navigation_model.dart';
@@ -15,6 +17,15 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'personas': (json) => AudienceModel.fromJson(json).toEntity(),
   'brief-builder': (json) => BriefBuilderModel.fromJson(json).toEntity(),
   'landing': (json) => LandingModel.fromJson(json).toEntity(),
+  // 009: sign-in by one-time code (answers, and the bodies the app sends).
+  'auth-challenge': (json) => OtpChallengeModel.fromJson(json).toEntity(),
+  'auth-token': (json) => AuthTokenModel.fromJson(json).toEntity(),
+  'auth-refresh': refreshedTokenFromJson,
+  'me-seeker': SessionUser.fromMe,
+  'me-provider': SessionUser.fromMe,
+  'auth-request': (json) => OtpRequestModel.fromJson(json).toJson(),
+  'auth-verify-seeker': (json) => OtpVerifyModel.fromJson(json).toJson(),
+  'auth-verify-provider': (json) => OtpVerifyModel.fromJson(json).toJson(),
 };
 
 /// `site.ar` → `site`.

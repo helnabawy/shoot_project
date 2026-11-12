@@ -1,0 +1,33 @@
+{
+  "_note": "Arabic for the derived ar-light and ar-dark references (feature 007, research R6): each English text node of the board, trimmed, to the same Arabic as app_ar.arb and the shared examples. Written with feature 009; needs review by an Arabic writer.",
+  "Shoot": "شوت",
+  "عربي": "English",
+  "Your number is your account": "رقمك هو حسابك",
+  "Enter your UAE mobile number. We'll text you a six-digit code; no password, no email.": "أدخل رقم هاتفك المتحرك الإماراتي. سنرسل إليك رمزاً من ستة أرقام؛ بلا كلمة مرور وبلا بريد إلكتروني.",
+  "Mobile number": "رقم الهاتف المتحرك",
+  "Same number as your WhatsApp works best.": "يُفضَّل استخدام رقم واتساب نفسه.",
+  "Send the code by": "أرسل الرمز عبر",
+  "SMS": "رسالة نصية",
+  "WhatsApp": "واتساب",
+  "Send code": "أرسل الرمز",
+  "By continuing you agree to the": "بالمتابعة فإنك توافق على",
+  "terms": "الشروط",
+  "and": "و",
+  "privacy notice": "إشعار الخصوصية",
+  ". First time here? We'll ask what you need after the code.": ". أول مرة هنا؟ سنسألك عمّا تحتاجه بعد الرمز.",
+  "Editor?": "محرّر؟",
+  "Sign in with email": "سجّل الدخول بالبريد الإلكتروني",
+  "keep": [
+    "+971",
+    "+971 50 123 4567",
+    "50 123 4567",
+    "0:42",
+    "0:24",
+    "4",
+    "8",
+    "2",
+    "7",
+    "1",
+    "3"
+  ]
+}

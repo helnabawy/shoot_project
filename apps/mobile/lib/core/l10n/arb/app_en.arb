@@ -381,7 +381,7 @@
   },
   "listOr": "{first} or {last}",
   "@listOr": {
-    "description": "Joins the last two names of a list: 'photographer or videographer'.",
+    "description": "Joins the last two names of a list (CMS names, such as two professions): '{first} or {last}'.",
     "placeholders": {
       "first": {
         "type": "String"
