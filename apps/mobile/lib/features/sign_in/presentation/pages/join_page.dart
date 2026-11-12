@@ -88,15 +88,10 @@ class _JoinPageState extends State<JoinPage> {
     final finish = state.finishMode;
     final meta = signInMeta(context);
     final personas = state.personas;
-    final all = [for (final p in personas) p.slug];
     final segments = <(String, String)>[
       for (final p in personas) (p.slug, p.singular),
-      if (personas.length > 1) ('*', l10n.joinCombined(personas.length)),
     ];
-    final selected =
-        state.joinPersonas.length > 1 && state.joinPersonas.length == all.length
-        ? '*'
-        : (state.joinPersonas.isEmpty ? '' : state.joinPersonas.first);
+    final selected = state.joinPersonas.isEmpty ? '' : state.joinPersonas.first;
     final error = state.fieldError;
     final personaError =
         error == 'auth.errors.personaRequired' ||
@@ -140,9 +135,7 @@ class _JoinPageState extends State<JoinPage> {
                       key: const ValueKey('join:personas'),
                       segments: segments,
                       selected: selected,
-                      onChanged: (value) => _cubit.joinPersonasChanged(
-                        value == '*' ? all : [value],
-                      ),
+                      onChanged: (value) => _cubit.joinPersonasChanged([value]),
                     ),
                   ),
                 LabelledField(

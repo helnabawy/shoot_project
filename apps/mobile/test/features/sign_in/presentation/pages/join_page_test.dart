@@ -43,98 +43,89 @@ void main() {
       .map((s) => s.$2)
       .toList();
 
-  group(
-    'OT-US4-S3 the professions shown are the active personas plus Both or All',
-    () {
-      testWidgets(
-        'OT-US4-S3 two active personas: the two singulars plus "Both"',
-        (tester) async {
-          await pumpSignIn(
-            tester,
-            cubit: flowCubit(repository: repository, personas: personas),
-            location: '/register',
-          );
-          await tester.pumpAndSettle();
-          expect(segmentLabels(tester), [
-            'Photographer',
-            'Videographer',
-            'Both',
-          ]);
-        },
+  group('OT-US4-S3 the professions shown are the active personas, with no combined segment', () {
+    testWidgets('OT-US4-S3 two active personas: the two singulars', (
+      tester,
+    ) async {
+      await pumpSignIn(
+        tester,
+        cubit: flowCubit(repository: repository, personas: personas),
+        location: '/register',
       );
+      await tester.pumpAndSettle();
+      expect(segmentLabels(tester), ['Photographer', 'Videographer']);
+    });
 
-      testWidgets('OT-US4-S3 in Arabic, from personas.ar', (tester) async {
+    testWidgets('OT-US4-S3 in Arabic, from personas.ar', (tester) async {
+      await pumpSignIn(
+        tester,
+        cubit: flowCubit(
+          repository: repository,
+          personas: examplePersonas(arabic: true),
+        ),
+        location: '/register',
+        locale: const Locale('ar'),
+      );
+      await tester.pumpAndSettle();
+      expect(segmentLabels(tester), ['مصوّر', 'مصوّر فيديو']);
+    });
+
+    testWidgets('OT-US4-S3 three personas: no "All" segment', (tester) async {
+      await pumpSignIn(
+        tester,
+        cubit: flowCubit(
+          repository: repository,
+          personas: [...personas, persona('editor-of-films', 'Film editor')],
+        ),
+        location: '/register',
+      );
+      await tester.pumpAndSettle();
+      expect(segmentLabels(tester), [
+        'Photographer',
+        'Videographer',
+        'Film editor',
+      ]);
+    });
+
+    testWidgets('OT-US4-S3 one persona: no combined segment', (tester) async {
+      await pumpSignIn(
+        tester,
+        cubit: flowCubit(repository: repository, personas: [personas.first]),
+        location: '/register',
+      );
+      await tester.pumpAndSettle();
+      expect(segmentLabels(tester), ['Photographer']);
+    });
+
+    testWidgets(
+      'OT-US4-S3 (T075) a renamed, reordered or switched-off persona changes the segments',
+      (tester) async {
         await pumpSignIn(
           tester,
           cubit: flowCubit(
             repository: repository,
-            personas: examplePersonas(arabic: true),
-          ),
-          location: '/register',
-          locale: const Locale('ar'),
-        );
-        await tester.pumpAndSettle();
-        expect(segmentLabels(tester), ['مصوّر', 'مصوّر فيديو', 'كلاهما']);
-      });
-
-      testWidgets('OT-US4-S3 three personas: plus "All"', (tester) async {
-        await pumpSignIn(
-          tester,
-          cubit: flowCubit(
-            repository: repository,
-            personas: [...personas, persona('editor-of-films', 'Film editor')],
+            personas: [
+              persona('videographer', 'Filmmaker'),
+              persona('teacher', 'Tutor'),
+            ],
           ),
           location: '/register',
         );
         await tester.pumpAndSettle();
-        expect(segmentLabels(tester), [
-          'Photographer',
-          'Videographer',
-          'Film editor',
-          'All',
-        ]);
-      });
+        expect(segmentLabels(tester), ['Filmmaker', 'Tutor']);
+      },
+    );
 
-      testWidgets('OT-US4-S3 one persona: no combined segment', (tester) async {
-        await pumpSignIn(
-          tester,
-          cubit: flowCubit(repository: repository, personas: [personas.first]),
-          location: '/register',
-        );
-        await tester.pumpAndSettle();
-        expect(segmentLabels(tester), ['Photographer']);
-      });
-
-      testWidgets(
-        'OT-US4-S3 (T075) a renamed, reordered or switched-off persona changes the segments',
-        (tester) async {
-          await pumpSignIn(
-            tester,
-            cubit: flowCubit(
-              repository: repository,
-              personas: [
-                persona('videographer', 'Filmmaker'),
-                persona('teacher', 'Tutor'),
-              ],
-            ),
-            location: '/register',
-          );
-          await tester.pumpAndSettle();
-          expect(segmentLabels(tester), ['Filmmaker', 'Tutor', 'Both']);
-        },
-      );
-
-      testWidgets('choosing Both selects every persona', (tester) async {
-        final cubit = flowCubit(repository: repository, personas: personas);
-        await pumpSignIn(tester, cubit: cubit, location: '/register');
-        await tester.pumpAndSettle();
-        expect(cubit.state.joinPersonas, ['photographer']);
-        await tester.tap(find.text('Both'));
-        await tester.pump();
-        expect(cubit.state.joinPersonas, ['photographer', 'videographer']);
-      });
-    },
-  );
+    testWidgets('choosing a segment selects that one persona', (tester) async {
+      final cubit = flowCubit(repository: repository, personas: personas);
+      await pumpSignIn(tester, cubit: cubit, location: '/register');
+      await tester.pumpAndSettle();
+      expect(cubit.state.joinPersonas, ['photographer']);
+      await tester.tap(find.text('Videographer'));
+      await tester.pump();
+      expect(cubit.state.joinPersonas, ['videographer']);
+    });
+  });
 
   testWidgets(
     'OT-US4-S4 "Send code" without the box ticked calls nothing and shows the checkbox\'s message',

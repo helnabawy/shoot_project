@@ -153,7 +153,6 @@
   "joinTitle": "انضمّ كمحترف",
   "joinBody": "رقم هاتفك المتحرك هو حسابك. نرسل إليك رمزاً، ثم تبني ملفك الشخصي.",
   "joinIAm": "أنا",
-  "joinCombined": "{count, plural, =2{كلاهما} other{الكل}}",
   "joinAccept": "أوافق على {terms} و{professional} و{privacy}.",
   "joinTermsLink": "الشروط والأحكام",
   "joinProfessionalLink": "شروط المحترفين",
