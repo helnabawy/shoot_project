@@ -9,6 +9,7 @@ class ShootHeader extends StatelessWidget {
     required this.leading,
     this.trailing = const [],
     this.leadsWithBack = false,
+    this.middle,
   });
 
   /// The wordmark, or a back button followed by a title.
@@ -19,6 +20,10 @@ class ShootHeader extends StatelessWidget {
 
   /// When [leading] starts with a 44 px back button, the start padding is 12.
   final bool leadsWithBack;
+
+  /// The wordmark between a back button and a trailing action (boards 20–23: three items,
+  /// `space-between`, so it sits centred when both ends are 44 wide).
+  final Widget? middle;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +38,7 @@ class ShootHeader extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             leading,
+            ?middle,
             Row(mainAxisSize: MainAxisSize.min, children: trailing),
           ],
         ),

@@ -19,9 +19,16 @@ void main() {
             find.byKey(const ValueKey('sample')),
           );
           final small = <String>[];
-          void visit(SemanticsNode n, {bool scrolls = false}) {
+          void visit(
+            SemanticsNode n, {
+            bool scrolls = false,
+            bool inSentence = false,
+          }) {
             final d = n.getSemanticsData();
-            if (d.hasAction(SemanticsAction.tap) && !n.isInvisible) {
+            // WCAG 2.5.8 exempts a link inside a sentence (feature 009's CheckLine): its line
+            // decides its size. The sentence's own target is checked instead.
+            final inline = inSentence && d.flagsCollection.isLink;
+            if (d.hasAction(SemanticsAction.tap) && !n.isInvisible && !inline) {
               final r = n.rect;
               // Inside a horizontal scroller a target can sit half off the edge; scrolling brings
               // the rest in, so only its height is checked there.
@@ -30,10 +37,20 @@ void main() {
               }
             }
             final inScroll = scrolls || d.flagsCollection.hasImplicitScrolling;
+            final children = <SemanticsNode>[];
             n.visitChildren((c) {
-              visit(c, scrolls: inScroll);
+              children.add(c);
               return true;
             });
+            // Plain text beside a link means the link is part of a sentence.
+            final sentence = children.any(
+              (c) =>
+                  !c.getSemanticsData().hasAction(SemanticsAction.tap) &&
+                  c.getSemanticsData().label.isNotEmpty,
+            );
+            for (final c in children) {
+              visit(c, scrolls: inScroll, inSentence: sentence);
+            }
           }
 
           visit(root);

@@ -3,12 +3,16 @@ import 'package:shoot_mobile/core/l10n/bidi.dart';
 import 'package:shoot_mobile/core/motion/ambient_pause.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/widgets/calendar_month.dart';
+import 'package:shoot_mobile/core/widgets/check_line.dart';
 import 'package:shoot_mobile/core/widgets/choice_chip.dart';
+import 'package:shoot_mobile/core/widgets/choice_row_group.dart';
 import 'package:shoot_mobile/core/widgets/creator_card.dart';
 import 'package:shoot_mobile/core/widgets/empty_state.dart';
 import 'package:shoot_mobile/core/widgets/golden_hour_scene.dart';
 import 'package:shoot_mobile/core/widgets/group_label.dart';
 import 'package:shoot_mobile/core/widgets/icon_tile.dart';
+import 'package:shoot_mobile/core/widgets/inline_error.dart';
+import 'package:shoot_mobile/core/widgets/linked_text.dart';
 import 'package:shoot_mobile/core/widgets/message_banner.dart';
 import 'package:shoot_mobile/core/widgets/money.dart';
 import 'package:shoot_mobile/core/widgets/otp_code_input.dart';
@@ -274,10 +278,58 @@ final List<CatalogueEntry> catalogue = [
     ),
   }, alwaysLtr: true),
   CatalogueEntry('OtpCodeInput', {
-    'empty': (_) => OtpCodeInput(label: '6-digit code', onCompleted: (_) {}),
-    'error': (_) =>
-        OtpCodeInput(label: '6-digit code', onCompleted: (_) {}, errorCount: 1),
+    'empty': (_) => OtpCodeInput(label: 'Six-digit code', onCompleted: (_) {}),
+    'four digits': (_) => OtpCodeInput(
+      label: 'Six-digit code',
+      onCompleted: (_) {},
+      controller: TextEditingController(text: '4827'),
+    ),
+    'error': (_) => OtpCodeInput(
+      label: 'Six-digit code',
+      onCompleted: (_) {},
+      controller: TextEditingController(text: '482713'),
+      error: true,
+      errorCount: 1,
+    ),
   }, alwaysLtr: true),
+  CatalogueEntry('ChoiceRowGroup', {
+    'first chosen': (_) => ChoiceRowGroup<int>(
+      label: 'I am',
+      selected: 0,
+      onChanged: (_) {},
+      rows: const [
+        (value: 0, label: 'I need a professional', icon: ShootIcons.search),
+        (value: 1, label: "I'm a professional", icon: ShootIcons.person),
+      ],
+    ),
+  }),
+  CatalogueEntry('InlineError', {
+    'wrong code': (_) => const InlineError(
+      "That code isn't right. Check the text we sent and type it again.",
+    ),
+  }),
+  CatalogueEntry('CheckLine', {
+    'unticked': (_) => CheckLine(
+      template: 'I accept the {terms} and the {privacy}.',
+      label: 'I accept the Terms and the Privacy Policy.',
+      checked: false,
+      onChanged: (_) {},
+      parts: {
+        'terms': LinkedText.link('Terms', _none),
+        'privacy': LinkedText.link('Privacy Policy', _none),
+      },
+    ),
+    'ticked': (_) => CheckLine(
+      template: 'I accept the {terms} and the {privacy}.',
+      label: 'I accept the Terms and the Privacy Policy.',
+      checked: true,
+      onChanged: (_) {},
+      parts: {
+        'terms': LinkedText.link('Terms', _none),
+        'privacy': LinkedText.link('Privacy Policy', _none),
+      },
+    ),
+  }),
   CatalogueEntry('StatusBadge', {
     for (final tone in BadgeTone.values)
       tone.name: (_) => StatusBadge(label: 'Awaiting payment', tone: tone),

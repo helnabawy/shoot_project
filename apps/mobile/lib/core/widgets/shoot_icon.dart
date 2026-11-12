@@ -30,7 +30,13 @@ enum ShootIcons {
   /// Opens a list (picker fields).
   chevronDown('<path d="m6 9 6 6 6-6"/>'),
   pause('<path d="M9 5v14M15 5v14"/>'),
-  play('<path d="M7 5v14l12-7z"/>');
+  play('<path d="M7 5v14l12-7z"/>'),
+
+  /// Search (board 21's "I need a …" tile).
+  search('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'),
+
+  /// A tick (board 21's selected row, stroke 2.4).
+  check('<path d="m5 12 5 5L20 7"/>');
 
   const ShootIcons(this.body, {this.directional = false});
 
