@@ -1,5 +1,6 @@
 import 'package:shoot_mobile/core/auth/session.dart';
 import 'package:shoot_mobile/core/network/json_read.dart';
+import 'package:shoot_mobile/features/brief/data/brief_data.dart';
 import 'package:shoot_mobile/features/content/data/models/editor_page_model.dart';
 import 'package:shoot_mobile/features/content/data/models/guide_models.dart';
 import 'package:shoot_mobile/features/content/data/models/legal_models.dart';
@@ -30,6 +31,15 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'auth-request': (json) => OtpRequestModel.fromJson(json).toJson(),
   'auth-verify-seeker': (json) => OtpVerifyModel.fromJson(json).toJson(),
   'auth-verify-provider': (json) => OtpVerifyModel.fromJson(json).toJson(),
+  // 010: recording a brief.
+  'brief-receipt': briefReceiptFromJson,
+  'brief-record': (json) => {
+    'selections': [
+      for (final s in json['selections']! as List)
+        {'token': (s! as Json)['token'], 'value': (s as Json)['value']},
+    ],
+    'date': json['date'],
+  },
   // US3
   'creators': (json) => CreatorListModel.fromJson(json).toEntity(),
   'creator-profile': (json) => CreatorProfileModel.fromJson(json).toEntity(),

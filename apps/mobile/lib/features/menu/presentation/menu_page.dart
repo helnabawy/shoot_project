@@ -114,15 +114,19 @@ class _MenuPageState extends State<MenuPage> {
       VoidCallback onTap, {
       String? hint,
       RowDivider divider = RowDivider.top,
-    }) => ShootRow(
-      label: label,
-      onTap: onTap,
-      divider: divider,
-      leading: IconTile(icon),
-      trailing: hint == null
-          ? null
-          : Text(hint, style: ShootType.meta.copyWith(color: c.mute)),
-    );
+    }) {
+      // At large text sizes the quiet hint joins the label so nothing is cut off.
+      final large = MediaQuery.textScalerOf(context).scale(16) > 22;
+      return ShootRow(
+        label: hint != null && large ? '$label $hint' : label,
+        onTap: onTap,
+        divider: divider,
+        leading: IconTile(icon),
+        trailing: hint == null || large
+            ? null
+            : Text(hint, style: ShootType.meta.copyWith(color: c.mute)),
+      );
+    }
 
     final user = session is SignedIn ? session.session.user : null;
 
@@ -375,10 +379,21 @@ class _Setting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final text = Text(
+      label,
+      style: ShootType.chip.copyWith(color: context.colors.ink),
+    );
+    // At large text sizes the control moves under its label and takes the full width.
+    if (MediaQuery.textScalerOf(context).scale(15) > 21) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [text, const SizedBox(height: 6), child],
+      );
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: ShootType.chip.copyWith(color: context.colors.ink)),
+        text,
         const SizedBox(width: ShootSpace.s3),
         SizedBox(width: 190, child: child),
       ],

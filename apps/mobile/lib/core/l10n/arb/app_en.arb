@@ -129,6 +129,8 @@
     "description": "Brief bar: one line naming the first unanswered step; step is the step's CMS label.",
     "placeholders": {"step": {"type": "String"}}
   },
+  "mlBriefRequired": "Please answer every step before sending.",
+  "@mlBriefRequired": {"description": "A brief was sent with a required step unanswered (brief.errors.required)."},
   "mlBriefPastDate": "That date has passed. Pick today or later.",
   "@mlBriefPastDate": {"description": "Brief bar: a past date was tried."},
   "mlBriefOptionGone": "That option is no longer available. Please choose again.",

@@ -42,6 +42,7 @@
   "mlBriefTakeBack": "تراجع",
   "mlBriefAnyDate": "أي تاريخ",
   "mlBriefMissingStep": "اختر {step} للمتابعة.",
+  "mlBriefRequired": "أجب عن كل الخطوات قبل الإرسال.",
   "mlBriefPastDate": "هذا التاريخ مضى. اختر اليوم أو بعده.",
   "mlBriefOptionGone": "لم يعد هذا الخيار متاحاً. اختر مرة أخرى.",
   "mlBriefRateLimited": "أرسلت طلبات كثيرة. راسلنا على واتساب من فضلك.",
