@@ -170,5 +170,337 @@
   "errorRetry": "Try again",
   "@errorRetry": {
     "description": "The error screen's one primary action (Top Hit): run the failed step again."
+  },
+
+  "problemPhoneInvalid": "Enter a UAE mobile number, like 50 123 4567.",
+  "@problemPhoneInvalid": {
+    "description": "The number is not a UAE mobile number (problem field code auth.errors.phoneInvalid). Same words as the website."
+  },
+  "problemTooManyRequests": "Too many codes for now. Try again in {minutes} minutes.",
+  "@problemTooManyRequests": {
+    "description": "An hourly allowance for codes is used up (auth.errors.tooManyRequests, HTTP 429); minutes from retryAfter, rounded up.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "problemResendTooSoon": "You can ask for a new code in {time}.",
+  "@problemResendTooSoon": {
+    "description": "A new code was asked for within 60 s of the last (auth.errors.resendTooSoon); time is m:ss.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "problemSendFailed": "We couldn't send the code. Try again, or send it by {otherChannel}.",
+  "@problemSendFailed": {
+    "description": "The SMS or WhatsApp provider could not deliver (auth.errors.sendFailed, HTTP 503); otherChannel is the other channel's name (SMS or WhatsApp).",
+    "placeholders": {
+      "otherChannel": {
+        "type": "String"
+      }
+    }
+  },
+  "problemCodeInvalid": "That code isn't right. Check the text we sent and type it again.",
+  "@problemCodeInvalid": {
+    "description": "Wrong code (auth.errors.codeInvalid); board 22's error line."
+  },
+  "problemCodeExpired": "That code has expired. Ask for a new one.",
+  "@problemCodeExpired": {
+    "description": "The code is older than 5 minutes, superseded or used (auth.errors.codeExpired)."
+  },
+  "problemCodeLocked": "That code was tried too many times. Ask for a new one.",
+  "@problemCodeLocked": {
+    "description": "Five wrong attempts on one code (auth.errors.codeLocked)."
+  },
+  "problemUseEmailSignIn": "Editors sign in with email.",
+  "@problemUseEmailSignIn": {
+    "description": "The number belongs to an editor or admin, who cannot use codes (auth.errors.useEmailSignIn, HTTP 403)."
+  },
+  "problemNumberTaken": "This number already signs in to another account.",
+  "@problemNumberTaken": {
+    "description": "Linking a number used by another account (auth.errors.numberTaken, HTTP 409; website only)."
+  },
+  "problemPersonaRequired": "Choose your profession.",
+  "@problemPersonaRequired": {
+    "description": "A creator sign-up without a profession (auth.errors.personaRequired). Same words as the website."
+  },
+  "problemPersonaInactive": "That profession isn't available. Choose another.",
+  "@problemPersonaInactive": {
+    "description": "A chosen profession was switched off (auth.errors.personaInactive). Same words as the website."
+  },
+  "problemAcceptTerms": "Please accept the Terms and the Privacy Policy to create an account.",
+  "@problemAcceptTerms": {
+    "description": "Creator sign-up without ticking the legal box (auth.errors.acceptTerms). Same words as the website."
+  },
+  "backAction": "Back",
+  "@backAction": {
+    "description": "Screen reader label of the header's back button."
+  },
+  "signInNumberTitle": "Your number is your account",
+  "@signInNumberTitle": {
+    "description": "Screen 20 heading."
+  },
+  "signInNumberBody": "Enter your UAE mobile number. We'll text you a six-digit code; no password, no email.",
+  "@signInNumberBody": {
+    "description": "Screen 20 body under the heading."
+  },
+  "phoneLabel": "Mobile number",
+  "@phoneLabel": {
+    "description": "Label above the phone field (screens 20, 23)."
+  },
+  "phoneCountryCodeLabel": "Country code, United Arab Emirates, +971",
+  "@phoneCountryCodeLabel": {
+    "description": "Screen reader label of the phone field's country code."
+  },
+  "phonePlaceholder": "50 123 4567",
+  "@phonePlaceholder": {
+    "description": "Placeholder in the phone field: the shape of a UAE mobile number without the country code."
+  },
+  "phoneHint": "Same number as your WhatsApp works best.",
+  "@phoneHint": {
+    "description": "Hint under the phone field."
+  },
+  "channelLabel": "Send the code by",
+  "@channelLabel": {
+    "description": "Label of the SMS / WhatsApp choice on screen 20."
+  },
+  "channelSms": "SMS",
+  "@channelSms": {
+    "description": "The SMS channel (segment, and the other channel in messages)."
+  },
+  "channelWhatsapp": "WhatsApp",
+  "@channelWhatsapp": {
+    "description": "The WhatsApp channel (segment, and the other channel in messages)."
+  },
+  "sendCodeAction": "Send code",
+  "@sendCodeAction": {
+    "description": "Top Hit on screens 20 and 23: sends the one-time code."
+  },
+  "signInLegal": "By continuing you agree to the {terms} and {privacy}. First time here? We'll ask what you need after the code.",
+  "@signInLegal": {
+    "description": "Legal line on screen 20; terms and privacy are the links legalTermsLink and legalPrivacyLink.",
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
+    }
+  },
+  "legalTermsLink": "terms",
+  "@legalTermsLink": {
+    "description": "Link to the Terms inside signInLegal."
+  },
+  "legalPrivacyLink": "privacy notice",
+  "@legalPrivacyLink": {
+    "description": "Link to the Privacy Policy inside signInLegal."
+  },
+  "editorPrompt": "Editor?",
+  "@editorPrompt": {
+    "description": "Before the email sign-in link at the foot of screen 20."
+  },
+  "editorSignIn": "Sign in with email",
+  "@editorSignIn": {
+    "description": "Link that opens the website's email sign-in (editors and admins)."
+  },
+  "codeTitle": "Enter the code",
+  "@codeTitle": {
+    "description": "Screen 21 and 22 heading."
+  },
+  "codeSent": "{channel, select, whatsapp{Sent on WhatsApp to {phone}.} other{Sent by SMS to {phone}.}}",
+  "@codeSent": {
+    "description": "Screen 21: where the code went; channel is sms or whatsapp, phone is the number as +971 50 123 4567.",
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "changeNumberAction": "Change number",
+  "@changeNumberAction": {
+    "description": "Link after the number on screens 21-23: back to the number."
+  },
+  "codeLabel": "Six-digit code",
+  "@codeLabel": {
+    "description": "Screen reader name of the six code cells, read as one field."
+  },
+  "codeResendIn": "Resend code in {time}",
+  "@codeResendIn": {
+    "description": "Countdown under the code cells; time is m:ss.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "codeResendNow": "Send a new code",
+  "@codeResendNow": {
+    "description": "Link under the code cells once the countdown ends."
+  },
+  "codeAskNewIn": "You can ask for a new code in {time}",
+  "@codeAskNewIn": {
+    "description": "Countdown under the error on screen 22; time is m:ss.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "roleQuestion": "First time here? Tell us which you are",
+  "@roleQuestion": {
+    "description": "Group label above the role rows on screen 21."
+  },
+  "roleGroupLabel": "I am",
+  "@roleGroupLabel": {
+    "description": "Screen reader name of the role choice."
+  },
+  "roleSeeker": "I need a {list}",
+  "@roleSeeker": {
+    "description": "Role row: a client. list is the active professions' names joined with listOr (from the CMS).",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "roleProvider": "I'm a {list}",
+  "@roleProvider": {
+    "description": "Role row: a creator. list is the active professions' names joined with listOr (from the CMS).",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "listOr": "{first} or {last}",
+  "@listOr": {
+    "description": "Joins the last two names of a list (CMS names, such as two professions): '{first} or {last}'.",
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "last": {
+        "type": "String"
+      }
+    }
+  },
+  "listSeparator": ", ",
+  "@listSeparator": {
+    "description": "Separates the earlier names of a list before listOr."
+  },
+  "roleReturning": "Returning? We recognise your number and skip this.",
+  "@roleReturning": {
+    "description": "Note under the role rows."
+  },
+  "continueAction": "Continue",
+  "@continueAction": {
+    "description": "Top Hit on screen 21 and in finish mode on screen 23."
+  },
+  "tryAgainAction": "Try again",
+  "@tryAgainAction": {
+    "description": "Top Hit on screen 22: clears the cells."
+  },
+  "askNewCodeAction": "Ask for a new code",
+  "@askNewCodeAction": {
+    "description": "Top Hit when the code expired or was locked."
+  },
+  "codeOtherChannel": "Didn't get it? Check the number above, or {link}",
+  "@codeOtherChannel": {
+    "description": "Foot of screen 21; link is codeSendOn.",
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "codeSendOn": "{channel, select, whatsapp{send it on WhatsApp} other{send it by SMS}}",
+  "@codeSendOn": {
+    "description": "Link that sends a new code by the other channel; channel is that channel.",
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "codeStillNothing": "Still nothing? {link}",
+  "@codeStillNothing": {
+    "description": "Foot of screen 22; link is codeSendOnStart.",
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "codeSendOnStart": "{channel, select, whatsapp{Send it on WhatsApp} other{Send it by SMS}}",
+  "@codeSendOnStart": {
+    "description": "codeSendOn at the start of a sentence.",
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "joinTitle": "Join as a creator",
+  "@joinTitle": {
+    "description": "Screen 23 heading."
+  },
+  "joinBody": "Your mobile number is your account. We text you a code, then you build your profile.",
+  "@joinBody": {
+    "description": "Screen 23 body."
+  },
+  "joinIAm": "I am a",
+  "@joinIAm": {
+    "description": "Label above the profession choice on screen 23 (names from the CMS)."
+  },
+  "joinCombined": "{count, plural, =2{Both} other{All}}",
+  "@joinCombined": {
+    "description": "The segment choosing every active profession; count is how many there are. Same rule as the website's auth.personaCombined.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "joinAccept": "I accept the {terms}, the {professional} and the {privacy}.",
+  "@joinAccept": {
+    "description": "Checkbox line on screen 23; the three are links.",
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "professional": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
+    }
+  },
+  "joinTermsLink": "Terms",
+  "@joinTermsLink": {
+    "description": "Link to the Terms on screen 23."
+  },
+  "joinProfessionalLink": "Professional Terms",
+  "@joinProfessionalLink": {
+    "description": "Link to the Professional Terms on screen 23."
+  },
+  "joinPrivacyLink": "Privacy Policy",
+  "@joinPrivacyLink": {
+    "description": "Link to the Privacy Policy on screen 23."
+  },
+  "joinHaveAccount": "Already have an account?",
+  "@joinHaveAccount": {
+    "description": "Before the log-in link at the foot of screen 23."
+  },
+  "joinLogIn": "Log in",
+  "@joinLogIn": {
+    "description": "Link from screen 23 to screen 20."
   }
 }

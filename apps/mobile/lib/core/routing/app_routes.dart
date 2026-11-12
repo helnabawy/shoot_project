@@ -30,6 +30,11 @@ abstract final class AppRoutes {
   static const accountBookings = '/account/bookings';
   static const gallery = '/_gallery';
   static const welcome = '/welcome/:step';
+  static const login = '/login';
+  static const loginCode = '/login/code';
+  static const register = '/register';
+  static const account = '/account';
+  static const accountProfile = '/account/profile';
 
   /// Every path the app knows, built or not (contracts/routes.md).
   static const table = <AppRoute>[
@@ -62,9 +67,9 @@ abstract final class AppRoutes {
       example: '/match/B-1/k/code',
     ),
     AppRoute('/q/:ref/:key', owner: '012', example: '/q/Q-2026-0142/k'),
-    AppRoute('/login', owner: '009', example: '/login'),
-    AppRoute('/login/code', owner: '009', example: '/login/code'),
-    AppRoute('/register', owner: '009', example: '/register'),
+    AppRoute(login, owner: '009', example: '/login', built: true),
+    AppRoute(loginCode, owner: '009', example: '/login/code', built: true),
+    AppRoute(register, owner: '009', example: '/register', built: true),
     AppRoute('/account', owner: '013, 014', example: '/account', auth: true),
     AppRoute(
       '/account/finish',

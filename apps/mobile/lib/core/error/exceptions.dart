@@ -16,13 +16,20 @@ final class NetworkException implements Exception {
 ///
 /// [code] is the problem document's message key (`api.errors.notFound`), or
 /// `null` when the body was not a problem document. [fields] lists the
-/// failed fields of a 422; it is empty otherwise.
+/// failed fields of a 422; it is empty otherwise. [retryAfter] is the 429's
+/// wait in seconds (feature 009), else `null`.
 final class ServerException implements Exception {
-  const ServerException({this.statusCode, this.code, this.fields = const []});
+  const ServerException({
+    this.statusCode,
+    this.code,
+    this.fields = const [],
+    this.retryAfter,
+  });
 
   final int? statusCode;
   final String? code;
   final List<FieldProblem> fields;
+  final int? retryAfter;
 
   @override
   String toString() => 'ServerException($statusCode, $code, $fields)';

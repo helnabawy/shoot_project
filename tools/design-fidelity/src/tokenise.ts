@@ -6,12 +6,26 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Page } from '@playwright/test'
 import { toolRoot, type Screen } from './manifest'
-import { rolesByValue, tokensCss } from './tokens'
+import { rolesByValue, shadowKey, shadowsByValue, tokensCss } from './tokens'
 
 /** `"<colour key>|<property>": "<role>"` for values the property heuristic gets wrong. */
 export function tokeniseOverrides(): Record<string, string> {
   return JSON.parse(readFileSync(join(toolRoot, 'tokenise.overrides.json'), 'utf8')) as Record<string, string>
 }
+
+/** [shadowKey] with the colour key inlined, for the board page (no imports there). */
+const shadowKeyInBrowser = `(value) => {
+  const colourKey = (v) => {
+    v = v.trim().toLowerCase()
+    let m = /^#([0-9a-f]{3})$/.exec(v)
+    if (m) { const [r, g, b] = [...m[1]].map((c) => parseInt(c + c, 16)); return r + ',' + g + ',' + b + ',1' }
+    m = /^#([0-9a-f]{6})$/.exec(v)
+    if (m) { const n = parseInt(m[1], 16); return ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',1' }
+    const f = /^rgba?\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*(?:,\\s*([\\d.]+)\\s*)?\\)$/.exec(v)
+    return f ? f[1] + ',' + f[2] + ',' + f[3] + ',' + Number(Number(f[4] ?? 1).toFixed(3)) : null
+  }
+  return (${shadowKey.toString()})(value)
+}`
 
 export class TokeniseError extends Error {
   override name = 'TokeniseError'
@@ -19,7 +33,11 @@ export class TokeniseError extends Error {
 
 export async function tokenise(page: Page, screen: Screen, dark: boolean): Promise<void> {
   const problems = await page.evaluate(
-    ({ roles, overrides, css, dark }) => {
+    ({ roles, overrides, css, dark, shadows, shadowKeySource }) => {
+      // A whole box-shadow that equals a shadow token (`--shadow`, the lift) becomes that token,
+      // so the dark reference takes the dark shadow (feature 009: board 21's role panel).
+      // eslint-disable-next-line @typescript-eslint/no-implied-eval
+      const keyOfShadow = new Function(`return (${shadowKeySource})`)() as (v: string) => string | null
       const key = (r: number, g: number, b: number, a: number) => `${r},${g},${b},${Number(a.toFixed(3))}`
       const colourRe = /rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/g
       const prefer: [RegExp, RegExp][] = [
@@ -57,6 +75,14 @@ export async function tokenise(page: Page, screen: Screen, dark: boolean): Promi
         for (const prop of Array.from(style)) {
           const value = style.getPropertyValue(prop)
           if (!/rgba?\(/.test(value)) continue
+          if (prop === 'box-shadow') {
+            const k = keyOfShadow(value)
+            const token = k ? shadows[k] : undefined
+            if (token) {
+              style.setProperty(prop, `var(--${token})`, style.getPropertyPriority(prop))
+              continue
+            }
+          }
           const next = rewrite(value, prop, where)
           if (next !== value) style.setProperty(prop, next, style.getPropertyPriority(prop))
         }
@@ -109,7 +135,14 @@ export async function tokenise(page: Page, screen: Screen, dark: boolean): Promi
       if (dark) document.querySelector('.root')!.classList.add('dark')
       return problems
     },
-    { roles: rolesByValue(), overrides: tokeniseOverrides(), css: tokensCss(), dark },
+    {
+      roles: rolesByValue(),
+      overrides: tokeniseOverrides(),
+      css: tokensCss(),
+      dark,
+      shadows: shadowsByValue(),
+      shadowKeySource: shadowKeyInBrowser,
+    },
   )
   if (problems.length) {
     throw new TokeniseError(`board ${screen.board} (screen ${screen.id}): ${problems.length} unmapped colour(s):\n  ${problems.join('\n  ')}`)

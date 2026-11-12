@@ -18,7 +18,14 @@ Future<Result<T>> apiResult<T>(Future<T> Function() call) async {
     return Err<T>(const NetworkFailure());
   } on ServerException catch (e) {
     if (e.statusCode == 404) return Err<T>(const NotFoundFailure());
-    return Err<T>(ServerFailure(statusCode: e.statusCode, code: e.code));
+    return Err<T>(
+      ServerFailure(
+        statusCode: e.statusCode,
+        code: e.code,
+        fields: e.fields,
+        retryAfter: e.retryAfter,
+      ),
+    );
   } on FormatException {
     return Err<T>(const ServerFailure());
   } on Exception {

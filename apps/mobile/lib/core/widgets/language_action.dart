@@ -7,7 +7,10 @@ import 'package:shoot_mobile/core/widgets/shoot_icon_button.dart';
 
 /// The header's language switch (`.ib`, text): the other language's name, in that language.
 class LanguageAction extends StatelessWidget {
-  const LanguageAction({super.key});
+  const LanguageAction({super.key, this.square = false});
+
+  /// See [ShootTextAction.square].
+  final bool square;
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +19,7 @@ class LanguageAction extends StatelessWidget {
     return ShootTextAction(
       text: l10n.languageSwitchAction,
       label: l10n.languageSwitchTooltip,
+      square: square,
       onPressed: () => context.read<LocaleCubit>().select(
         isArabic ? AppLocales.english : AppLocales.arabic,
       ),

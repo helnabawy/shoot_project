@@ -46,6 +46,7 @@ class ShootTextAction extends StatelessWidget {
     required this.text,
     required this.label,
     required this.onPressed,
+    this.square = false,
   });
 
   /// What it shows (the other language's name, in that language).
@@ -55,8 +56,32 @@ class ShootTextAction extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
 
+  /// The plain `.ib` box of boards 20 and 23: exactly 44 × 44, the text centred in it (and
+  /// overflowing it evenly when longer, as CSS does), so a centred wordmark stays centred.
+  final bool square;
+
   @override
   Widget build(BuildContext context) {
+    final style = TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w500,
+      color: context.colors.ink,
+      fontFamilyFallback: ShootType.body.fontFamilyFallback,
+      leadingDistribution: TextLeadingDistribution.even,
+    );
+    if (square) {
+      return _IbFrame(
+        label: label,
+        onPressed: onPressed,
+        child: SizedBox.square(
+          dimension: ShootSize.iconButton,
+          child: OverflowBox(
+            maxWidth: double.infinity,
+            child: Center(child: Text(text, style: style, softWrap: false)),
+          ),
+        ),
+      );
+    }
     return _IbFrame(
       label: label,
       onPressed: onPressed,
@@ -70,16 +95,7 @@ class ShootTextAction extends StatelessWidget {
           child: Center(
             widthFactor: 1,
             heightFactor: 1,
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: context.colors.ink,
-                fontFamilyFallback: ShootType.body.fontFamilyFallback,
-                leadingDistribution: TextLeadingDistribution.even,
-              ),
-            ),
+            child: Text(text, style: style),
           ),
         ),
       ),

@@ -130,13 +130,15 @@ Versions are pinned exactly in `pubspec.yaml` (no `^`), like `payload`/`next`/`r
 | `intl` + `flutter_localizations` | 0.20.3 / SDK | Localization: ARB files and generated, type-safe `AppLocalizations` |
 | `flutter_svg` | 2.3.0 | Icons and scene drawn from the boards' SVG, copied verbatim (feature 007) |
 | `shared_preferences` | 2.5.6 | Saves appearance choices on the device (accent, theme mode, language; feature 006) |
+| `flutter_secure_storage` | 11.2.0 | The session token lives in the iOS Keychain / Android Keystore (feature 009, FR-023); `shared_preferences` is plain text and hand-written platform channels are more native code to own |
+| `url_launcher` | 6.3.3 | Opens the legal documents a person accepts and the website's email sign-in in the browser (feature 009); 012 reuses it for WhatsApp. Hiding the links fails 005's legal rule; a hand-written channel duplicates a first-party package |
 | `shared_preferences_platform_interface` (dev) | 2.4.2 | `InMemorySharedPreferencesAsync`, the in-memory store the preference tests run against |
 | `bloc_test` (dev) | 10.0.0 | Asserts the sequence of states a cubit emits |
 | `mocktail` (dev) | 1.0.5 | Mocks without code generation |
 | `flutter_lints` (dev) | 6.0.0 | Base lint set; `analysis_options.yaml` adds the strict rules on top |
 
 There is deliberately no code generation (`build_runner`, `injectable`, `freezed`,
-`json_serializable`) and no storage package beyond `shared_preferences` (appearance choices only).
+`json_serializable`) and no storage package beyond `shared_preferences` (appearance choices, first-run flags, the install id) and `flutter_secure_storage` (the session token only).
 Add one when a spec needs it, with a Complexity Tracking entry in that spec's plan.
 
 ## Languages
@@ -199,6 +201,38 @@ Light and dark are both first-class. The app follows the device until the person
   Pause control. Every self-started animation ends within 5 s (`MotionPolicy.selfStartedBudget`),
   and with reduced motion every widget shows its finished state on the first frame.
 
+## Session and sign-in (feature 009)
+
+People sign in with a UAE mobile number and a six-digit code (screens 20–23:
+`lib/features/sign_in/`, routes `/login`, `/login/code`, `/register`).
+
+- **Session.** `lib/core/auth/`: the Payload token, its expiry and `{ id, name, accountType }`
+  (no phone number) are one JSON value, `session.v1`, in `flutter_secure_storage` (iOS Keychain,
+  this device only, after first unlock; Android Keystore). `main()` reads it before `runApp`, so a
+  signed-in person never sees the signed-out state; `GET me` then refreshes the user. The first
+  launch of an install (no `install.seen` in the preferences) wipes the Keychain, which survives an
+  uninstall on iOS.
+- **Tokens.** `AuthInterceptor` (a `QueuedInterceptor` after the install id) sends
+  `Authorization: Bearer` and refreshes the token through `POST auth/refresh` when fewer than 2 days
+  are left, on a second Dio without the interceptor. A 401 on a request that carried the token
+  signs out. Sign-out calls `POST auth/logout`.
+- **Guard.** `auth: true` routes (`/account/**`) send a signed-out person to
+  `/login?next=<path>`; after sign-in the app goes to `next` when `safeNext` accepts it, else home
+  until 013 and 014 build the account screens.
+- **Logs.** Debug builds log one line per API call (method, path, status), never for `auth/*` or
+  `me`, never a header, body or token. Release builds log nothing from Dio.
+- **Web pages.** The legal links and "Sign in with email" open the website in the browser
+  (`url_launcher`, `lib/core/web/website_links.dart`).
+- **Debug.** The gallery (`/_gallery`, debug builds) starts with a Session section: who is signed
+  in, the expiry, "Sign out" and "Expire token".
+
+To sign in against a local web app (`pnpm dev`, console provider), the code is never sent: read it
+from the console outbox at the repo root, then type it on screen 21.
+
+```bash
+pnpm --filter web otp:last    # the newest code and channel; the number masked to its last 4 digits
+```
+
 ## Widgets and the gallery
 
 Every screen is built from `lib/core/widgets/`, one widget per board class (the catalogue is
@@ -253,7 +287,10 @@ Remove `service_health` once the first real feature has replaced it as the home 
 
 ## Not done yet
 
-- Sign-in (UAE mobile number + OTP) is not specified, so nothing here authenticates.
+- Sign-in is built (feature 009), but the account screens it leads to are 013 and 014; until
+  then sign-in returns home, and sign-out lives in the debug gallery.
+- The SMS and WhatsApp vendor waits for the owner's approval; locally the console provider writes
+  codes to the outbox (`pnpm --filter web otp:last`).
 - The home-screen name is "Shoot" on iOS in every language (Android shows "شوت" in Arabic). The
   Arabic name on iOS needs an `InfoPlist.strings` added in Xcode.
 - App icon and launch screen are the Flutter defaults.

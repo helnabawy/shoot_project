@@ -26,5 +26,16 @@ abstract final class PreferenceKeys {
   /// The anonymous install id sent as `X-Shoot-Install` (feature 008, InstallIdStore).
   static const installId = 'install.id';
 
-  static const all = {accent, themeMode, locale, welcomeSeen, installId};
+  /// `true` once this install has started; its absence means a fresh install, and the secure
+  /// store (which survives an uninstall on iOS) is wiped (feature 009, SecureSessionStore).
+  static const installSeen = 'install.seen';
+
+  static const all = {
+    accent,
+    themeMode,
+    locale,
+    welcomeSeen,
+    installId,
+    installSeen,
+  };
 }

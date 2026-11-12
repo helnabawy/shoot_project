@@ -1,0 +1,26 @@
+{
+  "_note": "Arabic for the derived ar-light and ar-dark references (feature 007, research R6): each English text node of the board, trimmed, to the same Arabic as app_ar.arb and the shared examples. Written with feature 009; needs review by an Arabic writer.",
+  "Shoot": "شوت",
+  "Enter the code": "أدخل الرمز",
+  "Sent by SMS to": "أرسلناه عبر الرسائل النصية إلى",
+  ".": ".",
+  "Change number": "تغيير الرقم",
+  "That code isn't right. Check the text we sent and type it again.": "الرمز غير صحيح. راجع الرسالة التي أرسلناها واكتبه مرة أخرى.",
+  "You can ask for a new code in": "يمكنك طلب رمز جديد بعد",
+  "Try again": "حاول مرة أخرى",
+  "Still nothing?": "لم يصلك بعد؟",
+  "Send it on WhatsApp": "أرسله عبر واتساب",
+  "keep": [
+    "+971",
+    "+971 50 123 4567",
+    "50 123 4567",
+    "0:42",
+    "0:24",
+    "4",
+    "8",
+    "2",
+    "7",
+    "1",
+    "3"
+  ]
+}

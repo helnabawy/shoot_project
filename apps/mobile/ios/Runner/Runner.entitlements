@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyLists/1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Feature 009 (research R14): the session token lives in the app's own keychain group. -->
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)ae.shoot.shootMobile</string>
+	</array>
+</dict>
+</plist>

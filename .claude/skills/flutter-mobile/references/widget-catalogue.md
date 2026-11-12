@@ -23,7 +23,7 @@ duration; a variant is a named constructor or an enum, not a styling parameter.
 | Shell | `.root` | `ShootScaffold` |
 | | `.hd` | `ShootHeader` (58 px) |
 | | `.wm` | `Wordmark` |
-| | `.ib` | `ShootIconButton` |
+| | `.ib` | `ShootIconButton`; text `.ib` is `ShootTextAction` (`square: true` keeps the board's fixed 44 × 44 box, so a `middle` wordmark in `ShootHeader` stays centred) |
 | Actions | `.top` | `TopHit` (the one primary action: `primary` fill, type `action` 17/600, optional price and chevron) |
 | | `.btn2` | `SecondaryButton` |
 | | `a` | `TextLink` |
@@ -40,8 +40,12 @@ duration; a variant is a named constructor or an enum, not a styling parameter.
 | | `button.field` | `PickerField` |
 | | `.chip` | `ShootChip` in a `ChipGroup` |
 | | `.seg` | `SegmentedControl` |
-| | `.ph` | `PhoneField` (digits stay LTR inside Arabic) |
-| | `.cell` (code boards) | `OtpCodeInput` (six cells, paste, SMS autofill) |
+| | `.ph` | `PhoneField` (digits stay LTR inside Arabic; 14 px `mute` chevron after the country code; optional placeholder and read-only) |
+| | `.boxes` / `.box` (boards 11, 21, 22) | `OtpCodeInput` (six cells, gap 8, radius 9, 26/500 tabular. Board 21: 56 inside a 1 px `controlBorder` (CSS content-box, 58 tall), the next cell 2 px `focus` (60 tall) while focused. Board 22 `error`: 56 including a 2 px `onDanger` border on `danger`. One hidden field with `AutofillHints.oneTimeCode` in an `AutofillGroup`, number keyboard, max 6, paste fills all six; one semantics node; corrected in feature 009) |
+| | board 21 `.panel` of `.row` radios | `ChoiceRowGroup` (rows ≥ 44, padding 7 8, radius 9, 16/1.375, 30 px `tile` icon; chosen = `selected` + `accentInk`, `accent` tile, tick; radio-group semantics; feature 009) |
+| | `.ck` (board 23) | `CheckLine` (22 px box in `accent`, gap 12, 14/1.5 `bodyInk`, inline links as their own semantics nodes, whole line ≥ 44 toggles; feature 009) |
+| | `#err` (board 22) | `InlineError` (18 px alert, gap 8, 15/1.45 `onDanger`, live region; feature 009) |
+| | inline `a`, `.quiet`, `bdi.num` in a sentence | `LinkedText` (ARB sentence with `{name}` tokens; underlined `a`, 500 `.quiet`, LTR-isolated number; feature 009) |
 | Status and data | `.badge` | `StatusBadge` |
 | | quotation boards | `QuoteLines` |
 | | `.num` | `Money` (tabular figures; amounts are never formatted in a feature) |

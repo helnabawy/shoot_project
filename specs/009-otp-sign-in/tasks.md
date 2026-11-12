@@ -58,7 +58,7 @@ description: "Task list for feature 009 — sign in with a mobile number and a o
 
 **Purpose**: packages, environment, scripts and the vendor's lead time.
 
-- [ ] T001 Add `flutter_secure_storage` and `url_launcher` to `mobile/pubspec.yaml`, each pinned
+- [x] T001 Add `flutter_secure_storage` and `url_launcher` to `mobile/pubspec.yaml`, each pinned
   exactly (latest stable at least two weeks old, no caret); run `flutter pub get`.
   - Add their rows to the Packages table in `mobile/README.md` (feature 009, with the reasons from
     plan.md Complexity Tracking). Skip `url_launcher` if an earlier feature already added it.
@@ -195,32 +195,32 @@ token minting, and the app's session core. Every story needs them.
 
 ### Mobile core
 
-- [ ] T027 [P] Write `mobile/test/core/auth/session_store_test.dart` (base cases) and
+- [x] T027 [P] Write `mobile/test/core/auth/session_store_test.dart` (base cases) and
   `mobile/test/core/auth/session_cubit_test.dart` (base cases): `MemorySessionStore` round-trips;
   an unparsable value reads as signed out and is deleted; `SessionCubit.signIn` stores and emits
   `SignedIn`; `signOut` deletes and emits `SignedOut`.
-- [ ] T028 Create in `mobile/lib/core/auth/`: `session.dart` (`Session`, `SessionUser`, decoding the
+- [x] T028 Create in `mobile/lib/core/auth/`: `session.dart` (`Session`, `SessionUser`, decoding the
   `auth-token.json` and `me-*.json` examples), `session_store.dart` (`SessionStore`,
   `SecureSessionStore` on `flutter_secure_storage` with the options in research R14,
   `MemorySessionStore`), `session_cubit.dart` (`SessionUnknown`, `SignedOut`, `SignedIn`). Register
   in `mobile/lib/core/di/injection.dart`; read the store before `runApp` in `mobile/lib/main.dart`.
   Make T027 pass.
-- [ ] T029 [P] Add the new problem codes to `mobile/lib/core/l10n/failure_message.dart` with strings
+- [x] T029 [P] Add the new problem codes to `mobile/lib/core/l10n/failure_message.dart` with strings
   in `mobile/lib/core/l10n/arb/app_en.arb` (with descriptions) and `app_ar.arb`; extend 008's
   contract test so it fails if a 009 code is missing on either side.
-- [ ] T030 [P] Write the sign-in domain tests first:
+- [x] T030 [P] Write the sign-in domain tests first:
   `mobile/test/features/sign_in/domain/resend_timer_test.dart` (**`OT-US1-S7`**, unit part: counts
   down from the server's `resendAt` adjusted by the `Date` header skew, using the fixed `Clock`;
   `canResend` at zero), `request_code_test.dart`, `verify_code_test.dart`.
-- [ ] T031 Create `mobile/lib/features/sign_in/domain/`: `entities/otp_challenge.dart`,
+- [x] T031 Create `mobile/lib/features/sign_in/domain/`: `entities/otp_challenge.dart`,
   `entities/signup_choice.dart`, `resend_timer.dart`, `repositories/auth_repository.dart`,
   `usecases/request_code.dart`, `usecases/verify_code.dart`. Make T030 pass.
-- [ ] T032 [P] Write `mobile/test/features/sign_in/data/models/*_test.dart` (decode every
+- [x] T032 [P] Write `mobile/test/features/sign_in/data/models/*_test.dart` (decode every
   `auth-*.json` and `me-*.json` example, `toEntity`, unknown `accountType` → `unknown`; add their
   rows to 008's `mobile/test/api_examples_test.dart`, which requires a row per example file) and
   `data/repositories/auth_repository_impl_test.dart` (problems → failures with their codes; network
   error → `NetworkFailure`; a stubbed Dio adapter).
-- [ ] T033 Create `mobile/lib/features/sign_in/data/` (models, `auth_remote_datasource.dart`,
+- [x] T033 Create `mobile/lib/features/sign_in/data/` (models, `auth_remote_datasource.dart`,
   `auth_repository_impl.dart`) and `sign_in_injection.dart`, called from `core/di/injection.dart`.
   Make T032 pass.
 
@@ -266,7 +266,7 @@ again by WhatsApp into the same account; `pnpm fidelity --grep "20|21|22"` passe
   built server with the console provider): request, read the code with `readOutboxCode` (add it to
   `web/tests/e2e/helpers.ts`), verify, `GET me`, logout, `GET me` → 401. Name it with
   `OT-US1-S2` and `OT-US3-S3`.
-- [ ] T036 [P] [US1] Write `mobile/test/features/sign_in/presentation/cubit/sign_in_flow_cubit_test.dart`
+- [x] T036 [P] [US1] Write `mobile/test/features/sign_in/presentation/cubit/sign_in_flow_cubit_test.dart`
   (`bloc_test`, fake repository and session cubit):
   - **`OT-US1-S2`**: `awaitingCode` → `verifying` → `signedIn(isNew: true)`, `SessionCubit.signIn`
     called with the token;
@@ -274,7 +274,7 @@ again by WhatsApp into the same account; `pnpm fidelity --grep "20|21|22"` passe
     state's channel changes; before it, the call is ignored;
   - problems map to `codeInvalid`, `codeExpired`, `codeLocked`, `rateLimited(retryAfter)`,
     `sendFailed`.
-- [ ] T037 [P] [US1] Write `mobile/test/features/sign_in/presentation/pages/number_page_test.dart`
+- [x] T037 [P] [US1] Write `mobile/test/features/sign_in/presentation/pages/number_page_test.dart`
   (**`OT-US1-S9`**: a landline or foreign number shows the field error and calls nothing; the
   segmented control defaults to SMS; the language button switches to Arabic; FR-055: "Editor? Sign
   in with email" calls the injected launcher with the website's email sign-in address) and
@@ -282,14 +282,14 @@ again by WhatsApp into the same account; `pnpm fidelity --grep "20|21|22"` passe
   countdown, the role rows with "I need a …" selected, built from the `GET personas` example;
   **`OT-US1-S4`**: the `codeInvalid` state shows the error cells, `InlineError` announced, Top Hit
   "Try again" clears the cells and refocuses).
-- [ ] T038 [P] [US1] Write `mobile/test/core/widgets/otp_code_input_test.dart` (**`OT-US1-S10`**):
+- [x] T038 [P] [US1] Write `mobile/test/core/widgets/otp_code_input_test.dart` (**`OT-US1-S10`**):
   the hidden field has `AutofillHints.oneTimeCode`, number keyboard, max length 6, inside an
   `AutofillGroup`; a pasted or autofilled `482713` fills six cells and fires `onCompleted`; cells are
   56 high (board 21 `.box`); one semantics node "Six-digit code"; cells stay left to right in Arabic.
-- [ ] T039 [P] [US1] Write `mobile/test/core/widgets/choice_row_group_test.dart` and
+- [x] T039 [P] [US1] Write `mobile/test/core/widgets/choice_row_group_test.dart` and
   `inline_error_test.dart` (sizes and states from research R16, radio-group semantics, live region,
   RTL, text scale 2.0).
-- [ ] T040 [P] [US1] Write `mobile/test/goldens/screens/20_signin_number_golden_test.dart`,
+- [x] T040 [P] [US1] Write `mobile/test/goldens/screens/20_signin_number_golden_test.dart`,
   `21_signin_code_golden_test.dart` and `22_code_error_golden_test.dart` (`@Tags(['golden'])`):
   `pumpBoard` in four variants from the shared examples (countdown 0:42 and 0:24 via the fixed
   clock), plus self-baselines, including one at the largest text size (`TextScaler.linear(2.0)`)
@@ -311,31 +311,31 @@ again by WhatsApp into the same account; `pnpm fidelity --grep "20|21|22"` passe
   `web/src/modules/auth/index.ts`. Add the route files
   `web/src/app/(payload)/api/mobile/v1/auth/otp/request/route.ts` and `…/otp/verify/route.ts`
   (one-line re-exports). Make T034 and T035 (request part) pass.
-- [ ] T044 [P] [US1] Correct `mobile/lib/core/widgets/otp_code_input.dart` to board 21 (`.box`: 56
+- [x] T044 [P] [US1] Correct `mobile/lib/core/widgets/otp_code_input.dart` to board 21 (`.box`: 56
   high, radius 9, gap 8, 26/500 tabular, 1 px `controlBorder`, active cell 2 px `accent`, error state
   `onDanger` border) and its autofill setup (research R11); update its component golden and 007's
   catalogue row in `.claude/skills/flutter-mobile/references/widget-catalogue.md`. Make T038 pass.
-- [ ] T045 [P] [US1] Create `mobile/lib/core/widgets/choice_row_group.dart` and `inline_error.dart`
+- [x] T045 [P] [US1] Create `mobile/lib/core/widgets/choice_row_group.dart` and `inline_error.dart`
   (research R16), with gallery entries in `mobile/lib/core/gallery/gallery_page.dart` and component
   goldens. Make T039 pass.
-- [ ] T046 [US1] Create `mobile/lib/features/sign_in/presentation/cubit/sign_in_flow_cubit.dart` and
+- [x] T046 [US1] Create `mobile/lib/features/sign_in/presentation/cubit/sign_in_flow_cubit.dart` and
   `sign_in_flow_state.dart` (data-model.md). Make T036 pass.
-- [ ] T047 [US1] Build `mobile/lib/features/sign_in/presentation/pages/number_page.dart` to board 20:
+- [x] T047 [US1] Build `mobile/lib/features/sign_in/presentation/pages/number_page.dart` to board 20:
   `ShootHeader` (back, wordmark, `عربي`), title and body, `PhoneField` with the hint, the
   `SegmentedControl` "Send the code by" (SMS, WhatsApp), Top Hit "Send code", the legal line with
   links opened through `url_launcher`, and "Editor? Sign in with email" (research R17). Fidelity keys
   for the manifest boxes.
-- [ ] T048 [US1] Build `mobile/lib/features/sign_in/presentation/pages/code_page.dart` to boards 21
+- [x] T048 [US1] Build `mobile/lib/features/sign_in/presentation/pages/code_page.dart` to boards 21
   and 22: the "Sent by … to …" line with `Bidi`-safe number and "Change number", `OtpCodeInput`, the
   countdown (`ResendTimer`), the role question (`ChoiceRowGroup`, rows from the active personas via
   the ARB list pattern, "I need a …" default, only on the standalone flow), Top Hit "Continue" (or
   "Try again" in the error state), and "send it on WhatsApp" / "by SMS". `MessageBanner` for
   `rateLimited` and `sendFailed`. Make T037 pass.
-- [ ] T049 [US1] Wire the routes: in `mobile/lib/core/routing/app_routes.dart` set `/login` and
+- [x] T049 [US1] Wire the routes: in `mobile/lib/core/routing/app_routes.dart` set `/login` and
   `/login/code` to `built: true`; in `app_router.dart` add a `ShellRoute` providing
   `SignInFlowCubit` over `/login`, `/login/code` and `/register`, and redirect `/login/code` without a
   challenge to `/login`. Add the strings for screens 20–22 to both ARB files.
-- [ ] T050 [US1] Write `canvas/strings.ar/S09-signin-number.json` and `S09d-code-error.json` (same
+- [ ] T050 (app part, 2026-11-12: strings.ar for S09, S09b, S09c and S09d with `mobile/test/core/l10n/board_strings_test.dart`; `009-otp-sign-in` in `fid/shipped.json`; goldens for 20–22. Fidelity not yet passing: every box within 0.36 px, but pixel diffs en-light/en-dark 1.16 %/1.20 % (20), 2.15 %/2.12 % (21), 1.27 %/1.26 % (22) against 1 %: Flutter rounds each text line box to a whole pixel and the browser snaps glyph baselines. Arabic variants wait for 007's localise.ts) [US1] Write `canvas/strings.ar/S09-signin-number.json` and `S09d-code-error.json` (same
   Arabic as the ARB files; 21's file exists from 007 and is checked against board 42). Extend
   `mobile/test/core/l10n/board_strings_test.dart` to the new files. Add `"009-otp-sign-in"` to
   `fid/shipped.json`. Run `mobile/tool/goldens.sh --update` for 20–22, then
@@ -372,7 +372,7 @@ scan of the whole suite finds no number or code.
     logout, plus a provider failure; no captured line matches the number (any format) or the code;
   - **`OT-US2-S6`**: an editor and an admin with a `username` (set with `overrideAccess`) → right
     code answers 403 `useEmailSignIn`, no session added, challenge used.
-- [ ] T053 [P] [US2] Add **`OT-US2-S4`** (app part) to `mobile/test/core/auth/auth_interceptor_test.dart`
+- [x] T053 [P] [US2] Add **`OT-US2-S4`** (app part) to `mobile/test/core/auth/auth_interceptor_test.dart`
   (created in T060 if not yet there): with a capturing `debugPrint`/logger, an `auth/*` request and
   its response are never logged, and `failure_message` text never contains the number.
 
@@ -388,7 +388,7 @@ scan of the whole suite finds no number or code.
 - [ ] T056 [US2] After T006 approval: create `web/src/modules/auth/otp/providers/unifonic.ts` per
   contracts/otp-provider.md and register it in `providers/index.ts`. Make T051 pass. Record the
   vendor row in plan.md's Complexity Tracking as approved, with the date.
-- [ ] T057 [US2] Make the interceptor and repository logging rules of T053 pass (no logging of
+- [x] T057 [US2] Make the interceptor and repository logging rules of T053 pass (no logging of
   `auth/*` traffic; `kReleaseMode` logs nothing from Dio).
 
 **Checkpoint**: OT-US2-S1 to S9 pass; the vendor adapter exists behind the production guard.
@@ -414,21 +414,21 @@ the token (401), reinstall (signed out), open `/account` signed out (sign-in, th
   - `GET me` → `meV1` with the member's own number; `Cache-Control: private, no-store`.
   - Also write `web/src/modules/auth/wire.test.ts`: `toWireMe` never sends `sessions`, `hash`,
     `salt`, `loginAttempts`, `lockUntil` or `roles`, and sends `phone: null` for an email account.
-- [ ] T059 [P] [US3] Extend `mobile/test/core/auth/session_store_test.dart` (**`OT-US3-S5`**: with no
+- [x] T059 [P] [US3] Extend `mobile/test/core/auth/session_store_test.dart` (**`OT-US3-S5`**: with no
   `install.seen` in the 006 in-memory `PreferencesStore`, `SecureSessionStore.init()` wipes a stored
   session and writes the flag; with the flag present it keeps it; a read exception wipes and reads as
   signed out) and `session_cubit_test.dart` (**`OT-US3-S1`**: a stored, unexpired session emits
   `SignedIn` as the first state after `SessionUnknown`, before any network call; `/me` then updates
   the user; a 401 from `/me` emits `SignedOut`; **`OT-US3-S3`**: `signOut()` calls `logout`, clears
   the store and emits `SignedOut`, also when logout answers 401 or the network fails).
-- [ ] T060 [P] [US3] Write `mobile/test/core/auth/auth_interceptor_test.dart` with a stubbed Dio
+- [x] T060 [P] [US3] Write `mobile/test/core/auth/auth_interceptor_test.dart` with a stubbed Dio
   adapter and the fixed clock:
   - adds `Authorization: Bearer` when signed in and nothing when signed out;
   - **`OT-US3-S2`**: with `exp` 1 day 23 h away, three queued requests trigger one refresh through
     the separate Dio, then all three carry the new token; with 2 days 1 h away, no refresh; a refresh
     network error keeps the old token; a refresh 401 signs out;
   - **`OT-US3-S4`**: a 401 on a request that carried a token calls `SessionCubit.expire()`.
-- [ ] T061 [P] [US3] Write `mobile/test/core/auth/safe_next_test.dart` (**`OT-US3-S7`**:
+- [x] T061 [P] [US3] Write `mobile/test/core/auth/safe_next_test.dart` (**`OT-US3-S7`**:
   `https://evil.example`, `//evil.example`, `/\evil`, `javascript:…`, `/unknown/path` → `null`;
   `/account/bookings` and `/ar/account` → kept) and `mobile/test/core/routing/auth_guard_test.dart`
   (**`OT-US3-S6`**: signed out, `/account/bookings` → `/login?next=%2Faccount%2Fbookings`; after
@@ -443,17 +443,17 @@ the token (401), reinstall (signed out), open `/account` signed out (sign-in, th
   spreading `endpoints.authRefresh`, `endpoints.authLogout` and `endpoints.me` (`auth: 'required'`),
   and add the route files `…/v1/auth/refresh/route.ts`, `…/v1/auth/logout/route.ts` and
   `…/v1/me/route.ts`. Make T058 pass.
-- [ ] T063 [US3] Finish `SecureSessionStore.init()` (first-run wipe through `PreferencesStore`,
+- [x] T063 [US3] Finish `SecureSessionStore.init()` (first-run wipe through `PreferencesStore`,
   research R14) and `SessionCubit` restore, `/me` refresh, `expire()` and `signOut()`. Create
   `mobile/lib/core/auth/auth_api.dart` (refresh, logout, me). Make T059 pass.
-- [ ] T064 [US3] Create `mobile/lib/core/auth/auth_interceptor.dart` (`QueuedInterceptor`, research
+- [x] T064 [US3] Create `mobile/lib/core/auth/auth_interceptor.dart` (`QueuedInterceptor`, research
   R14) and add it, after 008's install-id interceptor, in `mobile/lib/core/network/dio_client.dart`;
   the refresh call uses a second `Dio` without it. Make T060 pass.
-- [ ] T065 [US3] Create `mobile/lib/core/auth/safe_next.dart` (a port of `web/src/modules/auth/safe-next.ts`
+- [x] T065 [US3] Create `mobile/lib/core/auth/safe_next.dart` (a port of `web/src/modules/auth/safe-next.ts`
   checked against `app_routes.dart`) and add the guard to `app_router.dart`: `auth: required` routes
   redirect signed-out people to `/login?next=`; the router refreshes on `SessionCubit` changes; after
   sign-in the flow goes to `next`, else the default destination from research R15. Make T061 pass.
-- [ ] T066 [US3] Add a debug-only "Session" section to the gallery (signed-in user, expiry, "Sign
+- [x] T066 [US3] Add a debug-only "Session" section to the gallery (signed-in user, expiry, "Sign
   out", "Expire token") for the manual checks until feature 013 builds the account screen's sign-out.
 
 **Checkpoint**: OT-US3-S1 to S8 pass.
@@ -480,7 +480,7 @@ kept; both create creator accounts with three acceptances.
   - **`OT-US4-S6`**: a persona switched to inactive before verify → 422
     `auth.errors.personaInactive`, `attempts` unchanged, the same code still works after choosing an
     active persona.
-- [ ] T068 [P] [US4] Write `mobile/test/features/sign_in/presentation/pages/join_page_test.dart`:
+- [x] T068 [P] [US4] Write `mobile/test/features/sign_in/presentation/pages/join_page_test.dart`:
   - **`OT-US4-S3`**: with two active personas the segments are the two singulars plus "Both"; with
     three, plus "All"; with one, no combined segment; labels in the request's language from the
     `GET personas` example (`personas.json`, `personas.ar.json`);
@@ -488,11 +488,11 @@ kept; both create creator accounts with three acceptances.
     message;
   - **`OT-US4-S2`** (page part): in finish mode the number is read-only with "Change number" and the
     Top Hit reads "Continue".
-- [ ] T069 [P] [US4] Extend `sign_in_flow_cubit_test.dart`: **`OT-US4-S1`** (menu path: request →
+- [x] T069 [P] [US4] Extend `sign_in_flow_cubit_test.dart`: **`OT-US4-S1`** (menu path: request →
     code screen without the role question → verify with the provider signup) and **`OT-US4-S2`**
     ("I'm a …" + Continue does not call verify, opens `/register` in finish mode with the code kept;
     its "Continue" verifies once with the provider signup).
-- [ ] T070 [P] [US4] Write `mobile/test/core/widgets/check_line_test.dart` (22 px box, 14/1.5, inline
+- [x] T070 [P] [US4] Write `mobile/test/core/widgets/check_line_test.dart` (22 px box, 14/1.5, inline
   links as separate semantics nodes, 44 px target for the whole line, RTL) and
   `mobile/test/goldens/screens/23_join_golden_test.dart` (four variants, self-baselines, one at
   the largest text size).
@@ -502,16 +502,16 @@ kept; both create creator accounts with three acceptances.
 - [x] T071 [US4] Extend `web/src/modules/auth/otp/signup.ts` and `verify-code.ts` with the provider
   path (research R12): personas checked against the active personas with
   `isProviderRegistrationValid` before the attempt; acceptances for `provider`. Make T067 pass.
-- [ ] T072 [P] [US4] Create `mobile/lib/core/widgets/check_line.dart` with a gallery entry and
+- [x] T072 [P] [US4] Create `mobile/lib/core/widgets/check_line.dart` with a gallery entry and
   component golden. Make T070's widget part pass.
-- [ ] T073 [US4] Build `mobile/lib/features/sign_in/presentation/pages/join_page.dart` to board 23
+- [x] T073 [US4] Build `mobile/lib/features/sign_in/presentation/pages/join_page.dart` to board 23
   (header with back and `عربي`, title and body, "I am a" `SegmentedControl` from the personas plus the
   combined option, `PhoneField`, `CheckLine` with the three legal links, Top Hit "Send code", "Already
   have an account? Log in"), plus its finish mode. Set `/register` to `built: true`. Strings in both
   ARB files. Extend `SignInFlowCubit` for both paths. Make T068 and T069 pass.
-- [ ] T074 [US4] Write `canvas/strings.ar/S09c-join.json`, run `tool/goldens.sh --update` for 23 and
+- [ ] T074 (app part, 2026-11-12: `canvas/strings.ar/S09c-join.json` and goldens done; en-light passes at 0.93 %, en-dark 1.22 % over 1 %, every box within 0.36 px; same cause as T050) [US4] Write `canvas/strings.ar/S09c-join.json`, run `tool/goldens.sh --update` for 23 and
   `pnpm fidelity --grep 23`, and fix until all four variants pass.
-- [ ] T075 [US4] Review against the `persona-extensibility` skill: no profession named in Dart, ARB
+- [x] T075 [US4] Review against the `persona-extensibility` skill: no profession named in Dart, ARB
   or web code added by this feature; the role rows and segments change when an editor renames,
   reorders or deactivates a persona (add a case to T068 with a renamed persona).
 
@@ -585,7 +585,7 @@ as an editor, link a number to an email account.
 
 ## Phase 8: Polish & Cross-Cutting Concerns
 
-- [ ] T087 [P] Update `.claude/skills/mobile-api-contract/SKILL.md` and
+- [ ] T087 (app part done 2026-11-12: `.claude/skills/flutter-mobile/SKILL.md` and `references/widget-catalogue.md`; the mobile-api-contract skill is the web side's) [P] Update `.claude/skills/mobile-api-contract/SKILL.md` and
   `references/endpoints.md` (paths `auth/otp/request`, `auth/otp/verify`, `auth/refresh`,
   `auth/logout`, `me`; refresh ahead of expiry rather than on 401), and
   `.claude/skills/flutter-mobile/SKILL.md` (the interceptor rule, `ChoiceRowGroup`, `CheckLine`,
@@ -593,7 +593,7 @@ as an editor, link a number to an email account.
 - [x] T088 [P] Update `.claude/skills/payload-cms/SKILL.md` (`loginWithUsername`, the `username`
   override, `otp-challenges`, the mirrored session helper and its tripwire) and `CLAUDE.md` (the
   feature 009 line, test-id prefix `OT-`).
-- [ ] T089 [P] Update `mobile/README.md` (session and secure storage, sign-in feature, debug outbox
+- [ ] T089 (app part done 2026-11-12: `mobile/README.md`; `web/README.md` is the web side's) [P] Update `mobile/README.md` (session and secure storage, sign-in feature, debug outbox
   workflow with `otp:last`) and `web/README.md` (OTP environment, console provider, the vendor).
 - [x] T090 (proposal in `specs/009-otp-sign-in/constitution-amendment-proposal.md`; the owner opens the separate PR) Prepare the constitution amendment proposal for Principle VII (research R3: native apps
   keep the CMS token in the platform secure store as a Bearer header) as a separate pull request for
