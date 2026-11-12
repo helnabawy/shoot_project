@@ -1,0 +1,20 @@
+{
+  "_note": "Arabic for the derived ar-light and ar-dark references (feature 007, research R6): each English text node of the board, trimmed, to the same Arabic as app_ar.arb; the page's own text (title, intro, steps, questions) is CMS data and sits under cms, as test/helpers/board_content.dart writes it. Written with feature 015; needs review by an Arabic writer.",
+  "Shoot": "شوت",
+  "عربي": "English",
+  "Start a brief": "ابدأ طلباً",
+  "cms": {
+    "How it works": "كيف يعمل",
+    "[INTRO FROM CMS: one or two lines.]": "[مقدمة من نظام إدارة المحتوى: سطر أو سطران.]",
+    "Say it in one line": "قلها في سطر واحد",
+    "Tap the words to build your brief: who you need, for what, where and when. No form to fill, no account to make.": "اضغط على الكلمات لتبني طلبك: من تحتاج، ولأي غرض، وأين ومتى. لا نموذج تملؤه ولا حساب تنشئه.",
+    "See the price before anything else": "اطّلع على السعر قبل أي شيء",
+    "One fixed price for your brief, and the professionals available on your date. Pick one; nothing is paid on the site.": "سعر ثابت واحد لطلبك، والمحترفون المتاحون في تاريخك. اختر واحداً؛ لا يُدفع شيء على الموقع.",
+    "Your number is your account": "رقمك هو حسابك",
+    "At the last step we text you a six-digit code. That signs you in, saves your booking, and opens the WhatsApp chat with your professional.": "في الخطوة الأخيرة نرسل إليك رمزاً من ستة أرقام. به تسجّل الدخول ويُحفظ حجزك وتُفتح محادثة واتساب مع محترفك.",
+    "Questions": "الأسئلة",
+    "[QUESTION FROM CMS]": "[سؤال من نظام إدارة المحتوى]",
+    "[ANSWER FROM CMS. Plain sentences, at most four lines.]": "[إجابة من نظام إدارة المحتوى. جمل بسيطة، أربعة أسطر على الأكثر.]"
+  },
+  "keep": ["1", "2", "3", "price next"]
+}

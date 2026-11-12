@@ -50,6 +50,9 @@ class _NumberPageState extends State<NumberPage> {
   void _open(Future<bool> Function(String) page) =>
       unawaited(page(Localizations.localeOf(context).languageCode));
 
+  /// The legal documents open in the app (feature 015, FR-007).
+  void _openLegal(String path) => unawaited(context.push<void>(path));
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -127,11 +130,11 @@ class _NumberPageState extends State<NumberPage> {
                           parts: {
                             'terms': LinkedText.link(
                               l10n.legalTermsLink,
-                              () => _open(widget.links.terms),
+                              () => _openLegal('/terms'),
                             ),
                             'privacy': LinkedText.link(
                               l10n.legalPrivacyLink,
-                              () => _open(widget.links.privacy),
+                              () => _openLegal('/privacy'),
                             ),
                           },
                         ),
