@@ -1,0 +1,15 @@
+{
+  "picks": [
+    {
+      "persona": "photographer",
+      "code": "0087"
+    }
+  ],
+  "details": {
+    "date": "2026-12-12",
+    "startTime": "18:30",
+    "duration": "2h",
+    "venue": "Dubai Marina, Marina Walk",
+    "note": "Please arrive 15 minutes early."
+  }
+}

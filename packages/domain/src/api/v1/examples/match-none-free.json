@@ -1,0 +1,41 @@
+{
+  "locale": "en",
+  "brief": {
+    "reference": "B-7K2M9",
+    "sentence": "A photographer for an event in Dubai, 2 hours, on 12 Dec",
+    "date": "2026-12-12",
+    "duration": "2h"
+  },
+  "date": "2026-12-12",
+  "priceOnRequest": false,
+  "totalFils": 95000,
+  "sections": [
+    {
+      "persona": {
+        "slug": "photographer",
+        "singular": "Photographer",
+        "plural": "Photographers"
+      },
+      "priceFils": 95000,
+      "includes": [
+        "Two hours of shooting",
+        "60 edited photos in 3 days"
+      ],
+      "creators": []
+    }
+  ],
+  "nearby": [
+    {
+      "date": "2026-12-13",
+      "free": 3
+    },
+    {
+      "date": "2026-12-11",
+      "free": 2
+    },
+    {
+      "date": "2026-12-14",
+      "free": 5
+    }
+  ]
+}
