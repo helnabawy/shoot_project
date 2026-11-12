@@ -35,6 +35,9 @@ function request(e: Endpoint, headers: Record<string, string> = {}) {
 
 let seekerToken = ''
 
+/** Feature 009's endpoints: an anonymous call is refused as declared (401 signed in, 422 without a body); their own suites cover the rest. */
+const SIGN_IN = new Set(['otpRequest', 'otpVerify', 'authRefresh', 'authLogout', 'me'])
+
 describe('MR-US2-S7 every registered endpoint', () => {
   beforeAll(async () => {
     await resetDatabase()
@@ -47,7 +50,9 @@ describe('MR-US2-S7 every registered endpoint', () => {
 
   it('registers at least the US1 endpoints, all public in 008', () => {
     expect(ENDPOINTS.map((e) => e.id)).toEqual(expect.arrayContaining(['site', 'navigation', 'personas', 'briefBuilder', 'landing']))
-    for (const e of ENDPOINTS) expect([e.id, e.auth, e.cache]).toEqual([e.id, 'none', 'public'])
+    // 009's sign-in endpoints are the only ones that are not public reads: no-store, POST or signed in.
+    for (const e of ENDPOINTS.filter((x) => !SIGN_IN.has(x.id))) expect([e.id, e.auth, e.cache]).toEqual([e.id, 'none', 'public'])
+    for (const e of ENDPOINTS.filter((x) => SIGN_IN.has(x.id))) expect([e.id, e.cache]).toEqual([e.id, 'no-store'])
   })
 
   for (const e of ENDPOINTS) {
@@ -61,6 +66,12 @@ describe('MR-US2-S7 every registered endpoint', () => {
       for (const locale of ['en', 'ar']) {
         const res = await handler(...request(e, { 'accept-language': locale }))
         expect(res.headers.get('content-language')).toBe(locale)
+        if (SIGN_IN.has(e.id)) {
+          expect(res.status, e.id).toBe(e.auth === 'required' ? 401 : 422)
+          expect(res.headers.get('cache-control')).toBe('no-store')
+          expect(problemV1.parse(await res.json()).code).toBe(e.auth === 'required' ? 'api.errors.unauthorized' : 'api.errors.invalidInput')
+          continue
+        }
         if (NOT_IN_SEED.has(e.id)) {
           expect(res.status).toBe(404)
           expect(problemV1.parse(await res.json()).code).toBe('api.errors.notFound')
@@ -74,6 +85,7 @@ describe('MR-US2-S7 every registered endpoint', () => {
     })
 
     it(`${e.id}: a seeker token changes nothing and the answer stays public`, async () => {
+      if (SIGN_IN.has(e.id)) return // a token is the point of these (and logout would end the shared session)
       const handler = (await handlerOf(e)) as RouteHandler
       const anonymous = await handler(...request(e))
       const signedIn = await handler(...request(e, { authorization: `Bearer ${seekerToken}` }))

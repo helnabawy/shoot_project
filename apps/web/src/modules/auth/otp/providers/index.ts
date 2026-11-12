@@ -9,7 +9,7 @@ let cached: OtpProvider | undefined
 let override: OtpProvider | undefined
 
 /** Integration tests swap in a recording provider; `undefined` restores the configured one. */
-export function useOtpProvider(provider: OtpProvider | undefined): void {
+export function setOtpProvider(provider: OtpProvider | undefined): void {
   override = provider
 }
 
