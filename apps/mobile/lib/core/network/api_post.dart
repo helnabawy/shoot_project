@@ -26,6 +26,13 @@ Future<ApiAnswer> apiPost(
   String? bearer,
 }) => _send(dio, 'POST', path, body: body, bearer: bearer);
 
+/// `PATCH` with a JSON [body] (feature 013, `PATCH me`); see [apiPost].
+Future<ApiAnswer> apiPatch(
+  Dio dio,
+  String path, {
+  required Map<String, Object?> body,
+}) => _send(dio, 'PATCH', path, body: body);
+
 /// `GET` with an explicit [bearer] token; see [apiPost].
 Future<ApiAnswer> apiGetWithToken(Dio dio, String path, {String? bearer}) =>
     _send(dio, 'GET', path, bearer: bearer);

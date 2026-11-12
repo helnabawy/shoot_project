@@ -53,7 +53,7 @@ function request(e: Endpoint, headers: Record<string, string> = {}) {
 let seekerToken = ''
 
 /** Feature 009's endpoints: an anonymous call is refused as declared (401 signed in, 422 without a body); their own suites cover the rest. */
-const SIGN_IN = new Set(['otpRequest', 'otpVerify', 'authRefresh', 'authLogout', 'me'])
+const SIGN_IN = new Set(['otpRequest', 'otpVerify', 'authRefresh', 'authLogout', 'me', 'meAccount', 'meBookings', 'meBriefs', 'meUpdate'])
 
 describe('MR-US2-S7 every registered endpoint', () => {
   beforeAll(async () => {

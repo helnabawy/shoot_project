@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { accountHomeV1, accountPageRequestV1, bookingListV1, briefListV1, meUpdateV1 } from './account'
 import { authRefreshV1, authTokenV1, meV1, otpChallengeV1, otpRequestV1, otpVerifyV1 } from './auth'
 import { creatorListV1, creatorProfileRequestV1, creatorProfileV1, creatorsRequestV1, specialtyPageV1, specialtyRequestV1 } from './creators'
 import { hirePageRequestV1, hirePageV1 } from './hire'
@@ -95,6 +96,48 @@ export const endpoints = {
     input: noInput,
     output: meV1,
     examples: ['me-seeker', 'me-provider'],
+  }),
+  // 013: the client account (specs/013-client-account/contracts/account-api.md).
+  meAccount: defineEndpoint({
+    id: 'meAccount',
+    method: 'GET',
+    path: '/api/mobile/v1/me/account',
+    auth: 'required',
+    cache: 'no-store',
+    input: noInput,
+    output: accountHomeV1,
+    examples: ['me-account', 'me-account-empty'],
+  }),
+  meBookings: defineEndpoint({
+    id: 'meBookings',
+    method: 'GET',
+    path: '/api/mobile/v1/me/bookings',
+    auth: 'required',
+    cache: 'no-store',
+    input: accountPageRequestV1,
+    output: bookingListV1,
+    examples: ['me-bookings'],
+  }),
+  meBriefs: defineEndpoint({
+    id: 'meBriefs',
+    method: 'GET',
+    path: '/api/mobile/v1/me/briefs',
+    auth: 'required',
+    cache: 'no-store',
+    input: accountPageRequestV1,
+    output: briefListV1,
+    examples: ['me-briefs'],
+  }),
+  meUpdate: defineEndpoint({
+    id: 'meUpdate',
+    method: 'PATCH',
+    path: '/api/mobile/v1/me',
+    auth: 'required',
+    cache: 'no-store',
+    input: z.object({ body: meUpdateV1 }),
+    output: meV1,
+    examples: ['me-updated'],
+    requestExamples: ['me-update-request'],
   }),
   // US3: creators, specialty pages and hire pages.
   creators: defineEndpoint({ ...publicRead, id: 'creators', path: '/api/mobile/v1/creators', input: creatorsRequestV1, output: creatorListV1, examples: ['creators', 'creators.ar'] }),
