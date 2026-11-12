@@ -93,14 +93,6 @@ class QmStepLine extends StatelessWidget {
 String qmFailureText(BuildContext context, Failure failure) {
   final l10n = context.l10n;
   if (failure is ServerFailure) {
-    switch (failure.code) {
-      case 'booking.errors.unavailable' || 'booking.errors.creatorUnavailable':
-        return l10n.qmErrUnavailable;
-      case 'booking.errors.expired-quotation':
-        return l10n.qmErrExpired;
-      case 'booking.errors.not-allowed' || 'booking.errors.terminal':
-        return l10n.qmErrNotAllowed;
-    }
     if (failure.fieldCode('body.reason') == 'booking.errors.reason') {
       return l10n.qmErrReason;
     }

@@ -7,6 +7,9 @@ import 'package:shoot_mobile/core/widgets/phone_field.dart';
 import 'package:shoot_mobile/core/widgets/snap_carousel.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/quick_match/domain/entities/quick_match.dart';
+import 'package:shoot_mobile/features/quick_match/presentation/cubit/book_flow_cubit.dart';
+import 'package:shoot_mobile/features/quick_match/presentation/pages/details_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../helpers/quick_match_fixtures.dart';
 import '../../../../helpers/quick_match_harness.dart';
