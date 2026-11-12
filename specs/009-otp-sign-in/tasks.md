@@ -585,7 +585,7 @@ as an editor, link a number to an email account.
 
 ## Phase 8: Polish & Cross-Cutting Concerns
 
-- [ ] T087 (app part done 2026-11-12: `.claude/skills/flutter-mobile/SKILL.md` and `references/widget-catalogue.md`; the mobile-api-contract skill is the web side's) [P] Update `.claude/skills/mobile-api-contract/SKILL.md` and
+- [x] T087 (web part: mobile-api-contract skill; app part done 2026-11-12: `.claude/skills/flutter-mobile/SKILL.md` and `references/widget-catalogue.md`; the mobile-api-contract skill is the web side's) [P] Update `.claude/skills/mobile-api-contract/SKILL.md` and
   `references/endpoints.md` (paths `auth/otp/request`, `auth/otp/verify`, `auth/refresh`,
   `auth/logout`, `me`; refresh ahead of expiry rather than on 401), and
   `.claude/skills/flutter-mobile/SKILL.md` (the interceptor rule, `ChoiceRowGroup`, `CheckLine`,
@@ -593,7 +593,7 @@ as an editor, link a number to an email account.
 - [x] T088 [P] Update `.claude/skills/payload-cms/SKILL.md` (`loginWithUsername`, the `username`
   override, `otp-challenges`, the mirrored session helper and its tripwire) and `CLAUDE.md` (the
   feature 009 line, test-id prefix `OT-`).
-- [ ] T089 (app part done 2026-11-12: `mobile/README.md`; `web/README.md` is the web side's) [P] Update `mobile/README.md` (session and secure storage, sign-in feature, debug outbox
+- [x] T089 (web part: web README; app part done 2026-11-12: `mobile/README.md`; `web/README.md` is the web side's) [P] Update `mobile/README.md` (session and secure storage, sign-in feature, debug outbox
   workflow with `otp:last`) and `web/README.md` (OTP environment, console provider, the vendor).
 - [x] T090 (proposal in `specs/009-otp-sign-in/constitution-amendment-proposal.md`; the owner opens the separate PR) Prepare the constitution amendment proposal for Principle VII (research R3: native apps
   keep the CMS token in the platform secure store as a Bearer header) as a separate pull request for
