@@ -85,7 +85,7 @@ Inside out, test first; `service_health` is the template for shape, not content.
 | `widgets/` | the design-system catalogue, one widget per file | each with a widget test and a component golden |
 | `motion/` | `MotionPolicy`, arrive widgets, `AmbientPause` | see Motion |
 | `routing/` | web-mirroring paths, first-run redirect, account guard, `resolve` fallback | see Routing |
-| `auth/` | `SessionStore`, `SessionCubit`, `AuthInterceptor`, `InstallIdInterceptor` | feature 009 (OTP sign-in); install id from 008 |
+| `auth/` | `SessionStore`, `SessionCubit`, `AuthApi`, `AuthInterceptor`, `safeNext` | feature 009 (OTP sign-in, built); the install id is 008's `core/install/` |
 | `time/clock.dart` | injected `Clock` | tests use a fixed clock; no `DateTime.now()` outside it |
 | `widgets/shoot_image.dart` | `ShootImage` | see Images |
 
@@ -104,6 +104,10 @@ never rebuild a catalogued part inside a feature. The binding catalogue is
 | `.chip` | `ShootChip` in a `ChipGroup` (not Material's `ChoiceChip`; see the naming note in the reference) |
 | `.seg` | `SegmentedControl` |
 | `.ph` | `PhoneField` |
+| `.boxes` / `.box` | `OtpCodeInput` |
+| board 21 `.panel` of `.row` radios | `ChoiceRowGroup` |
+| `.ck` | `CheckLine` |
+| `#err` | `InlineError` |
 | `.panel`, `.sum` / `.row` / `.srow` | `ShootPanel` / `ShootRow` / `SummaryRow` |
 | `.sc` | `SceneTile` |
 
@@ -156,20 +160,38 @@ only).
   animations off, so the end state is also what the fidelity diff checks.
 - Motion never carries meaning on its own: the end state says everything.
 
-## Session and storage (*planned*)
+## Session and storage (feature 009)
 
-- `SessionStore` keeps the Payload JWT and its expiry in `flutter_secure_storage` (iOS Keychain,
-  Android Keystore). The Keychain survives an uninstall, so the first run of an install (a flag in
-  `shared_preferences` is absent) wipes the secure store.
-- `SessionCubit`: unknown → signedOut | signedIn(user from `GET /me`). The token is never logged,
-  never put in a URL, never in `shared_preferences`.
-- `AuthInterceptor` adds `Authorization: Bearer <token>`; on a 401 it refreshes once (single
-  flight, `POST /refresh`), retries the request once, and otherwise signs out.
+- `core/auth/`: `Session` / `SessionUser` (`{ token, exp, user: { id, name, accountType } }`, no
+  phone number on the device), `SessionStore` (`SecureSessionStore` on `flutter_secure_storage`
+  under `session.v1`, iOS `first_unlock_this_device`, Android Keystore; `MemorySessionStore` for
+  tests), `SessionCubit` (`SessionUnknown` → `SignedOut` | `SignedIn(session)`), `AuthApi`
+  (`auth/refresh`, `auth/logout`, `me`, each with the token passed in) and `AuthInterceptor`.
+- **First run.** The Keychain survives an uninstall, so `SecureSessionStore.init()` wipes it when
+  `install.seen` (a `PreferenceKeys` key, so it is in `PreferenceKeys.all`) is absent, then writes
+  the flag. An unreadable value is "signed out" and is deleted.
+- **No flash.** `main()` runs `init()` and `read()` before `runApp` and passes the result to
+  `configureDependencies(…, sessionStore:, session:)`, so the first frame is already right; then
+  `SessionCubit.restore()` refreshes the user from `GET me` in the background (a 401 signs out).
+- **The interceptor rule.** `AuthInterceptor extends QueuedInterceptor` and is added to the shared
+  Dio *after* the install-id interceptor (`createDio(auth: …)`). It adds `Authorization: Bearer`
+  while signed in and **refreshes ahead of expiry** (fewer than 2 days left) through `AuthApi`,
+  which runs on a *second* Dio built without the interceptor, so a refresh never recurses; queued
+  requests share one refresh. A refresh network error keeps the old token; a refresh 401 signs out.
+  Because tokens are refreshed early, any 401 on a request that carried the token means "signed
+  out": `SessionCubit.expire()`. There is no refresh-on-401-and-retry.
+- **Logs.** Nothing logs a token, a header or a body. Debug builds add `RequestLogInterceptor`
+  (method, path, status only) and it skips `auth/*` and `me`; release builds add no Dio logger.
+  Failure messages never contain the number.
+- `signOut()` calls `auth/logout` and signs out locally whatever the answer (401 or offline).
+- The token is never logged, never put in a URL, never in `shared_preferences`.
 - `InstallIdInterceptor` sends `X-Shoot-Install` (a random id per install, kept in
   `shared_preferences`; not a secret) for the server's rate limits. Every request also sends
   `Accept-Language`.
-- `shared_preferences` (feature 006) holds the accent, theme mode, language, the first-run flags and
-  the install id. Saved choices are applied before the first frame (Principle VI).
+- `shared_preferences` (feature 006) holds the accent, theme mode, language, the first-run flags,
+  `install.seen` and the install id. Saved choices are applied before the first frame (Principle VI).
+- The debug gallery has a "Session" section (who, expiry, "Sign out", "Expire token") for manual
+  checks until 013 builds the account screen.
 
 ## Routing and deep links (*planned*)
 
@@ -178,7 +200,11 @@ only).
   `/match/:ref/:key/details`, `/q/:ref/:key`, `/account/**`, the guides, legal and `/hire/…`
   pages. An `/ar` prefix sets the locale. Path helpers mirror the web's `paths.ts` files.
 - One redirect handles the first run (splash and the three learning steps, once per device) and
-  guards `/account/**` (to sign-in, then back to where the person was).
+  guards `auth: true` routes (`/account/**`, built or not): signed out → `/login?next=<path>`;
+  signed in on a sign-in screen → `next` when `safeNext` (the Dart port of the web's
+  `safe-next.ts`, checked against the route table) accepts it, else `afterSignIn`. The router
+  listens to `SessionCubit`. Feature routes come in through `createAppRouter(routes: …)` (sign-in's
+  `ShellRoute` providing `SignInFlowCubit` over `/login`, `/login/code`, `/register`).
 - An unknown path calls `GET /api/mobile/v1/resolve?path=…`, which answers page, removed or not
   found; the app renders the CMS page, the removed state or the not-found screen.
 - Universal links and app links come from the web's `/.well-known/apple-app-site-association` and
@@ -205,7 +231,8 @@ caching package; a disk cache needs a measured problem and a Complexity Tracking
 |---|---|---|---|
 | `shared_preferences` | 006 | accent, theme mode and language survive a restart | hand-written platform channels; a JSON file plus `path_provider` |
 | `flutter_svg` | 007 | the icons and the golden-hour scene are copied verbatim from the boards' SVG | hand-converting SVG paths to `CustomPainter` loses the verbatim match and doubles the review |
-| `flutter_secure_storage` | 009 | the session token must live in the Keychain / Keystore | `shared_preferences` stores plain text |
+| `flutter_secure_storage` 11.2.0 | 009 | the session token must live in the Keychain / Keystore | `shared_preferences` stores plain text; hand-written Keychain/Keystore channels |
+| `url_launcher` 6.3.3 | 009 | legal pages a person accepts and the website's email sign-in open in the browser (`core/web/website_links.dart`, an injectable `UrlOpener`); 012 reuses it for WhatsApp | hiding the links fails 005's legal rule; a hand-written platform channel |
 
 ## Reference files
 
