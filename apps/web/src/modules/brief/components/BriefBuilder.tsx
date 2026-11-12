@@ -855,8 +855,8 @@ export function BriefBuilder({
               <RowContent glyph={<WhatsAppIcon width={16} height={16} />} label={labels.whatsappInstead} />
             </a>
             {providerLabel ? (
-              <a href={providerHref} className={rowClass('open')}>
-                <RowContent glyph="+" label={providerLabel} />
+              <a href={providerHref} className={rowClass('set')} data-testid="brief-provider">
+                <RowContent glyph="+" label={providerLabel} state="set" />
               </a>
             ) : null}
           </ResultGroup>
