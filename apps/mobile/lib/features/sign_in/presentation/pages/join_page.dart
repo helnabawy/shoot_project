@@ -54,8 +54,8 @@ class _JoinPageState extends State<JoinPage> {
     super.dispose();
   }
 
-  void _open(Future<bool> Function(String) page) =>
-      unawaited(page(Localizations.localeOf(context).languageCode));
+  /// The legal documents open in the app (feature 015, FR-007).
+  void _openLegal(String path) => unawaited(context.push<void>(path));
 
   void _back(SignInFlowState state) {
     if (state.finishMode) {
@@ -194,15 +194,15 @@ class _JoinPageState extends State<JoinPage> {
                       parts: {
                         'terms': LinkedText.link(
                           l10n.joinTermsLink,
-                          () => _open(widget.links.terms),
+                          () => _openLegal('/terms'),
                         ),
                         'professional': LinkedText.link(
                           l10n.joinProfessionalLink,
-                          () => _open(widget.links.professionalTerms),
+                          () => _openLegal('/terms/professional'),
                         ),
                         'privacy': LinkedText.link(
                           l10n.joinPrivacyLink,
-                          () => _open(widget.links.privacy),
+                          () => _openLegal('/privacy'),
                         ),
                       },
                     ),

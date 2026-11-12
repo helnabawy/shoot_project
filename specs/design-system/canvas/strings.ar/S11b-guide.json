@@ -1,0 +1,22 @@
+{
+  "_note": "Arabic for the derived ar-light and ar-dark references (feature 007, research R6): each English text node of the board, trimmed, to the same Arabic as app_ar.arb; the article's own text is CMS data and sits under cms, as test/helpers/board_content.dart writes it. Written with feature 015; needs review by an Arabic writer.",
+  "Shoot": "شوت",
+  "عربي": "English",
+  "More guides": "المزيد من الأدلة",
+  "cms": {
+    "Briefing": "كتابة الطلب",
+    "Booking": "الحجز",
+    "Preparing": "التحضير",
+    "Shoot team": "فريق شوت",
+    "How to brief a wedding photographer": "كيف تكتب طلبك لمصور حفلات الزفاف",
+    "[COVER IMAGE FROM CMS]": "[صورة الغلاف من نظام إدارة المحتوى]",
+    "[LEAD PARAGRAPH FROM CMS. One or two sentences that answer the title.]": "[فقرة تمهيدية من نظام إدارة المحتوى. جملة أو جملتان تجيبان عن العنوان.]",
+    "[SECTION HEADING]": "[عنوان القسم]",
+    "[BODY TEXT FROM CMS. Short paragraphs at 16 px with a 1.6 line height, so a line holds about 45 characters on a phone.]": "[نص من نظام إدارة المحتوى. فقرات قصيرة بحجم ١٦ ونصف قطر سطر ١٫٦، فيتسع السطر لنحو ٤٥ حرفاً على الهاتف.]",
+    "[LIST ITEM FROM CMS]": "[عنصر قائمة من نظام إدارة المحتوى]",
+    "[BODY TEXT FROM CMS.]": "[نص من نظام إدارة المحتوى.]",
+    "What your quotation includes": "ماذا يتضمن عرض السعر",
+    "What to prepare the day before a shoot": "ماذا تحضّر قبل يوم من التصوير"
+  },
+  "keep": ["4", "3", "5"]
+}

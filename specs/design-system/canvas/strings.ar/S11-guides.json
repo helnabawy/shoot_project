@@ -1,0 +1,30 @@
+{
+  "_note": "Arabic for the derived ar-light and ar-dark references (feature 007, research R6): each English text node of the board, trimmed, to the same Arabic as app_ar.arb; the guides' own text (topics, titles, byline, 'Page n of m') is CMS data or built from ARB strings with placeholders and sits under cms, as test/helpers/board_content.dart writes it. Written with feature 015; needs review by an Arabic writer.",
+  "Shoot": "شوت",
+  "عربي": "English",
+  "Guides": "الأدلة",
+  "Plain answers for briefing, booking and preparing a shoot.": "إجابات واضحة عن كتابة الطلب والحجز والتحضير للتصوير.",
+  "All": "الكل",
+  "Previous": "السابق",
+  "Next": "التالي",
+  "Follow the guides with RSS": "تابع الأدلة عبر RSS",
+  "Ready to brief?": "جاهز لكتابة طلبك؟",
+  "Describe the shoot in one line and we reply on WhatsApp.": "صف التصوير في سطر واحد وسنرد عليك على واتساب.",
+  "Start a brief": "ابدأ طلباً",
+  "WhatsApp us": "راسلنا على واتساب",
+  "cms": {
+    "Briefing": "كتابة الطلب",
+    "Booking": "الحجز",
+    "Preparing": "التحضير",
+    "Shoot team": "فريق شوت",
+    "By": "بقلم",
+    "min read": "د",
+    "How to brief a wedding photographer": "كيف تكتب طلبك لمصور حفلات الزفاف",
+    "What your quotation includes": "ماذا يتضمن عرض السعر",
+    "What to prepare the day before a shoot": "ماذا تحضّر قبل يوم من التصوير",
+    "Photo or video: which does your event need?": "تصوير أم فيديو: ماذا تحتاج فعاليتك؟",
+    "How long editing takes, and why": "كم يستغرق التعديل ولماذا",
+    "Page 1 of 3": "الصفحة 1 من 3"
+  },
+  "keep": ["4", "3", "5", "1", "2"]
+}

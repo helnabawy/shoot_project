@@ -1303,5 +1303,229 @@
   "problemNameLength": "Use 2 to 80 characters for your name.",
   "@problemNameLength": {
     "description": "account.errors.nameLength."
+  },
+  "guidesTitle": "Guides",
+  "@guidesTitle": {
+    "description": "Heading of the guides list (screen 33) and the guides section name."
+  },
+  "guidesIntro": "Plain answers for briefing, booking and preparing a shoot.",
+  "@guidesIntro": {
+    "description": "Line under the heading of the guides list (screen 33)."
+  },
+  "guidesTopics": "Topics",
+  "@guidesTopics": {
+    "description": "Screen-reader name of the topic chips on the guides list."
+  },
+  "guidesAll": "All",
+  "@guidesAll": {
+    "description": "The chip that shows guides of every topic."
+  },
+  "guidesPages": "Pages",
+  "@guidesPages": {
+    "description": "Screen-reader name of the paging row of the guides list."
+  },
+  "guidesPrevious": "Previous",
+  "@guidesPrevious": {
+    "description": "Paging: previous page of guides."
+  },
+  "guidesNext": "Next",
+  "@guidesNext": {
+    "description": "Paging: next page of guides."
+  },
+  "guidesPageOf": "Page {page} of {count}",
+  "@guidesPageOf": {
+    "description": "Paging: where the person is in the guides list.",
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "guidesBy": "By {author}",
+  "@guidesBy": {
+    "description": "Byline of a guide; author is the author's name from the CMS.",
+    "placeholders": {
+      "author": {
+        "type": "String"
+      }
+    }
+  },
+  "guidesMinutes": "{minutes} min read",
+  "@guidesMinutes": {
+    "description": "Reading time of a guide, computed by the server.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "guidesRss": "Follow the guides with RSS",
+  "@guidesRss": {
+    "description": "Link that opens the guides feed in the browser."
+  },
+  "guidesMore": "More guides",
+  "@guidesMore": {
+    "description": "Heading of the related guides under an article."
+  },
+  "guidesBack": "Back to the guides",
+  "@guidesBack": {
+    "description": "Screen-reader name of the back button on a guide."
+  },
+  "briefBandTitle": "Ready to brief?",
+  "@briefBandTitle": {
+    "description": "Heading of the call to brief at the foot of guides."
+  },
+  "briefBandBody": "Describe the shoot in one line and we reply on WhatsApp.",
+  "@briefBandBody": {
+    "description": "Line under the call-to-brief heading."
+  },
+  "briefBandWhatsapp": "WhatsApp us",
+  "@briefBandWhatsapp": {
+    "description": "Secondary link in the call to brief that opens WhatsApp with the default message."
+  },
+  "contentAccount": "Account",
+  "@contentAccount": {
+    "description": "Screen-reader name of the account button in the content screens' header."
+  },
+  "contentMenu": "Open menu",
+  "@contentMenu": {
+    "description": "Screen-reader name of the menu button in the content screens' header."
+  },
+  "legalLabel": "Legal",
+  "@legalLabel": {
+    "description": "Small label above the title of a legal document (screen 36)."
+  },
+  "legalVersionLine": "Version {version} · applies from {date}",
+  "@legalVersionLine": {
+    "description": "Version and date a legal document applies from.",
+    "placeholders": {
+      "version": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "legalVersionNumber": "Version {version}",
+  "@legalVersionNumber": {
+    "description": "A legal version's number in the list of versions.",
+    "placeholders": {
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "legalUpcoming": "Version {version} applies from {date}.",
+  "@legalUpcoming": {
+    "description": "A newer legal version that starts later.",
+    "placeholders": {
+      "version": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "legalGoverns": "If the Arabic and English texts differ, the English text governs.",
+  "@legalGoverns": {
+    "description": "Note on every legal document."
+  },
+  "legalArabicUnavailable": "The Arabic text is not yet available. The English text governs.",
+  "@legalArabicUnavailable": {
+    "description": "Shown above the English text of a legal document with no Arabic text."
+  },
+  "legalInThisDocument": "In this document",
+  "@legalInThisDocument": {
+    "description": "Heading of the table of contents."
+  },
+  "legalDocuments": "Legal documents",
+  "@legalDocuments": {
+    "description": "Screen-reader name of the switch between Terms, Professional terms and Privacy."
+  },
+  "legalDocTerms": "Terms",
+  "@legalDocTerms": {
+    "description": "Switch label: the Terms."
+  },
+  "legalDocProfessional": "Professional terms",
+  "@legalDocProfessional": {
+    "description": "Switch label: the Professional terms."
+  },
+  "legalDocPrivacy": "Privacy",
+  "@legalDocPrivacy": {
+    "description": "Switch label: the Privacy policy."
+  },
+  "legalEarlierVersions": "Earlier versions",
+  "@legalEarlierVersions": {
+    "description": "Row that opens the list of earlier versions of a legal document."
+  },
+  "legalAllVersions": "All versions",
+  "@legalAllVersions": {
+    "description": "Trailing text of the earlier versions row."
+  },
+  "legalVersionsNav": "Versions",
+  "@legalVersionsNav": {
+    "description": "Screen-reader name of the versions list."
+  },
+  "legalNewerInForce": "A newer version is in force.",
+  "@legalNewerInForce": {
+    "description": "Shown above an earlier legal version."
+  },
+  "legalReadNewer": "Read the version in force",
+  "@legalReadNewer": {
+    "description": "Link from an earlier legal version to the one in force."
+  },
+  "legalPeriod": "{from} to {until}",
+  "@legalPeriod": {
+    "description": "The period an earlier legal version was in force.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "until": {
+        "type": "String"
+      }
+    }
+  },
+  "legalPeriodOpen": "From {from}",
+  "@legalPeriodOpen": {
+    "description": "The start of the version in force, in the versions list.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "englishOnly": "This text is only available in English.",
+  "@englishOnly": {
+    "description": "Notice above a guide or page that has no text in the app's language."
+  },
+  "pageQuestions": "Questions",
+  "@pageQuestions": {
+    "description": "Heading of a questions section on an editor-built page when the CMS gives none."
+  },
+  "pageOpenOnWebsite": "Open this page on the website",
+  "@pageOpenOnWebsite": {
+    "description": "Row on a page the app cannot draw, which opens it in the browser."
+  },
+  "removedCode": "410",
+  "@removedCode": {
+    "description": "Small line above the removed-page heading (screen 38)."
+  },
+  "removedTitle": "This page has been removed",
+  "@removedTitle": {
+    "description": "Heading of the removed screen (screen 38)."
+  },
+  "removedBody": "It used to be here, but it is gone. Start from one of these.",
+  "@removedBody": {
+    "description": "Body of the removed screen (screen 38)."
+  },
+  "removedGuides": "Read the guides",
+  "@removedGuides": {
+    "description": "Row on the removed screen that opens the guides."
   }
 }

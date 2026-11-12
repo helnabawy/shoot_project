@@ -61,6 +61,12 @@ void main() {
     'S09b-signin-code',
     'S09d-code-error',
     'S09c-join',
+    // 015: guides, article, page, legal, removed.
+    'S10b-removed',
+    'S11-guides',
+    'S11b-guide',
+    'S12-page',
+    'S13-legal',
   ];
 
   for (final board in boards) {
@@ -68,7 +74,9 @@ void main() {
       final strings = json('$dir/$board.json');
       expect(strings['keep'], isA<List<Object?>>());
       for (final MapEntry(key: english, value: arabic) in strings.entries) {
-        if (english == 'keep' || english.startsWith('_')) continue;
+        if (english == 'keep' || english == 'cms' || english.startsWith('_')) {
+          continue;
+        }
         final places = pairs.where((p) => p.$1.contains(english)).toList();
         expect(places, isNotEmpty, reason: '"$english" is not app English');
         expect(

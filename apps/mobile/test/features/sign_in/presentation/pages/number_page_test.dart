@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/core/widgets/inline_error.dart';
@@ -105,8 +106,7 @@ void main() {
   });
 
   testWidgets(
-    'FR-055 "Editor? Sign in with email" opens the website\'s email sign-in; '
-    'the legal links open the terms and privacy notice',
+    'FR-055 "Editor? Sign in with email" opens the website\'s email sign-in',
     (tester) async {
       final opener = RecordingOpener();
       await pumpSignIn(
@@ -116,17 +116,34 @@ void main() {
       );
       final handle = tester.ensureSemantics();
       await tester.pump();
-      for (final label in ['Sign in with email', 'terms', 'privacy notice']) {
-        tester.semantics.tap(find.semantics.byLabel(label));
-      }
+      tester.semantics.tap(find.semantics.byLabel('Sign in with email'));
       expect(opener.opened.map((u) => u.toString()), [
         'https://shoot.example/login/email',
-        'https://shoot.example/terms',
-        'https://shoot.example/privacy',
       ]);
       handle.dispose();
     },
   );
+
+  for (final (label, path) in [
+    ('terms', '/terms'),
+    ('privacy notice', '/privacy'),
+  ]) {
+    testWidgets('MG-FR-007 the "$label" link opens the document in the app', (
+      tester,
+    ) async {
+      final router = await pumpSignIn(
+        tester,
+        cubit: flowCubit(repository: repository),
+      );
+      final handle = tester.ensureSemantics();
+      await tester.pump();
+      tester.semantics.tap(find.semantics.byLabel(label));
+      await tester.pumpAndSettle();
+      final top = router.routerDelegate.currentConfiguration.last;
+      expect(top is ImperativeRouteMatch ? top.matches.uri.path : '', path);
+      handle.dispose();
+    });
+  }
 
   testWidgets(
     'a signed-out /login/code without a code on its way goes to /login',
