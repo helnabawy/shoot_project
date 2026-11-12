@@ -36,7 +36,7 @@ export const matchV1 = z.object({
     reference: z.string(),
     sentence: z.string(),
     date: isoDay.nullable(),
-    /** A `durations` option value; `null` when the brief has none. */
+    /** The `durations` option value priced: the query's, else the brief's; `null` when there is none. */
     duration: z.string().nullable(),
   }),
   /** The day shown: the query's, else the brief's; `null` is "any date". */

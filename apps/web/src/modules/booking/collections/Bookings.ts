@@ -74,6 +74,21 @@ export const Bookings: CollectionConfig = {
         ] },
       ],
     },
+    {
+      // 012: what the app's step 3 asks. Nullable; the website's flow leaves it empty.
+      name: 'details',
+      type: 'group',
+      access: locked,
+      admin: { readOnly: true },
+      fields: [
+        { type: 'row', fields: [
+          { name: 'startTime', type: 'text', maxLength: 5, admin: { description: 'HH:MM, 24 h' } },
+          { name: 'duration', type: 'text', maxLength: 40 },
+        ] },
+        { name: 'venue', type: 'text', maxLength: 200 },
+        { name: 'note', type: 'textarea', maxLength: 300 },
+      ],
+    },
     { type: 'row', fields: [
       { name: 'date', type: 'text', index: true, access: locked, admin: { readOnly: true, description: 'Shoot day (UAE), YYYY-MM-DD' } },
       { name: 'location', type: 'text', access: locked, admin: { readOnly: true } },
