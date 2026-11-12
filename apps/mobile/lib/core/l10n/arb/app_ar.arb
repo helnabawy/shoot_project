@@ -1,10 +1,8 @@
 {
   "@@locale": "ar",
-
   "appTitle": "شوت",
   "languageSwitchAction": "English",
   "languageSwitchTooltip": "التبديل إلى الإنجليزية",
-
   "appearanceTitle": "المظهر",
   "appearanceButtonTooltip": "المظهر",
   "themeGroupLabel": "السمة",
@@ -17,13 +15,11 @@
   "themeSystem": "حسب الجهاز",
   "themeLight": "فاتح",
   "themeDark": "داكن",
-
   "serviceHealthTitle": "حالة الخدمة",
   "serviceHealthChecking": "جارٍ فحص الخدمة…",
   "serviceHealthHealthy": "كل شيء يعمل.",
   "serviceHealthDegraded": "الخدمة تعمل، لكن قاعدة البيانات لا تستجيب.",
   "serviceHealthRetry": "افحص مرة أخرى",
-
   "failureNetwork": "تعذّر الوصول إلى الخدمة. تحقّق من اتصالك وحاول مرة أخرى.",
   "failureServer": "ردّت الخدمة بخطأ. حاول مرة أخرى بعد قليل.",
   "failureUnexpected": "حدث خطأ ما. حاول مرة أخرى.",
@@ -33,7 +29,6 @@
   "problemTokenInvalid": "انتهت جلستك. سجّل الدخول مرة أخرى.",
   "problemRateLimited": "محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.",
   "problemUnexpected": "حدث خطأ من جهتنا. حاول مرة أخرى.",
-
   "notFoundCode": "404",
   "notFoundTitle": "هذه الصفحة ليست هنا",
   "notFoundBody": "ربما نُقلت، أو ربما أزال المبدع ملفه الشخصي.",
@@ -41,13 +36,11 @@
   "notFoundBrowseCreators": "تصفّح المبدعين",
   "notFoundYourBookings": "حجوزاتك",
   "notFoundAction": "ابدأ طلباً",
-
   "errorTitle": "حدث خطأ",
   "errorBody": "حاول مرة أخرى، أو راسلنا على واتساب. طلبك محفوظ على هذا الهاتف.",
   "errorWhatsapp": "اسألنا على واتساب",
   "errorHome": "العودة إلى البداية",
   "errorRetry": "حاول مرة أخرى",
-
   "problemPhoneInvalid": "أدخل رقم هاتف متحرك إماراتياً، مثل 50 123 4567.",
   "problemTooManyRequests": "طلبت رموزاً كثيرة. حاول مرة أخرى بعد {minutes} دقيقة.",
   "problemResendTooSoon": "يمكنك طلب رمز جديد بعد {time}.",
@@ -106,5 +99,262 @@
   "joinProfessionalLink": "شروط المحترفين",
   "joinPrivacyLink": "سياسة الخصوصية",
   "joinHaveAccount": "لديك حساب بالفعل؟",
-  "joinLogIn": "تسجيل الدخول"
+  "joinLogIn": "تسجيل الدخول",
+  "qmStepLine": "الخطوة {step} من 3 · {summary}",
+  "@qmStepLine": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "qmEditAction": "تعديل",
+  "qmChooseTitle": "اسحب للاختيار",
+  "qmChooseBody": "{count, plural, one{{type} واحد متاح في يومك، مختار لطلبك.} two{{types} متاحان في يومك، مختاران لطلبك.} few{{count} {types} متاحون في يومك، مختارون لطلبك.} many{{count} {types} متاحون في يومك، مختارون لطلبك.} other{{count} {types} متاحون في يومك، مختارون لطلبك.}}",
+  "@qmChooseBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "type": {
+        "type": "String"
+      },
+      "types": {
+        "type": "String"
+      }
+    }
+  },
+  "qmCarouselLabel": "مبدعوك",
+  "qmPosition": "{n} من {m}",
+  "@qmPosition": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "qmContinueWith": "تابع مع {name}",
+  "@qmContinueWith": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmSeeWork": "اطّلع على أعمال {name} وملفه",
+  "@qmSeeWork": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmNotSure": "غير متأكد؟ دعنا نختار",
+  "qmNotSureHint": "نعرّفك على أحدهم عبر واتساب خلال ساعة",
+  "qmPriceOnRequest": "السعر عند الطلب",
+  "qmContinueOnWhatsApp": "تابع عبر واتساب",
+  "qmNoneTitle": "لا أحد متاح في ذلك اليوم",
+  "qmNoneBody": "في هذه الأيام مبدعون متاحون. اختيار يوم يغيّر التاريخ فقط.",
+  "qmDayFree": "{count, plural, one{متاح واحد} two{متاحان} few{{count} متاحون} many{{count} متاحًا} other{{count} متاح}}",
+  "@qmDayFree": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qmContinueOn": "تابع في {day}",
+  "@qmContinueOn": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "qmAskWhatsApp": "اسأل عبر واتساب",
+  "qmDetailsTitle": "جلستك",
+  "qmDateLabel": "التاريخ",
+  "qmTimeLabel": "وقت البدء",
+  "qmTimeHint": "مثال 18:30",
+  "qmDurationLabel": "المدة",
+  "qmVenueLabel": "المكان أو العنوان",
+  "qmNoteLabel": "ملاحظة لـ {name} (اختياري)",
+  "@qmNoteLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmNoteLabelTeam": "ملاحظة للمبدع (اختياري)",
+  "qmContinueLabel": "متابعة",
+  "qmErrDate": "اختر يومًا ليس في الماضي.",
+  "qmErrTime": "أدخل وقت البدء بالساعات والدقائق، مثل 18:30.",
+  "qmErrVenue": "أين ستكون الجلسة؟",
+  "qmNumberTitle": "رقمك",
+  "qmNumberBody": "نستخدمه لتسجيل دخولك وحفظ هذا الحجز. يرى {name} اسمك وليس رقمك.",
+  "@qmNumberBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmNumberBodyTeam": "نستخدمه لتسجيل دخولك وحفظ هذا الحجز. يرى المبدع اسمك وليس رقمك.",
+  "qmSummaryCreator": "المبدع",
+  "qmSummaryWhen": "الموعد",
+  "qmSummaryTotal": "السعر",
+  "qmWeChoose": "سنختار نحن",
+  "qmNameLabel": "بماذا يناديك {name}؟ (اختياري)",
+  "@qmNameLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmNameLabelTeam": "بماذا يناديك المبدع؟ (اختياري)",
+  "qmOpenWhatsApp": "افتح واتساب",
+  "qmSaving": "جارٍ حفظ حجزك…",
+  "qmQuoteTitle": "عرض السعر {reference}",
+  "@qmQuoteTitle": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "qmIssued": "صدر في {date}",
+  "@qmIssued": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "qmValidUntil": "صالح حتى {date}",
+  "@qmValidUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "qmShootOn": "الجلسة",
+  "qmProfessionals": "مختصوك",
+  "qmTotal": "الإجمالي",
+  "qmVatNote": "شامل ضريبة القيمة المضافة",
+  "qmAccept": "اقبل عرض السعر",
+  "qmQuestions": "أسئلة؟ اسأل عبر واتساب",
+  "qmDownloadPdf": "تنزيل PDF",
+  "qmTeamChoosing": "يختار فريقنا {type} لك.",
+  "@qmTeamChoosing": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "qmStateQuoted": "عرض سعر",
+  "qmStateAccepted": "بالانتظار",
+  "qmStateConfirmed": "بانتظار الدفع",
+  "qmStatePaid": "مدفوع",
+  "qmStateScheduled": "مجدول",
+  "qmStateDelivered": "تم التسليم",
+  "qmStateCompleted": "مكتمل",
+  "qmStateCancelled": "ملغى",
+  "qmStateExpired": "منتهي",
+  "qmStateOnHold": "معلّق",
+  "qmNextAccept": "اقبل لنطلب من {name} التأكيد.",
+  "@qmNextAccept": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmNextAcceptTeam": "اقبل وسيجد الفريق مبدعك.",
+  "qmNextWait": "بانتظار تأكيد {name}.",
+  "@qmNextWait": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmNextWaitTeam": "بانتظار تأكيد مبدعك.",
+  "qmNextChooseAnother": "ال{type} غير متاح. اختر آخر بالسعر نفسه.",
+  "@qmNextChooseAnother": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "qmNextPay": "تم التأكيد. اتفق على الدفع في المحادثة وسيسجّله الفريق.",
+  "qmNextShootDay": "يوم جلستك هو {date}.",
+  "@qmNextShootDay": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "qmNextShootDayOpen": "يوم جلستك يقترب.",
+  "qmNextConfirmDelivery": "تم تسليم العمل. أكّد إن كنت راضيًا.",
+  "qmNextCompleted": "اكتمل كل شيء. شكرًا لك.",
+  "qmNextCancelled": "أُلغي هذا الحجز.",
+  "qmNextExpired": "انتهت صلاحية عرض السعر هذا.",
+  "qmNextOnHold": "الفريق يتابع هذا الأمر.",
+  "qmProgressLabel": "تقدّم الحجز",
+  "qmProgBriefSent": "أُرسل الطلب",
+  "qmProgConfirmed": "أكّد المختص",
+  "qmProgPaid": "سُجّل الدفع",
+  "qmProgShootDay": "يوم الجلسة",
+  "qmProgDelivered": "التسليم",
+  "qmProgCompleted": "الاكتمال",
+  "qmOpenChat": "افتح محادثة واتساب",
+  "qmChangeDate": "تريد تغيير التاريخ؟ اسأل {name} في المحادثة",
+  "@qmChangeDate": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmChangeDateTeam": "تريد تغيير التاريخ؟ اسأل في المحادثة",
+  "qmChooseAnotherWith": "تابع مع {name}",
+  "@qmChooseAnotherWith": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmConfirmDelivery": "تأكيد التسليم",
+  "qmReportProblem": "الإبلاغ عن مشكلة",
+  "qmReportLabel": "ما الذي حدث؟",
+  "qmReportSend": "أرسل إلى الفريق",
+  "qmHoldReason": "تم الإبلاغ: {reason}",
+  "@qmHoldReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "qmExpiredTitle": "انتهت صلاحية عرض السعر",
+  "qmExpiredNote": "قد يكون السعر والتوفر قد تغيّرا.",
+  "qmFreshAction": "احصل على عرض سعر جديد",
+  "qmFreshNote": "قد يكون السعر والمتاحون قد تغيّروا منذ عرضك الأخير.",
+  "qmErrUnavailable": "لم يعد هذا المبدع متاحًا في ذلك اليوم. اختر من جديد.",
+  "qmErrNotAllowed": "لا يمكن ذلك الآن. يعرض الحجز حالته الحالية.",
+  "qmErrExpired": "انتهت صلاحية عرض السعر هذا.",
+  "qmErrReason": "أخبرنا بكلمات قليلة ما الذي حدث."
 }

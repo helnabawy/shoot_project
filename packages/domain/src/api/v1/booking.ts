@@ -42,11 +42,15 @@ export const matchV1 = z.object({
   /** The day shown: the query's, else the brief's; `null` is "any date". */
   date: isoDay.nullable(),
   priceOnRequest: z.boolean(),
+  /** The `durations` option set, in the answer's language: what screen 09 offers (CMS data). */
+  durations: z.array(z.object({ value: z.string(), label: z.string() })),
   /** The sum over every type, or `null` when any type has no price. */
   totalFils: z.int().nonnegative().nullable(),
   sections: z.array(matchSectionV1),
   /** Other days with someone free in every type, nearest first, with how many are free. */
   nearby: z.array(z.object({ date: isoDay, free: z.int().nonnegative() })),
+  /** The business WhatsApp chat with the brief written in: for "price on request" and "Ask on WhatsApp". */
+  whatsappUrl: z.string().regex(/^https:\/\/\S+$/).nullable(),
 })
 export type MatchV1 = z.infer<typeof matchV1>
 

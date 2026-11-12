@@ -79,7 +79,9 @@ final class QuickMatchRemoteDataSourceImpl
 
   @override
   Future<BookingViewModel> fetchBooking(String ref, String key) async =>
-      BookingViewModel.fromJson(await apiGet(_dio, 'quotations/${_q(ref, key)}'));
+      BookingViewModel.fromJson(
+        await apiGet(_dio, 'quotations/${_q(ref, key)}'),
+      );
 
   Future<BookingViewModel> _command(
     String ref,
@@ -87,7 +89,11 @@ final class QuickMatchRemoteDataSourceImpl
     String command, [
     Map<String, Object?>? body,
   ]) async => BookingViewModel.fromJson(
-    (await apiPost(_dio, 'quotations/${_q(ref, key)}/$command', body: body)).body!,
+    (await apiPost(
+      _dio,
+      'quotations/${_q(ref, key)}/$command',
+      body: body,
+    )).body!,
   );
 
   @override

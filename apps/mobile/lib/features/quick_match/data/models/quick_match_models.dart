@@ -44,6 +44,15 @@ final class MatchPageModel {
         duration: readNullableString(brief, 'duration'),
         date: readNullableString(json, 'date'),
         priceOnRequest: readBool(json, 'priceOnRequest'),
+        durations: List.unmodifiable(
+          readList(json, 'durations', (item) {
+            final d = asObject(item);
+            return DurationOption(
+              value: readString(d, 'value'),
+              label: readString(d, 'label'),
+            );
+          }),
+        ),
         totalFils: readNullableInt(json, 'totalFils'),
         sections: List.unmodifiable(
           readList(json, 'sections', (item) {
@@ -52,10 +61,13 @@ final class MatchPageModel {
               persona: _persona(readObject(s, 'persona')),
               priceFils: readNullableInt(s, 'priceFils'),
               includes: List.unmodifiable(readStringList(s, 'includes')),
-              creators: List.unmodifiable(readList(s, 'creators', (c) => _creator(asObject(c)))),
+              creators: List.unmodifiable(
+                readList(s, 'creators', (c) => _creator(asObject(c))),
+              ),
             );
           }),
         ),
+        whatsappUrl: readNullableString(json, 'whatsappUrl'),
         nearby: List.unmodifiable(
           readList(json, 'nearby', (item) {
             final n = asObject(item);
@@ -151,7 +163,11 @@ final class BookingViewModel {
                 plural: readString(readObject(r, 'persona'), 'singular'),
               ),
               creators: List.unmodifiable(
-                readList(r, 'creators', (c) => CreatorCardModel.fromJson(asObject(c)).toEntity()),
+                readList(
+                  r,
+                  'creators',
+                  (c) => CreatorCardModel.fromJson(asObject(c)).toEntity(),
+                ),
               ),
             );
           }),
@@ -175,7 +191,9 @@ final class FreshQuotationModel {
     FreshQuotation(
       briefReference: readString(json, 'briefReference'),
       briefKey: readString(json, 'briefKey'),
-      picks: List.unmodifiable(readList(json, 'picks', (p) => _pick(asObject(p)))),
+      picks: List.unmodifiable(
+        readList(json, 'picks', (p) => _pick(asObject(p))),
+      ),
     ),
   );
 

@@ -7543,6 +7543,25 @@
               }
             ]
           },
+          "durations": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "value",
+                "label"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
           "locale": {
             "enum": [
               "en",
@@ -7852,6 +7871,17 @@
                 "type": "null"
               }
             ]
+          },
+          "whatsappUrl": {
+            "anyOf": [
+              {
+                "pattern": "^https:\\/\\/\\S+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -7859,9 +7889,11 @@
           "brief",
           "date",
           "priceOnRequest",
+          "durations",
           "totalFils",
           "sections",
-          "nearby"
+          "nearby",
+          "whatsappUrl"
         ],
         "type": "object"
       },
@@ -13221,7 +13253,12 @@
     "auth.errors.resendTooSoon",
     "auth.errors.sendFailed",
     "auth.errors.tooManyRequests",
-    "auth.errors.useEmailSignIn"
+    "auth.errors.useEmailSignIn",
+    "booking.errors.creatorUnavailable",
+    "booking.errors.expired-quotation",
+    "booking.errors.not-allowed",
+    "booking.errors.terminal",
+    "booking.errors.unavailable"
   ],
   "version": 1
 }

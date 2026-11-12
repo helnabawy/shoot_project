@@ -17,7 +17,12 @@ final class QuickMatchRepositoryImpl implements QuickMatchRepository {
     String? date,
     String? duration,
   }) => apiResult(
-    () async => (await _remote.fetchMatch(ref, key, date: date, duration: duration)).toEntity(),
+    () async => (await _remote.fetchMatch(
+      ref,
+      key,
+      date: date,
+      duration: duration,
+    )).toEntity(),
   );
 
   @override
@@ -27,7 +32,8 @@ final class QuickMatchRepositoryImpl implements QuickMatchRepository {
     List<Pick> picks,
     BookingDetails details,
   ) => apiResult(
-    () async => (await _remote.issueQuotation(ref, key, picks, details)).toEntity(),
+    () async =>
+        (await _remote.issueQuotation(ref, key, picks, details)).toEntity(),
   );
 
   @override
@@ -40,11 +46,15 @@ final class QuickMatchRepositoryImpl implements QuickMatchRepository {
 
   @override
   Future<Result<BookingView>> confirmDelivery(String ref, String key) =>
-      apiResult(() async => (await _remote.confirmDelivery(ref, key)).toEntity());
+      apiResult(
+        () async => (await _remote.confirmDelivery(ref, key)).toEntity(),
+      );
 
   @override
   Future<Result<BookingView>> report(String ref, String key, String reason) =>
-      apiResult(() async => (await _remote.report(ref, key, reason)).toEntity());
+      apiResult(
+        () async => (await _remote.report(ref, key, reason)).toEntity(),
+      );
 
   @override
   Future<Result<BookingView>> pickAnother(

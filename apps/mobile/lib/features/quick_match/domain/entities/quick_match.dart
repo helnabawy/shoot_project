@@ -77,6 +77,17 @@ final class NearbyDay extends Equatable {
   List<Object?> get props => [date, free];
 }
 
+/// One duration the brief builder offers.
+final class DurationOption extends Equatable {
+  const DurationOption({required this.value, required this.label});
+
+  final String value;
+  final String label;
+
+  @override
+  List<Object?> get props => [value, label];
+}
+
 /// Step 2 (`matchV1`).
 final class MatchPage extends Equatable {
   const MatchPage({
@@ -86,9 +97,11 @@ final class MatchPage extends Equatable {
     required this.duration,
     required this.date,
     required this.priceOnRequest,
+    required this.durations,
     required this.totalFils,
     required this.sections,
     required this.nearby,
+    required this.whatsappUrl,
   });
 
   final String reference;
@@ -99,9 +112,15 @@ final class MatchPage extends Equatable {
   /// The day shown; `null` is "any date".
   final String? date;
   final bool priceOnRequest;
+
+  /// What screen 09 offers for the duration (CMS data): option value and label.
+  final List<DurationOption> durations;
   final int? totalFils;
   final List<MatchSection> sections;
   final List<NearbyDay> nearby;
+
+  /// The business chat with the brief written in; `null` when no number is set.
+  final String? whatsappUrl;
 
   /// Nobody is free in at least one type (screen 08).
   bool get noneFree => sections.any((s) => s.creators.isEmpty);
@@ -114,9 +133,11 @@ final class MatchPage extends Equatable {
     duration,
     date,
     priceOnRequest,
+    durations,
     totalFils,
     sections,
     nearby,
+    whatsappUrl,
   ];
 }
 

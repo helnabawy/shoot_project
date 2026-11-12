@@ -52,6 +52,22 @@ function request(e: Endpoint, headers: Record<string, string> = {}) {
 
 let seekerToken = ''
 
+/**
+ * Feature 012's private-link endpoints (contracts/booking-api.md): never cached, and an anonymous call with
+ * an unknown reference is a 404 (a missing token on the issue endpoint a 401, a missing body a 422); their own
+ * suite (`mobile-api-booking.int.test.ts`) covers the rest.
+ */
+const BOOKING: Record<string, number> = {
+  match: 404,
+  quotationIssue: 401,
+  quotationView: 404,
+  quotationAccept: 404,
+  quotationConfirmDelivery: 404,
+  quotationFresh: 404,
+  quotationReport: 422,
+  quotationPickAnother: 422,
+}
+
 /** Feature 009's endpoints: an anonymous call is refused as declared (401 signed in, 422 without a body); their own suites cover the rest. */
 const SIGN_IN = new Set(['otpRequest', 'otpVerify', 'authRefresh', 'authLogout', 'me'])
 
@@ -68,8 +84,8 @@ describe('MR-US2-S7 every registered endpoint', () => {
   it('registers at least the US1 endpoints, all public in 008', () => {
     expect(ENDPOINTS.map((e) => e.id)).toEqual(expect.arrayContaining(['site', 'navigation', 'personas', 'briefBuilder', 'landing']))
     // 009's sign-in endpoints are the only ones that are not public reads: no-store, POST or signed in.
-    for (const e of ENDPOINTS.filter((x) => !SIGN_IN.has(x.id))) expect([e.id, e.auth, e.cache]).toEqual([e.id, 'none', 'public'])
-    for (const e of ENDPOINTS.filter((x) => SIGN_IN.has(x.id))) expect([e.id, e.cache]).toEqual([e.id, 'no-store'])
+    for (const e of ENDPOINTS.filter((x) => !SIGN_IN.has(x.id) && !(x.id in BOOKING))) expect([e.id, e.auth, e.cache]).toEqual([e.id, 'none', 'public'])
+    for (const e of ENDPOINTS.filter((x) => SIGN_IN.has(x.id) || x.id in BOOKING)) expect([e.id, e.cache]).toEqual([e.id, 'no-store'])
   })
 
   for (const e of ENDPOINTS) {
@@ -89,6 +105,12 @@ describe('MR-US2-S7 every registered endpoint', () => {
           expect(problemV1.parse(await res.json()).code).toBe(e.auth === 'required' ? 'api.errors.unauthorized' : 'api.errors.invalidInput')
           continue
         }
+        if (e.id in BOOKING) {
+          expect(res.status, `${e.id} ${locale}`).toBe(BOOKING[e.id])
+          expect(res.headers.get('cache-control')).toBe('no-store')
+          problemV1.parse(await res.json())
+          continue
+        }
         if (NOT_IN_SEED.has(e.id)) {
           expect(res.status).toBe(404)
           expect(problemV1.parse(await res.json()).code).toBe('api.errors.notFound')
@@ -102,6 +124,7 @@ describe('MR-US2-S7 every registered endpoint', () => {
     })
 
     it(`${e.id}: a seeker token changes nothing and the answer stays public`, async () => {
+      if (e.id in BOOKING) return // a token is part of their own suite
       if (SIGN_IN.has(e.id)) return // a token is the point of these (and logout would end the shared session)
       const handler = (await handlerOf(e)) as RouteHandler
       const anonymous = await handler(...request(e))
