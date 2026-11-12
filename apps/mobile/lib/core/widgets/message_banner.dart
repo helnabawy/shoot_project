@@ -9,10 +9,18 @@ import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 enum BannerTone { attention, error }
 
 class MessageBanner extends StatelessWidget {
-  const MessageBanner({super.key, required this.text, required this.tone});
+  const MessageBanner({
+    super.key,
+    required this.text,
+    required this.tone,
+    this.icon,
+  });
 
   final String text;
   final BannerTone tone;
+
+  /// A leading icon for an attention banner; an error always shows the alert icon.
+  final ShootIcons? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +50,14 @@ class MessageBanner extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 10,
           children: [
-            if (error)
+            if (error || icon != null)
               Padding(
-                padding: const EdgeInsetsDirectional.only(top: 5),
-                child: ShootIcon(ShootIcons.alert, size: 16, color: ink),
+                padding: EdgeInsetsDirectional.only(top: error ? 5 : 2),
+                child: ShootIcon(
+                  icon ?? ShootIcons.alert,
+                  size: 16,
+                  color: ink,
+                ),
               ),
             Expanded(
               child: Text(
