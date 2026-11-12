@@ -78,6 +78,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Shoot uses the camera so you can take a photo of your profile picture, ID or trade licence.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Shoot reads a photo you choose from your library for your profile picture, ID, trade licence or work samples.</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<!-- url_launcher (feature 009): legal pages and email sign-in open on the website. -->

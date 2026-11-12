@@ -55,7 +55,12 @@ export const IdentityDocuments: CollectionConfig = {
     mimeTypes: [...IDENTITY_UPLOAD_TYPES],
     // No resized copies: the file is read by a person once, as uploaded.
     imageSizes: [],
-    adminThumbnail: () => null,
+    // The admin previews the file itself (a photo; a PDF has no preview). It loads from the file route,
+    // which applies this collection's read access: only editors and the owner can open it.
+    adminThumbnail: ({ doc }) => {
+      const { mimeType, url } = doc as { mimeType?: string | null; url?: string | null }
+      return mimeType?.startsWith('image/') && url ? url : null
+    },
   },
   fields: [
     {
