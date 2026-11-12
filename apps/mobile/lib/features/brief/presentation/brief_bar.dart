@@ -118,7 +118,6 @@ class _BriefBarState extends State<BriefBar> {
             controller: _search,
             onChanged: () => setState(() {}),
             onReopen: widget.onReopen,
-            onTakeBack: widget.onTakeBack,
           ),
           Divider(height: 1, color: c.hair),
           if (state.message != null)
@@ -187,7 +186,24 @@ class _BriefBarState extends State<BriefBar> {
                 key: const ValueKey('briefBar:provider'),
                 label: l10n.mlBriefImA(firstPersona.label),
                 text: '+',
+                highlight: true,
                 onTap: () => widget.onProvider!(firstPersona.value),
+              ),
+            if (!draft.isEmpty)
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 6),
+                  child: TextButton(
+                    key: const ValueKey('briefBar:takeBack'),
+                    onPressed: widget.onTakeBack,
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(44, 44),
+                      foregroundColor: c.accentInk,
+                    ),
+                    child: Text(l10n.mlBriefTakeBack),
+                  ),
+                ),
               ),
             const SizedBox(height: 8),
           ],
@@ -224,7 +240,6 @@ class _Field extends StatelessWidget {
     required this.controller,
     required this.onChanged,
     required this.onReopen,
-    required this.onTakeBack,
   });
 
   final BriefState state;
@@ -232,7 +247,6 @@ class _Field extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onChanged;
   final void Function(String token) onReopen;
-  final VoidCallback onTakeBack;
 
   @override
   Widget build(BuildContext context) {
@@ -291,19 +305,7 @@ class _Field extends StatelessWidget {
               padding: const EdgeInsetsDirectional.only(start: 34, top: 8),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: tokens),
-                  if (!state.draft.isEmpty)
-                    TextButton(
-                      key: const ValueKey('briefBar:takeBack'),
-                      onPressed: onTakeBack,
-                      style: TextButton.styleFrom(
-                        minimumSize: const Size(44, 44),
-                        foregroundColor: c.accentInk,
-                      ),
-                      child: Text(l10n.mlBriefTakeBack),
-                    ),
-                ],
+                children: [Expanded(child: tokens)],
               ),
             ),
         ],
@@ -538,19 +540,23 @@ class _OptionRow extends StatelessWidget {
     this.icon,
     this.text,
     this.on = false,
+    this.highlight = false,
   });
 
   final String label;
   final ShootIcons? icon;
   final String? text;
   final bool on;
+
+  /// The row is tinted like a chosen one without saying "set" (the website's provider action).
+  final bool highlight;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
     final l10n = context.l10n;
-    final tileInk = on ? c.onAccent : c.tileInk;
+    final tileInk = on || highlight ? c.onAccent : c.tileInk;
     return Semantics(
       button: true,
       selected: on,
@@ -565,7 +571,7 @@ class _OptionRow extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 6),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           decoration: BoxDecoration(
-            color: on ? c.selected : null,
+            color: on || highlight ? c.selected : null,
             borderRadius: BorderRadius.circular(ShootRadius.row),
           ),
           child: Row(
@@ -575,7 +581,7 @@ class _OptionRow extends StatelessWidget {
                 height: ShootSize.tile,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: on ? c.accent : c.tile,
+                  color: on || highlight ? c.accent : c.tile,
                   borderRadius: BorderRadius.circular(ShootRadius.tile),
                 ),
                 child: on
@@ -597,7 +603,7 @@ class _OptionRow extends StatelessWidget {
                   label,
                   style: ShootType.row.copyWith(
                     color: c.ink,
-                    fontWeight: on ? FontWeight.w600 : null,
+                    fontWeight: on || highlight ? FontWeight.w600 : null,
                   ),
                 ),
               ),

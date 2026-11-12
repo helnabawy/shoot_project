@@ -7,19 +7,34 @@
         {
             "name": "mobile",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define=API_BASE_URL=http://localhost:3000",
+                "--dart-define=APP_ENV=development"
+            ]
         },
         {
             "name": "mobile (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define=API_BASE_URL=http://localhost:3000",
+                "--dart-define=APP_ENV=development"
+            ]
         },
         {
             "name": "mobile (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define=API_BASE_URL=http://localhost:3000",
+                "--dart-define=APP_ENV=development"
+            ]
         }
     ]
 }
