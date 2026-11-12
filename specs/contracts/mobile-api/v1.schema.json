@@ -7519,6 +7519,722 @@
       },
       "path": "/api/mobile/v1/me"
     },
+    "meAccount": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {},
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "about": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "briefs": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "bookingReference": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "reference": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sentAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "sentence": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "new",
+                    "contacted",
+                    "closed"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "reference",
+                "sentence",
+                "sentAt",
+                "status",
+                "bookingReference"
+              ],
+              "type": "object"
+            },
+            "maxItems": 5,
+            "type": "array"
+          },
+          "finish": {
+            "additionalProperties": false,
+            "properties": {
+              "autoOpen": {
+                "type": "boolean"
+              },
+              "items": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "done": {
+                      "type": "boolean"
+                    },
+                    "key": {
+                      "enum": [
+                        "number",
+                        "name",
+                        "email"
+                      ],
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "done",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "items",
+              "autoOpen"
+            ],
+            "type": "object"
+          },
+          "person": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "phone": {
+                "anyOf": [
+                  {
+                    "pattern": "^\\+9715\\d{8}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "phone"
+            ],
+            "type": "object"
+          },
+          "places": {
+            "additionalProperties": false,
+            "properties": {
+              "bookings": {
+                "additionalProperties": false,
+                "properties": {
+                  "open": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "waiting": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "waiting",
+                  "open"
+                ],
+                "type": "object"
+              },
+              "briefs": {
+                "additionalProperties": false,
+                "properties": {
+                  "open": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "open"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "bookings",
+              "briefs"
+            ],
+            "type": "object"
+          },
+          "upNext": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "booking": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "date": {
+                        "anyOf": [
+                          {
+                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "occasion": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "place": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "professional": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "reference": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "startTime": {
+                        "anyOf": [
+                          {
+                            "pattern": "^\\d{2}:\\d{2}$",
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "status": {
+                        "enum": [
+                          "awaitingAcceptance",
+                          "waitingProfessional",
+                          "awaitingPayment",
+                          "paid",
+                          "scheduled",
+                          "delivered",
+                          "completed",
+                          "cancelled",
+                          "expired",
+                          "onHold",
+                          "declined"
+                        ],
+                        "type": "string"
+                      },
+                      "totalFils": {
+                        "anyOf": [
+                          {
+                            "maximum": 9007199254740991,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "reference",
+                      "status",
+                      "occasion",
+                      "place",
+                      "date",
+                      "startTime",
+                      "professional",
+                      "totalFils"
+                    ],
+                    "type": "object"
+                  },
+                  "kind": {
+                    "enum": [
+                      "quote",
+                      "delivery",
+                      "payment",
+                      "declined"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "booking"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "person",
+          "upNext",
+          "places",
+          "briefs",
+          "finish",
+          "about"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/account"
+    },
+    "meBookings": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "query": {
+            "properties": {
+              "page": {
+                "pattern": "^[1-9]\\d{0,5}$",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "hasMore": {
+            "type": "boolean"
+          },
+          "page": {
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "type": "integer"
+          },
+          "past": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "occasion": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "place": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "professional": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "reference": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "startTime": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{2}:\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "awaitingAcceptance",
+                    "waitingProfessional",
+                    "awaitingPayment",
+                    "paid",
+                    "scheduled",
+                    "delivered",
+                    "completed",
+                    "cancelled",
+                    "expired",
+                    "onHold",
+                    "declined"
+                  ],
+                  "type": "string"
+                },
+                "totalFils": {
+                  "anyOf": [
+                    {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "reference",
+                "status",
+                "occasion",
+                "place",
+                "date",
+                "startTime",
+                "professional",
+                "totalFils"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "upcoming": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "occasion": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "place": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "professional": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "reference": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "startTime": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{2}:\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "awaitingAcceptance",
+                    "waitingProfessional",
+                    "awaitingPayment",
+                    "paid",
+                    "scheduled",
+                    "delivered",
+                    "completed",
+                    "cancelled",
+                    "expired",
+                    "onHold",
+                    "declined"
+                  ],
+                  "type": "string"
+                },
+                "totalFils": {
+                  "anyOf": [
+                    {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "reference",
+                "status",
+                "occasion",
+                "place",
+                "date",
+                "startTime",
+                "professional",
+                "totalFils"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "upcoming",
+          "past",
+          "page",
+          "hasMore"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/bookings"
+    },
+    "meBriefs": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "query": {
+            "properties": {
+              "page": {
+                "pattern": "^[1-9]\\d{0,5}$",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "hasMore": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "bookingReference": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "reference": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sentAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "sentence": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "new",
+                    "contacted",
+                    "closed"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "reference",
+                "sentence",
+                "sentAt",
+                "status",
+                "bookingReference"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "page": {
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "page",
+          "hasMore"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/briefs"
+    },
+    "meUpdate": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "body": {
+            "properties": {
+              "email": {
+                "maxLength": 254,
+                "type": "string"
+              },
+              "finishShown": {
+                "const": true,
+                "type": "boolean"
+              },
+              "name": {
+                "maxLength": 80,
+                "minLength": 2,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      },
+      "method": "PATCH",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "accountType": {
+            "enum": [
+              "seeker",
+              "provider"
+            ],
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "en",
+              "ar"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "personas": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "pattern": "^\\+9715\\d{8}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "phone",
+          "email",
+          "accountType",
+          "personas",
+          "locale"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me"
+    },
     "navigation": {
       "auth": "none",
       "cache": "public",
@@ -10344,6 +11060,9 @@
     }
   },
   "problems": [
+    "account.errors.emailInUse",
+    "account.errors.emailInvalid",
+    "account.errors.nameLength",
     "api.errors.invalidField",
     "api.errors.invalidInput",
     "api.errors.localeUnsupported",

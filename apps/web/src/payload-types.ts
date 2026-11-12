@@ -207,6 +207,7 @@ export interface User {
   accountType: 'seeker' | 'provider';
   persona?: (number | Persona)[] | null;
   categories?: (number | Category)[] | null;
+  accountFinishDismissedAt?: string | null;
   phone?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -1769,6 +1770,7 @@ export interface UsersSelect<T extends boolean = true> {
   accountType?: T;
   persona?: T;
   categories?: T;
+  accountFinishDismissedAt?: T;
   phone?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2869,6 +2871,15 @@ export interface SiteSetting {
     providerLabel?: string | null;
   };
   /**
+   * Short lines on what a client account does. Shown in the app on "Finish your account".
+   */
+  accountAbout?:
+    | {
+        line: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Up to four headings in the footer. A page joins a group in its own Navigation settings. The legal links (Terms, Privacy) are always shown.
    */
   footerGroups?:
@@ -3125,6 +3136,12 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         seekerLabel?: T;
         providerLabel?: T;
+      };
+  accountAbout?:
+    | T
+    | {
+        line?: T;
+        id?: T;
       };
   footerGroups?:
     | T
