@@ -1,4 +1,7 @@
 import 'package:shoot_mobile/core/network/json_read.dart';
+import 'package:shoot_mobile/features/content/data/models/editor_page_model.dart';
+import 'package:shoot_mobile/features/content/data/models/guide_models.dart';
+import 'package:shoot_mobile/features/content/data/models/legal_models.dart';
 import 'package:shoot_mobile/features/landing/data/models/landing_model.dart';
 import 'package:shoot_mobile/features/site/data/models/audience_model.dart';
 import 'package:shoot_mobile/features/site/data/models/brief_builder_model.dart';
@@ -15,6 +18,13 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'personas': (json) => AudienceModel.fromJson(json).toEntity(),
   'brief-builder': (json) => BriefBuilderModel.fromJson(json).toEntity(),
   'landing': (json) => LandingModel.fromJson(json).toEntity(),
+  // US4: guides, editor pages and legal documents.
+  'guides': (json) => GuideListModel.fromJson(json).toEntity(),
+  'guide': (json) => ArticleModel.fromJson(json).toEntity(),
+  'page': (json) => EditorPageModel.fromJson(json).toEntity(),
+  'legal': (json) => LegalDocumentModel.fromJson(json).toEntity(),
+  'legal-versions': (json) => LegalVersionsModel.fromJson(json).toEntity(),
+  'legal-version': (json) => LegalDocumentModel.fromJson(json).toEntity(),
 };
 
 /// `site.ar` → `site`.
