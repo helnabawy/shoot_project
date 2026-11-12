@@ -82,7 +82,7 @@ GoRouter createAppRouter({
   );
 }
 
-/// Where a plain first launch goes: the first welcome step, once per install, only when feature
+/// Where a plain first launch goes: the splash (`/welcome/0`, then the steps), once per install, only when feature
 /// 010 has built it ([AppRoute.built]). Until then it never redirects.
 String? firstRunRedirect({
   required bool isFirstNavigation,
@@ -91,7 +91,7 @@ String? firstRunRedirect({
 }) {
   final built = table.any((r) => r.path == AppRoutes.welcome && r.built);
   if (!built || welcomeSeen || !isFirstNavigation) return null;
-  return '/welcome/1';
+  return '/welcome/0';
 }
 
 /// The sign-in screens, which a signed-in person leaves.

@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-11
 
-**Status**: Draft (spec only; plan and tasks follow when the feature is next)
+**Status**: Planned (clarifications resolved in research.md R1 and R2; pending owner confirmation)
 
 **Input**: User description: "Feature 010 "first-visit-landing" (test-id prefix ML-) for the Flutter app in apps/mobile. Build the first visit and the landing from canvas screens 01 splash, 02–04 learning steps, 05 landing (full page) and 06 menu: a splash that plays once, three skippable learning steps shown once per device, the landing as one scrolling page (golden-hour hero with the brief bar as the one primary action, occasion tiles, a moving creator strip under a Pause control, the dark band for creators, a closing call to start a brief) and the menu (browse, sign in or join, language, theme, WhatsApp, legal, editor sign-in). Business rules mirror the website's landing and brief builder (001). Depends on 007 (design system, shell, fidelity check) and 008 (mobile API)."
 
@@ -223,10 +223,7 @@ creator"; tap "Start your brief" and return to the bar.
   brief bar with a list on 02, creator rows with a price and the primary action on 03, the phone
   field and code cells on 04), MUST NOT respond to touches, and MUST be described to screen readers
   in one sentence rather than read element by element. The content shown inside the demonstrations
-  is [NEEDS CLARIFICATION: Should the example creators, prices and phone number inside the learning
-  steps be (a) editor-written example content from the CMS, or (b) live data (real listed creators
-  and a price computed for an example brief)? The boards show named creators and prices, which would
-  be invented proof if they were not real or not clearly examples.]
+  is decided in research R1: step text from the CMS how-it-works steps; creators are real listed creators (name and types), prices are never shown as numbers, the phone field shows only its hint.
 - **FR-005**: Skipping or finishing the steps MUST mark them as seen on this device; they MUST not
   show again unless the app's data is cleared.
 
@@ -281,10 +278,7 @@ creator"; tap "Start your brief" and return to the bar.
 - **FR-024**: The closing section MUST offer "Start your brief", which returns to the hero and opens
   the brief at its first unanswered step; this repeat of the hero's action at the end of the
   scrolling page counts as the same one primary action.
-- **FR-025**: The landing's sections MUST be [NEEDS CLARIFICATION: Does the app landing render the
-  CMS landing page's sections in the editor's order (drawing only the four section types the app
-  designs and skipping the others), or is it a fixed app layout of the four designed sections
-  (occasions, creators, creators band, closing) whose content comes from the CMS?]
+- **FR-025**: The landing's sections MUST be a fixed app layout of the four designed sections (occasions, creators, creators band, closing) whose content comes from the CMS landing page's matching sections (research R2).
 
 **Motion on the landing**
 

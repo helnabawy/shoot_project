@@ -11,10 +11,12 @@ import 'package:shoot_mobile/core/routing/app_router.dart';
 import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
+import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
 import 'package:shoot_mobile/features/account/presentation/account_routes.dart';
 import 'package:shoot_mobile/features/account/presentation/cubit/account_cubit.dart';
 import 'package:shoot_mobile/features/account/presentation/cubit/bookings_cubit.dart';
+import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/content/presentation/content_deps.dart';
 import 'package:shoot_mobile/features/content/presentation/content_routes.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/creator_account_routes.dart';
@@ -25,23 +27,31 @@ import 'package:shoot_mobile/features/creator_account/presentation/cubit/booking
     as creator_bookings;
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/profile_cubit.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
+import 'package:shoot_mobile/features/landing/presentation/landing_cubit.dart';
+import 'package:shoot_mobile/features/landing/presentation/landing_page.dart';
+import 'package:shoot_mobile/features/menu/menu_routes.dart';
 import 'package:shoot_mobile/features/quick_match/domain/repositories/quick_match_repository.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/booking_view_cubit.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/quick_match_routes.dart';
-import 'package:shoot_mobile/features/service_health/presentation/pages/service_health_page.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/cubit/sign_in_flow_cubit.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/sign_in_routes.dart';
+import 'package:shoot_mobile/features/site/domain/repositories/site_repository.dart';
+import 'package:shoot_mobile/features/welcome/presentation/welcome_cubit.dart';
+import 'package:shoot_mobile/features/welcome/welcome_routes.dart';
 
 /// The app shell: language, theme and router. No feature logic here.
 class ShootApp extends StatefulWidget {
-  const ShootApp({super.key});
+  /// [home] replaces the landing (feature 010); tests use it to exercise the shell.
+  const ShootApp({super.key, this.home});
+
+  final WidgetBuilder? home;
 
   @override
   State<ShootApp> createState() => _ShootAppState();
 }
 
 class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
-  final GoRouter _router = createAppRouter(
+  late final GoRouter _router = createAppRouter(
     onArabicLink: () => getIt<LocaleCubit>().select(AppLocales.arabic),
     welcomeSeen: () => getIt<FirstRunStore>().welcomeSeen,
     session: getIt<SessionCubit>(),
@@ -72,10 +82,27 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         ),
         links: getIt<WebsiteLinks>(),
       ),
+      // Feature 010: the first visit and the menu.
+      welcomeRoute(
+        createWelcome: getIt.call<WelcomeCubit>,
+        brief: getIt<BriefCubit>(),
+      ),
+      menuRoute(
+        loadSite: getIt<SiteRepository>().getSite,
+        links: getIt<WebsiteLinks>(),
+      ),
       // Feature 015's `/{slug}` page route stays last so it never shadows another route.
       editorPageRoute(getIt<ContentDeps>()),
     ],
-    home: (_) => const ServiceHealthPage(),
+    home:
+        widget.home ??
+        (_) => LandingPage(
+          landing: getIt<LandingCubit>(),
+          brief: getIt<BriefCubit>(),
+          motion: getIt<LandingMotionStore>(),
+          clock: getIt<Clock>(),
+          links: getIt<WebsiteLinks>(),
+        ),
   );
 
   @override
@@ -109,6 +136,7 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         BlocProvider<ThemeModeCubit>.value(value: getIt<ThemeModeCubit>()),
         BlocProvider<AccentCubit>.value(value: getIt<AccentCubit>()),
         BlocProvider<SessionCubit>.value(value: getIt<SessionCubit>()),
+        BlocProvider<BriefCubit>.value(value: getIt<BriefCubit>()),
       ],
       child: Builder(
         builder: (context) {

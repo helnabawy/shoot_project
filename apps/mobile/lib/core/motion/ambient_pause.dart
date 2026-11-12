@@ -5,10 +5,28 @@ import 'package:shoot_mobile/core/widgets/shoot_icon_button.dart';
 
 /// Holds the play/pause state for a screen's ambient loops (the landing only, FR-021). Every
 /// [Ambient] below it stops while paused, and never starts with reduced motion.
+///
+/// Feature 010 (the landing): [initiallyPaused] and [onChanged] let the page keep the choice on the
+/// device. Under reduced motion the loops start paused and the control reads "Play"; pressing it
+/// starts them for this visit only and [onChanged] is not called (spec FR-033).
 class AmbientPause extends StatefulWidget {
-  const AmbientPause({super.key, required this.child});
+  const AmbientPause({
+    super.key,
+    required this.child,
+    this.initiallyPaused = false,
+    this.startPausedWhenReduced = false,
+    this.onChanged,
+  });
 
   final Widget child;
+  final bool initiallyPaused;
+
+  /// With reduced motion on, start paused so the control reads "Play" (the landing, FR-033).
+  final bool startPausedWhenReduced;
+
+  /// Called with the new paused state when the person presses the control (never for the
+  /// reduced-motion visit).
+  final ValueChanged<bool>? onChanged;
 
   static ValueNotifier<bool> of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<_AmbientScope>();
@@ -19,26 +37,74 @@ class AmbientPause extends StatefulWidget {
     return scope!.notifier!;
   }
 
+  /// True when the person pressed Play while reduced motion is on: loops may run for this visit.
+  static bool overridesReduced(BuildContext context) => context
+      .dependOnInheritedWidgetOfExactType<_AmbientScope>()!
+      .overrideReduced
+      .value;
+
   @override
   State<AmbientPause> createState() => _AmbientPauseState();
 }
 
 class _AmbientPauseState extends State<AmbientPause> {
-  final _paused = ValueNotifier(false);
+  late final _paused = ValueNotifier(widget.initiallyPaused);
+  final _override = ValueNotifier(false);
+  bool _reducedStart = false;
+  bool _started = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _paused.addListener(_changed);
+  }
+
+  void _changed() {
+    final reduced = MotionPolicy.of(context).reduced;
+    if (reduced && widget.startPausedWhenReduced) {
+      _override.value = !_paused.value;
+      return;
+    }
+    widget.onChanged?.call(_paused.value);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+    _reducedStart = MotionPolicy.of(context).reduced;
+    // Still from the first frame; the control reads "Play" (FR-033).
+    if (_reducedStart && widget.startPausedWhenReduced) {
+      _paused.removeListener(_changed);
+      _paused.value = true;
+      _paused.addListener(_changed);
+    }
+  }
 
   @override
   void dispose() {
     _paused.dispose();
+    _override.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) =>
-      _AmbientScope(notifier: _paused, child: widget.child);
+  Widget build(BuildContext context) => _AmbientScope(
+    notifier: _paused,
+    overrideReduced: _override,
+    child: widget.child,
+  );
 }
 
 class _AmbientScope extends InheritedNotifier<ValueNotifier<bool>> {
-  const _AmbientScope({required super.notifier, required super.child});
+  const _AmbientScope({
+    required super.notifier,
+    required this.overrideReduced,
+    required super.child,
+  });
+
+  final ValueNotifier<bool> overrideReduced;
 }
 
 /// The Pause / Play control for the ambient loops: a 44 px icon button.
@@ -91,7 +157,10 @@ class _AmbientState extends State<Ambient> with SingleTickerProviderStateMixin {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final paused = AmbientPause.of(context).value;
-    final run = !paused && !MotionPolicy.of(context).reduced;
+    final reduced =
+        MotionPolicy.of(context).reduced &&
+        !AmbientPause.overridesReduced(context);
+    final run = !paused && !reduced;
     if (run && !_c.isAnimating) {
       _c.repeat(reverse: widget.reverse);
     } else if (!run && _c.isAnimating) {

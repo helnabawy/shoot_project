@@ -2891,5 +2891,235 @@
   "qmErrReason": "Tell us what went wrong in a few words.",
   "@qmErrReason": {
     "description": "Quick Match and booking (feature 012)."
+  },
+  "mlSplashTagline": "You brief. We shoot.",
+  "@mlSplashTagline": {
+    "description": "Screen 01 (splash): the tagline under the wordmark. Brand artwork in both languages: it plays before any content can load (feature 010 spec, Assumptions)."
+  },
+  "mlSplashLoading": "Loading",
+  "@mlSplashLoading": {
+    "description": "Screen 01: what a screen reader says after the brand name and tagline."
+  },
+  "mlSkip": "Skip",
+  "@mlSkip": {
+    "description": "Screens 02 to 04: skips the learning steps."
+  },
+  "mlNext": "Next",
+  "@mlNext": {
+    "description": "Screens 02 and 03: the one primary action, to the next learning step."
+  },
+  "mlStartBrief": "Start a brief",
+  "@mlStartBrief": {
+    "description": "Screen 04 and the menu: the one primary action that opens the landing's brief."
+  },
+  "mlStepOf": "{n} of {total}",
+  "@mlStepOf": {
+    "description": "Screens 02 to 04: the position, above the title.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "mlStepSemantics": "Step {n} of {total}",
+  "@mlStepSemantics": {
+    "description": "Screens 02 to 04: what a screen reader says for the position dots.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "mlStepDemoBrief": "Example: the brief bar showing a list of occasions to choose from.",
+  "@mlStepDemoBrief": {
+    "description": "Screen 02: one sentence for screen readers describing the demonstration."
+  },
+  "mlStepDemoPrice": "Example: creators who are free, each with a price shown next, and one action.",
+  "@mlStepDemoPrice": {
+    "description": "Screen 03: one sentence for screen readers describing the demonstration."
+  },
+  "mlStepDemoNumber": "Example: a mobile number field and six code cells.",
+  "@mlStepDemoNumber": {
+    "description": "Screen 04: one sentence for screen readers describing the demonstration."
+  },
+  "mlPriceShownNext": "Price shown next",
+  "@mlPriceShownNext": {
+    "description": "Screen 03: stands where a price would be in the demonstration; the app never invents a price."
+  },
+  "mlOpenMenu": "Open menu",
+  "@mlOpenMenu": {
+    "description": "Landing header: opens the menu (screen 06)."
+  },
+  "mlCloseMenu": "Close menu",
+  "@mlCloseMenu": {
+    "description": "Menu header: closes the menu."
+  },
+  "mlAccountButton": "Account",
+  "@mlAccountButton": {
+    "description": "Landing header: opens the account when signed in, else the sign-in screen."
+  },
+  "mlPauseMotion": "Pause motion on this page",
+  "@mlPauseMotion": {
+    "description": "The landing's one Pause control: stops every loop on the page."
+  },
+  "mlPlayMotion": "Play motion on this page",
+  "@mlPlayMotion": {
+    "description": "The landing's Pause control while paused."
+  },
+  "mlMenuBrowse": "Browse",
+  "@mlMenuBrowse": {
+    "description": "Menu group label."
+  },
+  "mlMenuCreators": "Creators",
+  "@mlMenuCreators": {
+    "description": "Menu row to the directory."
+  },
+  "mlMenuGuides": "Guides",
+  "@mlMenuGuides": {
+    "description": "Menu row to the guides."
+  },
+  "mlMenuHowItWorks": "How it works",
+  "@mlMenuHowItWorks": {
+    "description": "Menu row to the How it works page."
+  },
+  "mlMenuYou": "You",
+  "@mlMenuYou": {
+    "description": "Menu group label for account rows."
+  },
+  "mlMenuLogIn": "Log in",
+  "@mlMenuLogIn": {
+    "description": "Menu row to the sign-in screen."
+  },
+  "mlMenuLogInHint": "with your mobile number",
+  "@mlMenuLogInHint": {
+    "description": "Menu: the quiet text at the end of the Log in row."
+  },
+  "mlMenuJoin": "Join as a creator",
+  "@mlMenuJoin": {
+    "description": "Menu row to the join screen."
+  },
+  "mlMenuAccount": "Your account",
+  "@mlMenuAccount": {
+    "description": "Menu row, signed in: to the person's account; the name is shown at its end."
+  },
+  "mlMenuLanguage": "Language",
+  "@mlMenuLanguage": {
+    "description": "Menu setting label."
+  },
+  "mlMenuTheme": "Theme",
+  "@mlMenuTheme": {
+    "description": "Menu setting label."
+  },
+  "mlThemeAuto": "Auto",
+  "@mlThemeAuto": {
+    "description": "Menu theme segment: follows the device."
+  },
+  "mlMenuWhatsapp": "Ask us on WhatsApp",
+  "@mlMenuWhatsapp": {
+    "description": "Menu secondary action: opens a WhatsApp chat with the business."
+  },
+  "mlMenuTerms": "Terms",
+  "@mlMenuTerms": {
+    "description": "Menu legal link."
+  },
+  "mlMenuProfessionalTerms": "Professional terms",
+  "@mlMenuProfessionalTerms": {
+    "description": "Menu legal link."
+  },
+  "mlMenuPrivacy": "Privacy",
+  "@mlMenuPrivacy": {
+    "description": "Menu legal link."
+  },
+  "mlMenuEditorPrompt": "Editor?",
+  "@mlMenuEditorPrompt": {
+    "description": "Menu: before the editor sign-in link."
+  },
+  "mlMenuEditorSignIn": "Sign in with email",
+  "@mlMenuEditorSignIn": {
+    "description": "Menu: opens the website's editor sign-in in the browser."
+  },
+  "mlBriefPlaceholder": "Say what you need…",
+  "@mlBriefPlaceholder": {
+    "description": "The brief bar's search field hint."
+  },
+  "mlBriefSearchLabel": "Search the brief's options",
+  "@mlBriefSearchLabel": {
+    "description": "Screen-reader label of the brief bar's search field."
+  },
+  "mlBriefContinue": "Continue",
+  "@mlBriefContinue": {
+    "description": "Brief bar: finishes a step that takes several choices."
+  },
+  "mlBriefTakeBack": "Take back",
+  "@mlBriefTakeBack": {
+    "description": "Brief bar: removes the last answer."
+  },
+  "mlBriefAnyDate": "Any date",
+  "@mlBriefAnyDate": {
+    "description": "Brief bar: skips the optional date step."
+  },
+  "mlBriefMissingStep": "Choose {step} to continue.",
+  "@mlBriefMissingStep": {
+    "description": "Brief bar: one line naming the first unanswered step; step is the step's CMS label.",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "mlBriefRequired": "Please answer every step before sending.",
+  "@mlBriefRequired": {
+    "description": "A brief was sent with a required step unanswered (brief.errors.required)."
+  },
+  "mlBriefPastDate": "That date has passed. Pick today or later.",
+  "@mlBriefPastDate": {
+    "description": "Brief bar: a past date was tried."
+  },
+  "mlBriefOptionGone": "That option is no longer available. Please choose again.",
+  "@mlBriefOptionGone": {
+    "description": "Brief bar: an option was removed between loading and sending."
+  },
+  "mlBriefRateLimited": "You have sent a lot of briefs. Please message us on WhatsApp instead.",
+  "@mlBriefRateLimited": {
+    "description": "Brief bar: the hourly limit was reached."
+  },
+  "mlBriefNetwork": "No connection. Check your internet and try again.",
+  "@mlBriefNetwork": {
+    "description": "Brief bar: the brief could not be sent."
+  },
+  "mlBriefGeneric": "Something went wrong. Please try again.",
+  "@mlBriefGeneric": {
+    "description": "Brief bar: any other failure."
+  },
+  "mlBriefSentWhatsapp": "Your brief is saved. Reference {reference}.",
+  "@mlBriefSentWhatsapp": {
+    "description": "Confirmation after a brief is recorded while Quick Match is not yet in the app.",
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "mlStartYourBrief": "Start your brief",
+  "@mlStartYourBrief": {
+    "description": "Landing closing section: returns to the bar."
+  },
+  "mlSeeAll": "See all",
+  "@mlSeeAll": {
+    "description": "Landing creators section: opens the directory."
+  },
+  "mlOrPickYourOwn": "Or pick your own",
+  "@mlOrPickYourOwn": {
+    "description": "Landing occasions: opens the brief at its first step."
+  },
+  "mlLoadError": "We could not load this page.",
+  "@mlLoadError": {
+    "description": "Landing: the content could not be loaded."
   }
 }

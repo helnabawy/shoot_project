@@ -62,6 +62,12 @@ export const PROBLEM_CODES = [
   'booking.errors.creatorUnavailable',
   'booking.errors.terminal',
   'booking.errors.expired-quotation',
+  // 010: recording a brief.
+  'brief.errors.required',
+  'brief.errors.optionGone',
+  'brief.errors.pastDate',
+  'brief.errors.tooMany',
+  'brief.errors.generic',
 ] as const
 export type ProblemCode = (typeof PROBLEM_CODES)[number]
 
