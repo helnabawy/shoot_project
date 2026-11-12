@@ -3,6 +3,7 @@ import 'package:shoot_mobile/core/network/json_read.dart';
 import 'package:shoot_mobile/features/content/data/models/editor_page_model.dart';
 import 'package:shoot_mobile/features/content/data/models/guide_models.dart';
 import 'package:shoot_mobile/features/content/data/models/legal_models.dart';
+import 'package:shoot_mobile/features/creator_account/data/models/creator_account_models.dart';
 import 'package:shoot_mobile/features/creators/data/models/creator_models.dart';
 import 'package:shoot_mobile/features/landing/data/models/landing_model.dart';
 import 'package:shoot_mobile/features/sign_in/data/models/otp_models.dart';
@@ -42,6 +43,59 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'legal': (json) => LegalDocumentModel.fromJson(json).toEntity(),
   'legal-versions': (json) => LegalVersionsModel.fromJson(json).toEntity(),
   'legal-version': (json) => LegalDocumentModel.fromJson(json).toEntity(),
+  // 014: the creator's own account (answers, and the request bodies the app sends).
+  'creator-profile-draft': (json) => MyProfileModel.fromJson(json).toEntity(),
+  'creator-profile-ready': (json) => MyProfileModel.fromJson(json).toEntity(),
+  'creator-profile-review': (json) => MyProfileModel.fromJson(json).toEntity(),
+  'creator-profile-saved': (json) => MyProfileModel.fromJson(json).toEntity(),
+  'creator-profile-submitted': (json) =>
+      MyProfileModel.fromJson(json).toEntity(),
+  'creator-profile-hidden': (json) => MyProfileModel.fromJson(json).toEntity(),
+  'creator-photo-result': (json) => MyProfileModel.fromJson(json).toEntity(),
+  'creator-sample-result': (json) => MyProfileModel.fromJson(json).toEntity(),
+  'creator-sample-removed': (json) => MyProfileModel.fromJson(json).toEntity(),
+  'creator-identity-result': (json) => MyProfileModel.fromJson(json).toEntity(),
+  'creator-bookings': (json) => CreatorBookingsModel.fromJson(json).toEntity(),
+  'creator-bookings-answered': (json) =>
+      CreatorBookingsModel.fromJson(json).toEntity(),
+  'creator-bookings-delivered': (json) =>
+      CreatorBookingsModel.fromJson(json).toEntity(),
+  'creator-bookings-read': (json) =>
+      CreatorBookingsModel.fromJson(json).toEntity(),
+  'creator-availability': (json) => AvailabilityModel.fromJson(json).toEntity(),
+  'creator-availability-set-result': (json) =>
+      AvailabilityModel.fromJson(json).toEntity(),
+  'creator-account': (json) => CreatorAccountModel.fromJson(json).toEntity(),
+  'creator-profile-patch': (json) => only(json, {
+    'displayName',
+    'bio',
+    'gender',
+    'nationality',
+    'yearsExperience',
+    'professions',
+    'specialties',
+    'emirates',
+    'languages',
+    'social',
+  }),
+  'creator-visibility': (json) => only(json, {'hidden'}),
+  'creator-upload-photo': (json) =>
+      only(json, {'contentType', 'filename', 'data'}),
+  'creator-upload-identity': (json) =>
+      only(json, {'contentType', 'filename', 'data'}),
+  'creator-sample-add': (json) => {
+    ...only(json, {'kind', 'videoUrl', 'specialty'}),
+    'caption': only(asObject(json['caption']), {'en', 'ar'}),
+    'file': only(asObject(json['file']), {'contentType', 'filename', 'data'}),
+  },
+  'creator-availability-set': (json) => only(json, {'blocked'}),
+  'creator-answer': (json) => only(json, {'decision', 'reason'}),
+};
+
+/// The request bodies the app sends: only the fields v1 knows, so an extra one changes nothing.
+Map<String, Object?> only(Json json, Set<String> keys) => {
+  for (final k in keys)
+    if (json.containsKey(k)) k: json[k],
 };
 
 /// `site.ar` → `site`.
