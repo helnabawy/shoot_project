@@ -51,10 +51,14 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'booking-view-quoted': (json) => BookingViewModel.fromJson(json).toEntity(),
   'booking-view-accepted': (json) => BookingViewModel.fromJson(json).toEntity(),
   'booking-view-lapsed': (json) => BookingViewModel.fromJson(json).toEntity(),
-  'booking-view-reassigned': (json) => BookingViewModel.fromJson(json).toEntity(),
-  'booking-view-confirmed': (json) => BookingViewModel.fromJson(json).toEntity(),
-  'booking-view-delivered': (json) => BookingViewModel.fromJson(json).toEntity(),
-  'booking-view-completed': (json) => BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-reassigned': (json) =>
+      BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-confirmed': (json) =>
+      BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-delivered': (json) =>
+      BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-completed': (json) =>
+      BookingViewModel.fromJson(json).toEntity(),
   'booking-view-expired': (json) => BookingViewModel.fromJson(json).toEntity(),
   'booking-view-on-hold': (json) => BookingViewModel.fromJson(json).toEntity(),
   // The bodies the app sends: each must read as the shapes the app builds.

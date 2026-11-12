@@ -5,7 +5,11 @@ import { getDirectoryContext, toWireCreatorCard } from '@/modules/creators'
 import { THUMB_MAX_WIDTH, upTo } from '@/modules/creators/wire'
 import type { Locale } from '@/shared/lib/locale'
 import { toWireImage, wireContext } from '@/shared/api/wire'
-import { getBriefByKey, getMatchPage } from '../match'
+import { whatsappHref } from '@/modules/contact/whatsapp'
+import { getSiteSettings } from '@/modules/site-settings/queries'
+import { getLandingPage } from '@/modules/landing/queries'
+import type { OptionSet } from '@/payload-types'
+import { DURATION_SET, getBriefByKey, getMatchPage } from '../match'
 
 /**
  * Step 2 for the app (012 US1): the website's match page as the `matchV1` answer. The brief is found
@@ -60,7 +64,8 @@ export async function matchView(payload: Payload, input: MatchInput): Promise<Ma
   const context = await getDirectoryContext(locale)
   const ctx = wireContext(locale)
   const shown = page.sections.flatMap((s) => s.creators.map((c) => c.id))
-  const gallery = await galleries(payload, [...new Set(shown)], ctx)
+  const [gallery, settings, landing] = await Promise.all([galleries(payload, [...new Set(shown)], ctx), getSiteSettings(locale), getLandingPage({ locale })])
+  const durationSet = (landing.briefBuilder?.slots ?? []).map((s) => s.optionSet).find((set): set is OptionSet => typeof set === 'object' && set !== null && set.slug === DURATION_SET)
   return {
     locale,
     brief: {
@@ -71,6 +76,7 @@ export async function matchView(payload: Payload, input: MatchInput): Promise<Ma
     },
     date: input.date !== undefined ? input.date : page.facts.date,
     priceOnRequest: !page.total.ok,
+    durations: (durationSet?.options ?? []).filter((o) => o.active !== false).map((o) => ({ value: o.value, label: o.label })),
     totalFils: page.total.ok ? page.total.total : null,
     sections: page.sections.map((s) => {
       const tier = s.price.ok ? s.price.lines.find((l) => l.kind === 'tier') : undefined
@@ -82,5 +88,6 @@ export async function matchView(payload: Payload, input: MatchInput): Promise<Ma
       }
     }),
     nearby: page.nearby.map((date) => ({ date, free: page.nearbyFree[date] ?? 0 })),
+    whatsappUrl: whatsappHref(settings.whatsappNumber, brief.sentence ?? ''),
   }
 }

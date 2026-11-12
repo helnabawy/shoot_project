@@ -8,6 +8,16 @@
   },
   "date": "2026-12-12",
   "priceOnRequest": false,
+  "durations": [
+    {
+      "value": "2h",
+      "label": "2 hours"
+    },
+    {
+      "value": "4h",
+      "label": "4 hours"
+    }
+  ],
   "totalFils": 95000,
   "sections": [
     {
@@ -37,5 +47,6 @@
       "date": "2026-12-14",
       "free": 5
     }
-  ]
+  ],
+  "whatsappUrl": "https://wa.me/971500000000?text=A%20photographer%20for%20an%20event%20in%20Dubai"
 }

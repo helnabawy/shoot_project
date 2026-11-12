@@ -87,6 +87,8 @@ describe('MQ mobile Quick Match and booking', () => {
       expect(m.sections[0]).toMatchObject({ priceFils: 80000 })
       expect(m).toMatchObject({ totalFils: 80000, priceOnRequest: false, nearby: [] })
       expect(Array.isArray(m.sections[0]!.includes)).toBe(true)
+      expect(m.durations.map((d) => d.value)).toContain('2h')
+      expect(m.whatsappUrl).toMatch(/^https:\/\/wa\.me\//)
       expect(JSON.stringify(m)).not.toMatch(/rating|verified|review/i)
     })
 
