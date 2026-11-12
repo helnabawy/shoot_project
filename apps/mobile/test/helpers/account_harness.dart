@@ -162,8 +162,8 @@ Future<({GoRouter router, SessionCubit session, MockAuthApi api})> pumpAccount(
         builder: (context, chosen) => MaterialApp.router(
           routerConfig: router,
           locale: chosen,
-          theme: AppTheme.of(ShootAccent.blue, Brightness.light),
-          darkTheme: AppTheme.of(ShootAccent.blue, Brightness.dark),
+          theme: AppTheme.of(ShootAccent.brand, Brightness.light),
+          darkTheme: AppTheme.of(ShootAccent.brand, Brightness.dark),
           themeMode: themeMode,
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

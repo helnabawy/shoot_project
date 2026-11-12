@@ -320,6 +320,8 @@ void main() {
         await pumpQuickMatch(tester, repository: repository, location: quote);
         await tester.pumpAndSettle();
         expect(find.text('Confirm delivery'), findsOneWidget);
+        await tester.ensureVisible(find.text('Report a problem'));
+        await tester.pump();
         await tester.tap(find.text('Report a problem'));
         await tester.pumpAndSettle();
         expect(find.text('What went wrong?'), findsOneWidget);
@@ -330,6 +332,8 @@ void main() {
           ),
           'The photos never arrived.',
         );
+        await tester.ensureVisible(find.text('Send to the team'));
+        await tester.pump();
         await tester.tap(find.text('Send to the team'));
         await tester.pumpAndSettle();
         verify(

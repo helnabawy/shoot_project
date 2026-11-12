@@ -64,7 +64,7 @@ void main() {
   test('MA-US2-S3 an unknown saved accent falls back to Blue', () async {
     final store = InMemoryPreferencesStore({PreferenceKeys.accent: 'orange'});
     final cubit = AccentCubit(store);
-    expect(cubit.state, ShootAccent.blue);
+    expect(cubit.state, ShootAccent.brand);
     // The stored value is left alone until a new choice replaces it.
     expect(store.values[PreferenceKeys.accent], 'orange');
     expect(store.writes, isEmpty);
@@ -82,7 +82,7 @@ void main() {
         PreferenceKeys.themeMode: 'dark',
         PreferenceKeys.locale: 'ar',
       })..failReads = true;
-      expect(AccentCubit(unreadable).state, ShootAccent.blue);
+      expect(AccentCubit(unreadable).state, ShootAccent.brand);
       expect(ThemeModeCubit(unreadable).state, ThemeMode.system);
       expect(LocaleCubit(unreadable).state, isNull);
 
@@ -121,7 +121,7 @@ void main() {
   test('selecting the current theme mode or accent writes nothing', () async {
     final store = InMemoryPreferencesStore();
     ThemeModeCubit(store).select(ThemeMode.system);
-    AccentCubit(store).select(ShootAccent.blue);
+    AccentCubit(store).select(ShootAccent.brand);
     await Future<void>.delayed(Duration.zero);
     expect(store.writes, isEmpty);
   });

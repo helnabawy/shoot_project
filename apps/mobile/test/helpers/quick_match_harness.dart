@@ -82,7 +82,7 @@ Future<GoRouter> pumpQuickMatch(
         builder: (context, chosen) => MaterialApp.router(
           routerConfig: router,
           locale: chosen,
-          theme: AppTheme.of(ShootAccent.blue, Brightness.light),
+          theme: AppTheme.of(ShootAccent.brand, Brightness.light),
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
         ),

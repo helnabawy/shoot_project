@@ -69,8 +69,8 @@ Widget goldenShell(Widget child, Variant variant) {
       builder: (context) => MaterialApp(
         debugShowCheckedModeBanner: false,
         locale: context.watch<LocaleCubit>().state,
-        theme: AppTheme.of(ShootAccent.blue, Brightness.light),
-        darkTheme: AppTheme.of(ShootAccent.blue, Brightness.dark),
+        theme: AppTheme.of(ShootAccent.brand, Brightness.light),
+        darkTheme: AppTheme.of(ShootAccent.brand, Brightness.dark),
         themeMode: variant.brightness == Brightness.dark
             ? ThemeMode.dark
             : ThemeMode.light,

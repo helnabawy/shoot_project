@@ -15,6 +15,7 @@ import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
 import 'package:shoot_mobile/core/web/whatsapp_link.dart';
+import 'package:shoot_mobile/core/widgets/appearance_sheet.dart';
 import 'package:shoot_mobile/core/widgets/group_label.dart';
 import 'package:shoot_mobile/core/widgets/icon_tile.dart';
 import 'package:shoot_mobile/core/widgets/secondary_button.dart';
@@ -245,6 +246,15 @@ class _MenuPageState extends State<MenuPage> {
                                       .select,
                                 ),
                               ),
+                              const SizedBox(height: 8),
+                              _Setting(
+                                label: l10n.appearanceTitle,
+                                child: _AccentButton(
+                                  key: const Key('menu-accent-button'),
+                                  onTap: () =>
+                                      unawaited(showAppearanceSheet(context)),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -366,6 +376,46 @@ class _Section extends StatelessWidget {
           GroupLabel(label, padding: const EdgeInsets.only(bottom: 6)),
           ...children,
         ],
+      ),
+    );
+  }
+}
+
+/// Shows the current accent as a dot and opens the Appearance sheet, where
+/// the accent (and theme) are chosen.
+class _AccentButton extends StatelessWidget {
+  const _AccentButton({super.key, required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Semantics(
+      button: true,
+      label: context.l10n.appearanceButtonTooltip,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(ShootRadius.row),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 44),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  color: c.accent,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: ShootSpace.s2),
+              ShootIcon(ShootIcons.chevron, size: 18, color: c.mute),
+            ],
+          ),
+        ),
       ),
     );
   }
