@@ -70,3 +70,19 @@ specialty name.
 ## R10 Hire page redirect
 
 When `HirePage.path` differs from the address asked for, the route replaces its location.
+
+## R11 Decisions made while building
+
+- **One choice per filter group.** The API takes one `type`, `specialty` and `place`, so the emirate
+  and occasion chips choose one each (spec MC-US3-S3 says "some").
+- **Card work row.** `creatorCardV1` has `sampleCount` but no thumbnails: the card draws one scene
+  tile per sample (at most three) and none for zero. An additive thumb list on the card would let
+  the tiles show the real work.
+- **Brief answers.** The brief bar answers option slots and the date (the system date picker, not
+  limited by the creator's free days: R2); an option slot that allows typed text accepts only the
+  listed options in 011.
+- **Brief on the landing.** "Start a {specialty} brief" opens `/` with `?specialty=<slug>` and "Tell
+  us the shoot" opens `/`; the landing's brief (feature 010) reads the query.
+- **Specialty name.** "Start a {name} brief" uses the CMS category name (plural: "Weddings").
+- **Menu.** The header's menu button opens `/menu` (feature 010; screen 37 until it is built).
+- **Not built.** Starting price, verified mark, availability note and the free-days limit (R1, R2).

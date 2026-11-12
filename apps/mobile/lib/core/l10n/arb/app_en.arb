@@ -907,5 +907,17 @@
   "mcContactNotAvailable": "WhatsApp is not available right now.",
   "@mcContactNotAvailable": {
     "description": "Shown when the site has no WhatsApp number."
+  },
+  "mcAccount": "Account",
+  "@mcAccount": {
+    "description": "Screen-reader name of the account button in the header."
+  },
+  "mcOpenMenu": "Open menu",
+  "@mcOpenMenu": {
+    "description": "Screen-reader name of the menu button in the header."
+  },
+  "mcLoadMore": "Loading more creators",
+  "@mcLoadMore": {
+    "description": "Screen-reader name of the busy state of Show more."
   }
 }

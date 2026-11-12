@@ -172,5 +172,8 @@
   "mcQuestions": "أسئلة يطرحها الناس",
   "mcExpanded": "مفتوح",
   "mcCollapsed": "مغلق",
-  "mcContactNotAvailable": "واتساب غير متاح حاليًا."
+  "mcContactNotAvailable": "واتساب غير متاح حاليًا.",
+  "mcAccount": "الحساب",
+  "mcOpenMenu": "فتح القائمة",
+  "mcLoadMore": "جارٍ تحميل المزيد من المبدعين"
 }
