@@ -1,6 +1,12 @@
 import type { BookingState } from '@shoot/domain/booking'
 import type { ProfileStatus } from '@shoot/domain/creators'
 
+/** Feature 019: open client briefs that match the creator, and the soonest one. */
+export interface AccountBriefs {
+  count: number
+  soonest: { ref: string; profession: string; occasion: string; emirate: string; date: string | null; dateLabel?: string } | null
+}
+
 /** A client's booking, with its effective state (an expired quotation already reads `expired`). */
 export interface AccountBooking {
   reference: string
@@ -19,6 +25,7 @@ export interface AccountJob {
 /** The one thing the account page puts first, with the one action that answers it. */
 export type NextUp<J extends AccountJob = AccountJob, B extends AccountBooking = AccountBooking> =
   | { kind: 'answer'; count: number; job: J }
+  | { kind: 'briefs'; count: number; brief: NonNullable<AccountBriefs['soonest']> }
   | { kind: 'profile'; status: ProfileStatus }
   | { kind: 'job'; job: J }
   | { kind: 'clear' }
@@ -38,8 +45,8 @@ const openBookings = <B extends AccountBooking>(bookings: B[], today: string) =>
 const upcomingJobs = <J extends AccountJob>(jobs: J[], today: string) => jobs.filter((j) => !j.awaitingAnswer && !CLOSED.includes(j.state) && ahead(j.date, today))
 
 /**
- * What the account page leads with. A creator: requests waiting for an answer, then a profile the public
- * cannot see, then the next job, else nothing waiting. A client: an open quotation, then the next booking,
+ * What the account page leads with. A creator: requests waiting for an answer, then open briefs that match
+ * them (019), then a profile the public cannot see, then the next job, else nothing waiting. A client: an open quotation, then the next booking,
  * else a new brief.
  */
 export function pickNextUp<J extends AccountJob, B extends AccountBooking>(input: {
@@ -48,11 +55,14 @@ export function pickNextUp<J extends AccountJob, B extends AccountBooking>(input
   profileStatus: ProfileStatus | null
   jobs: J[]
   bookings: B[]
+  /** 019: `null` or absent when the profile is not live. */
+  briefs?: AccountBriefs | null
 }): NextUp<J, B> {
-  const { today, provider, profileStatus, jobs, bookings } = input
+  const { today, provider, profileStatus, jobs, bookings, briefs } = input
   if (provider) {
     const waiting = jobs.filter((j) => j.awaitingAnswer)
     if (waiting.length) return { kind: 'answer', count: waiting.length, job: soonest(waiting)! }
+    if (briefs?.count && briefs.soonest) return { kind: 'briefs', count: briefs.count, brief: briefs.soonest }
     if (profileStatus && HIDDEN.includes(profileStatus)) return { kind: 'profile', status: profileStatus }
     const next = soonest(upcomingJobs(jobs, today))
     return next ? { kind: 'job', job: next } : { kind: 'clear' }

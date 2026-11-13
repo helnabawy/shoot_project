@@ -26,6 +26,7 @@ import {
 import { creatorBookingViews, formatDay } from '@/modules/booking/views'
 import { getLocations } from '@/modules/creators'
 import { getMyProfile } from '@/modules/creators/my-profile'
+import { briefsSummary, inboxContext } from '@/modules/inbox'
 import { getAllPersonas } from '@/modules/personas/queries'
 import { localizeHref } from '@/shared/i18n/href'
 import type { Locale } from '@/shared/lib/locale'
@@ -76,6 +77,9 @@ export default async function AccountPage({ params }: Props) {
     provider ? getMyProfile(user) : Promise.resolve(null),
     provider ? getMyAvailability(user, today) : Promise.resolve(null),
   ])
+  // 019: open client briefs that match a live creator (null when the profile is not live).
+  const inbox = provider ? await briefsSummary(await inboxContext(locale, now), user.id) : null
+  const openBriefs = inbox?.soonest ? { ...inbox, soonest: { ...inbox.soonest, dateLabel: inbox.soonest.date ? formatDay(inbox.soonest.date, locale) : '' } } : inbox
   const ts = await getTranslations('creators.status')
   // Every profession the member offers, primary first ("Photographer and Videographer").
   const personaLabel = joinList(
@@ -111,7 +115,7 @@ export default async function AccountPage({ params }: Props) {
     price: b.totalFils != null ? formatMoney(b.totalFils, locale) : '',
   }))
   const profileStatus = provider ? (profile?.status ?? 'draft') : null
-  const next = pickNextUp({ today, provider, profileStatus, jobs, bookings })
+  const next = pickNextUp({ today, provider, profileStatus, jobs, bookings, briefs: openBriefs })
   const waiting = jobs.filter((j) => j.awaitingAnswer).length
   const bookingStatus = placeStatus({ today, waiting, unread: notices.length, jobs, bookings })
   const daysOff = availability ? availability.blocks.filter((b) => b.kind === 'blocked').length : 0
@@ -171,6 +175,7 @@ export default async function AccountPage({ params }: Props) {
             booking: (ref) => memberBookingPath(ref, locale),
             profile: localizeHref('/account/profile', locale),
             availability: localizeHref('/account/availability', locale),
+            inbox: localizeHref('/account/inbox', locale),
             brief: `${localizeHref('/', locale)}#brief`,
           }}
         />

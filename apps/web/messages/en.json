@@ -215,7 +215,10 @@
       "bookingAction": "Open the booking",
       "briefTitle": "Nothing booked yet",
       "briefBody": "Say what you need in one sentence and we take it from there.",
-      "briefAction": "Start a brief"
+      "briefAction": "Start a brief",
+      "briefsTitle": "{count, plural, one {A new brief matches you} other {# new briefs match you}}",
+      "briefsAction": "{count, plural, one {See the brief} other {See the briefs}}",
+      "briefsAnyDate": "Date to agree"
     }
   },
   "home": {
