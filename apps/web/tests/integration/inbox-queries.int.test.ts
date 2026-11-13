@@ -83,8 +83,9 @@ describe('BI-US1 a creator sees the open briefs that match them', () => {
 
   it('a past date, a closed status or an undated brief older than the window is not open', async () => {
     const payload = await getTestPayload()
-    const old = await send({ date: '' })
-    const closed = await send()
+    // Distinct answers: an identical brief from the same visitor is a replay of an earlier one.
+    const old = await send({ date: '', duration: '3h' })
+    const closed = await send({ date: addDays(world.date, 2) })
     await payload.update({ collection: 'briefs', where: { reference: { equals: closed } }, data: { status: 'closed' }, overrideAccess: true, context: quiet })
     const later = new Date(Date.parse(`${addDays(dubaiToday(new Date()), 31)}T08:00:00Z`))
     const refs = (await creatorInbox({ ...(await ctx()), now: later }, world.creators.sara!.user.id))!.open.map((i) => i.ref)

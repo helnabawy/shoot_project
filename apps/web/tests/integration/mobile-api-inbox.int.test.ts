@@ -2,6 +2,7 @@ import { creatorAccountV1, creatorBriefsV1, problemV1 } from '@shoot/domain/api/
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 import type { z } from 'zod'
 import { GET as accountRoute } from '@/app/(payload)/api/mobile/v1/me/creator/account/route'
+import { DELETE as withdrawRoute, POST as answerRoute } from '@/app/(payload)/api/mobile/v1/me/creator/briefs/[ref]/answer/route'
 import { GET as briefsRoute } from '@/app/(payload)/api/mobile/v1/me/creator/briefs/route'
 import type { RouteHandler } from '@/shared/api/handler'
 import { bookingWorld, briefFor, type BookingWorld } from './setup/booking'
@@ -76,5 +77,25 @@ describe('BI-US1 the inbox in the app', () => {
     expect(res.status).toBe(403)
     expect(problemV1.parse(await res.json()).code).toBe('creators.errors.notProvider')
     expect((await call(briefsRoute, 'me/creator/briefs', null)).status).toBe(401)
+  })
+
+  it('BI-US2-S1 BI-US3-S1 BI-US3-S4 the app accepts, rejects with a reason and undoes, getting the inbox back each time', async () => {
+    const persona = String(world.personas.photographer)
+    const params = { ref }
+    const accepted = await ok(await call(answerRoute, `me/creator/briefs/${ref}/answer`, token, { method: 'POST', params, body: { persona, decision: 'accept' } }), creatorBriefsV1)
+    expect(accepted.accepted.map((i) => i.ref)).toContain(ref)
+    const rejected = await ok(await call(answerRoute, `me/creator/briefs/${ref}/answer`, token, { method: 'POST', params, body: { persona, decision: 'reject', reason: 'too-far' } }), creatorBriefsV1)
+    expect(rejected.rejected.find((i) => i.ref === ref)!.reason).toBe('too-far')
+    const undone = await ok(await call(withdrawRoute, `me/creator/briefs/${ref}/answer?persona=${persona}`, token, { method: 'DELETE', params }), creatorBriefsV1)
+    expect(undone.open.map((i) => i.ref)).toContain(ref)
+  })
+
+  it('a reason with an acceptance is invalid input; an unknown brief is closed', async () => {
+    const persona = String(world.personas.photographer)
+    const bad = await call(answerRoute, `me/creator/briefs/${ref}/answer`, token, { method: 'POST', params: { ref }, body: { persona, decision: 'accept', reason: 'too-far' } })
+    expect(bad.status).toBe(422)
+    const gone = await call(answerRoute, 'me/creator/briefs/B-NOPE/answer', token, { method: 'POST', params: { ref: 'B-NOPE' }, body: { persona, decision: 'accept' } })
+    expect(gone.status).toBe(409)
+    expect(problemV1.parse(await gone.json()).code).toBe('inbox.errors.briefClosed')
   })
 })

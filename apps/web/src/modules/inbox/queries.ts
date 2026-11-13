@@ -38,7 +38,7 @@ interface Item extends InboxEntry {
 }
 
 /** The creator's live, listed profiles (an unlisted or hidden profile sees no briefs, US1-S4). */
-async function liveProfiles(userId: number, locale: Locale): Promise<CreatorSummary[]> {
+export async function liveProfiles(userId: number, locale: Locale): Promise<CreatorSummary[]> {
   const [ids, creators] = await Promise.all([myProfileIds(userId), getPublicCreators(locale, { listedOnly: true })])
   const mine = new Set(ids.map(String))
   return creators.filter((c) => mine.has(c.id))
