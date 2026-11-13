@@ -1,10 +1,10 @@
 import 'server-only'
-import { formatPicks, reassign, reportSchema, startAssignments, type Pick } from '@shoot/domain/booking'
+import { allConfirmed, formatPicks, preconfirm, reassign, reportSchema, startAssignments, type Assignment, type Pick } from '@shoot/domain/booking'
 import type { Payload } from 'payload'
 import type { Locale } from '@/shared/lib/locale'
-import { releaseDates } from '../effects'
+import { blockDateFor, releaseDates } from '../effects'
 import { accessKey, newSalt } from '../keys'
-import { getMatchPage } from '../match'
+import { acceptedFor, getMatchPage } from '../match'
 import type { QuotationAccess } from '../queries'
 import { idOf, toAssignments, toRows } from '../rows'
 import { payoutDue, readQuickMatch } from '../settings'
@@ -54,12 +54,28 @@ export async function acceptQuotation(payload: Payload, access: QuotationAccess,
     return { ok: false, reason: 'creatorUnavailable' }
   }
 
+  // 019 (US2-S4): a picked creator who already said yes to the brief starts confirmed, once their day is
+  // held for this booking; if the day was taken meanwhile they answer as usual within the window.
+  const started = startAssignments(assignments, now, settings.confirmHours)
+  const pre = booking.state === 'quoted' ? preconfirm(started, await acceptedFor(brief.id), now) : { assignments: started, confirmed: [] }
+  const held: number[] = []
+  let final: Assignment[] = pre.assignments
+  for (const c of pre.confirmed) {
+    if (await blockDateFor(payload, booking, Number(c.creatorId))) held.push(Number(c.creatorId))
+    else final = final.map((a) => (a.personaId === c.personaId ? (started.find((s) => s.personaId === c.personaId) ?? a) : a))
+  }
   const result = await applyTransition(payload, booking.id, 'accept', {
     actor: 'client',
     actorUser: user?.id ?? null,
     now,
-    data: { assignments: toRows(startAssignments(assignments, now, settings.confirmHours)) },
+    data: { assignments: toRows(final) },
   })
+  if (!result.ok) {
+    for (const creatorId of held) await releaseDates(payload, booking.id, undefined, creatorId)
+  } else if (held.length && allConfirmed(final)) {
+    // The creator confirmed by saying yes to the brief: the step is theirs, noted as such in the audit trail.
+    await applyTransition(payload, booking.id, 'confirm', { actor: 'creator', now, note: 'brief-accepted', data: { assignments: toRows(final) } })
+  }
   if (result.ok && current.promoCode) {
     const promo = await payload.find({ collection: 'promo-codes', where: { code: { equals: current.promoCode } }, limit: 1, depth: 0, overrideAccess: true })
     const row = promo.docs[0]
