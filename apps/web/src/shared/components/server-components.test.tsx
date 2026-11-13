@@ -173,6 +173,14 @@ describe('AccountSummary', () => {
     expect(screen.getByTestId('logout')).toHaveAttribute('type', 'submit')
     // OT-US5-S5: an email account without a sign-in number is offered one.
     expect(screen.getByTestId('add-number')).toHaveTextContent('Add your mobile number')
+    // A plain localized link: the account page has no NextIntlClientProvider for next-intl's client Link.
+    expect(screen.getByTestId('add-number')).toHaveAttribute('href', '/login?add=number')
+  })
+
+  it('OT-US5-S5 the "Add your mobile number" link keeps the Arabic prefix', async () => {
+    const user = { id: 3, name: 'mona', email: 'mona@example.test', accountType: 'seeker' } as User
+    render(<>{await AccountSummary({ user, locale: 'ar' })}</>)
+    expect(screen.getByTestId('add-number')).toHaveAttribute('href', '/ar/login?add=number')
   })
 
   it('OT-US5-S5 a code account shows its own number and no "Add your mobile number"', async () => {

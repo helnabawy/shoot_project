@@ -1,8 +1,9 @@
 import { maskPhone } from '@shoot/domain/auth'
 import { getTranslations } from 'next-intl/server'
-import { Link } from '@/i18n/navigation'
+import Link from 'next/link'
 import type { User } from '@/payload-types'
 import { initialsOf } from '@/modules/creators'
+import { localizeHref } from '@/shared/i18n/href'
 import { rowClass, RowContent } from '@/shared/ui/bar'
 import { Bidi } from '@/shared/ui/Bidi'
 import { LogoutIcon } from '@/shared/ui/icons'
@@ -15,6 +16,7 @@ import { logout } from '../actions'
 export async function AccountSummary({
   user,
   personaLabel,
+  locale,
 }: {
   user: User
   personaLabel?: string | null
@@ -50,7 +52,7 @@ export async function AccountSummary({
         {!user.username ? (
           // FR-063: an email member adds a sign-in number by code.
           <p className="mt-1 text-[15px]">
-            <Link href={{ pathname: '/login', query: { add: 'number' } }} className="font-medium text-ink underline" data-testid="add-number">
+            <Link href={`${localizeHref('/login', locale)}?add=number`} className="font-medium text-ink underline" data-testid="add-number">
               {t('linkTitle')}
             </Link>
           </p>
