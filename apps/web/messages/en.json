@@ -814,5 +814,18 @@
       "type": "Use a JPEG, PNG or WebP image.",
       "size": "That image is over 5 MB. Choose a smaller one."
     }
+  },
+  "inbox": {
+    "errors": {
+      "briefClosed": "This brief is no longer open.",
+      "notMatching": "This brief no longer matches your profile or your free days.",
+      "reasonUnknown": "Choose one of the listed reasons.",
+      "alreadyPicked": "The client has already picked you for this brief."
+    }
+  },
+  "push": {
+    "errors": {
+      "tokenInvalid": "This device could not be registered for notifications."
+    }
   }
 }
