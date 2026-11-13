@@ -198,3 +198,25 @@ export async function briefsSummary(ctx: InboxContext, userId: number): Promise<
 export async function inboxContext(locale: Locale, now = new Date()): Promise<InboxContext> {
   return { payload: await getPayloadClient(), locale, now }
 }
+
+/** 019 (US4-S3): how many creators currently say yes to each of these briefs (open briefs only). */
+export async function saidYesCounts(payload: Payload, briefs: readonly { id: number; status?: string | null }[]): Promise<Map<number, number>> {
+  const ids = briefs.filter((b) => (b.status ?? 'new') === 'new').map((b) => b.id)
+  const out = new Map<number, number>()
+  if (!ids.length) return out
+  const { docs } = await payload.find({
+    collection: 'brief-answers',
+    where: { and: [{ brief: { in: ids } }, { decision: { equals: 'accepted' } }, { withdrawnAt: { exists: false } }] },
+    depth: 0,
+    pagination: false,
+    overrideAccess: true,
+    select: { brief: true, creator: true },
+  })
+  const creators = new Map<number, Set<string>>()
+  for (const a of docs) {
+    const brief = Number(idOf(a.brief))
+    creators.set(brief, (creators.get(brief) ?? new Set()).add(idOf(a.creator)))
+  }
+  for (const [brief, set] of creators) out.set(brief, set.size)
+  return out
+}
