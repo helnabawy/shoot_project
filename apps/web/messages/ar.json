@@ -215,7 +215,10 @@
       "bookingAction": "افتح الحجز",
       "briefTitle": "لا حجوزات بعد",
       "briefBody": "اكتب ما تحتاجه في جملة واحدة ونتولى الباقي.",
-      "briefAction": "ابدأ طلباً"
+      "briefAction": "ابدأ طلباً",
+      "briefsTitle": "{count, plural, one {طلب جديد يناسبك} two {طلبان جديدان يناسبانك} few {# طلبات جديدة تناسبك} other {# طلبًا جديدًا يناسبك}}",
+      "briefsAction": "{count, plural, one {اطّلع على الطلب} other {اطّلع على الطلبات}}",
+      "briefsAnyDate": "التاريخ بالاتفاق"
     }
   },
   "home": {

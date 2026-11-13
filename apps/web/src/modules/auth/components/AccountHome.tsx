@@ -83,6 +83,8 @@ export async function NextUpPanel({
     profile: string
     availability: string
     brief: string
+    /** 019: the creator brief inbox. */
+    inbox: string
   }
 }) {
   const [t, tb, ts] = await Promise.all([
@@ -113,6 +115,23 @@ export async function NextUpPanel({
         />
       )
       action = { label: t('answerAction', { count: next.count }), href: hrefs.bookings }
+      break
+    }
+    case 'briefs': {
+      const b = next.brief
+      row = (
+        <NextRow
+          glyph={dayTile(b.date)}
+          title={t('briefsTitle', { count: next.count })}
+          lines={[
+            [b.dateLabel || t('briefsAnyDate'), b.emirate].filter(Boolean).join(' · '),
+            <span key="o" dir="auto">
+              {[b.profession, b.occasion].filter(Boolean).join(' · ')}
+            </span>,
+          ]}
+        />
+      )
+      action = { label: t('briefsAction', { count: next.count }), href: hrefs.inbox }
       break
     }
     case 'profile': {
