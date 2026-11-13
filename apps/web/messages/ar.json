@@ -219,7 +219,8 @@
       "briefsTitle": "{count, plural, one {طلب جديد يناسبك} two {طلبان جديدان يناسبانك} few {# طلبات جديدة تناسبك} other {# طلبًا جديدًا يناسبك}}",
       "briefsAction": "{count, plural, one {اطّلع على الطلب} other {اطّلع على الطلبات}}",
       "briefsAnyDate": "التاريخ بالاتفاق"
-    }
+    },
+    "saidYes": "{count, plural, one {وافق محترف واحد} two {وافق محترفان} few {وافق # محترفين} other {وافق # محترفًا}}"
   },
   "home": {
     "howItWorks": "كيف نعمل",

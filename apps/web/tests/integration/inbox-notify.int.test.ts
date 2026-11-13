@@ -110,4 +110,16 @@ describe('BI-US4 the client and the team hear that a creator said yes', () => {
     expect((await rows(id)).map((r) => r.audience)).toEqual(['admin'])
     expect(pushes.sent).toHaveLength(0)
   })
+
+  it('BI-US4-S3 the client’s brief list counts the creators who said yes, on the website and in the app', async () => {
+    const b = await memberBrief(client)
+    await accept('sara', b.ref)
+    await accept('omar', b.ref)
+    const { saidYesCounts } = await import('@/modules/inbox')
+    expect((await saidYesCounts(await payload(), [{ id: b.id, status: 'new' }])).get(b.id)).toBe(2)
+    const { readBriefs } = await import('@/modules/account/queries')
+    const ctx = { payload: await payload(), user: client, locale: 'en', now: () => new Date() } as never
+    const list = await readBriefs(ctx, client as never, 1, 50)
+    expect(list.items.find((i) => i.reference === b.ref)!.saidYes).toBe(2)
+  })
 })

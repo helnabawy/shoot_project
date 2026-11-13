@@ -39,7 +39,9 @@ export async function readBriefs(ctx: ActorContext, user: User, page: number, li
     ? (await ctx.payload.find({ collection: 'bookings', where: { and: [{ member: { equals: user.id } }, { brief: { in: ids } }] }, depth: 0, limit: ids.length, pagination: false, overrideAccess: true })).docs
     : []
   const byBrief = new Map(linked.map((b) => [String(typeof b.brief === 'object' ? b.brief.id : b.brief), b.reference]))
-  return { items: found.docs.map((b) => toBriefSummary(b, byBrief.get(String(b.id)) ?? null)), hasMore: found.hasNextPage }
+  // 019: creators who said yes to an open brief.
+  const yes = await (await import('@/modules/inbox')).saidYesCounts(ctx.payload, found.docs)
+  return { items: found.docs.map((b) => toBriefSummary(b, byBrief.get(String(b.id)) ?? null, yes.get(b.id) ?? 0)), hasMore: found.hasNextPage }
 }
 
 /** Briefs not yet closed (the "1 open" status). */

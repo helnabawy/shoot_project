@@ -219,7 +219,8 @@
       "briefsTitle": "{count, plural, one {A new brief matches you} other {# new briefs match you}}",
       "briefsAction": "{count, plural, one {See the brief} other {See the briefs}}",
       "briefsAnyDate": "Date to agree"
-    }
+    },
+    "saidYes": "{count, plural, one {A creator said yes} other {# creators said yes}}"
   },
   "home": {
     "howItWorks": "How it works",

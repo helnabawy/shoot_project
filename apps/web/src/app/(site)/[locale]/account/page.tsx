@@ -26,7 +26,7 @@ import {
 import { creatorBookingViews, formatDay } from '@/modules/booking/views'
 import { getLocations } from '@/modules/creators'
 import { getMyProfile } from '@/modules/creators/my-profile'
-import { briefsSummary, inboxContext } from '@/modules/inbox'
+import { briefsSummary, inboxContext, saidYesCounts } from '@/modules/inbox'
 import { getAllPersonas } from '@/modules/personas/queries'
 import { localizeHref } from '@/shared/i18n/href'
 import type { Locale } from '@/shared/lib/locale'
@@ -78,6 +78,7 @@ export default async function AccountPage({ params }: Props) {
     provider ? getMyAvailability(user, today) : Promise.resolve(null),
   ])
   // 019: open client briefs that match a live creator (null when the profile is not live).
+  const yes = await saidYesCounts((await inboxContext(locale, now)).payload, briefs)
   const inbox = provider ? await briefsSummary(await inboxContext(locale, now), user.id) : null
   const openBriefs = inbox?.soonest ? { ...inbox, soonest: { ...inbox.soonest, dateLabel: inbox.soonest.date ? formatDay(inbox.soonest.date, locale) : '' } } : inbox
   const ts = await getTranslations('creators.status')
@@ -181,7 +182,7 @@ export default async function AccountPage({ params }: Props) {
         />
         {briefs.length || next.kind !== 'brief' ? (
           <div className="mt-10">
-            <MyBriefs briefs={briefs} locale={locale} offerNew={next.kind !== 'brief'} />
+            <MyBriefs briefs={briefs} locale={locale} offerNew={next.kind !== 'brief'} saidYes={yes} />
           </div>
         ) : null}
       </div>
