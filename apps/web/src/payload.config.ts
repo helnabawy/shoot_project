@@ -26,6 +26,8 @@ import { AvailabilityBlocks } from './modules/booking/collections/AvailabilityBl
 import { BookingEvents } from './modules/booking/collections/BookingEvents'
 import { Bookings } from './modules/booking/collections/Bookings'
 import { Notifications } from './modules/booking/collections/Notifications'
+import { BriefAnswers } from './modules/inbox/collections/BriefAnswers'
+import { PushDevices } from './modules/push/collections/PushDevices'
 import { Payments } from './modules/booking/collections/Payments'
 import { Quotations } from './modules/booking/collections/Quotations'
 import { Media } from './modules/media/collections/Media'
@@ -78,6 +80,8 @@ export default buildConfig({
     AvailabilityBlocks,
     BookingEvents,
     Notifications,
+    BriefAnswers,
+    PushDevices,
     ServiceTiers,
     TravelFees,
     AddOns,

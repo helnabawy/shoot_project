@@ -25,6 +25,17 @@ const CERT_SHA256 = /^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){31}$/
 const s3Keys = ['S3_BUCKET', 'S3_REGION', 'S3_ENDPOINT', 'S3_ACCESS_KEY_ID', 'S3_SECRET_ACCESS_KEY'] as const
 // One-time-code delivery (feature 009, contracts/otp-provider.md): the vendor's variables, all or none.
 const unifonicKeys = ['UNIFONIC_APP_SID', 'OTP_SMS_SENDER_ID', 'OTP_WHATSAPP_SENDER', 'OTP_WHATSAPP_TEMPLATE'] as const
+/** The base64 service-account JSON carries what the FCM HTTP v1 call needs. */
+function serviceAccountOk(value: string | undefined): boolean {
+  if (!value) return false
+  try {
+    const json = JSON.parse(Buffer.from(value, 'base64').toString('utf8')) as Record<string, unknown>
+    return ['project_id', 'client_email', 'private_key'].every((k) => typeof json[k] === 'string' && json[k])
+  } catch {
+    return false
+  }
+}
+
 const LOCAL_SITE = /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/
 
 export const envSchema = z
@@ -54,6 +65,9 @@ export const envSchema = z
     OTP_SMS_SENDER_ID: optional,
     OTP_WHATSAPP_SENDER: optional,
     OTP_WHATSAPP_TEMPLATE: optional,
+    // App push (feature 019, research R7): off by default; fcm needs the service-account JSON (base64).
+    PUSH_PROVIDER: z.enum(['fcm', 'console', 'off'], { message: 'must be fcm, console or off' }).optional(),
+    FCM_SERVICE_ACCOUNT: optional,
     APP_ANDROID_CERT_SHA256: list(CERT_SHA256, 'must be comma-separated SHA-256 fingerprints, AA:BB:… (32 bytes)').transform((v) =>
       v?.map((c) => c.toUpperCase()),
     ),
@@ -90,6 +104,9 @@ export const envSchema = z
     }
     if (deployed && env.OTP_FIXED_CODE && env.OTP_ALLOW_FIXED_CODE !== '1') {
       ctx.addIssue({ code: 'custom', path: ['OTP_FIXED_CODE'], message: 'a fixed code is for local testing only; unset it in production (or set OTP_ALLOW_FIXED_CODE=1 on a throwaway test deployment)' })
+    }
+    if (env.PUSH_PROVIDER === 'fcm' && !serviceAccountOk(env.FCM_SERVICE_ACCOUNT)) {
+      ctx.addIssue({ code: 'custom', path: ['FCM_SERVICE_ACCOUNT'], message: 'PUSH_PROVIDER=fcm needs the Firebase service-account JSON, base64-encoded (project_id, client_email, private_key)' })
     }
     const missingVendor = unifonicKeys.filter((k) => !env[k])
     const someVendor = missingVendor.length < unifonicKeys.length

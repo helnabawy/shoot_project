@@ -118,6 +118,17 @@ export const optionSets: { slug: string; name: L; options: SeedOption[] }[] = [
       opt('man', 'Him', 'a man', 'رجل'),
     ],
   },
+  {
+    // Feature 019: why a creator says a brief is not for them (optional; never shown to the client).
+    slug: 'brief-reject-reasons',
+    name: { en: 'Brief: reasons to say no', ar: 'أسباب الاعتذار عن طلب' },
+    options: [
+      opt('not-free', '—', 'Not free that day', 'لست متاحًا في ذلك اليوم'),
+      opt('too-far', '—', 'Too far', 'المكان بعيد'),
+      opt('not-my-work', '—', 'Not my kind of work', 'ليس من نوع عملي'),
+      opt('other', '—', 'Other', 'سبب آخر'),
+    ],
+  },
 ]
 
 export const siteSettings = {

@@ -121,6 +121,14 @@ export const Users: CollectionConfig = {
       admin: { readOnly: true, position: 'sidebar' },
     },
     {
+      // Feature 019: app notifications on or off for every device of this member (FR-017).
+      name: 'pushEnabled',
+      type: 'checkbox',
+      defaultValue: true,
+      access: { read: selfOrAdminField, update: selfOrAdminField },
+      admin: { position: 'sidebar' },
+    },
+    {
       // Unverified contact number (booking details); never used to find an account (FR-013).
       name: 'phone',
       type: 'text',

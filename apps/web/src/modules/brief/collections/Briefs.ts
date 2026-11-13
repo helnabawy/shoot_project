@@ -107,6 +107,8 @@ export const Briefs: CollectionConfig = {
     },
     // The creator this brief was sent to, set by the server action only (feature 002).
     { name: 'creator', type: 'relationship', relationTo: 'creator-profiles', index: true, admin: { readOnly: true, position: 'sidebar' } },
+    // Feature 019: the creators who said yes or no to this brief (FR-011).
+    { name: 'answers', type: 'join', collection: 'brief-answers', on: 'brief', admin: { defaultColumns: ['creator', 'persona', 'decision', 'reason', 'answeredAt', 'withdrawnAt'] } },
     { name: 'sourcePath', type: 'text', admin: { readOnly: true } },
     { name: 'fingerprint', type: 'text', index: true, admin: { hidden: true } },
     // Quick Match private link (research §2): set by the server action only, never readable through the API.
