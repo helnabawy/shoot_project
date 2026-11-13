@@ -14,3 +14,5 @@ export { briefFacts, unavailableOn, DURATION_SET, LOCATION_SET, type BriefFacts 
 export { accessKey } from './keys'
 export { myProfileIds } from './queries'
 export { readQuickMatch } from './settings'
+export { absolute, matchPath } from './paths'
+export { acceptedFor } from './match'
