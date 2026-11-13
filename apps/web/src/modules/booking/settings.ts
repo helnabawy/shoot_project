@@ -7,6 +7,8 @@ export interface QuickMatchSettings {
   deliveryConfirmDays: number
   payoutDays: number
   quoteLimitPerHour: number
+  /** 019: days a brief without a date stays open in the creator inbox. */
+  inboxDays: number
 }
 
 /** The Quick match settings with their defaults (data-model "site-settings.quickMatch"). Uncached: used in writes. */
@@ -21,6 +23,7 @@ export async function readQuickMatch(payload: Payload, req?: PayloadRequest): Pr
     deliveryConfirmDays: num(q.deliveryConfirmDays, 7),
     payoutDays: num(q.payoutDays, 10),
     quoteLimitPerHour: num(q.quoteLimitPerHour, 5),
+    inboxDays: num(q.inboxDays, 30),
   }
 }
 
