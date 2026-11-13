@@ -623,7 +623,8 @@
     "continue": "Continue with your choice",
     "total": "Total {price}",
     "notListed": "Your chosen creator is not free that day; here is who is.",
-    "actions": "Actions"
+    "actions": "Actions",
+    "saidYes": "Said yes"
   },
   "details": {
     "metaTitle": "Your details",

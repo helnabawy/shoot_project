@@ -62,7 +62,7 @@ export function MatchResults({ sentence, editHref, dateLabel, sections, nearby, 
               </div>
             ) : null}
             {section.creators.map((row) => (
-              <CreatorPickRow key={row.id} row={row} chosenLabel={t('chosen')} />
+              <CreatorPickRow key={row.id} row={row} chosenLabel={t('chosen')} saidYesLabel={t('saidYes')} />
             ))}
             {section.price !== null ? (
               <Link href={section.anyHref} data-testid="match-any" aria-current={section.anyChosen ? 'true' : undefined} className={rowClass(section.anyChosen ? 'set' : 'open')}>
