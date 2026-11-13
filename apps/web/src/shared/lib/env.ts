@@ -83,6 +83,11 @@ export const envSchema = z
     if (deployed && !env.OTP_HMAC_SECRET) {
       ctx.addIssue({ code: 'custom', path: ['OTP_HMAC_SECRET'], message: 'is required in production (openssl rand -hex 32)' })
     }
+    // A deployment's disk is read-only, so the console provider can deliver nothing there: with the
+    // override it must have the fixed code, or every send fails as "unavailable".
+    if (deployed && (env.OTP_PROVIDER ?? 'console') === 'console' && env.OTP_ALLOW_FIXED_CODE === '1' && !env.OTP_FIXED_CODE) {
+      ctx.addIssue({ code: 'custom', path: ['OTP_FIXED_CODE'], message: 'is required with OTP_ALLOW_FIXED_CODE=1 and the console provider (six digits, e.g. 123456)' })
+    }
     if (deployed && env.OTP_FIXED_CODE && env.OTP_ALLOW_FIXED_CODE !== '1') {
       ctx.addIssue({ code: 'custom', path: ['OTP_FIXED_CODE'], message: 'a fixed code is for local testing only; unset it in production (or set OTP_ALLOW_FIXED_CODE=1 on a throwaway test deployment)' })
     }
