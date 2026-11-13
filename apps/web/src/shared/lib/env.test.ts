@@ -117,4 +117,23 @@ describe('environment validation', () => {
       expect(() => parseEnv({ ...valid, OTP_PROVIDER: 'pigeon' })).toThrow(/OTP_PROVIDER: must be console or unifonic/)
     })
   })
+
+  describe('app push (feature 019)', () => {
+    const account = Buffer.from(JSON.stringify({ project_id: 'shoot-test', client_email: 'push@shoot-test.iam.gserviceaccount.com', private_key: 'KEY' })).toString('base64')
+
+    it('is off unless chosen, and console needs nothing', () => {
+      expect(parseEnv(valid).PUSH_PROVIDER).toBeUndefined()
+      expect(parseEnv({ ...valid, PUSH_PROVIDER: 'console' }).PUSH_PROVIDER).toBe('console')
+    })
+
+    it('fcm needs a readable base64 service account', () => {
+      expect(() => parseEnv({ ...valid, PUSH_PROVIDER: 'fcm' })).toThrow(/FCM_SERVICE_ACCOUNT: PUSH_PROVIDER=fcm needs/)
+      expect(() => parseEnv({ ...valid, PUSH_PROVIDER: 'fcm', FCM_SERVICE_ACCOUNT: 'not-json' })).toThrow(/FCM_SERVICE_ACCOUNT/)
+      expect(parseEnv({ ...valid, PUSH_PROVIDER: 'fcm', FCM_SERVICE_ACCOUNT: account }).PUSH_PROVIDER).toBe('fcm')
+    })
+
+    it('refuses an unknown provider', () => {
+      expect(() => parseEnv({ ...valid, PUSH_PROVIDER: 'pigeon' })).toThrow(/PUSH_PROVIDER: must be fcm, console or off/)
+    })
+  })
 })
