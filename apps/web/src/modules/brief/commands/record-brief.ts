@@ -81,6 +81,8 @@ export async function recordBrief(ctx: ActorContext, input: BriefRecordV1): Prom
         context: { visitorId: ctx.visitorKey, ...(salt ? { accessSalt: salt } : {}) },
       })
       reference = created.reference ?? ''
+      // 019 (US5): matching creators hear about a new brief, after the response.
+      await (await import('@/modules/inbox')).announceLater(payload, created.id)
     }
 
     const referenceLine = reference ? (await getTranslations({ locale, namespace: 'brief' }))('whatsappReference', { reference }) : null

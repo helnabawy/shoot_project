@@ -34,7 +34,7 @@ describe('BI-US4 the client and the team hear that a creator said yes', () => {
   const accept = async (key: string, ref: string) =>
     answerBrief({ payload: await payload(), user: world.creators[key]!.user as never, locale: 'en', now: new Date() }, ref, { persona: String(world.personas.photographer), decision: 'accept' }, onAccepted)
   const rows = async (briefId: number) =>
-    (await (await payload()).find({ collection: 'notifications', where: { brief: { equals: briefId } }, depth: 0, pagination: false, sort: 'createdAt', overrideAccess: true })).docs
+    (await (await payload()).find({ collection: 'notifications', where: { and: [{ brief: { equals: briefId } }, { event: { equals: 'brief-accepted' } }] }, depth: 0, pagination: false, sort: 'createdAt', overrideAccess: true })).docs
 
   beforeAll(async () => {
     world = await bookingWorld()

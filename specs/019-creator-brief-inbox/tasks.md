@@ -117,8 +117,8 @@ against `apps/web/.env`'s production database.
 **Goal**: the app registers devices once allowed, removes them on sign-out, and has an on/off switch.
 **Independent test**: allow → device row; switch off → no sends; sign out → row gone.
 
-- [ ] T047 [P] [US6] Write failing tests `BI-US6-S2`, `BI-US6-S3` in `apps/web/tests/integration/push-devices.int.test.ts` (register, re-register moves a shared token to the caller, delete is 204 when unknown, preference read/write, auth required)
-- [ ] T048 [US6] Implement handlers `registerPushDeviceV1`, `removePushDeviceV1`, `pushPreferenceV1`, `setPushPreferenceV1` in `apps/web/src/modules/push/api.ts` and routes `apps/web/src/app/(payload)/api/mobile/v1/me/push/route.ts`, `me/push/devices/route.ts`, `me/push/devices/[token]/route.ts`
+- [X] T047 [P] [US6] Write failing tests `BI-US6-S2`, `BI-US6-S3` in `apps/web/tests/integration/push-devices.int.test.ts` (register, re-register moves a shared token to the caller, delete is 204 when unknown, preference read/write, auth required)
+- [X] T048 [US6] Implement handlers `registerPushDeviceV1`, `removePushDeviceV1`, `pushPreferenceV1`, `setPushPreferenceV1` in `apps/web/src/modules/push/api.ts` and routes `apps/web/src/app/(payload)/api/mobile/v1/me/push/route.ts`, `me/push/devices/route.ts`, `me/push/devices/[token]/route.ts`
 - [ ] T049 [US6] Add `firebase_core` and `firebase_messaging` (exact pins) to `apps/mobile/pubspec.yaml`; iOS: `aps-environment` in `ios/Runner/Runner.entitlements`, background mode `remote-notification` in `Info.plist`; Android: apply the `com.google.gms.google-services` plugin only when `android/app/google-services.json` exists in `android/app/build.gradle.kts` and `android/settings.gradle.kts`; git-ignore both config files; note the setup in `apps/mobile/README.md`. CI APK build still succeeds without the files
 - [ ] T050 [US6] Implement `apps/mobile/lib/core/push/{push_service.dart,push_api.dart,push_cubit.dart}`: start Firebase (failure → push off, nothing else changes), ask permission once with a plain reason when the creator opens the inbox or a client sends a brief, register the token with the app language, re-register on `onTokenRefresh` and on language change; register in `lib/core/di/injection.dart`; unregister in `SessionCubit.signOut()` before `auth/logout` (`lib/core/auth/session_cubit.dart`)
 - [ ] T051 [US6] Push switch on `apps/mobile/lib/features/menu/presentation/menu_page.dart` next to Theme and Appearance, signed in only, bound to `PushCubit` (`GET`/`PUT /me/push`); ARB keys `push*` en/ar
@@ -129,9 +129,9 @@ against `apps/web/.env`'s production database.
 **Goal**: one push per matching live creator with push on, when a brief is saved.
 **Independent test**: submit a brief; the console provider logged one push per matching creator device and none for others.
 
-- [ ] T053 [P] [US5] Write failing tests `BI-US5-S1`, `BI-US5-S2`, `BI-US5-S3`, `BI-US5-S4`, `BI-SC-005` in `apps/web/tests/integration/inbox-announce.int.test.ts`
-- [ ] T054 [US5] Implement `apps/web/src/modules/inbox/commands/announce-brief.ts` (`announceBrief(payload, briefId, now)`: live listed creators matching by R1, the named creator only when set; `brief-new` in-app + push rows with `briefDedupeKey`; `pushToUser` for each creator's user, `data.path = /account/inbox`)
-- [ ] T055 [US5] Call `announceBrief` inside `after()` right after `payload.create('briefs')` in `apps/web/src/modules/brief/actions.ts` (`submitBrief`) and `apps/web/src/modules/brief/commands/record-brief.ts` (`recordBrief`), not for replays; existing brief tests stay green
+- [X] T053 [P] [US5] Write failing tests `BI-US5-S1`, `BI-US5-S2`, `BI-US5-S3`, `BI-US5-S4`, `BI-SC-005` in `apps/web/tests/integration/inbox-announce.int.test.ts`
+- [X] T054 [US5] Implement `apps/web/src/modules/inbox/commands/announce-brief.ts` (`announceBrief(payload, briefId, now)`: live listed creators matching by R1, the named creator only when set; `brief-new` in-app + push rows with `briefDedupeKey`; `pushToUser` for each creator's user, `data.path = /account/inbox`)
+- [X] T055 [US5] Call `announceBrief` inside `after()` right after `payload.create('briefs')` in `apps/web/src/modules/brief/actions.ts` (`submitBrief`) and `apps/web/src/modules/brief/commands/record-brief.ts` (`recordBrief`), not for replays; existing brief tests stay green
 
 ## Phase 9: Polish and gates
 

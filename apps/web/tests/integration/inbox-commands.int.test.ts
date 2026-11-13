@@ -94,7 +94,7 @@ describe('BI-US2 BI-US3 creators accept, reject, undo and withdraw', () => {
     expect(refs(omar.open)).toContain(ref)
     const payload = await getTestPayload()
     const brief = (await payload.find({ collection: 'briefs', where: { reference: { equals: ref } }, limit: 1, depth: 0, overrideAccess: true })).docs[0]!
-    expect((await payload.count({ collection: 'notifications', where: { brief: { equals: brief.id } }, overrideAccess: true })).totalDocs).toBe(0)
+    expect((await payload.count({ collection: 'notifications', where: { and: [{ brief: { equals: brief.id } }, { audience: { equals: 'client' } }] }, overrideAccess: true })).totalDocs).toBe(0)
   })
 
   it('BI-US3-S2 a reason is optional and must come from the content list; the note is kept for the team', async () => {
