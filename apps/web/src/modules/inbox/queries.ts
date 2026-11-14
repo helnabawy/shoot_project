@@ -23,7 +23,6 @@ export const ANSWERED_DAYS = 30
 export const REJECT_REASONS_SET = 'brief-reject-reasons'
 
 const idOf = (v: unknown) => String(v && typeof v === 'object' ? (v as { id: unknown }).id : v)
-const PAST_QUOTED = { state: { not_in: ['quoted', 'expired'] } }
 
 type Slot = NonNullable<NonNullable<Awaited<ReturnType<typeof getLandingPage>>['briefBuilder']>['slots']>[number]
 
