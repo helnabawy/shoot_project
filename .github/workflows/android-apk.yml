@@ -1,7 +1,8 @@
 name: Android APK
 
 # Builds the release APK of apps/mobile.
-# - Push to main touching the app: APK as a workflow artifact (kept 30 days).
+# - Push to main touching the app: APK as a workflow artifact (kept 30 days), plus the rolling
+#   "latest" pre-release, replaced on every build: …/releases/download/latest/shoot-latest.apk
 # - Tag v* (e.g. v0.1.0): the same, plus a GitHub Release with the APK attached.
 # - Run workflow (Actions tab): build on demand, optionally against another API.
 #
@@ -36,7 +37,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write # the GitHub Release on a tag
+  contents: write # the GitHub Release on a tag, the rolling "latest" pre-release on main
 
 jobs:
   apk:
@@ -109,6 +110,20 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         env: { GH_TOKEN: '${{ github.token }}' }
         run: gh release create "$GITHUB_REF_NAME" "build/$APK_NAME" --title "$GITHUB_REF_NAME" --generate-notes
+
+      - name: Rolling "latest" pre-release (pushes to main only)
+        # One fixed file name, so the download link never changes. A pre-release is never
+        # GitHub's "Latest release", so a v* release keeps that badge.
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          cp "build/$APK_NAME" build/shoot-latest.apk
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest build/shoot-latest.apk \
+            --prerelease \
+            --target "$GITHUB_SHA" \
+            --title "Latest main build (#${{ github.run_number }})" \
+            --notes "Built from ${GITHUB_SHA::7} against $API_BASE_URL ($APP_ENV). Replaced on every push to main that touches the app."
 
       - name: Remove the keystore
         if: always()
