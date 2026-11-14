@@ -29,6 +29,7 @@ import 'package:shoot_mobile/features/content/content_injection.dart';
 import 'package:shoot_mobile/features/creator_account/creator_account_injection.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/landing/landing_injection.dart';
+import 'package:shoot_mobile/features/links/links_injection.dart';
 import 'package:shoot_mobile/features/quick_match/quick_match_injection.dart';
 import 'package:shoot_mobile/features/service_health/service_health_injection.dart';
 import 'package:shoot_mobile/features/sign_in/sign_in_injection.dart';
@@ -73,6 +74,7 @@ void configureDependencies(
   registerSiteFeature(getIt);
   registerLandingFeature(getIt);
   registerContentFeature(getIt);
+  registerLinksFeature(getIt);
   registerCreatorsFeature(getIt);
   registerSignInFeature(getIt);
   registerAccountFeature(getIt);

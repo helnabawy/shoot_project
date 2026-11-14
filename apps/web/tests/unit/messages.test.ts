@@ -11,7 +11,9 @@ function flatten(tree: Tree, prefix = ''): Record<string, string> {
   }, {})
 }
 
-const placeholders = (s: string) => [...s.matchAll(/\{(\w+)\}|<(\w+)>/g)].map((m) => m[1] ?? `<${m[2]}>`).sort()
+/** A plural or select keeps its argument; its branch bodies (`=2 {Both}`, `other {All}`) are words. */
+const withoutBranches = (s: string) => s.replace(/\{(\w+),\s*(?:plural|select|selectordinal),(?:[^{}]|\{[^{}]*\})*\}/g, '{$1}')
+const placeholders = (s: string) => [...withoutBranches(s).matchAll(/\{(\w+)\}|<(\w+)>/g)].map((m) => m[1] ?? `<${m[2]}>`).sort()
 
 describe('FR-039 translation files', () => {
   const enFlat = flatten(en as Tree)

@@ -21585,6 +21585,143 @@
       },
       "path": "/api/mobile/v1/me/push/devices/{token}"
     },
+    "resolve": {
+      "auth": "none",
+      "cache": "public",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "query": {
+            "properties": {
+              "path": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "route",
+                  "page",
+                  "hire",
+                  "creator",
+                  "book",
+                  "specialty",
+                  "guide",
+                  "guideCategory",
+                  "guideAuthor",
+                  "legal",
+                  "private"
+                ],
+                "type": "string"
+              },
+              "locale": {
+                "enum": [
+                  "en",
+                  "ar"
+                ],
+                "type": "string"
+              },
+              "params": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "propertyNames": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "path": {
+                "pattern": "^\\/(?![/\\\\])(?!(?:ar|en)(?:[/?#]|$))\\S*$",
+                "type": "string"
+              },
+              "status": {
+                "const": "page",
+                "type": "string"
+              }
+            },
+            "required": [
+              "status",
+              "kind",
+              "path",
+              "locale",
+              "params"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "locale": {
+                "enum": [
+                  "en",
+                  "ar"
+                ],
+                "type": "string"
+              },
+              "path": {
+                "pattern": "^\\/(?![/\\\\])(?!(?:ar|en)(?:[/?#]|$))\\S*$",
+                "type": "string"
+              },
+              "status": {
+                "const": "removed",
+                "type": "string"
+              }
+            },
+            "required": [
+              "status",
+              "path",
+              "locale"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "locale": {
+                "enum": [
+                  "en",
+                  "ar"
+                ],
+                "type": "string"
+              },
+              "path": {
+                "pattern": "^\\/(?![/\\\\])(?!(?:ar|en)(?:[/?#]|$))\\S*$",
+                "type": "string"
+              },
+              "status": {
+                "const": "notFound",
+                "type": "string"
+              }
+            },
+            "required": [
+              "status",
+              "path",
+              "locale"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "path": "/api/mobile/v1/resolve"
+    },
     "setPushPreference": {
       "auth": "required",
       "cache": "no-store",

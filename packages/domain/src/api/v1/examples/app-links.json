@@ -1,0 +1,30 @@
+{
+  "prefixes": [
+    "/",
+    "/creators",
+    "/book",
+    "/work",
+    "/hire",
+    "/match",
+    "/q",
+    "/account",
+    "/guides",
+    "/terms",
+    "/privacy",
+    "/login",
+    "/register",
+    "/ar",
+    "/ar/creators",
+    "/ar/book",
+    "/ar/work",
+    "/ar/hire",
+    "/ar/match",
+    "/ar/q",
+    "/ar/account",
+    "/ar/guides",
+    "/ar/terms",
+    "/ar/privacy",
+    "/ar/login",
+    "/ar/register"
+  ]
+}

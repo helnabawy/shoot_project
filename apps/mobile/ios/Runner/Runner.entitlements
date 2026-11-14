@@ -2,6 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyLists/1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- Feature 008 (research R13): site addresses open the app. APP_LINK_HOST is set per build
+	     configuration in ios/Flutter/Debug.xcconfig and Release.xcconfig; the site serves
+	     /.well-known/apple-app-site-association for it. -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:$(APP_LINK_HOST)</string>
+	</array>
 	<!-- Feature 009 (research R14): the session token lives in the app's own keychain group. -->
 	<key>keychain-access-groups</key>
 	<array>

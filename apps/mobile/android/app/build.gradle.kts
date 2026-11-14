@@ -14,6 +14,9 @@ val keyProperties = Properties().apply {
 }
 val hasReleaseKey = keyProperties.getProperty("storeFile") != null
 
+// App links host override (`flutter build apk -PappLinkHost=…` or gradle.properties).
+val appLinkHost = providers.gradleProperty("appLinkHost").orNull
+
 android {
     namespace = "ae.shoot.mobile"
     compileSdk = flutter.compileSdkVersion
@@ -37,6 +40,10 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // App links (feature 008): the website host whose addresses open the app (AndroidManifest
+        // intent filter). Production by default, staging for debug builds; `-PappLinkHost=<host>`
+        // overrides both.
+        manifestPlaceholders["appLinkHost"] = appLinkHost ?: "shoot.ae"
     }
 
     signingConfigs {
@@ -51,6 +58,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            manifestPlaceholders["appLinkHost"] = appLinkHost ?: "staging.shoot.ae"
+        }
         release {
             signingConfig = signingConfigs.getByName(if (hasReleaseKey) "release" else "debug")
         }

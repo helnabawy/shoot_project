@@ -14,7 +14,7 @@ Cache: **public** (`public, s-maxage=60`, `Vary: Accept-Language`, private when 
 | 008 mobile-api | `GET site`, `GET navigation`, `GET personas`, `GET brief-builder`, `GET landing` | none | public | site-settings, pages, personas, brief, landing queries |
 | 008 | `GET creators`, `GET creators/{code}`, `GET work/{specialty}`, `GET hire/{slug}` | none | public | creators and pages queries (no `fromPrice` yet; 011 adds it additively) |
 | 008 | `GET guides`, `GET guides/{slug}`, `GET pages/{slug}`, `GET legal/{kind}`, `GET legal/{kind}/versions[/{version}]` | none | public | guides, pages, legal queries; reduced rich-text tree for `RichContent` |
-| 008 | `GET resolve?path=` → `page` / `removed` / `notFound` / `private` (always 200) | none | public | `pages` `resolvePath` |
+| 008 | `GET resolve?path=` → `page` (with a `kind`, `private` for booking and account addresses, never looked up) / `removed` / `notFound` (always 200) | none | public | `pages` `resolvePath` (built) |
 | 008 | `GET /.well-known/apple-app-site-association`, `GET /.well-known/assetlinks.json` (site root, not under v1) | none | `public, max-age=3600` | env-configured app ids |
 | 009 otp-sign-in | `POST auth/otp/request` → 202 `{ challengeId, channel, phone, expiresAt, resendAt }` | none | no-store | `domain/auth/otp.ts`, `otp-challenges`, provider adapter |
 | 009 | `POST auth/otp/verify` → `{ token, exp, isNew, user }` | none | no-store | find-or-create by verified number (`username`), session, `jwtSign` |
