@@ -79,7 +79,7 @@ describe('BI-US4 the client and the team hear that a creator said yes', () => {
     expect((await rows(b.id)).filter((r) => r.channel === 'push')).toHaveLength(2)
   })
 
-  it('BI-US4-S5 push off, or no device: no push, and the in-app row is still there', async () => {
+  it('BI-US4-S5 BI-US6-S3 push off, or no device: no push, and the in-app row is still there', async () => {
     pushes.sent.length = 0
     const quiet1 = await createUser(['member'], { pushEnabled: false })
     await (await payload()).create({ collection: 'push-devices', data: { user: quiet1.id, token: 'muted-token-1', platform: 'android', locale: 'en' }, overrideAccess: true })
