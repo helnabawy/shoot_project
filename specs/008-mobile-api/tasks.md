@@ -693,24 +693,24 @@ and so does `flutter test test/core/routing/app_links_config_test.dart test/feat
 
 ### Tests first
 
-- [ ] T077 [P] [US5] Write `v1/resolve.test.ts`.
+- [x] T077 [P] [US5] (2026-11-14: `v1/resolve.test.ts`, 62 tests) Write `v1/resolve.test.ts`.
   - **`MR-US5-S1`**: `classifyPath` returns the kind and params for each pattern in research R12,
     with and without `/ar`.
   - **`MR-US5-S4`**: `/match/B-7K4Q2/abc`, `/q/…`, `/account` and `/account/bookings/x` are
     `private`.
   - `resolveRequestV1` refuses `https://x`, `//x`, `/a/../b`, `/a?b`, `/a#b` and 513 characters.
-- [ ] T078 [P] [US5] Write `v1/app-links.test.ts`.
+- [x] T078 [P] [US5] (2026-11-14: `v1/app-links.test.ts`; `examples/app-links.json` generated; homes `/` and `/ar` are exact paths so editor pages under `/ar` stay in the browser) Write `v1/app-links.test.ts`.
   - **`MR-US5-S5`**: `appleAssociation` and `androidAssetLinks` produce the documents in
     data-model.md for one and for two app ids or fingerprints.
   - **`MR-US5-S6`**: `APP_LINK_PREFIXES` equals the `prefixes` in `v1/examples/app-links.json`;
     with `UPDATE_API_SNAPSHOT=1` the test rewrites that file.
-- [ ] T079 [P] [US5] Write the web unit tests.
+- [x] T079 [P] [US5] (2026-11-14: proxy case added; drift test `modules/pages/resolve-routes.test.ts` also covers `/login/code`) Write the web unit tests.
   - Extend `web/proxy.test.ts` (**`MR-US5-S5`**): the matcher does not match
     `/.well-known/apple-app-site-association` or `/.well-known/assetlinks.json`.
   - Write `web/modules/pages/resolve-routes.test.ts`: every `page.tsx` under
     `web/app/(site)/[locale]/` maps to a `classifyPath` pattern, except the listed non-app routes
     (`guides/feed`).
-- [ ] T080 [P] [US5] Write the resolve and app-link integration tests.
+- [x] T080 [P] [US5] (2026-11-14: `mobile-api-resolve.int.test.ts` passes, 8 tests; `mobile-api-app-links.int.test.ts` passes, 2 tests, through the route modules with `env()` mocked because it is cached per process) Write the resolve and app-link integration tests.
   - `wtest/integration/mobile-api-resolve.int.test.ts`:
     - **`MR-US5-S1`**: an editor page, a guide, a creator, a specialty, a hire page and
       `/terms/versions/1` each give `page` with the right kind, the current path and the locale;
@@ -726,7 +726,7 @@ and so does `flutter test test/core/routing/app_links_config_test.dart test/feat
       `Cache-Control: public, max-age=3600`;
     - unset, both are 404;
     - the Apple file has no redirect and no locale.
-- [ ] T081 [P] [US5] Write the Dart links tests.
+- [x] T081 [P] [US5] Write the Dart links tests.
   - `mobile/test/features/links/data/repositories/links_repository_impl_test.dart`
     (**`MR-US5-S3`**): `resolve-page`, `resolve-removed` and `resolve-not-found` decode to
     `ResolvedPage`, `RemovedPage` and `NoPage`; an unknown `kind` gives `PlaceKind.unknown`;
@@ -739,19 +739,19 @@ and so does `flutter test test/core/routing/app_links_config_test.dart test/feat
 
 ### Implementation
 
-- [ ] T082 [US5] Create `v1/resolve.ts` (`resolveRequestV1`, `placeKindV1`, `resolveV1`,
+- [x] T082 [US5] (2026-11-14: also `strippedPath`, `isResolvablePath`; `/login/code` is a `route`) Create `v1/resolve.ts` (`resolveRequestV1`, `placeKindV1`, `resolveV1`,
   `classifyPath`) and register `resolve`. Write `resolve-page.json` and `.ar.json`,
   `resolve-removed.json` and `resolve-not-found.json`. T077 passes.
-- [ ] T083 [US5] Implement resolve in `web/modules/pages/`.
+- [x] T083 [US5] Implement resolve in `web/modules/pages/`.
   - `resolve.ts`: `resolvePath(path, locale, now)`, with the existence check per kind from research
     R12 and `isRemovedPath`. Private kinds are never looked up.
   - `resolvePathV1` in `api.ts`, exported from `index.ts`.
   - The route file `web/app/(payload)/api/mobile/v1/resolve/route.ts`.
 
   T079 (drift) and T080 (resolve) pass.
-- [ ] T084 [P] [US5] Create `v1/app-links.ts` (`APP_LINK_PREFIXES`, `appleAssociation`,
+- [x] T084 [P] [US5] Create `v1/app-links.ts` (`APP_LINK_PREFIXES`, `appleAssociation`,
   `androidAssetLinks`) and generate `v1/examples/app-links.json`. T078 passes.
-- [ ] T085 [US5] Serve the association files.
+- [x] T085 [US5] Serve the association files.
   - Create `web/modules/app-links/api.ts` (`appleAssociationFile`, `assetLinksFile`: env from
     T002, 404 when unset, `application/json`, `public, max-age=3600`) and `index.ts`.
   - Create `web/app/.well-known/apple-app-site-association/route.ts` and
@@ -759,9 +759,9 @@ and so does `flutter test test/core/routing/app_links_config_test.dart test/feat
   - Add `\\.well-known` to the matcher's negative lookahead in `web/proxy.ts`.
 
   T079 (proxy) and T080 (app links) pass.
-- [ ] T086 [US5] Create `mobile/lib/features/links/` (`Resolution`, `PlaceKind`,
+- [x] T086 [US5] Create `mobile/lib/features/links/` (`Resolution`, `PlaceKind`,
   `LinksRepository.resolve(path)`, models, datasource, repository impl) and `links_injection.dart`.
-- [ ] T087 [US5] Configure the app's link handling.
+- [x] T087 [US5] Configure the app's link handling.
   - iOS: create `mobile/ios/Runner/Runner.entitlements` with
     `com.apple.developer.associated-domains = [applinks:$(APP_LINK_HOST)]`, reference it from the
     Runner target's `CODE_SIGN_ENTITLEMENTS`, and set `APP_LINK_HOST` in
@@ -772,7 +772,10 @@ and so does `flutter test test/core/routing/app_links_config_test.dart test/feat
   - Note in `mobile/README.md` how to set the host per environment.
 
   T081 passes.
-- [ ] T088 [US5] Run `api:snapshot` and commit. Add the US5 examples to `api_examples_test.dart`.
+- [x] T088 [US5] (2026-11-14: snapshot regenerated, additive; not committed, the working tree is left for the owner to commit) Run `api:snapshot` and commit. Add the US5 examples to `api_examples_test.dart`.
+  - App half done: `resolve-page`, `resolve-removed`, `resolve-not-found` rows in
+    `mobile/test/helpers/api_decoders.dart` (`app-links` was already in `nonApiExamples`); all four
+    resolve examples decode in `api_examples_test.dart`. Snapshot and commit still open.
 
 **Checkpoint**: MR-US5-S1 to S6 pass. Links on staging open the app, which still shows screen 37
 until 010–015 build the screens.
@@ -781,17 +784,17 @@ until 010–015 build the screens.
 
 ## Phase 8: Polish & Cross-Cutting Concerns
 
-- [ ] T089 [P] Write `wtest/e2e/mr-smoke.spec.ts` (**`MR-SC-001`**, desktop project only). Against
+- [ ] T089 (2026-11-14: written, with the test app-link env in `playwright.config.ts`; not run, e2e runs are deferred by the owner) [P] Write `wtest/e2e/mr-smoke.spec.ts` (**`MR-SC-001`**, desktop project only). Against
   the built app with the seed:
   - `GET site`, `creators`, `resolve?path=/ar/does-not-exist` and both `.well-known` files (with
     the env set in the e2e config) each parse with their schema;
   - `Cache-Control` and `Content-Language` are as specified.
-- [ ] T090 [P] Update `mobile/README.md`:
+- [x] T090 [P] (2026-11-14) Update `mobile/README.md`:
   - Architecture gains `core/install`, `core/media`, `core/content` and `api_get`;
   - the call-flow example also names the five new feature data layers;
   - "Errors" gains problem codes and `NotFoundFailure`;
   - "Not done yet" gains "screens for these reads: 010–015".
-- [ ] T091 [P] Align the runtime guidance with the decisions in research R3, R6 and R16:
+- [x] T091 [P] (2026-11-14: skills already said `fields`, `auth: none` and `mobile-api-*.int.test.ts`; the handler example now spreads the registry entry and the resolve row names `private` as a kind) Align the runtime guidance with the decisions in research R3, R6 and R16:
   - `.claude/skills/mobile-api-contract/SKILL.md`: the problem field is `fields`; 008's reads are
     `auth: none`; integration tests are `tests/integration/mobile-api-*.int.test.ts`; the handler
     spreads the registry entry;
@@ -799,10 +802,10 @@ until 010–015 build the screens.
     `landing`, the creators reads, the content reads and `legal/{kind}`, now in 008 rather than
     010, 011 and 015;
   - `.claude/skills/flutter-mobile/SKILL.md`: `ShootImage` and the install id are done.
-- [ ] T092 [P] Update `specs/ROADMAP.md` row 008 to *implemented*, and add a 008 line to
+- [x] T092 [P] (2026-11-14) Update `specs/ROADMAP.md` row 008 to *implemented*, and add a 008 line to
   `CLAUDE.md`'s feature summary (modules, `apps/web/src/shared/api/`, `packages/domain/src/api/v1/`,
   test-id prefix `MR-`).
-- [ ] T095 [P] Review against the `persona-extensibility` skill (**FR-015**): no schema in `v1/`,
+- [x] T095 [P] (2026-11-14: no new schema, mapper, example key, Dart model or ARB string names a profession; renamed-persona case added to `personas/wire.test.ts`) Review against the `persona-extensibility` skill (**FR-015**): no schema in `v1/`,
   no `toWire*` mapper, no example key and no Dart model, entity or ARB string added by this feature
   names a profession; persona and category names reach the app only as CMS data. Add a case to
   `web/modules/personas/wire.test.ts` with a renamed persona (the new name comes through unchanged).

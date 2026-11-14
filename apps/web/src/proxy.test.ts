@@ -24,4 +24,9 @@ describe('MP-US5-S2 proxy', () => {
     for (const path of ['/studios', '/ar/guides', '/hire/x', '/']) expect(matcher.test(path), path).toBe(true)
     for (const path of ['/admin/x', '/api/pages', '/next/preview', '/_next/static/a.js', '/robots.txt', '/guides/feed.xml']) expect(matcher.test(path), path).toBe(false)
   })
+
+  it('MR-US5-S5 never localises or redirects the app-link association files', () => {
+    const matcher = new RegExp(`^${config.matcher[0]}$`)
+    for (const path of ['/.well-known/apple-app-site-association', '/.well-known/assetlinks.json']) expect(matcher.test(path), path).toBe(false)
+  })
 })

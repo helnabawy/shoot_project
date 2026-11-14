@@ -5,6 +5,7 @@ import { getSectionContext } from '@/modules/landing'
 import { defineHandler, problem } from '@/shared/api/handler'
 import { getIntentPage } from './intent'
 import { getNavigation, getPageBySlug } from './queries'
+import { resolvePath } from './resolve'
 import { toWireHirePage, toWireNavigation, toWirePage } from './wire'
 
 /** `GET /api/mobile/v1/navigation`: header, footer groups and legal links (FR-021). */
@@ -51,4 +52,13 @@ export const getPageV1 = defineHandler({
     const { page, slugs } = result
     return toWirePage(page, `/${slugs[locale]}`, await getSectionContext(locale, page.sections, payload))
   },
+})
+
+/**
+ * `GET /api/mobile/v1/resolve?path=`: which app place a website address is (research R12). Always
+ * 200: a removed or unknown address is an answer, not an error. Private places are never looked up.
+ */
+export const resolvePathV1 = defineHandler({
+  ...endpoints.resolve,
+  run: async ({ locale, now }, { query }) => resolvePath(query.path, locale, now()),
 })

@@ -68,10 +68,13 @@ lib/
   app.dart                  the shell: language, theme, router
   core/                     shared by every feature, owns no feature logic
     config/                 AppConfig (build-time values from --dart-define)
+    content/                shared API content shapes: sections, rich text, links, creator cards
     di/                     the get_it container and the list of features
     error/                  exceptions (data layer), failures and Result (above it)
+    install/                the per-install id sent as X-Shoot-Install (008)
     l10n/                   ARB files, locale list and cubit, failure-to-message mapping
-    network/                the shared Dio client
+    media/                  image references with every stored size (ShootImage picks one)
+    network/                the shared Dio client, apiGet/apiPost/apiSend, the install-id interceptor
     routing/                go_router routes and the not-found screen
     theme/                  semantic colour roles, size/radius/motion tokens, ThemeData
     usecase/                the UseCase contract
@@ -102,12 +105,17 @@ ServiceHealthPage -> ServiceHealthCubit -> CheckServiceHealth (use case)
     -> ServiceHealthRemoteDataSource -> Dio -> /api/health
 ```
 
+The `/api/mobile/v1` reads follow the same path through `apiGet` (`core/network/api_get.dart`),
+in the data layers of `features/site/`, `features/landing/`, `features/creators/`,
+`features/content/` and `features/links/` (the resolver, `LinksRepository.resolve(path)`).
+
 The rules that keep the layers honest:
 
 - **Errors.** A datasource throws `NetworkException` or `ServerException`. The repository catches
   them and returns `Result<T>`: `Ok(value)` or `Err(failure)`. Nothing above the data layer sees an
   exception or a Dio type. `Result` and `Failure` are sealed, so a `switch` over them is checked
-  for completeness by the compiler.
+  for completeness by the compiler. A `problem+json` answer keeps its `code` (a message key such as
+  `api.errors.notFound`) on the exception and the failure; a 404 becomes `NotFoundFailure`.
 - **Words.** A `Failure` carries no text. `core/l10n/failure_message.dart` is the one place a
   failure becomes a localized sentence.
 - **DI.** Classes take their dependencies through the constructor. Only the composition root
@@ -233,6 +241,26 @@ from the console outbox at the repo root, then type it on screen 21.
 pnpm --filter web otp:last    # the newest code and channel; the number masked to its last 4 digits
 ```
 
+## App links (feature 008)
+
+Website addresses (`/`, `/creators…`, `/book…`, `/work…`, `/hire…`, `/match…`, `/q…`, `/account…`,
+`/guides…`, `/terms…`, `/privacy…`, `/login…`, `/register…`, each also under `/ar`) open the app.
+The list is `APP_LINK_PREFIXES` in `packages/domain/src/api/v1/app-links.ts`;
+`test/core/routing/app_links_config_test.dart` fails when the native files drift from it. Paths the
+router does not know go through `LinksRepository.resolve(path)` (`lib/features/links/`).
+
+- **Host per environment.** iOS: `APP_LINK_HOST` in `ios/Flutter/Debug.xcconfig` (staging,
+  `staging.shoot.ae`) and `Release.xcconfig` (production, `shoot.ae`, also used by Profile), read by
+  `applinks:$(APP_LINK_HOST)` in `ios/Runner/Runner.entitlements`. Android: the `appLinkHost`
+  manifest placeholder in `android/app/build.gradle.kts` (`staging.shoot.ae` for debug, `shoot.ae`
+  otherwise); `flutter build apk -PappLinkHost=<host>` overrides it.
+- **Server.** The site at that host serves `/.well-known/apple-app-site-association` and
+  `/.well-known/assetlinks.json` only when its env is set (404 otherwise): `APP_IOS_APP_IDS`
+  (comma-separated `TEAMID.ae.shoot.mobile`), `APP_ANDROID_PACKAGE` (`ae.shoot.mobile`) and
+  `APP_ANDROID_CERT_SHA256` (comma-separated `AA:BB:…` SHA-256 fingerprints of every signing
+  certificate, the Play App Signing key included). iOS also needs the Associated Domains capability
+  on the App ID.
+
 ## Widgets and the gallery
 
 Every screen is built from `lib/core/widgets/`, one widget per board class (the catalogue is
@@ -287,6 +315,8 @@ Remove `service_health` once the first real feature has replaced it as the home 
 
 ## Not done yet
 
+- Screens for most of the 008 reads arrive with 010–015; incoming app links are configured
+  (feature 008) but go_router handling of unknown paths through the resolver is 015's.
 - Sign-in is built (feature 009), but the account screens it leads to are 013 and 014; until
   then sign-in returns home, and sign-out lives in the debug gallery.
 - The SMS and WhatsApp vendor waits for the owner's approval; locally the console provider writes

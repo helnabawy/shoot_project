@@ -46,6 +46,7 @@ import {
   pageV1,
 } from './content'
 import { landingV1 } from './landing'
+import { resolveRequestV1, resolveV1 } from './resolve'
 import { defineEndpoint, noContentV1, type Endpoint } from './registry'
 import { briefBuilderV1, navigationV1, personasV1, siteV1 } from './site'
 
@@ -299,6 +300,15 @@ export const endpoints = {
     input: legalVersionRequestV1,
     output: legalVersionV1,
     examples: ['legal-version'],
+  }),
+  // US5: which app place a website address is (research R12). Not found is an answer, never a 404.
+  resolve: defineEndpoint({
+    ...publicRead,
+    id: 'resolve',
+    path: '/api/mobile/v1/resolve',
+    input: resolveRequestV1,
+    output: resolveV1,
+    examples: ['resolve-page', 'resolve-page.ar', 'resolve-removed', 'resolve-not-found'],
   }),
   // 014: the creator's own account (specs/014-creator-account/contracts/mobile-api.md).
   creatorAccount: defineEndpoint({ ...mineRead, id: 'creatorAccount', path: '/api/mobile/v1/me/creator/account', output: creatorAccountV1, examples: ['creator-account'] }),

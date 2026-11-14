@@ -8,6 +8,7 @@ import 'package:shoot_mobile/features/content/data/models/legal_models.dart';
 import 'package:shoot_mobile/features/creator_account/data/models/creator_account_models.dart';
 import 'package:shoot_mobile/features/creators/data/models/creator_models.dart';
 import 'package:shoot_mobile/features/landing/data/models/landing_model.dart';
+import 'package:shoot_mobile/features/links/data/models/resolution_model.dart';
 import 'package:shoot_mobile/features/quick_match/data/models/quick_match_models.dart';
 import 'package:shoot_mobile/features/sign_in/data/models/otp_models.dart';
 import 'package:shoot_mobile/features/site/data/models/audience_model.dart';
@@ -63,6 +64,10 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'legal': (json) => LegalDocumentModel.fromJson(json).toEntity(),
   'legal-versions': (json) => LegalVersionsModel.fromJson(json).toEntity(),
   'legal-version': (json) => LegalDocumentModel.fromJson(json).toEntity(),
+  // US5: the link resolver.
+  'resolve-page': (json) => ResolutionModel.fromJson(json).toEntity(),
+  'resolve-removed': (json) => ResolutionModel.fromJson(json).toEntity(),
+  'resolve-not-found': (json) => ResolutionModel.fromJson(json).toEntity(),
   // 014: the creator's own account (answers, and the request bodies the app sends).
   'creator-profile-draft': (json) => MyProfileModel.fromJson(json).toEntity(),
   'creator-profile-ready': (json) => MyProfileModel.fromJson(json).toEntity(),

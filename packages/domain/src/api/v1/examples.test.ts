@@ -80,14 +80,13 @@ describe('MR-US2-S3 the inventory table in contracts/mobile-api.md', () => {
     expect(byId.size).toBe(rows.length)
   })
 
-  // Until every 008 endpoint is registered (US5), the table may list endpoints the registry does
-  // not have yet; when US5 lands this becomes an exact match in both directions.
   it.each(ENDPOINTS.map((e) => [e.id, e] as const))('has a row matching the registered %s', (_id, e) => {
     expect(byId.get(e.id)).toEqual({ id: e.id, method: e.method, path: e.path, auth: e.auth, cache: e.cache })
   })
 
-  it('every row whose id is registered matches the registry', () => {
-    for (const row of rows.filter((r) => registered.has(r.id))) {
+  it('lists only registered endpoints, each matching the registry', () => {
+    expect(rows.filter((r) => !registered.has(r.id)).map((r) => r.id)).toEqual([])
+    for (const row of rows) {
       const e = ENDPOINTS.find((x) => x.id === row.id)
       expect(row, row.id).toEqual({ id: e?.id, method: e?.method, path: e?.path, auth: e?.auth, cache: e?.cache })
     }

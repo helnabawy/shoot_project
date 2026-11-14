@@ -17,7 +17,15 @@ export default defineConfig({
         // Requires `pnpm --filter web build` first; e2e runs against a production build.
         command: 'pnpm payload migrate && pnpm seed && pnpm start',
         // The creator specs need the demo creators (D2222…D8888); the seed refuses them on a non-local host.
-        env: { SEED_DEMO_CREATORS: '1', SEED_DEMO_GUIDES: '1', E2E_CLOCK: '1' },
+        env: {
+          SEED_DEMO_CREATORS: '1',
+          SEED_DEMO_GUIDES: '1',
+          E2E_CLOCK: '1',
+          // App-link association files for the 008 smoke (mr-smoke.spec.ts); test values only.
+          APP_IOS_APP_IDS: 'ABCDE12345.ae.shoot.mobile',
+          APP_ANDROID_PACKAGE: 'ae.shoot.mobile',
+          APP_ANDROID_CERT_SHA256: Array.from({ length: 32 }, () => 'AB').join(':'),
+        },
         url: baseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 240_000,
