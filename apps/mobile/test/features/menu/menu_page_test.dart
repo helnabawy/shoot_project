@@ -12,6 +12,7 @@ import 'package:shoot_mobile/core/preferences/preferences_store.dart';
 import 'package:shoot_mobile/core/push/push_cubit.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
+import 'package:shoot_mobile/core/widgets/segmented_control.dart';
 import 'package:shoot_mobile/features/menu/presentation/menu_page.dart';
 
 import '../../core/push/fakes.dart';
@@ -65,7 +66,6 @@ Future<(RecordingOpener, RecordingOpener, InMemoryPreferencesStore)> pumpMenu(
             wa.opened.add(uri);
             return whatsappInstalled || uri.scheme == 'https';
           },
-          onStartBrief: () => wa.opened.add(Uri.parse('brief:start')),
           createPush: createPush,
         ),
       ),
@@ -85,18 +85,17 @@ Future<(RecordingOpener, RecordingOpener, InMemoryPreferencesStore)> pumpMenu(
 
 void main() {
   testWidgets(
-    'ML-US3-S1 the menu shows Start a brief, then Browse, You, Settings, WhatsApp, legal',
+    'ML-US3-S1 the menu shows You, Browse, Settings, WhatsApp, legal, and no Start a brief',
     (tester) async {
       await pumpMenu(tester);
       final order = [
-        'Start a brief',
+        'YOU',
+        'Log in',
+        'Join as a creator',
         'BROWSE',
         'Creators',
         'Guides',
         'How it works',
-        'YOU',
-        'Log in',
-        'Join as a creator',
         'Language',
         'Theme',
         'Ask us on WhatsApp',
@@ -112,8 +111,8 @@ void main() {
         find.textContaining('Sign in with email', findRichText: true),
         findsNothing,
       );
-      // One primary action.
-      expect(find.text('Start a brief'), findsOneWidget);
+      // The owner removed Start a brief from the menu.
+      expect(find.text('Start a brief'), findsNothing);
     },
   );
 
@@ -210,6 +209,62 @@ void main() {
     verify(() => push.setEnabled(enabled: false)).called(1);
   });
 
+  for (final locale in const [Locale('en'), Locale('ar')]) {
+    testWidgets(
+      'BI-US6-S3 the notifications switch lines up with the settings above it '
+      '(${locale.languageCode})',
+      (tester) async {
+        final push = MockPushApi();
+        when(push.enabled).thenAnswer((_) async => true);
+        final session = SessionCubit(
+          store: MemorySessionStore(),
+          api: MockAuthApi(),
+          clock: examplesClock,
+          restored: exampleSession(exp: DateTime.utc(2030)),
+          storeRead: true,
+        );
+        addTearDown(session.close);
+        await pumpMenu(
+          tester,
+          locale: locale,
+          session: session,
+          createPush: () => PushCubit(push),
+        );
+        final toggle = find.byKey(const Key('menu-push-switch'));
+        await tester.ensureVisible(toggle);
+        await tester.pumpAndSettle();
+        final rtl = locale.languageCode == 'ar';
+        final control = tester.getRect(
+          find.byType(SegmentedControl<ThemeMode>),
+        );
+        final accent = tester.getRect(
+          find.byKey(const Key('menu-accent-button')),
+        );
+        final row = tester.getRect(
+          find
+              .ancestor(of: toggle, matching: find.byType(ConstrainedBox))
+              .first,
+        );
+        final sw = tester.getRect(toggle);
+        // The switch ends where the controls end: the end edge, mirrored in Arabic.
+        if (rtl) {
+          expect(sw.left, closeTo(control.left, 0.5));
+          expect(sw.left, closeTo(accent.left, 0.5));
+        } else {
+          expect(sw.right, closeTo(control.right, 0.5));
+          expect(sw.right, closeTo(accent.right, 0.5));
+        }
+        // As tall as the accent row, with the switch centred in it.
+        expect(row.height, accent.height);
+        expect(sw.center.dy, closeTo(row.center.dy, 0.5));
+        final label = tester.getRect(
+          find.text(rtl ? 'الإشعارات' : 'Notifications'),
+        );
+        expect(label.center.dy, closeTo(row.center.dy, 0.5));
+      },
+    );
+  }
+
   testWidgets('BI-US6-S3 the switch is not shown when signed out', (
     tester,
   ) async {
@@ -293,17 +348,6 @@ void main() {
   );
 
   testWidgets(
-    'ML-US3-S1 Start a brief opens the brief and goes to the landing',
-    (tester) async {
-      final (_, wa, _) = await pumpMenu(tester);
-      await tester.tap(find.text('Start a brief'));
-      await tester.pumpAndSettle();
-      expect(wa.opened.single.toString(), 'brief:start');
-      expect(find.text('landing'), findsOneWidget);
-    },
-  );
-
-  testWidgets(
     'FR-047 a failing site read hides WhatsApp but never blanks the menu',
     (tester) async {
       // Site settings that cannot be read: no WhatsApp row, everything else stays.
@@ -316,7 +360,7 @@ void main() {
       await pumpRouter(tester, router);
       await tester.pumpAndSettle();
       expect(find.text('Ask us on WhatsApp'), findsNothing);
-      expect(find.text('Start a brief'), findsOneWidget);
+      expect(find.text('Creators'), findsOneWidget);
     },
   );
 }

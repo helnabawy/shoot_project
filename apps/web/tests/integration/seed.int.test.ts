@@ -22,7 +22,7 @@ describe('FR-032 seed', () => {
     const first = await counts()
     await seed(payload, { adminEmail: 'admin@test.local', adminPassword: 'password-123', log: () => {} })
     expect(await counts()).toEqual(first)
-    expect(first).toEqual({ users: 1, personas: 2, categories: 6, 'option-sets': 4, pages: 1 })
+    expect(first).toEqual({ users: 1, personas: 2, categories: 6, 'option-sets': 4, pages: 2 })
     const admin = await payload.find({ collection: 'users', limit: 1 })
     expect(admin.docs[0]?.roles).toEqual(['admin'])
   })
@@ -38,6 +38,26 @@ describe('FR-032 seed', () => {
     expect((await payload.findByID({ collection: 'pages', id: en.id, locale: 'en', depth: 0 })).title).toBe('Our studios')
     const settings = await payload.findGlobal({ slug: 'site-settings', locale: 'en' })
     expect(settings.footerGroups?.map((g) => g.key)).toEqual(['company'])
+  })
+
+  it('015 seeds the How it works page the app opens at /how-it-works: the landing steps and questions, in both languages', async () => {
+    const payload = await getTestPayload()
+    const en = (await payload.find({ collection: 'pages', where: { slug: { equals: 'how-it-works' } }, locale: 'en', depth: 0, limit: 1 })).docs[0]!
+    expect(en).toMatchObject({ title: 'How it works', kind: 'standard', _status: 'published' })
+    expect(en.sections?.map((s) => s.blockType)).toEqual(['howItWorks', 'faq'])
+    const landing = await payload.findGlobal({ slug: 'landing-page', locale: 'en', depth: 0 })
+    const landingSteps = landing.sections?.find((s) => s.blockType === 'howItWorks')
+    const steps = en.sections?.[0]
+    expect(steps?.blockType === 'howItWorks' && steps.steps?.map((s) => s.title)).toEqual(
+      landingSteps?.blockType === 'howItWorks' && landingSteps.steps?.map((s) => s.title),
+    )
+    expect(steps?.blockType === 'howItWorks' && steps.subheading).toBe('Three steps, one conversation.')
+    const faq = en.sections?.[1]
+    expect(faq?.blockType === 'faq' && faq.items?.length).toBe(4)
+    const ar = await payload.findByID({ collection: 'pages', id: en.id, locale: 'ar', fallbackLocale: false, depth: 0 })
+    expect(ar).toMatchObject({ title: 'كيف نعمل', slug: 'كيف-نعمل' })
+    const arSteps = ar.sections?.[0]
+    expect(arSteps?.blockType === 'howItWorks' && arSteps.steps?.[0]?.title).toBe('الطلب')
   })
 
   it('publishes the landing page in both languages with matching option counts', async () => {

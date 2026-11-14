@@ -100,4 +100,37 @@ void main() {
       closeTo(tester.getCenter(find.byType(TopHit)).dx, 0.5),
     );
   });
+
+  for (final locale in const [Locale('en'), Locale('ar')]) {
+    testWidgets(
+      'a centred label stays centred while the glint plays (${locale.languageCode})',
+      (tester) async {
+        await tester.pumpApp(
+          Scaffold(
+            body: Padding(
+              padding: const EdgeInsets.all(20),
+              child: TopHit(
+                label: 'Back to the start',
+                centered: true,
+                onPressed: () {},
+              ),
+            ),
+          ),
+          locale: locale,
+        );
+        final label = find.text('Back to the start');
+        final button = find.byKey(const ValueKey('fidelity:topHit'));
+        final atRest = tester.getCenter(label);
+        expect(atRest.dx, closeTo(tester.getCenter(button).dx, 0.5));
+        // 2.4 s delay, then the 1.1 s sheen: sample it as it crosses.
+        await tester.pump(const Duration(milliseconds: 2400));
+        for (var ms = 0; ms <= 1100; ms += 100) {
+          await tester.pump(const Duration(milliseconds: 100));
+          expect(tester.getCenter(label), atRest, reason: 'at ${ms}ms');
+        }
+        await tester.pumpAndSettle();
+        expect(tester.getCenter(label), atRest);
+      },
+    );
+  }
 }

@@ -135,8 +135,7 @@
       ],
       "boxes": {
         "header": ".hd",
-        "wordmark": ".wm",
-        "topHit": ".top"
+        "wordmark": ".wm"
       },
       "sha256": "8d4ba263000005141b53c0f1449bf5a3df60373b6f744b7be33d1eab891d6bd5"
     },

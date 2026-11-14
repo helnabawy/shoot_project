@@ -102,11 +102,7 @@ Widget landingScreen(Variant v, {int creators = 5}) {
 Widget menuScreen(Variant v) {
   final site = FakeSiteRepository(site: exampleSite(arabic: _ar(v)));
   return _providers(
-    MenuPage(
-      loadSite: site.getSite,
-      links: const WebsiteLinks(testConfig),
-      onStartBrief: () {},
-    ),
+    MenuPage(loadSite: site.getSite, links: const WebsiteLinks(testConfig)),
     brief: _brief(v),
   );
 }

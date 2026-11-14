@@ -26,15 +26,13 @@ import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon_button.dart';
 import 'package:shoot_mobile/core/widgets/shoot_row.dart';
 import 'package:shoot_mobile/core/widgets/shoot_scaffold.dart';
-import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/core/widgets/wordmark.dart';
-import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/site/domain/entities/site_info.dart';
 
 typedef SiteLoader = Future<Result<SiteInfo>> Function();
 
-/// Screen 06, built to board `S01m-menu`: the one place for the rest of the app. "Start a brief" is
-/// its one primary action; the groups follow FR-040. Opened with `push`, so closing it (or the
+/// Screen 06, built to board `S01m-menu`: the one place for the rest of the app. The groups follow
+/// FR-040, with You above Browse; there is no "Start a brief" here (the owner removed it). Opened with `push`, so closing it (or the
 /// system back gesture) returns to the screen it came from unchanged (FR-045). Destinations whose
 /// feature is not built are not registered routes, so they show screen 37 (FR-047).
 class MenuPage extends StatefulWidget {
@@ -43,7 +41,6 @@ class MenuPage extends StatefulWidget {
     required this.loadSite,
     required this.links,
     this.open = openInBrowser,
-    this.onStartBrief,
     this.createPush,
   });
 
@@ -53,9 +50,6 @@ class MenuPage extends StatefulWidget {
 
   /// Opens an address outside the app (WhatsApp); injectable for tests.
   final UrlOpener open;
-
-  /// Opens the landing's brief at its first unanswered step; defaults to the app's [BriefCubit].
-  final VoidCallback? onStartBrief;
 
   /// 019: the push switch, shown to a signed-in member when given.
   final PushCubit Function()? createPush;
@@ -85,11 +79,6 @@ class _MenuPageState extends State<MenuPage> {
     } else {
       context.go(AppRoutes.home);
     }
-  }
-
-  void _startBrief() {
-    (widget.onStartBrief ?? context.read<BriefCubit>().openFirstUnanswered)();
-    context.go(AppRoutes.home);
   }
 
   Future<void> _whatsapp() async {
@@ -168,34 +157,6 @@ class _MenuPageState extends State<MenuPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        TopHit(
-                          label: l10n.mlStartBrief,
-                          chevron: true,
-                          onPressed: _startBrief,
-                        ),
-                        const SizedBox(height: 18),
-                        _Section(
-                          label: l10n.mlMenuBrowse,
-                          children: [
-                            row(
-                              ShootIcons.creators,
-                              l10n.mlMenuCreators,
-                              () => context.push(AppRoutes.creators),
-                            ),
-                            row(
-                              ShootIcons.guides,
-                              l10n.mlMenuGuides,
-                              () => context.push('/guides'),
-                            ),
-                            row(
-                              ShootIcons.lines,
-                              l10n.mlMenuHowItWorks,
-                              () => context.push('/how-it-works'),
-                              divider: RowDivider.topAndBottom,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 18),
                         _Section(
                           label: l10n.mlMenuYou,
                           children: [
@@ -236,6 +197,28 @@ class _MenuPageState extends State<MenuPage> {
                                 divider: RowDivider.topAndBottom,
                               ),
                             ],
+                          ],
+                        ),
+                        const SizedBox(height: 18),
+                        _Section(
+                          label: l10n.mlMenuBrowse,
+                          children: [
+                            row(
+                              ShootIcons.creators,
+                              l10n.mlMenuCreators,
+                              () => context.push(AppRoutes.creators),
+                            ),
+                            row(
+                              ShootIcons.guides,
+                              l10n.mlMenuGuides,
+                              () => context.push('/guides'),
+                            ),
+                            row(
+                              ShootIcons.lines,
+                              l10n.mlMenuHowItWorks,
+                              () => context.push('/how-it-works'),
+                              divider: RowDivider.topAndBottom,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 18),
@@ -495,12 +478,22 @@ class _PushSetting extends StatelessWidget {
       child: BlocBuilder<PushCubit, PushSwitchState>(
         builder: (context, state) => _Setting(
           label: context.l10n.pushSetting,
-          child: Switch.adaptive(
-            key: const Key('menu-push-switch'),
-            value: state.enabled ?? true,
-            onChanged: state.enabled == null || state.busy
-                ? null
-                : (on) => context.read<PushCubit>().set(enabled: on),
+          // Ends where the segmented controls and the accent chevron end, in a 44 px tall row like
+          // the accent's, so the switch lines up with its neighbours in both directions.
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 44),
+            child: Align(
+              alignment: AlignmentDirectional.centerEnd,
+              heightFactor: 1,
+              child: Switch.adaptive(
+                key: const Key('menu-push-switch'),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                value: state.enabled ?? true,
+                onChanged: state.enabled == null || state.busy
+                    ? null
+                    : (on) => context.read<PushCubit>().set(enabled: on),
+              ),
+            ),
           ),
         ),
       ),

@@ -27,7 +27,10 @@ class Glint extends StatelessWidget {
         // paints exactly as without a glint.
         return ClipRRect(
           borderRadius: BorderRadius.circular(ShootRadius.row),
+          // Passthrough: the child keeps the constraints it has at rest, so a centred label stays
+          // centred while the sheen crosses instead of shrinking to the start.
           child: Stack(
+            fit: StackFit.passthrough,
             children: [
               child,
               Positioned.fill(

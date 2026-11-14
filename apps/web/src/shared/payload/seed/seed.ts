@@ -4,7 +4,7 @@ import { briefSlots, categories, landingPage, locations, optionSets, personas, s
 import { demoPassword, removeDemoCreators, seedDemoCreators } from './demo-creators'
 import { seedDemoGuides } from './demo-guides'
 import { seedLegalDocuments } from './legal'
-import { seedStudiosPage } from './pages'
+import { seedHowItWorksPage, seedStudiosPage } from './pages'
 import { pickLocale, withRowIds } from './localize'
 import { occasionCategories, quickMatchSettings, seedDemoPrices, seedDemoQuickMatch } from './quick-match'
 
@@ -144,6 +144,7 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
   log('Landing page published')
 
   await seedStudiosPage(payload, log)
+  await seedHowItWorksPage(payload, log)
   await seedLegalDocuments(payload, { siteUrl: options.siteUrl ?? process.env.NEXT_PUBLIC_SITE_URL, log })
 
   if (options.resetDemoCreators) {
