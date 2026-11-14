@@ -23,6 +23,7 @@ MatchCreator _creator(Json json) => MatchCreator(
       );
     }),
   ),
+  saidYes: json['saidYes'] == true,
 );
 
 Pick _pick(Json json) => Pick(

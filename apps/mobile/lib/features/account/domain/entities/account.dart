@@ -66,6 +66,7 @@ final class BriefSummary extends Equatable {
     required this.sentAt,
     required this.status,
     this.bookingReference,
+    this.saidYes = 0,
   });
 
   final String reference;
@@ -74,6 +75,9 @@ final class BriefSummary extends Equatable {
   final BriefStatus status;
   final String? bookingReference;
 
+  /// 019: creators who said yes to this open brief.
+  final int saidYes;
+
   @override
   List<Object?> get props => [
     reference,
@@ -81,6 +85,7 @@ final class BriefSummary extends Equatable {
     sentAt,
     status,
     bookingReference,
+    saidYes,
   ];
 }
 

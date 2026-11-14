@@ -42,6 +42,17 @@ void main() {
         .thenAnswer((_) async => Ok(exampleView('quoted')));
   });
 
+  group('BI-US2 creators who said yes', () {
+    testWidgets('BI-US2-S3 a creator who said yes is marked on their card', (
+      tester,
+    ) async {
+      expect(exampleMatch().sections.first.creators.first.saidYes, isTrue);
+      await pumpQuickMatch(tester, repository: repository, location: match);
+      await tester.pumpAndSettle();
+      expect(find.text('Said yes'), findsOneWidget);
+    });
+  });
+
   group('MQ-US1 screen 07', () {
     testWidgets(
       'MQ-US1-S1 MQ-US1-S2 shows the creators at one price and the action follows the chosen card',
