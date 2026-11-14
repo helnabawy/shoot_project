@@ -15,10 +15,17 @@ final class WorkThumb extends Equatable {
 
 /// A creator on step 2: the directory card and up to three pieces of work.
 final class MatchCreator extends Equatable {
-  const MatchCreator({required this.card, required this.gallery});
+  const MatchCreator({
+    required this.card,
+    required this.gallery,
+    this.saidYes = false,
+  });
 
   final CreatorCard card;
   final List<WorkThumb> gallery;
+
+  /// 019: this creator already said yes to the brief (listed first).
+  final bool saidYes;
 
   String get code => card.code;
 
@@ -26,7 +33,7 @@ final class MatchCreator extends Equatable {
   String get firstName => card.name.split(' ').first;
 
   @override
-  List<Object?> get props => [card, gallery];
+  List<Object?> get props => [card, gallery, saidYes];
 }
 
 /// A professional type in a brief, in CMS words (never from ARB, persona-extensibility).

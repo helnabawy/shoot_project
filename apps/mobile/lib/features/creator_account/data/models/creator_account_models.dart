@@ -1,5 +1,6 @@
 import 'package:shoot_mobile/core/media/image_ref.dart';
 import 'package:shoot_mobile/core/network/json_read.dart';
+import 'package:shoot_mobile/features/creator_account/data/models/inbox_models.dart';
 import 'package:shoot_mobile/features/creator_account/domain/entities/creator_account.dart';
 
 /// Decoders for the creator account answers (`creator-account.ts`). Each throws
@@ -204,6 +205,7 @@ final class CreatorAccountModel {
         waitingCount: readInt(counts, 'waiting'),
         upcomingCount: readInt(counts, 'upcoming'),
         blockedDays: readInt(counts, 'blockedDays'),
+        briefs: briefsSummaryFromJson(json),
       ),
     );
   }

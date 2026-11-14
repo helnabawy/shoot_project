@@ -119,6 +119,8 @@ export async function submitBrief(_prev: BriefState, form: FormData): Promise<Br
         context: { visitorId: visitor, ...(creator ? { creatorResolved: true } : {}), ...(salt ? { accessSalt: salt } : {}) },
       })
       reference = created.reference ?? ''
+      // 019 (US5): matching creators hear about a new brief, after the response.
+      await (await import('@/modules/inbox')).announceLater(payload, created.id)
     }
 
     // The brief ID goes in the message so the team can find the brief from the chat (FR-055).

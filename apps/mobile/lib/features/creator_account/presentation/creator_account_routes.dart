@@ -6,10 +6,12 @@ import 'package:shoot_mobile/core/routing/app_routes.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/account_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/availability_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/bookings_cubit.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/inbox_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/profile_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/pages/account_page.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/pages/availability_page.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/pages/bookings_page.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/pages/inbox_page.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/pages/profile_page.dart';
 
 /// A signed-in creator's `/account`, `/account/profile`, `/account/availability`,
@@ -22,6 +24,8 @@ List<RouteBase> creatorAccountRoutes({
   required ProfileCubit Function() createProfile,
   required BookingsCubit Function() createBookings,
   required AvailabilityCubit Function() createAvailability,
+  required InboxCubit Function() createInbox,
+  void Function(BuildContext context)? onInboxShown,
 }) {
   String? creatorOnly(BuildContext context, GoRouterState state) {
     final s = session.state;
@@ -46,6 +50,12 @@ List<RouteBase> creatorAccountRoutes({
           redirect: creatorOnly,
           builder: (context, state) =>
               AvailabilityPage(create: createAvailability),
+        ),
+        GoRoute(
+          path: 'inbox',
+          redirect: creatorOnly,
+          builder: (context, state) =>
+              InboxPage(create: createInbox, onShown: onInboxShown),
         ),
         GoRoute(
           path: 'bookings',

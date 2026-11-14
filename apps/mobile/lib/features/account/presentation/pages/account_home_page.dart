@@ -459,7 +459,10 @@ class BriefRow extends StatelessWidget {
     final l10n = context.l10n;
     return TwoLineRow(
       title: brief.sentence,
-      meta: l10n.accountBriefSent(formatSent(context, brief.sentAt)),
+      meta: [
+        l10n.accountBriefSent(formatSent(context, brief.sentAt)),
+        if (brief.saidYes > 0) l10n.accountSaidYes(brief.saidYes),
+      ].join(' · '),
       leading: const IconTile(ShootIcons.search),
       onTap: onTap,
       trailing: StatusBadge(

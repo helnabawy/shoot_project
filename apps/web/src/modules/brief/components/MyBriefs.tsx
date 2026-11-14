@@ -14,10 +14,13 @@ export async function MyBriefs({
   briefs,
   locale,
   offerNew = true,
+  saidYes,
 }: {
   briefs: Brief[]
   locale: string
   offerNew?: boolean
+  /** 019: creators who said yes, per brief id. */
+  saidYes?: ReadonlyMap<number, number>
 }) {
   const t = await getTranslations({ locale, namespace: 'account' })
   if (!briefs.length && !offerNew) return null
@@ -43,6 +46,11 @@ export async function MyBriefs({
                     <span className="mt-0.5 block text-[13px] text-mute [&:lang(ar)]:text-[14px]">
                       <Bidi>{brief.reference}</Bidi> · {t(`status.${brief.status ?? 'new'}`)}
                     </span>
+                    {saidYes?.get(brief.id) ? (
+                      <span data-testid="brief-said-yes" className="mt-0.5 block text-[13px] font-medium text-selected-ink">
+                        {t('saidYes', { count: saidYes.get(brief.id)! })}
+                      </span>
+                    ) : null}
                   </>
                 }
               />

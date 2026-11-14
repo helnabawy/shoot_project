@@ -84,7 +84,11 @@ export async function matchView(payload: Payload, input: MatchInput): Promise<Ma
         persona: { slug: s.persona.slug, singular: s.persona.singular, plural: s.persona.plural },
         priceFils: s.price.ok ? s.price.total : null,
         includes: tier?.deliverables?.[locale] ?? [],
-        creators: s.creators.map((c) => ({ ...toWireCreatorCard(c, context.lookups, context.prefix, ctx), gallery: gallery.get(c.id) ?? [] })),
+        creators: s.creators.map((c) => ({
+          ...toWireCreatorCard(c, context.lookups, context.prefix, ctx),
+          gallery: gallery.get(c.id) ?? [],
+          ...(s.saidYes.includes(c.id) ? { saidYes: true } : {}),
+        })),
       }
     }),
     nearby: page.nearby.map((date) => ({ date, free: page.nearbyFree[date] ?? 0 })),
