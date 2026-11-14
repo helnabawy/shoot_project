@@ -148,7 +148,8 @@ class _ProfileViewState extends State<ProfileView> {
     final profile = widget.data.profile;
     final samples = profile.samples;
     final firstName = profile.name.trim().split(RegExp(r'\s+')).first;
-    final canWhatsapp = widget.data.whatsappNumber != null;
+    final own = widget.data.own;
+    final canWhatsapp = !own && widget.data.whatsappNumber != null;
     final bioDirection = firstStrongDirection(profile.bio);
     return ShootScaffold(
       child: Column(
@@ -270,19 +271,21 @@ class _ProfileViewState extends State<ProfileView> {
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                            8,
-                            4,
-                            8,
-                            8,
+                        // A creator on their own profile has nobody to book.
+                        if (!own)
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                              8,
+                              4,
+                              8,
+                              8,
+                            ),
+                            child: TopHit(
+                              label: l10n.mcBookWith(firstName),
+                              chevron: true,
+                              onPressed: profile.canBook ? widget.onBook : null,
+                            ),
                           ),
-                          child: TopHit(
-                            label: l10n.mcBookWith(firstName),
-                            chevron: true,
-                            onPressed: profile.canBook ? widget.onBook : null,
-                          ),
-                        ),
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(
                             8,

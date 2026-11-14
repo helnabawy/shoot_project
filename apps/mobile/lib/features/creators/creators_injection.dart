@@ -39,13 +39,19 @@ void registerCreatorsFeature(GetIt getIt) {
 }
 
 /// The feature's routes from the service locator (called once from the app shell).
-List<RouteBase> creatorsRoutesFrom(GetIt getIt) => creatorsRoutes(
+/// [myCode] reads the signed-in creator's own code (null for anyone else), so their own profile
+/// offers no booking.
+List<RouteBase> creatorsRoutesFrom(
+  GetIt getIt, {
+  Future<String?> Function()? myCode,
+}) => creatorsRoutes(
   createDirectory: (initial) =>
       DirectoryCubit(getIt<GetCreators>(), initial: initial),
   createProfile: (code) => ProfileCubit(
     getProfile: getIt<GetCreatorProfile>(),
     getWhatsappNumber: getIt<GetWhatsappNumber>(),
     code: code,
+    myCode: myCode,
   ),
   createBook: (code) => BookCubit(
     getProfile: getIt<GetCreatorProfile>(),

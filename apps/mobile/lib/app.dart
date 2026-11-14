@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shoot_mobile/core/auth/session.dart';
 import 'package:shoot_mobile/core/auth/session_cubit.dart';
 import 'package:shoot_mobile/core/di/injection.dart';
+import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/core/first_run/first_run_store.dart';
 import 'package:shoot_mobile/core/l10n/app_locales.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
@@ -24,6 +26,7 @@ import 'package:shoot_mobile/features/account/presentation/cubit/bookings_cubit.
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/content/presentation/content_deps.dart';
 import 'package:shoot_mobile/features/content/presentation/content_routes.dart';
+import 'package:shoot_mobile/features/creator_account/domain/repositories/creator_account_repository.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/creator_account_routes.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/account_cubit.dart'
     as creator_account;
@@ -66,7 +69,7 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         createFlow: getIt.call<SignInFlowCubit>,
         links: getIt<WebsiteLinks>(),
       ),
-      ...creatorsRoutesFrom(getIt),
+      ...creatorsRoutesFrom(getIt, myCode: _myCreatorCode),
       ...accountRoutes(
         createAccount: getIt.call<AccountCubit>,
         createBookings: getIt.call<BookingsCubit>,
@@ -146,6 +149,19 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         getIt<LocaleCubit>().stream.listen((_) => unawaited(push.register())),
       );
     _router.routerDelegate.addListener(_askOnMatch);
+  }
+
+  /// The signed-in creator's own code (null for clients and visitors), so their own profile offers
+  /// no booking. Read when a profile opens; a failure shows the profile as to anyone.
+  static Future<String?> _myCreatorCode() async {
+    final s = getIt<SessionCubit>().state;
+    if (s is! SignedIn || s.session.user.accountType != AccountType.provider) {
+      return null;
+    }
+    return switch (await getIt<CreatorAccountRepository>().account()) {
+      Ok(:final value) => value.code,
+      Err() => null,
+    };
   }
 
   /// A creator is asked once, on their account or inbox, so requests and briefs reach them.

@@ -171,6 +171,27 @@ void main() {
       },
     );
 
+    testWidgets(
+      'MC-OWN-S4 on their own profile a creator gets no "Book with" and no WhatsApp question',
+      (tester) async {
+        final data = exampleProfileData();
+        await pumpScreen(
+          tester,
+          _profileView(
+            ProfileData(
+              profile: data.profile,
+              whatsappNumber: data.whatsappNumber,
+              own: true,
+            ),
+          ),
+        );
+        expect(find.text('Omar K.'), findsOneWidget);
+        expect(find.text('Book with Omar'), findsNothing);
+        expect(find.byType(TopHit), findsNothing);
+        expect(find.text('Ask on WhatsApp'), findsNothing);
+      },
+    );
+
     testWidgets('MC-US1-S8 in Arabic the screen is right to left', (
       tester,
     ) async {

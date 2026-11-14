@@ -100,6 +100,45 @@ void main() {
     );
   });
 
+  group('ProfileCubit on the signed-in creator\'s own profile', () {
+    ProfileCubit make(Future<String?> Function() myCode) => ProfileCubit(
+      getProfile: GetCreatorProfile(repo),
+      getWhatsappNumber: GetWhatsappNumber(site),
+      code: 'sh-0087',
+      myCode: myCode,
+    );
+
+    setUp(
+      () =>
+          when(() => repo.getProfile('sh-0087'))
+              .thenAnswer((_) async => Ok(_profile)),
+    );
+
+    blocTest<ProfileCubit, LoadState<ProfileData>>(
+      'MC-OWN-S1 the creator\'s own code, in any spelling, marks the profile as theirs',
+      build: () => make(() async => 'sh-0087'),
+      act: (c) => c.load(),
+      verify: (c) =>
+          expect((c.state as LoadDone<ProfileData>).value.own, isTrue),
+    );
+
+    blocTest<ProfileCubit, LoadState<ProfileData>>(
+      'MC-OWN-S2 another creator\'s code, or none, is not their own',
+      build: () => make(() async => 'SH-0042'),
+      act: (c) => c.load(),
+      verify: (c) =>
+          expect((c.state as LoadDone<ProfileData>).value.own, isFalse),
+    );
+
+    blocTest<ProfileCubit, LoadState<ProfileData>>(
+      'MC-OWN-S3 a failure finding the own code still shows the profile, not as theirs',
+      build: () => make(() async => throw Exception('offline')),
+      act: (c) => c.load(),
+      verify: (c) =>
+          expect((c.state as LoadDone<ProfileData>).value.own, isFalse),
+    );
+  });
+
   group('DirectoryCubit', () {
     DirectoryCubit make() => DirectoryCubit(GetCreators(repo));
 
