@@ -1,21 +1,23 @@
 <!--
-Sync Impact Report (amendment 2026-11-10)
-- Version: 1.3.0 -> 1.4.0 (MINOR: materially expanded guidance; no principle removed or redefined)
+Sync Impact Report (amendment 2026-11-14)
+- Version: 1.4.0 -> 1.5.0 (MINOR: one rule of Principle IX is replaced by a narrower one; no
+  principle is removed, the principle's intent "as short and plain as it can be" is unchanged)
 - Modified principles:
-  - III. Test-First for Every Use Case: adds the mobile test pyramid (unit, cubit, widget) and its
-    coverage gate
-  - V. Modular Monolith, Monorepo-Ready: names apps/mobile and its layout
-  - VI. Responsive, Accessible, Bilingual and Themed by Default: adds mobile verification sizes and
-    checks
-- Added sections: "Mobile app (apps/mobile)" bullet group in Technology Stack & Constraints; mobile
-  checks in Development Workflow & Quality Gates
+  - IX. Designed, Not Generated: "the brief needs no account" becomes "building a brief needs no
+    account; sending one may require sign-in by mobile number and code when the owner's switch is on,
+    and the brief built is kept through sign-in". Reaching a person on WhatsApp stays open to everyone.
+- Added sections: none
 - Removed sections: none
-- Compliance (Principle III amended): the existing mobile code already follows these rules (see
-  apps/mobile/README.md); its tests are unit, cubit and widget tests. Known gap: no CI job runs
-  flutter analyze / flutter test yet.
-- Dependent files: CLAUDE.md stack section to mention apps/mobile (runtime guidance must stay
-  consistent); templates read the constitution at runtime and need no change.
-- Deferred TODOs: add the CI job for the mobile checks.
+- Motivation: the owner asked that guests sign in or register before a brief is submitted (feature
+  021, specs/021-brief-sign-in/spec.md).
+- Compliance: feature 021 implements the rule on the website and in the app; superseded statements
+  are 001 (brief recorded without an account), 010 FR-018 and PRODUCT.md principle 1 (updated in the
+  same change).
+- Dependent files: PRODUCT.md (product principle 1), CLAUDE.md (non-negotiables line); templates read
+  the constitution at runtime and need no change.
+- Deferred TODOs: none.
+
+Previous amendment (2026-11-10): 1.3.0 -> 1.4.0, the mobile app's test pyramid, layout and checks.
 -->
 # Shoot Project Constitution
 
@@ -193,8 +195,11 @@ The client flow is as short and plain as it can be, and the interface looks
 deliberately designed for this product, never like a template or an
 AI-generated site.
 
-- **Simple flow**: one primary action per screen; the brief needs no
-  account; every slot has a sensible default; no step asks for information a
+- **Simple flow**: one primary action per screen; building a brief needs no
+  account, and when sending one requires sign-in (the owner's "Briefs need
+  sign-in" switch, feature 021) the guest signs in with their mobile number
+  and a code on the way and the brief they built is kept and sent for them,
+  never typed again; every slot has a sensible default; no step asks for information a
   later step could ask for; plain-language labels and errors; the client
   always sees what happens next and a way to reach a person (WhatsApp).
 - **Design authority**: `PRODUCT.md` (product truth), the surface briefs in
@@ -306,4 +311,4 @@ the conflicting artifact is updated.
   `.claude/skills/` carry day-to-day development guidance and MUST stay
   consistent with this document.
 
-**Version**: 1.4.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-10
+**Version**: 1.5.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-14

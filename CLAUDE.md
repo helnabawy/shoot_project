@@ -110,7 +110,7 @@ Order: 006, 007, 008, 009, then 010–014, with 015 in parallel.
   Android, outside the pnpm workspace; cubits (`flutter_bloc`), `get_it`, ARB strings (en, ar),
   exact-pinned packages; tests with `flutter_test`, `bloc_test`, `mocktail` (unit, cubit, widget,
   80 % coverage of changed code). Checks: `dart format`, `flutter analyze`, `flutter test` in
-  `apps/mobile`. Constitution 1.4.0. Planned (007–009): golden tests on macOS with the pinned Flutter via
+  `apps/mobile`. Constitution 1.5.0. Planned (007–009): golden tests on macOS with the pinned Flutter via
   `apps/mobile/tool/goldens.sh`, the pixel diff against the canvas (`pnpm fidelity`), and the app's
   versioned REST API `/api/mobile/v1` with OTP sign-in and Bearer tokens.
 
@@ -145,7 +145,8 @@ where they differ.
   options (`option-sets`) are CMS data, never code constants.
 - Every collection/global declares explicit access; default deny.
 - Simple client flow, designed not generated (Principle IX): one primary
-  action per screen, brief without an account, no invented proof, no
+  action per screen, a brief is built without an account (sending one asks a guest to sign in
+  when the "Briefs need sign-in" switch is on, feature 021), no invented proof, no
   template tells; `PRODUCT.md` and `.impeccable/surfaces/` are the design
   authority. For app screens the canvas boards in `specs/design-system/canvas/` are the authority,
   proven by the pixel diff; references are never updated from Flutter output.
