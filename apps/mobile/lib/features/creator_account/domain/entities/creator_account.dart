@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:shoot_mobile/core/media/image_ref.dart';
+import 'package:shoot_mobile/features/creator_account/domain/entities/inbox.dart';
 
 /// The creator's own account (feature 014). Pure Dart: what the screens need, decoded from
 /// `packages/domain/src/api/v1/creator-account.ts`. Enums keep their wire value and decode an
@@ -498,6 +499,7 @@ final class CreatorAccount extends Equatable {
     required this.waitingCount,
     required this.upcomingCount,
     required this.blockedDays,
+    this.briefs,
   });
 
   final String name;
@@ -512,8 +514,12 @@ final class CreatorAccount extends Equatable {
   final int upcomingCount;
   final int blockedDays;
 
+  /// 019: open client briefs that match the creator; `null` while the profile is not live.
+  final BriefsSummary? briefs;
+
   @override
   List<Object?> get props => [
+    briefs,
     name,
     code,
     professions,

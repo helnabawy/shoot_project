@@ -31,15 +31,5 @@
     "waiting": 0,
     "upcoming": 0,
     "blockedDays": 1
-  },
-  "briefs": {
-    "count": 2,
-    "soonest": {
-      "ref": "BR-7K2Q",
-      "profession": "Photographer",
-      "occasion": "a birthday party",
-      "emirate": "Dubai",
-      "date": "2026-11-20"
-    }
   }
 }

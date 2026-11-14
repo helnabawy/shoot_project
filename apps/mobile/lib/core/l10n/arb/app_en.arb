@@ -3048,21 +3048,50 @@
     "description": "Screen-reader label of the brief bar's search field."
   },
   "mlBriefSearchPrompt": "Type what you're looking for",
-  "@mlBriefSearchPrompt": {"description": "The brief bar's search field prompt (the website's brief.searchPrompt)."},
+  "@mlBriefSearchPrompt": {
+    "description": "The brief bar's search field prompt (the website's brief.searchPrompt)."
+  },
   "mlBriefPickAny": "pick one or more",
-  "@mlBriefPickAny": {"description": "Suffix of a multiple-choice step's group label."},
+  "@mlBriefPickAny": {
+    "description": "Suffix of a multiple-choice step's group label."
+  },
   "mlBriefStepOf": "{step} of {total}",
-  "@mlBriefStepOf": {"description": "The asked step's position.", "placeholders": {"step": {"type": "int"}, "total": {"type": "int"}}},
+  "@mlBriefStepOf": {
+    "description": "The asked step's position.",
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "mlBriefActions": "Actions",
-  "@mlBriefActions": {"description": "Group label of the brief bar's side actions."},
+  "@mlBriefActions": {
+    "description": "Group label of the brief bar's side actions."
+  },
   "mlBriefWhatsappInstead": "WhatsApp us instead",
-  "@mlBriefWhatsappInstead": {"description": "Brief bar action: talk on WhatsApp instead of building the brief."},
+  "@mlBriefWhatsappInstead": {
+    "description": "Brief bar action: talk on WhatsApp instead of building the brief."
+  },
   "mlBriefImA": "I'm a {persona}",
-  "@mlBriefImA": {"description": "Brief bar action: sign up as a provider of this persona.", "placeholders": {"persona": {"type": "String"}}},
+  "@mlBriefImA": {
+    "description": "Brief bar action: sign up as a provider of this persona.",
+    "placeholders": {
+      "persona": {
+        "type": "String"
+      }
+    }
+  },
   "mlBriefTopHit": "Top hit",
-  "@mlBriefTopHit": {"description": "Group label above the brief bar's primary action."},
+  "@mlBriefTopHit": {
+    "description": "Group label above the brief bar's primary action."
+  },
   "mlBriefSet": "set",
-  "@mlBriefSet": {"description": "Trailing word of a chosen option row."},
+  "@mlBriefSet": {
+    "description": "Trailing word of a chosen option row."
+  },
   "mlBriefContinue": "Continue",
   "@mlBriefContinue": {
     "description": "Brief bar: finishes a step that takes several choices."
@@ -3132,5 +3161,161 @@
   "mlLoadError": "We could not load this page.",
   "@mlLoadError": {
     "description": "Landing: the content could not be loaded."
+  },
+  "problemBriefClosed": "This brief is no longer open.",
+  "@problemBriefClosed": {
+    "description": "A brief that closed while the creator looked at it."
+  },
+  "problemBriefNotMatching": "This brief no longer matches your profile or your free days.",
+  "@problemBriefNotMatching": {
+    "description": "A brief the creator no longer matches."
+  },
+  "problemBriefAlreadyPicked": "The client has already picked you for this brief.",
+  "@problemBriefAlreadyPicked": {
+    "description": "A yes that cannot be taken back."
+  },
+  "inboxTitle": "New briefs",
+  "@inboxTitle": {
+    "description": "Title of the creator brief inbox."
+  },
+  "inboxIntro": "Clients who need someone like you. Say yes and you are shown first when they choose. Nothing is booked until they do.",
+  "@inboxIntro": {
+    "description": "Line under the inbox title."
+  },
+  "inboxNotLive": "Briefs show here once your profile is live.",
+  "@inboxNotLive": {
+    "description": "Inbox while the profile is not public."
+  },
+  "inboxWaiting": "Waiting for you",
+  "@inboxWaiting": {
+    "description": "Group label of open briefs."
+  },
+  "inboxEmpty": "No new briefs match you right now.",
+  "@inboxEmpty": {
+    "description": "Empty inbox."
+  },
+  "inboxAnyDate": "Date to agree",
+  "@inboxAnyDate": {
+    "description": "A brief without a date."
+  },
+  "inboxAccept": "I can do this",
+  "@inboxAccept": {
+    "description": "Accept a brief."
+  },
+  "inboxReject": "Not for me",
+  "@inboxReject": {
+    "description": "Reject a brief."
+  },
+  "inboxRejectTitle": "Not for you?",
+  "@inboxRejectTitle": {
+    "description": "Title of the reject sheet."
+  },
+  "inboxRejectBody": "The client is not told. You can undo this while the brief is open.",
+  "@inboxRejectBody": {
+    "description": "Line in the reject sheet."
+  },
+  "inboxReasonLabel": "Why (optional)",
+  "@inboxReasonLabel": {
+    "description": "Reason chips label."
+  },
+  "inboxNoteLabel": "A note for our team (optional)",
+  "@inboxNoteLabel": {
+    "description": "Note field label."
+  },
+  "inboxSaidYes": "You said yes",
+  "@inboxSaidYes": {
+    "description": "Group of accepted briefs."
+  },
+  "inboxNotForYou": "Not for you",
+  "@inboxNotForYou": {
+    "description": "Group of rejected briefs."
+  },
+  "inboxUndo": "Undo",
+  "@inboxUndo": {
+    "description": "Undo a rejection."
+  },
+  "inboxWithdraw": "Take back my yes",
+  "@inboxWithdraw": {
+    "description": "Withdraw an acceptance."
+  },
+  "inboxOutcomeOpen": "Client choosing",
+  "@inboxOutcomeOpen": {
+    "description": "An accepted brief still open."
+  },
+  "inboxOutcomeOther": "Went to someone else",
+  "@inboxOutcomeOther": {
+    "description": "An accepted brief booked with another creator."
+  },
+  "inboxOutcomeBooked": "Booked you",
+  "@inboxOutcomeBooked": {
+    "description": "An accepted brief that became your booking."
+  },
+  "inboxOutcomeClosed": "Closed",
+  "@inboxOutcomeClosed": {
+    "description": "An accepted brief that closed."
+  },
+  "pushSetting": "Notifications",
+  "@pushSetting": {
+    "description": "Menu switch for app notifications."
+  },
+  "pushAskTitle": "Hear about new work?",
+  "@pushAskTitle": {
+    "description": "Before the system notification permission prompt."
+  },
+  "pushAskCreator": "We tell you when a client brief matches you, so you can answer first.",
+  "@pushAskCreator": {
+    "description": "Why a creator should allow notifications."
+  },
+  "pushAskClient": "We tell you when a creator says yes to your brief.",
+  "@pushAskClient": {
+    "description": "Why a client should allow notifications."
+  },
+  "pushAllow": "Allow notifications",
+  "@pushAllow": {
+    "description": "Accept the permission ask."
+  },
+  "pushNotNow": "Not now",
+  "@pushNotNow": {
+    "description": "Decline the permission ask."
+  },
+  "quickMatchSaidYes": "Said yes",
+  "@quickMatchSaidYes": {
+    "description": "Mark on a creator who accepted the brief."
+  },
+  "inboxSent": "Sent {date}",
+  "@inboxSent": {
+    "description": "When the brief was sent.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "caBriefsTitle": "{count, plural, =1{A new brief matches you} other{{count} new briefs match you}}",
+  "@caBriefsTitle": {
+    "description": "Up next title for matching briefs.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "caBriefsAction": "{count, plural, =1{See the brief} other{See the briefs}}",
+  "@caBriefsAction": {
+    "description": "Up next action to the inbox.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountSaidYes": "{count, plural, =1{A creator said yes} other{{count} creators said yes}}",
+  "@accountSaidYes": {
+    "description": "Line on a client brief.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

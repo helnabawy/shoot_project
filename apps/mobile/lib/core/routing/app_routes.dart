@@ -38,6 +38,9 @@ abstract final class AppRoutes {
   static const accountFinish = '/account/finish';
   static const accountAvailability = '/account/availability';
 
+  /// 019: the creator brief inbox.
+  static const accountInbox = '/account/inbox';
+
   /// Every path the app knows, built or not (contracts/routes.md).
   static const table = <AppRoute>[
     AppRoute(home, owner: '010', example: '/', built: true),
@@ -114,6 +117,13 @@ abstract final class AppRoutes {
       example: '/account/finish',
       auth: true,
       built: true,
+    ),
+    AppRoute(
+      accountInbox,
+      owner: '019',
+      example: '/account/inbox',
+      built: true,
+      auth: true,
     ),
     AppRoute(
       accountBookings,
