@@ -13,6 +13,8 @@ name: Android APK
 #             ANDROID_KEYSTORE_PASSWORD  its password                               } them the APK is
 #             ANDROID_KEY_ALIAS          the key alias                              } signed with a debug
 #             ANDROID_KEY_PASSWORD       the key password                           } key (sideload only)
+#   Secret    FIREBASE_ENV_JSON          the whole firebase.env.json (see apps/mobile/firebase.env.example.json);
+#                                        optional: without it the APK builds with push off
 
 on:
   push:
@@ -86,18 +88,36 @@ jobs:
           keyPassword=$KEY_PASSWORD
           EOF
 
+      - name: Firebase config (when the secret is set)
+        env:
+          FIREBASE_ENV_JSON: ${{ secrets.FIREBASE_ENV_JSON }}
+        run: |
+          if [ -z "$FIREBASE_ENV_JSON" ]; then
+            echo "::warning::No FIREBASE_ENV_JSON secret: the APK is built with push off."
+            exit 0
+          fi
+          printf '%s' "$FIREBASE_ENV_JSON" > firebase.env.json
+          if ! jq -e '[.FIREBASE_PROJECT_ID, .FIREBASE_SENDER_ID, .FIREBASE_ANDROID_API_KEY, .FIREBASE_ANDROID_APP_ID] | all(type == "string" and . != "")' firebase.env.json > /dev/null; then
+            echo "::error::FIREBASE_ENV_JSON is not valid JSON or misses an Android value (FIREBASE_PROJECT_ID, FIREBASE_SENDER_ID, FIREBASE_ANDROID_API_KEY, FIREBASE_ANDROID_APP_ID)."
+            exit 1
+          fi
+
       - name: Build APK
         # The run number is the build number, so every CI APK installs over the previous one.
         run: |
+          firebase=()
+          [ -f firebase.env.json ] && firebase=(--dart-define-from-file=firebase.env.json)
           flutter build apk --release \
             --build-number=${{ github.run_number }} \
             --dart-define=API_BASE_URL="$API_BASE_URL" \
-            --dart-define=APP_ENV="$APP_ENV"
+            --dart-define=APP_ENV="$APP_ENV" \
+            "${firebase[@]}"
+          push=$([ -f firebase.env.json ] && echo "push on" || echo "push off")
           name="shoot-${GITHUB_REF_NAME//\//-}-${{ github.run_number }}.apk"
           mv build/app/outputs/flutter-apk/app-release.apk "build/$name"
           echo "APK_NAME=$name" >> "$GITHUB_ENV"
           echo "### APK built" >> "$GITHUB_STEP_SUMMARY"
-          echo "\`$name\` → \`$API_BASE_URL\` ($APP_ENV)" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`$name\` → \`$API_BASE_URL\` ($APP_ENV, $push)" >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -125,6 +145,6 @@ jobs:
             --title "Latest main build (#${{ github.run_number }})" \
             --notes "Built from ${GITHUB_SHA::7} against $API_BASE_URL ($APP_ENV). Replaced on every push to main that touches the app."
 
-      - name: Remove the keystore
+      - name: Remove the keystore and Firebase config
         if: always()
-        run: rm -f android/app/upload-keystore.jks android/key.properties
+        run: rm -f android/app/upload-keystore.jks android/key.properties firebase.env.json
