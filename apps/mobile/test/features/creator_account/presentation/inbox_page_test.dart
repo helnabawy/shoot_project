@@ -47,8 +47,22 @@ void main() {
         final log = <String>[];
         await show(tester, InboxLoaded(inboxExample()), log: log);
         expect(find.text('New briefs'), findsOneWidget);
-        expect(find.text('a birthday party · Dubai'), findsOneWidget);
-        expect(find.text('Date to agree · Photographer'), findsOneWidget);
+        // What it is, the client's own words, then when, where and as what.
+        expect(find.text('A birthday party'), findsOneWidget);
+        expect(
+          find.text(
+            'I need a photographer for a birthday party in Dubai on 20 Nov',
+          ),
+          findsOneWidget,
+        );
+        expect(find.text('Date to agree'), findsOneWidget);
+        expect(find.text('Dubai'), findsWidgets);
+        expect(find.text('Photographer'), findsWidgets);
+        // What "Not for me" does is said once, under the first brief.
+        expect(
+          find.text("Not for me hides it for you only. The client isn't told."),
+          findsOneWidget,
+        );
         expect(find.widgetWithText(TopHit, 'I can do this'), findsOneWidget);
         expect(
           find.widgetWithText(SecondaryButton, 'I can do this'),

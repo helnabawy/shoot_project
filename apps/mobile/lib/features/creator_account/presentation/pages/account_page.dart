@@ -8,7 +8,9 @@ import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/routing/app_routes.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
+import 'package:shoot_mobile/core/widgets/icon_tile.dart';
 import 'package:shoot_mobile/core/widgets/progress_bar.dart';
+import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/shoot_panel.dart';
 import 'package:shoot_mobile/core/widgets/shoot_row.dart';
 import 'package:shoot_mobile/core/widgets/status_badge.dart';
@@ -223,17 +225,23 @@ class _UpNext extends StatelessWidget {
         ),
       ],
       UpNextKind.answerRequest => <Widget>[
-        Text(
-          l10n.caAnswerRequestTitle,
-          style: ShootType.heading.copyWith(color: context.colors.ink),
+        _UpNextHead(
+          icon: ShootIcons.calendar,
+          title: l10n.caAnswerRequestTitle,
+          badge: a.waiting!.respondBy == null
+              ? null
+              : StatusBadge(
+                  label: l10n.caAnswerBy(
+                    formatTime(context, a.waiting!.respondBy!),
+                  ),
+                  tone: BadgeTone.attention,
+                ),
         ),
-        MetaText(
-          [
+        if (a.waiting!.occasion.isNotEmpty)
+          Text(
             a.waiting!.occasion,
-            if (a.waiting!.respondBy != null)
-              l10n.caAnswerBy(formatTime(context, a.waiting!.respondBy!)),
-          ].join(' · '),
-        ),
+            style: ShootType.body.copyWith(color: context.colors.ink),
+          ),
         TopHit(
           label: l10n.caAnswerRequestAction,
           chevron: true,
@@ -241,18 +249,16 @@ class _UpNext extends StatelessWidget {
         ),
       ],
       UpNextKind.briefs => <Widget>[
-        MetaText(
-          [
+        _UpNextHead(
+          icon: ShootIcons.search,
+          title: l10n.caBriefsTitle(a.briefs!.count),
+          meta: [
             if (a.briefs!.soonest?.date case final d?)
               formatDay(context, d)
             else
               l10n.inboxAnyDate,
             if (a.briefs!.soonest?.emirate case final e? when e.isNotEmpty) e,
           ].join(' · '),
-        ),
-        Text(
-          l10n.caBriefsTitle(a.briefs!.count),
-          style: ShootType.heading.copyWith(color: context.colors.ink),
         ),
         if (a.briefs!.soonest case final s?)
           MetaText(
@@ -265,10 +271,7 @@ class _UpNext extends StatelessWidget {
         ),
       ],
       UpNextKind.markDelivered => <Widget>[
-        Text(
-          l10n.caMarkDeliveredTitle,
-          style: ShootType.heading.copyWith(color: context.colors.ink),
-        ),
+        _UpNextHead(icon: ShootIcons.check, title: l10n.caMarkDeliveredTitle),
         TopHit(
           label: l10n.caMarkDeliveredAction,
           chevron: true,
@@ -283,15 +286,57 @@ class _UpNext extends StatelessWidget {
       ],
     };
     return ShootPanel(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (final (i, child) in children.indexed) ...[
-            if (i > 0) const SizedBox(height: 12),
+            if (i > 0) const SizedBox(height: 14),
             child,
           ],
         ],
       ),
+    );
+  }
+}
+
+/// The head of an Up next panel: what it is about as a tile, the title, then its deadline or
+/// where and when.
+class _UpNextHead extends StatelessWidget {
+  const _UpNextHead({
+    required this.icon,
+    required this.title,
+    this.badge,
+    this.meta,
+  });
+
+  final ShootIcons icon;
+  final String title;
+  final Widget? badge;
+  final String? meta;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 12,
+      children: [
+        IconTile(icon, size: 40, iconSize: 20, strokeWidth: 2),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 6,
+            children: [
+              Text(
+                title,
+                style: ShootType.heading.copyWith(color: context.colors.ink),
+              ),
+              ?badge,
+              if (meta case final m? when m.isNotEmpty) MetaText(m),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

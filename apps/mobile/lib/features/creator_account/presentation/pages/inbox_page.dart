@@ -210,8 +210,9 @@ class _Loaded extends StatelessWidget {
   }
 }
 
-/// One open brief: what and where, when, which profession, when it was sent and its reference.
-/// Never anything about the client (FR-004).
+/// One open brief, so the creator can decide on the spot: what it is, the client's own words, when,
+/// where, as what and when it came in, then the two answers and what each one does. Never anything
+/// about who the client is (FR-004).
 class _BriefCard extends StatelessWidget {
   const _BriefCard({
     required this.item,
@@ -234,19 +235,44 @@ class _BriefCard extends StatelessWidget {
     final l10n = context.l10n;
     final c = context.colors;
     return ShootPanel(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 8,
         children: [
           Text(
-            '${item.occasion} · ${item.emirate}',
+            headingCase(
+              item.occasion.isNotEmpty ? item.occasion : item.profession,
+            ),
             style: ShootType.heading.copyWith(color: c.ink),
           ),
-          MetaText('$when · ${item.profession}'),
-          MetaText(
-            '${l10n.inboxSent(formatDay(context, item.sentAt.toLocal()))} · ${item.ref}',
+          if (item.sentence.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            ClientWords(item.sentence),
+          ],
+          const SizedBox(height: 8),
+          CreatorFact(
+            icon: ShootIcons.calendar,
+            value: when,
+            label: l10n.inboxFactWhen,
           ),
+          if (item.emirate.isNotEmpty)
+            CreatorFact(
+              icon: ShootIcons.pin,
+              value: item.emirate,
+              label: l10n.caFactWhere,
+            ),
+          if (item.profession.isNotEmpty)
+            CreatorFact(
+              icon: ShootIcons.camera,
+              value: item.profession,
+              label: l10n.caFactAs,
+            ),
+          CreatorFact(
+            icon: ShootIcons.lines,
+            value: '${formatDay(context, item.sentAt.toLocal())} · ${item.ref}',
+            label: l10n.inboxFactSent,
+          ),
+          const SizedBox(height: 12),
           Row(
             spacing: 8,
             children: [
@@ -272,6 +298,11 @@ class _BriefCard extends StatelessWidget {
               ),
             ],
           ),
+          // Said once, under the first brief: the page intro already says what yes does.
+          if (primary) ...[
+            const SizedBox(height: 10),
+            MetaText(l10n.inboxRejectHint),
+          ],
         ],
       ),
     );

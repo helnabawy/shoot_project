@@ -2219,6 +2219,107 @@
       }
     }
   },
+  "caNoticeRequest": "New request for {date}",
+  "@caNoticeRequest": {
+    "description": "A notice: a client picked the creator; opens the booking.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "caNoticePaid": "{ref} is paid. The shoot is on.",
+  "@caNoticePaid": {
+    "description": "A notice: the client paid.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "caNoticeCancelled": "{ref} was cancelled",
+  "@caNoticeCancelled": {
+    "description": "A notice: the booking was cancelled.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "caNoticeCompleted": "{ref} is complete",
+  "@caNoticeCompleted": {
+    "description": "A notice: the client confirmed delivery.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "caNoticeBrief": "A new brief matches you",
+  "@caNoticeBrief": {
+    "description": "A notice: a new open brief matches the creator; opens the brief inbox."
+  },
+  "caNoticeOpen": "Open",
+  "@caNoticeOpen": {
+    "description": "Screen-reader hint on a notice row: tapping opens it."
+  },
+  "caFactWhere": "Where",
+  "@caFactWhere": {
+    "description": "Fact label: the emirate."
+  },
+  "caFactClient": "Client",
+  "@caFactClient": {
+    "description": "Fact label: the client's first name."
+  },
+  "caFactAs": "As",
+  "@caFactAs": {
+    "description": "Fact label: the profession the creator is booked as."
+  },
+  "caFactReference": "Reference",
+  "@caFactReference": {
+    "description": "Fact label: the booking or quotation reference."
+  },
+  "caConfirmHint": "Confirming books your day. The client is then asked to pay.",
+  "@caConfirmHint": {
+    "description": "Under a waiting request: what Confirm does."
+  },
+  "caDeclineHint": "Can't make it? Decline and we offer the client someone else.",
+  "@caDeclineHint": {
+    "description": "Under Confirm: what Decline does."
+  },
+  "caAwaitingPayment": "Waiting for payment",
+  "@caAwaitingPayment": {
+    "description": "Badge: confirmed, the client has not paid yet."
+  },
+  "caBookingTitle": "Booking {ref}",
+  "@caBookingTitle": {
+    "description": "Title when one booking is opened from a notice or a push.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "caAllBookings": "All bookings",
+  "@caAllBookings": {
+    "description": "Row under one opened booking: back to the whole list."
+  },
+  "caBookingGone": "This booking is no longer waiting for you.",
+  "@caBookingGone": {
+    "description": "One booking was opened but it is not in the creator's lists any more."
+  },
+  "inboxFactWhen": "When",
+  "@inboxFactWhen": {
+    "description": "Fact label on a brief: the date."
+  },
+  "inboxFactSent": "Sent",
+  "@inboxFactSent": {
+    "description": "Fact label on a brief: when it was sent."
+  },
+  "inboxRejectHint": "Not for me hides it for you only. The client isn't told.",
+  "@inboxRejectHint": {
+    "description": "Under a brief's buttons: what Not for me does."
+  },
   "caWaitingForYou": "Waiting for you",
   "@caWaitingForYou": {
     "description": "Group label."

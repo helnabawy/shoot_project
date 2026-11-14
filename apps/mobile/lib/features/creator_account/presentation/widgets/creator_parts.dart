@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/l10n/failure_message.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
@@ -8,7 +8,9 @@ import 'package:shoot_mobile/core/routing/app_routes.dart';
 import 'package:shoot_mobile/core/routing/error_page.dart';
 import 'package:shoot_mobile/core/routing/not_found_page.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
+import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
+import 'package:shoot_mobile/core/widgets/icon_tile.dart';
 import 'package:shoot_mobile/core/widgets/language_action.dart';
 import 'package:shoot_mobile/core/widgets/message_banner.dart';
 import 'package:shoot_mobile/core/widgets/shoot_header.dart';
@@ -161,6 +163,79 @@ class CreatorTitle extends StatelessWidget {
     ],
   );
 }
+
+/// One fact of a booking or a brief: a 30 px tile, the value, and what it is at the end. Read as
+/// one line by screen readers ("Where, Abu Dhabi").
+class CreatorFact extends StatelessWidget {
+  const CreatorFact({
+    super.key,
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
+
+  final ShootIcons icon;
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Semantics(
+      container: true,
+      label: '$label, $value',
+      excludeSemantics: true,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 44),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.symmetric(vertical: 6),
+          child: Row(
+            spacing: 12,
+            children: [
+              IconTile(icon),
+              Expanded(
+                child: Text(value, style: ShootType.row.copyWith(color: c.ink)),
+              ),
+              Text(label, style: ShootType.meta.copyWith(color: c.mute)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The client's own brief sentence, set apart on the sunk surface so it reads as their words.
+class ClientWords extends StatelessWidget {
+  const ClientWords(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Container(
+      padding: const EdgeInsetsDirectional.fromSTEB(14, 12, 14, 12),
+      decoration: BoxDecoration(
+        color: c.surfaceSunk,
+        borderRadius: BorderRadius.circular(ShootRadius.photoTile),
+      ),
+      // The client wrote in their own language: an Arabic brief reads right to left on an English
+      // screen and the other way round.
+      child: Text(
+        text,
+        textDirection: Bidi.detectRtlDirectionality(text)
+            ? TextDirection.rtl
+            : TextDirection.ltr,
+        style: ShootType.body.copyWith(color: c.ink),
+      ),
+    );
+  }
+}
+
+/// A content word as a heading: its first letter in capitals ("a wedding" → "A wedding").
+String headingCase(String text) =>
+    text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
 
 String formatDay(BuildContext context, DateTime day) =>
     DateFormat.MMMEd(Localizations.localeOf(context).toString()).format(day);

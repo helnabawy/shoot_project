@@ -153,7 +153,8 @@ void main() {
           onConfirm: (r) => log?.add('confirm $r'),
           onDecline: (r) => log?.add('decline $r'),
           onDeliver: (r) => log?.add('deliver $r'),
-          onMarkRead: (r) => log?.add('read $r'),
+          onOpenUpdate: (u) => log?.add('open ${u.id}'),
+          onAllBookings: () => log?.add('all'),
           onCalendar: () {},
         ),
       );
@@ -167,8 +168,10 @@ void main() {
         await show(tester, loaded(), log: log);
         expect(find.text('Wedding, Dubai, 4 hours'), findsWidgets);
         expect(find.textContaining('Answer by'), findsOneWidget);
-        expect(find.textContaining('For Layla'), findsWidgets);
-        expect(find.textContaining('Quotation Q-2026-0142'), findsOneWidget);
+        // Who, where, as what and the reference are facts; the client's words lead the card.
+        expect(find.text('Layla'), findsWidgets);
+        expect(find.text('Dubai'), findsWidgets);
+        expect(find.text('Q-2026-0142'), findsWidgets);
         expect(find.byType(TopHit), findsOneWidget);
         await tester.tap(find.text('Confirm'));
         await tester.tap(find.text('Decline'));
@@ -181,13 +184,51 @@ void main() {
       expect(find.textContaining(RegExp(r'\+?971|05\d{8}')), findsNothing);
     });
 
-    testWidgets('MW-US2-S7 an update can be marked as read', (tester) async {
+    testWidgets('MW-US2-S7 tapping an update opens it (and marks it read)', (
+      tester,
+    ) async {
       final log = <String>[];
       await show(tester, loaded(), log: log);
-      expect(find.textContaining('New request for'), findsOneWidget);
-      await tester.tap(find.text('Mark as read'));
-      expect(log, ['read 7']);
+      expect(find.text('Mark as read'), findsNothing);
+      await tester.ensureVisible(find.textContaining('New request for'));
+      await tester.tap(find.textContaining('New request for'));
+      expect(log, ['open 7']);
     });
+
+    test('MW-US2-S7 an update leads to its booking, a brief to the inbox', () {
+      BookingUpdate update(String event, String? ref) => BookingUpdate(
+        id: '1',
+        event: event,
+        ref: ref,
+        createdAt: DateTime(2026, 11, 14),
+        read: false,
+      );
+      expect(
+        updateTarget(update('accepted', 'Q-AAKMJ')),
+        '/account/bookings/Q-AAKMJ',
+      );
+      expect(updateTarget(update('brief-new', null)), '/account/inbox');
+      expect(updateTarget(update('other', null)), isNull);
+    });
+
+    testWidgets(
+      'MW-US2-S9 one opened booking shows its reference as the title and a way back to all',
+      (tester) async {
+        final log = <String>[];
+        await show(tester, loaded(), log: log, only: 'B-2026-0142');
+        expect(find.text('Booking B-2026-0142'), findsOneWidget);
+        expect(find.textContaining('New request for'), findsNothing);
+        expect(
+          find.text(
+            'Confirming books your day. The client is then asked to pay.',
+          ),
+          findsOneWidget,
+        );
+        await tester.ensureVisible(find.text('All bookings'));
+        await tester.tap(find.text('All bookings'));
+        expect(log, ['all']);
+      },
+    );
 
     testWidgets(
       'MW-US2-S4 a lapsed request is not offered and a line says so',

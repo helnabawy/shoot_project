@@ -42,6 +42,12 @@ enum ShootIcons {
   ),
   alert('<circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01"/>'),
 
+  /// A place (the creator's booking and brief facts).
+  pin(
+    '<path d="M12 21s-7-6.1-7-11.2a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/>'
+    '<circle cx="12" cy="9.8" r="2.6"/>',
+  ),
+
   /// Opens a list (picker fields).
   chevronDown('<path d="m6 9 6 6 6-6"/>'),
   pause('<path d="M9 5v14M15 5v14"/>'),
