@@ -826,6 +826,29 @@
       "notMatching": "This brief no longer matches your profile or your free days.",
       "reasonUnknown": "Choose one of the listed reasons.",
       "alreadyPicked": "The client has already picked you for this brief."
+    },
+    "metaTitle": "New briefs",
+    "title": "New briefs",
+    "intro": "Clients who need someone like you. Say yes and you are shown first when they choose. Nothing is booked until they do.",
+    "notLive": "Briefs show here once your profile is live.",
+    "waiting": "Waiting for you",
+    "empty": "No new briefs match you right now.",
+    "anyDate": "Date to agree",
+    "sent": "Sent {date}",
+    "accept": "I can do this",
+    "reject": "Not for me",
+    "rejectHelp": "The client is not told. You can undo this while the brief is open.",
+    "reasonLabel": "Why (optional)",
+    "noteLabel": "A note for our team (optional)",
+    "saidYes": "You said yes",
+    "notForYou": "Not for you",
+    "undo": "Undo",
+    "withdraw": "Take back my yes",
+    "outcome": {
+      "open": "Client choosing",
+      "other-creator": "Went to someone else",
+      "booked-you": "Booked you",
+      "closed": "Closed"
     }
   },
   "push": {
