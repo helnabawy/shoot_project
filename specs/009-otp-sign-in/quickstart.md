@@ -103,6 +103,7 @@ Test names start with the id in the first column. Web paths are under `apps/web/
 | OT-US1-S8 send it on WhatsApp sends a new code by the other channel | cubit | `test/features/sign_in/presentation/cubit/sign_in_flow_cubit_test.dart` |
 | OT-US1-S9 a non-UAE or non-mobile number is refused and nothing is sent | unit, widget | `packages/domain/src/auth/otp.test.ts` `test/features/sign_in/presentation/pages/number_page_test.dart` |
 | OT-US1-S10 the code cells offer one-time-code autofill and a pasted code fills all six | widget | `test/core/widgets/otp_code_input_test.dart` |
+| OT-US1-S11 a known number signs straight in after its code with no role question; a new number then gets the role question with the code kept | integration, cubit, component | `tests/integration/mobile-api-auth-otp.int.test.ts` `test/features/sign_in/presentation/cubit/sign_in_flow_cubit_test.dart` `src/modules/auth/components/forms.test.tsx` |
 | OT-US2-S1 answers for numbers with and without an account are identical | integration | `tests/integration/mobile-api-auth-protection.int.test.ts` |
 | OT-US2-S2 per-number, per-address and per-install limits refuse with retryAfter | integration | `tests/integration/mobile-api-auth-protection.int.test.ts` |
 | OT-US2-S3 the stored challenge holds only keyed fingerprints; the comparison is constant time | unit, integration | `src/modules/auth/otp/codes.test.ts` `tests/integration/mobile-api-auth-protection.int.test.ts` |
@@ -127,7 +128,7 @@ Test names start with the id in the first column. Web paths are under `apps/web/
 | OT-US4-S5 a known number joining is signed in and its account is unchanged | integration | `tests/integration/mobile-api-auth-join.int.test.ts` |
 | OT-US4-S6 a profession switched off before verify refuses without spending the code | integration | `tests/integration/mobile-api-auth-join.int.test.ts` |
 | OT-US5-S1 the website signs in by code and sets the HTTP-only session cookie | integration, e2e | `tests/integration/auth-web.int.test.ts` `tests/e2e/ot-us5-web.spec.ts` |
-| OT-US5-S2 email sign-in still works for editors, with the lock after 5 failures | integration | `tests/integration/auth-web.int.test.ts` |
+| OT-US5-S2 the website has no email sign-in; editors sign in on /admin only | integration | `tests/integration/auth-web.int.test.ts` |
 | OT-US5-S3 logging out on the website ends the session on the server | integration | `tests/integration/auth-web.int.test.ts` |
 | OT-US5-S4 register offers Join as a creator by code and no email registration | e2e | `tests/e2e/ot-us5-web.spec.ts` |
 | OT-US5-S5 an email member attaches a number by code and signs in with it | integration | `tests/integration/auth-web.int.test.ts` |

@@ -35,7 +35,7 @@ vi.mock('@/i18n/navigation', () => ({
   },
 }))
 
-const { login, logout } = await import('@/modules/auth/actions')
+const { logout } = await import('@/modules/auth/actions')
 const { submitBrief } = await import('@/modules/brief/actions')
 const { getCurrentUser, requireUser } = await import('@/modules/auth/session')
 const { exportBriefsCsv } = await import('@/modules/brief/export')
@@ -48,6 +48,12 @@ const form = (entries: Record<string, string | string[]>) => {
     for (const v of Array.isArray(value) ? value : [value]) data.append(key, v)
   }
   return data
+}
+
+/** Signs [email] in as the cookie jar's session (the site has no email sign-in form any more). */
+async function signIn(email: string) {
+  const { token } = await (await getTestPayload()).login({ collection: 'users', data: { email, password: 'password-123' } })
+  jar.set('payload-token', token!)
 }
 
 async function expectRedirect(run: () => Promise<unknown>) {
@@ -81,27 +87,8 @@ describe('server actions', () => {
   })
 
   describe('US4 auth actions', () => {
-    // Email registration was withdrawn by feature 009 (FR-061, 001 spec amended): sign-up by code is
-    // proven in tests/integration/auth-web.int.test.ts and mobile-api-auth-{otp,join}.int.test.ts.
-
-    it('US4-S2 login sets the session cookie and refuses an off-site next', async () => {
-      const user = await createUser()
-      const target = await expectRedirect(() => login(undefined, form({ email: user.email!, password: 'password-123', next: 'https://evil.test' })))
-      expect(target).toEqual({ href: '/account', locale: 'en' })
-      expect(jar.get('payload-token')).toBeTruthy()
-    })
-
-    it('FR-022 wrong credentials get a safe message; invalid input gets field errors', async () => {
-      const user = await createUser()
-      expect(await login(undefined, form({ email: user.email!, password: 'wrong-password' }))).toMatchObject({ formError: 'auth.errors.invalid' })
-      expect(await login(undefined, form({ email: 'x', password: '' }))).toMatchObject({ errors: { email: expect.any(String) } })
-    })
-
-    it('FR-023 a locked account is told so', async () => {
-      const user = await createUser()
-      for (let i = 0; i < 5; i++) await login(undefined, form({ email: user.email!, password: 'wrong-password' }))
-      expect(await login(undefined, form({ email: user.email!, password: 'password-123' }))).toMatchObject({ formError: 'auth.errors.locked' })
-    })
+    // Email registration and the email sign-in form were withdrawn (feature 009, then removed): sign-in
+    // by code is proven in tests/integration/auth-web.int.test.ts and mobile-api-auth-{otp,join}.int.test.ts.
 
     it('logout clears the session and returns home', async () => {
       jar.set('payload-token', 'abc')
@@ -152,7 +139,7 @@ describe('server actions', () => {
 
     it('FR-049 a signed-in member is linked to the brief', async () => {
       const user = await createUser()
-      await expectRedirect(() => login(undefined, form({ email: user.email!, password: 'password-123' })))
+      await signIn(user.email!)
       const state = await submitBrief({ status: 'idle' }, briefForm())
       expect(state.status).toBe('ok')
       const payload = await getTestPayload()
@@ -191,7 +178,7 @@ describe('server actions', () => {
 
     it('returns the signed-in member', async () => {
       const user = await createUser()
-      await expectRedirect(() => login(undefined, form({ email: user.email!, password: 'password-123' })))
+      await signIn(user.email!)
       expect((await requireUser('en', '/account')).id).toBe(user.id)
     })
   })

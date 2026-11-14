@@ -105,24 +105,14 @@ void main() {
     );
   });
 
-  testWidgets(
-    'FR-055 "Editor? Sign in with email" opens the website\'s email sign-in',
-    (tester) async {
-      final opener = RecordingOpener();
-      await pumpSignIn(
-        tester,
-        cubit: flowCubit(repository: repository),
-        opener: opener,
-      );
-      final handle = tester.ensureSemantics();
-      await tester.pump();
-      tester.semantics.tap(find.semantics.byLabel('Sign in with email'));
-      expect(opener.opened.map((u) => u.toString()), [
-        'https://shoot.example/login/email',
-      ]);
-      handle.dispose();
-    },
-  );
+  testWidgets('screen 20 offers no email sign-in', (tester) async {
+    await pumpSignIn(tester, cubit: flowCubit(repository: repository));
+    expect(
+      find.textContaining('Sign in with email', findRichText: true),
+      findsNothing,
+    );
+    expect(find.textContaining('Editor?', findRichText: true), findsNothing);
+  });
 
   for (final (label, path) in [
     ('terms', '/terms'),

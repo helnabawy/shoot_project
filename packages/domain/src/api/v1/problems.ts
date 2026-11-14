@@ -31,6 +31,7 @@ export const PROBLEM_CODES = [
   'auth.errors.personaRequired',
   'auth.errors.personaInactive',
   'auth.errors.acceptTerms',
+  'auth.errors.signupRequired',
   // 013: the client account.
   'account.errors.emailInvalid',
   'account.errors.emailInUse',

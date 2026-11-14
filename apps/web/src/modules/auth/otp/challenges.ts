@@ -112,6 +112,19 @@ export async function attempt(payload: Payload, publicId: string, now: Date): Pr
   return rows[0] ? toRow(rows[0]) : null
 }
 
+/**
+ * Gives back one counted attempt: a correct code that stopped at `auth.errors.signupRequired` must
+ * not bring the challenge closer to its lock, since the person verifies it again with the role.
+ */
+export async function releaseAttempt(payload: Payload, publicId: string): Promise<void> {
+  const t = table(payload)
+  await db(payload)
+    .drizzle.update(t)
+    .set({ attempts: sql`${t.attempts} - 1` })
+    .where(and(eq(t.publicId, publicId), isNull(t.usedAt), gt(t.attempts, 0)))
+    .returning({ id: t.id })
+}
+
 /** Marks the challenge used, once: `true` for the one caller that wins. */
 export async function markUsed(payload: Payload, publicId: string, now: Date): Promise<boolean> {
   const t = table(payload)

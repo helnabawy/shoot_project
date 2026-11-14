@@ -350,6 +350,7 @@ final class BookFlowCubit extends Cubit<BookFlowState> {
       challenge: challenge,
       code: code,
       signup: SignupChoice.seeker(name: name.length >= 2 ? name : null),
+      askIfNew: false,
     ));
     if (isClosed) return;
     switch (verified) {

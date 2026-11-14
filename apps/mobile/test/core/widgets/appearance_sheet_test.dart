@@ -112,7 +112,14 @@ void main() {
         );
         await _open(tester);
 
-        for (final name in ['الافتراضي', 'أزرق', 'فيروزي', 'بنفسجي', 'فوشي', 'فحمي']) {
+        for (final name in [
+          'الافتراضي',
+          'أزرق',
+          'فيروزي',
+          'بنفسجي',
+          'فوشي',
+          'فحمي',
+        ]) {
           expect(find.text(name), findsOneWidget);
         }
         expect(find.text('السمة'), findsNothing);

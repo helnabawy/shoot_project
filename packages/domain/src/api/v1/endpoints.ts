@@ -108,7 +108,7 @@ export const endpoints = {
     input: z.object({ body: otpVerifyV1 }),
     output: authTokenV1,
     examples: ['auth-token'],
-    requestExamples: ['auth-verify-seeker', 'auth-verify-provider'],
+    requestExamples: ['auth-verify-seeker', 'auth-verify-provider', 'auth-verify-sign-in'],
   }),
   authRefresh: defineEndpoint({
     id: 'authRefresh',

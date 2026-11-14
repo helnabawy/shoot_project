@@ -59,6 +59,14 @@ void main() {
     );
   });
 
+  test('OT-US1-S11 auth-verify-sign-in.json: sign in only sends askIfNew', () {
+    final json = loadExample('auth-verify-sign-in');
+    final model = OtpVerifyModel.fromJson(json);
+    expect(model.signup, isNull);
+    expect(model.askIfNew, isTrue);
+    expect(model.toJson(), json);
+  });
+
   test(
     'auth-verify-provider.json: a creator sends personas and acceptance',
     () {
