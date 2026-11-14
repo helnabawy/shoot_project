@@ -53,7 +53,7 @@ per registered endpoint.
 
 - [ ] T024 [P] Goldens for 24, 25, 26 in four variants and app baselines (`tool/goldens.sh`), fidelity vs canvas. Not done: the pixel-diff pipeline was not run here.
 - [ ] T025 [P] Accessibility check at the largest text size and with a screen reader (semantics labels and 44 px targets are built; not verified on a device).
-- [ ] T026 Final gates: `dart format`, `flutter analyze`, `flutter test`, domain 100 % coverage, `pnpm typecheck` pass; `pnpm check:scenarios` and the ICU placeholder unit test fail on main for reasons outside this feature (002 quickstart rows, `auth.personaCombined`).
+- [ ] T026 Final gates: `dart format`, `flutter analyze`, `flutter test`, domain 100 % coverage, `pnpm typecheck` pass; `pnpm check:scenarios` and the ICU placeholder unit test fail on main for reasons outside this feature (002 quickstart rows, `auth.personaCombined`). (2026-11-14: both fixed on main: `pnpm check:scenarios` passes, and the placeholder test in `tests/unit/messages.test.ts` no longer reads plural branch words such as `{Both}` as placeholders.)
 - [ ] T027 Manual walkthrough on device/simulator in en/ar and light/dark.
 
 ## Dependencies

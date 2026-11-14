@@ -298,7 +298,7 @@ and name `h1`.
 
 ### Tests first
 
-- [ ] T035 (MF-US2-S1 for the shipped screens and MF-US2-S4 done; MF-US2-S2 waits for the designer's boards, research R6) [P] [US2] Write `fid/tests/derivation.spec.ts`:
+- [ ] T035 (MF-US2-S1 for the shipped screens and MF-US2-S4 done; MF-US2-S2 waits for the designer's boards, research R6; 2026-11-14: a `test.fixme` named MF-US2-S2 holds its place so `pnpm check:scenarios` passes) [P] [US2] Write `fid/tests/derivation.spec.ts`:
   - **`MF-US2-S1`**: for every board, the tokenised `en-light` render is pixel-identical to the
     raw render (`maxDiffPixels: 0`);
   - **`MF-US2-S2`**: the derived `ar-dark` of 21 vs board 42, and of 13 vs board 43, at the

@@ -83,8 +83,9 @@ iPad.
     not-found until 013 builds it).
 15. Largest text size, VoiceOver and TalkBack on screens 20–23: the six cells read as one field
     ("Six-digit code"), the error is announced, the countdown is readable, nothing is cut off.
-16. Website (US5): `/login` with a number and code; `/login/email` as the seeded admin; log out and
-    confirm the old `payload-token` value no longer works; add a number to an email account.
+16. Website (US5): `/login` with a number and code; the seeded admin signs in at `/admin` (the
+    website's email sign-in was removed 2026-11-13); log out and confirm the old `payload-token`
+    value no longer works.
 
 ## Scenario → test mapping (Principle III)
 

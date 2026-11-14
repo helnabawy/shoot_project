@@ -152,7 +152,7 @@ Commands (Node 24 and Flutter 3.47.9 on PATH): `dart format --set-exit-if-change
   - Open: touch targets and names are built; the per-screen `labeledTapTargetGuideline` tests are not written (the topic label on 34 is smaller than 44 px, as on the board).
 - [ ] T045 [P] Motion pass: arrive/rise only, none under `disableAnimations`, nothing self-started beyond 5 s (FR-045); test with reduced motion.
   - Open: only the existing rise and glint motion of `TopHit` and `EmptyState` is used; no test.
-- [ ] T046 Run `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test --coverage` (80 % of changed lines), `tool/goldens.sh`, `pnpm fidelity`, `pnpm check:scenarios`; tick only verified tasks; note blockers (resolve endpoint, owner decisions) in the final report.
+- [ ] T046 (2026-11-14: the resolver blocker is gone, 008 US5 is on main with `features/links/`; `PathStatusRepositoryImpl` still makes its own `resolve` read, and moving it onto `LinksRepository` is the one-file follow-up in plan.md) Run `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test --coverage` (80 % of changed lines), `tool/goldens.sh`, `pnpm fidelity`, `pnpm check:scenarios`; tick only verified tasks; note blockers (resolve endpoint, owner decisions) in the final report.
 - [X] T048 [US1] Make the sign-in and join screens (009) open `/terms`, `/terms/professional` and `/privacy` in the app (small change at the `WebsiteLinks` call sites in `lib/features/sign_in/presentation/pages/`; their tests updated), **FR-007**.
 - [ ] T047 Walk quickstart.md on a device or simulator in English and Arabic, light and dark; record what could not be run (device checks stay open).
   - Open: not run on a device or simulator.

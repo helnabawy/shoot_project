@@ -469,7 +469,8 @@ an occasion in the content area and see it in the list within a minute.
 > with email and password (FR-019, FR-020) is withdrawn: clients simply sign in by code, and
 > `/register` is "Join as a creator" by code (one to four active professions, acceptance of the
 > Terms, Professional Terms and Privacy Policy). Email and password sign-in (FR-021 to FR-023) stays
-> on `/login/email` for editors and existing email members, with the same lockout. Logging out ends
+> on `/login/email` for editors and existing email members, with the same lockout (removed
+> 2026-11-13: editors and admins now sign in at `/admin`, members only by code). Logging out ends
 > the session on the server (FR-022's "log out"). The original text is kept below for history.
 
 - **FR-019**: Visitors MUST be able to register with name, email, password

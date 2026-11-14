@@ -1,30 +1,31 @@
 # Product Roadmap — features mapped from shootix.ae
 
-**Updated**: 2026-11-06. Each row is a Spec Kit feature; `specs/NNN-*/spec.md`
+**Updated**: 2026-11-14. Each row is a Spec Kit feature; `specs/NNN-*/spec.md`
 holds the specification. Status: *planned* = spec + plan + tasks exist,
 *draft* = spec only (run `/speckit-plan` then `/speckit-tasks` when it is
 next), *implemented* = built on its branch, *idea* = not yet specified.
 
 | # | Feature | shootix.ae surface it covers | Depends on | Status |
 |---|---------|------------------------------|------------|--------|
-| 001 | Landing page, accounts, CMS content, personas, EN/AR, light/dark, **brief builder (Quick Match step 1)** | Home: hero, Quick Match sentence widget (incl. "Get a quote on WhatsApp"), How it works, Why Shootix, Browse by specialty (grid without counts), pro band, FAQ, trusted-by logos, header/footer, EN/AR toggle, client/pro sign-in (email+password here), content area | — | planned |
+| 001 | Landing page, accounts, CMS content, personas, EN/AR, light/dark, **brief builder (Quick Match step 1)** | Home: hero, Quick Match sentence widget (incl. "Get a quote on WhatsApp"), How it works, Why Shootix, Browse by specialty (grid without counts), pro band, FAQ, trusted-by logos, header/footer, EN/AR toggle, client/pro sign-in (email+password then; replaced by 009's mobile-number sign-in), content area | — | implemented (open: the five-person usability check, T106) |
 | 002 | Creator profiles & directory | "Our network" cards, /recommended, /work/{specialty} pages with sample + pro counts, "Find your professional", "Pick your own pro", verified badge, portfolio samples, a short creator code (prefix decided with the brand name), photo/video tags, provider onboarding after sign-up | 001 (accounts, personas, categories, media) | implemented (open: e2e re-run, second design reviews; shipped when merged) |
 | 003 | Quick Match matching, quotation & booking | Steps 2–4: "Your creator" (availability by date, one price), "Your details" (name + WhatsApp), "Your quotation" (PDF, accept online), pro confirmation, booking states, payment held until delivery, "paid within 10 days", client six-step process | 001 (briefs), 002 (creators); carries 004's price-rule core | implemented |
 | 004 | Pricing, packages & promotions | /pricing tabs (photo / video / both), hourly tiers with edited-photo counts, included/not included, travel fees per emirate, promo codes (WELCOME20), multi-day partner rates, /corporate retainers (term tabs, Essential/Growth/Brand Studio, add-ons, planning-call CTA, comparison, FAQ), /flash-deals, /extras, /plus, "Call" CTA | 001 (CMS, personas, option sets for durations/locations) | draft |
 | 005 | Marketing & legal pages, blog | /terms, /terms/professional, /terms/ar, /privacy, /studios, /blog (guides), SEO landing pages (/hire/…, /work/…), 404, sitemap entries | 001 (blocks, localisation) | implemented (open: design finish reviews, Lighthouse CI run, full e2e run; shipped when merged) |
-| 006 | Mobile accent colour (`specs/006-mobile-accent-colour/`): per-device accent, fixed `primary` red, saved appearance and language | Flutter app appearance sheet | mobile boilerplate | planned |
-| 007 | Mobile foundation: type scale, design-system widget library, motion, app shell and routing, pixel-diff pipeline against the canvas | Screens 37, 39 and a component gallery | 006 | planned |
-| 008 | Mobile REST API (`/api/mobile/v1`): handler wrapper, problem errors, read endpoints, `resolve`, contracts, deep-link files | none (backend) | 001, 002, 003, 005 | planned |
-| 009 | Mobile-number OTP sign-in (SMS / WhatsApp) for app and web; replaces idea "Phone / email one-time-code" | Screens 20–23 | 008 | planned |
-| 010 | Mobile first visit and landing | Screens 01–06 | 007, 008 | draft |
-| 011 | Mobile creators: directory, profile, book this creator, specialty, hire | Screens 15–19 | 007, 008 | draft |
-| 012 | Mobile Quick Match and booking | Screens 07–14, 40 | 009, 011 | draft |
-| 013 | Mobile client account | Screens 24–26 | 009, 012 | draft |
-| 014 | Mobile creator account | Screens 27–32 | 009, 011 | draft |
-| 015 | Mobile guides, editor pages and legal | Screens 33–36, 38 | 007, 008 | draft |
+| 006 | Mobile accent colour (`specs/006-mobile-accent-colour/`): per-device accent, fixed `primary` red, saved appearance and language | Flutter app appearance sheet | mobile boilerplate | implemented (open: device walkthrough on iPad, Android, VoiceOver / TalkBack) |
+| 007 | Mobile foundation: type scale, design-system widget library, motion, app shell and routing, pixel-diff pipeline against the canvas | Screens 37, 39 and a component gallery | 006 | implemented (open: Arabic references wait for the designer's boards) |
+| 008 | Mobile REST API (`/api/mobile/v1`): handler wrapper, problem errors, read endpoints, `resolve`, contracts, deep-link files | none (backend) | 001, 002, 003, 005 | implemented (open: `mr-smoke` e2e run, Apple/Google validators on staging) |
+| 009 | Mobile-number OTP sign-in (SMS / WhatsApp) for app and web; replaces idea "Phone / email one-time-code" | Screens 20–23 | 008 | implemented; email sign-in removed 2026-11-13 (open: SMS/WhatsApp vendor approval, fidelity of 20–23 over 1 %, e2e and Lighthouse runs) |
+| 010 | Mobile first visit and landing | Screens 01–06 | 007, 008 | implemented (open: goldens and fidelity, finish review) |
+| 011 | Mobile creators: directory, profile, book this creator, specialty, hire | Screens 15–19 | 007, 008 | implemented (open: `pnpm fidelity` for 15–19, device walkthrough) |
+| 012 | Mobile Quick Match and booking | Screens 07–14, 40 | 009, 011 | implemented (open: integration run, goldens for 07–14 and 40, Arabic review, device walkthrough) |
+| 013 | Mobile client account | Screens 24–26 | 009, 012 | implemented (open: account removal waits for the owner, R7; goldens, device walkthrough) |
+| 014 | Mobile creator account | Screens 27–32 | 009, 011 | implemented (open: integration run, goldens for 27–32, device walkthrough) |
+| 015 | Mobile guides, editor pages and legal | Screens 33–36, 38 | 007, 008 | implemented (open: fidelity waits for the owner's dark-token decision for 33–35; accessibility and motion passes) |
 | 016 | Introducer / referral programme | 10% / 15% agency commission, referral links, payouts | 003 | idea |
 | 017 | Google (and Apple) sign-in | "Continue with Google", Sign in with Apple (required on iOS once Google is offered) | 009 | idea |
 | 018 | Notifications & messaging | WhatsApp / email / push notifications for briefs, quotations, confirmations, creator requests; admin alerts | 003, 009 | idea |
+| 019 | Creator brief inbox: matching creators see new briefs and answer them; app push (Firebase) for new briefs and acceptances (`specs/019-creator-brief-inbox/`, on branch `019-creator-brief-inbox`, not yet on `main`) | creator inbox, push notifications | 003, 009, 014 | in progress on its branch |
 
 Renumbered 2026-11-11: the ideas once listed as 006 (Introducer), 007 (one-time-code sign-in) and
 008 (Notifications) are now 016, 009/017 and 018. Older specs that say "feature 008" for outbound
