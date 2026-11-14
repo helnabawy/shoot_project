@@ -17,5 +17,5 @@ export default function proxy(request: NextRequest) {
 
 export const config = {
   // Skip Payload (/admin, /api), preview routes (/next), Next internals and files with an extension.
-  matcher: ['/((?!api|admin|next|_next|_vercel|.*\\..*).*)'],
+  matcher: ['/((?!api|admin|next|_next|_vercel|\\.well-known|.*\\..*).*)'],
 }

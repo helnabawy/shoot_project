@@ -32,6 +32,44 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- App links (feature 008, research R13): site addresses open the app. One entry per
+                 APP_LINK_PREFIXES in packages/domain/src/api/v1/app-links.ts; the homes are exact
+                 paths, the rest prefixes. The host comes from build.gradle.kts (appLinkHost), and the
+                 site serves /.well-known/assetlinks.json for it. app_links_config_test.dart checks
+                 this list against examples/app-links.json. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https"/>
+                <data android:host="${appLinkHost}"/>
+                <data android:path="/"/>
+                <data android:pathPrefix="/creators"/>
+                <data android:pathPrefix="/book"/>
+                <data android:pathPrefix="/work"/>
+                <data android:pathPrefix="/hire"/>
+                <data android:pathPrefix="/match"/>
+                <data android:pathPrefix="/q"/>
+                <data android:pathPrefix="/account"/>
+                <data android:pathPrefix="/guides"/>
+                <data android:pathPrefix="/terms"/>
+                <data android:pathPrefix="/privacy"/>
+                <data android:pathPrefix="/login"/>
+                <data android:pathPrefix="/register"/>
+                <data android:path="/ar"/>
+                <data android:pathPrefix="/ar/creators"/>
+                <data android:pathPrefix="/ar/book"/>
+                <data android:pathPrefix="/ar/work"/>
+                <data android:pathPrefix="/ar/hire"/>
+                <data android:pathPrefix="/ar/match"/>
+                <data android:pathPrefix="/ar/q"/>
+                <data android:pathPrefix="/ar/account"/>
+                <data android:pathPrefix="/ar/guides"/>
+                <data android:pathPrefix="/ar/terms"/>
+                <data android:pathPrefix="/ar/privacy"/>
+                <data android:pathPrefix="/ar/login"/>
+                <data android:pathPrefix="/ar/register"/>
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

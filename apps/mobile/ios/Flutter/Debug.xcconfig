@@ -1,2 +1,5 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
 #include "Generated.xcconfig"
+
+// App links (feature 008): the staging website host in Runner.entitlements (associated domains).
+APP_LINK_HOST=staging.shoot.ae

@@ -56,6 +56,13 @@ describe('personas mappers', () => {
     expect(wire.categories[0]?.personaIds).toEqual(['1', '2'])
   })
 
+  it('MR-FR-015 a renamed persona reaches the app unchanged: names are CMS data, never code', () => {
+    const teacher = { ...persona('3', 'teacher', 3), singular: 'Teacher', plural: 'Teachers', glyph: 'TE' }
+    const wire = personasV1.parse({ locale: 'en', personas: [toWirePersona(teacher)], categories: [] })
+    expect(wire.personas[0]).toMatchObject({ id: '3', slug: 'teacher', singular: 'Teacher', plural: 'Teachers' })
+    expect(JSON.stringify(wire)).not.toMatch(/photograph|videograph/i)
+  })
+
   it('maps a persona field by field with null for empty values', () => {
     expect(personaV1.parse(toWirePersona({ ...persona('1', 'photographer', 1), glyph: '' }))).toEqual({
       id: '1',

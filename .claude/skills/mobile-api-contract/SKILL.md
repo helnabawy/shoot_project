@@ -47,18 +47,19 @@ routes coexist with Payload's REST API; for the same reason no collection may us
 ## `defineHandler` (the only way to write a handler)
 
 ```ts
-// apps/web/src/modules/creators/api.ts (shape; names fixed in 008's plan)
-import { creatorV1, creatorParamsV1 } from '@shoot/domain/api/v1'
-import { defineHandler } from '@/shared/api/handler'
-import { getCreatorByCode } from './queries'
+// apps/web/src/modules/creators/api.ts (as built in 008): the handler spreads the registry entry,
+// so auth, cache, input and output cannot drift from the contract in packages/domain/src/api/v1/.
+import { endpoints } from '@shoot/domain/api/v1'
+import { defineHandler, problem } from '@/shared/api/handler'
 
-export const getCreator = defineHandler(
-  { auth: 'optional', params: creatorParamsV1, response: creatorV1, cache: 'public' },
-  async ({ params, locale }) => {
-    const creator = await getCreatorByCode(params.code, locale)
-    return creator ? toCreatorV1(creator) : problem(404, 'creators.errors.notFound')
+export const getCreatorProfileV1 = defineHandler({
+  ...endpoints.creatorProfile,
+  run: async ({ locale }, { params }) => {
+    const [page, context] = await Promise.all([getCreatorProfile(params.code, locale), getDirectoryContext(locale)])
+    if (!page) return problem(404, 'api.errors.notFound')
+    return toWireCreatorProfile(page, context.lookups, wireContext(locale))
   },
-)
+})
 ```
 
 The wrapper, in order:
