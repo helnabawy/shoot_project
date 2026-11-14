@@ -139,8 +139,8 @@ against `apps/web/.env`'s production database.
 - [ ] T057 [P] Responsive and theme pass for `/account` Up next and `/account/inbox` at 360/768/1024/1440 px, en/ar, light/dark; impeccable detector on changed UI and the finish review returns `ship`; update `DESIGN.md` through the documenter
 - [ ] T058 [P] App goldens for the inbox board (en-light, en-dark, ar-light, ar-dark) with `apps/mobile/tool/goldens.sh` and `pnpm fidelity` within the board's threshold; widget checks at 360, 768 and 1024 px (iPad); largest text size, VoiceOver and TalkBack labels on accept, reject and the switch
 - [X] T059 [P] Admin: `brief-answers` list columns (brief, creator, persona, decision, reason, answeredAt, and a computed "status now": listed / not free any more / profile hidden / withdrawn, for US2-S8), and the brief record shows `answers` (FR-011); check in `/admin` locally
-- [ ] T060 Run `pnpm typecheck && pnpm lint && pnpm test`, `pnpm test:coverage` (domain 100 %, app ≥ 80 %), `pnpm check:scenarios`, and in `apps/mobile` `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test --coverage`; fix everything
-- [ ] T061 Update `CLAUDE.md` (feature 019 paragraph: modules `inbox`, `push`, prefix `BI-`, `PUSH_PROVIDER`) and `specs/ROADMAP.md` status; device walkthrough of quickstart step 6 once the owner's Firebase files exist (else leave open, named)
+- [X] T060 Run `pnpm typecheck && pnpm lint && pnpm test`, `pnpm test:coverage` (domain 100 %, app ≥ 80 %), `pnpm check:scenarios`, and in `apps/mobile` `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test --coverage`; fix everything
+- [X] T061 Update `CLAUDE.md` (feature 019 paragraph: modules `inbox`, `push`, prefix `BI-`, `PUSH_PROVIDER`) and `specs/ROADMAP.md` status; device walkthrough of quickstart step 6 once the owner's Firebase files exist (else leave open, named)
 
 ## Dependencies
 
@@ -166,3 +166,18 @@ against `apps/web/.env`'s production database.
 3. Add US6 and US5 (real push) once the owner's Firebase inputs exist; until then the `off` provider
    ships safely.
 4. Polish and gates; open the PR against `main` referencing this spec and the task ids.
+
+## Status (2026-11-14)
+
+- Done: T001–T003, T005–T056, T059–T061. Checks: typecheck and lint clean (one pre-existing lint
+  warning in `booking/actions.ts`); domain 826/826; app `dart format`, `flutter analyze`, 1421 tests
+  pass; `check:scenarios` for 019 ok (37 rows); e2e `bi-us2-inbox.spec.ts` passes on a production build.
+- Web suite: 1415 of 1439 pass. Every remaining failure also fails on unchanged `main` (9eea871):
+  multi-type briefs (actions, booking-match/quote/pages/preview), creators-brief, creators-uploads
+  cron, mobile-api-access `briefRecord`, mobile-api-creator-account MW-US2-S4/S8; `BriefBuilder`
+  FR-064 fails only under full-suite load (passes alone). `check:scenarios` stops at 002/007/008
+  gaps that exist on `main` too. REST `/api/users/login` refuses email logins on `main` (the 009
+  guard), which breaks the e2e specs that sign in that way.
+- Open: T004 (owner: APNs key in Firebase, service-account JSON for `FCM_SERVICE_ACCOUNT`), T057
+  (impeccable finish review, 768/1024 checks), T058 (goldens and `pnpm fidelity` for boards S07e–g,
+  which also need `build-manifest.mjs` entries), and the device walkthrough with real push.
