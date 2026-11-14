@@ -22,7 +22,8 @@ vi.mock('next/headers', () => ({
 vi.mock('next/navigation', () => ({ redirect: (url: string) => { throw new Redirect(url) } }))
 vi.mock('@/i18n/navigation', () => ({ redirect: (arg: unknown) => { throw new Redirect(arg) } }))
 
-const { login, logout, requestCodeAction, verifyCodeAction } = await import('@/modules/auth/actions')
+const actions = await import('@/modules/auth/actions')
+const { logout, requestCodeAction, verifyCodeAction } = actions
 const { setOtpProvider } = await import('@/modules/auth/otp/providers')
 
 let provider: ReturnType<typeof installRecordingProvider>
@@ -66,6 +67,29 @@ describe('009 US5 the website signs in the same way', () => {
     expect(jar.has('shoot-otp')).toBe(false)
   })
 
+  it('OT-US1-S11 the code step asks the role only for a new number; a known number signs straight in', async () => {
+    const fresh = freshPhone()
+    expect(await redirected(() => requestCodeAction(undefined, form({ locale: 'en', phone: fresh, channel: 'sms', next: '/account' })))).toEqual({ href: '/login/code', locale: 'en' })
+    const code = provider.sent.at(-1)!.code
+    const state = await verifyCodeAction(undefined, form({ locale: 'en', code, askRole: '1' }))
+    expect(state).toMatchObject({ needsRole: true, values: { code } })
+    expect(jar.has('payload-token')).toBe(false)
+    const payload = await getTestPayload()
+    expect((await payload.find({ collection: 'users', where: { username: { equals: fresh } }, overrideAccess: true })).totalDocs).toBe(0)
+    expect(await redirected(() => verifyCodeAction(undefined, form({ locale: 'en', code, role: 'seeker' })))).toEqual({ href: '/account', locale: 'en' })
+    const created = (await authed()).user as { id: number } | null
+
+    jar.clear()
+    vi.useFakeTimers({ toFake: ['Date'], now: Date.now() + 61_000 })
+    try {
+      expect(await redirected(() => requestCodeAction(undefined, form({ locale: 'en', phone: fresh, channel: 'sms', next: '/account' })))).toEqual({ href: '/login/code', locale: 'en' })
+      expect(await redirected(() => verifyCodeAction(undefined, form({ locale: 'en', code: provider.sent.at(-1)!.code, askRole: '1' })))).toEqual({ href: '/account', locale: 'en' })
+      expect(((await authed()).user as { id: number } | null)?.id).toBe(created?.id)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('a wrong code stays on the code step with the field error; no pending cookie means back to /login', async () => {
     await redirected(() => requestCodeAction(undefined, form({ locale: 'en', phone: freshPhone(), channel: 'sms' })))
     const code = provider.sent.at(-1)!.code
@@ -75,13 +99,11 @@ describe('009 US5 the website signs in the same way', () => {
     expect(await redirected(() => verifyCodeAction(undefined, form({ locale: 'en', code })))).toEqual({ href: '/login', locale: 'en' })
   })
 
-  it('OT-US5-S2 the email sign-in still signs an editor in and locks after 5 wrong passwords', async () => {
+  it('OT-US5-S2 the website has no email sign-in; editors sign in on /admin only', async () => {
+    expect('login' in actions).toBe(false)
     const editor = await createUser(['editor'])
-    await redirected(() => login(undefined, form({ locale: 'en', email: editor.email!, password: 'password-123' })))
-    expect(jar.get('payload-token')?.options).toMatchObject({ httpOnly: true })
-    const other = await createUser(['editor'])
-    for (let i = 0; i < 5; i++) await login(undefined, form({ email: other.email!, password: 'wrong-password' }))
-    expect(await login(undefined, form({ email: other.email!, password: 'password-123' }))).toMatchObject({ formError: 'auth.errors.locked' })
+    const { token } = await (await getTestPayload()).login({ collection: 'users', data: { email: editor.email!, password: 'password-123' } })
+    expect(token).toBeTruthy()
   })
 
   it('OT-US5-S3 logout ends the session on the server; the old cookie value no longer signs anyone in', async () => {

@@ -201,6 +201,14 @@ class _MenuPageState extends State<MenuPage> {
                                 () => context.push(afterSignIn(user)),
                                 hint: user.name,
                               ),
+                              KeyedSubtree(
+                                key: const ValueKey('menu:bookings'),
+                                child: row(
+                                  ShootIcons.calendar,
+                                  l10n.mlMenuBookings,
+                                  () => context.push(AppRoutes.accountBookings),
+                                ),
+                              ),
                               ShootRow(
                                 key: const ValueKey('menu:logOut'),
                                 label: l10n.accountLogOut,
@@ -310,14 +318,6 @@ class _MenuPageState extends State<MenuPage> {
                                     _link(
                                       l10n.mlMenuPrivacy,
                                       () => widget.links.privacy(_lang),
-                                    ),
-                                    const TextSpan(text: '\n'),
-                                    TextSpan(
-                                      text: '${l10n.mlMenuEditorPrompt} ',
-                                    ),
-                                    _link(
-                                      l10n.mlMenuEditorSignIn,
-                                      () => widget.links.emailSignIn(_lang),
                                     ),
                                   ],
                                 ),

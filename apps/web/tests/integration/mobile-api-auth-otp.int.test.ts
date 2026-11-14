@@ -120,6 +120,38 @@ describe('009 US1 sign in with a number and a code (auth/otp/request, auth/otp/v
     expect(await usersWith(phone)).toHaveLength(1)
   })
 
+  it('OT-US1-S11 askIfNew: a known number signs straight in; a new number answers 409 signupRequired, keeps the challenge and the attempt, then verifies with the role', async () => {
+    const known = freshPhone()
+    const first = await requestFor(request, provider, known)
+    const a = await verify(verifyRoute, { challengeId: first.challenge.challengeId, phone: known, code: first.code })
+    vi.useFakeTimers({ toFake: ['Date'], now: Date.parse(first.challenge.resendAt) + 1 })
+    const again = await requestFor(request, provider, known)
+    const direct = await verify(verifyRoute, { challengeId: again.challenge.challengeId, phone: known, code: again.code, askIfNew: true })
+    expect(direct.res.status).toBe(200)
+    expect(direct.token?.isNew).toBe(false)
+    expect(direct.token?.user.id).toBe(a.token?.user.id)
+    vi.useRealTimers()
+
+    const fresh = freshPhone()
+    const { challenge, code } = await requestFor(request, provider, fresh)
+    // A wrong code still reads as codeInvalid: nothing about the account shows before the code is proven.
+    expect((await verify(verifyRoute, { challengeId: challenge.challengeId, phone: fresh, code: wrong(code), askIfNew: true })).problem?.code).toBe('auth.errors.codeInvalid')
+    const ask = await verify(verifyRoute, { challengeId: challenge.challengeId, phone: fresh, code, askIfNew: true })
+    expect(ask.res.status).toBe(409)
+    expect(ask.problem).toMatchObject({ code: 'auth.errors.signupRequired' })
+    expect(await usersWith(fresh)).toHaveLength(0)
+    expect(await attemptsOf(challenge.challengeId)).toBe(1)
+    const joined = await verify(verifyRoute, {
+      challengeId: challenge.challengeId,
+      phone: fresh,
+      code,
+      askIfNew: true,
+      signup: { accountType: 'provider', personas: ['photographer'], acceptTerms: true },
+    })
+    expect(joined.res.status).toBe(200)
+    expect(joined.token).toMatchObject({ isNew: true, user: { accountType: 'provider', personas: ['photographer'] } })
+  })
+
   it('OT-US1-S4 a wrong code is codeInvalid and counts an attempt; a number not matching the challenge answers the same', async () => {
     const phone = freshPhone()
     const { challenge, code } = await requestFor(request, provider, phone)

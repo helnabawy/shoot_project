@@ -211,9 +211,9 @@
   "@problemCodeLocked": {
     "description": "Five wrong attempts on one code (auth.errors.codeLocked)."
   },
-  "problemUseEmailSignIn": "Editors sign in with email.",
+  "problemUseEmailSignIn": "This number belongs to a team account. Team members sign in through the admin panel.",
   "@problemUseEmailSignIn": {
-    "description": "The number belongs to an editor or admin, who cannot use codes (auth.errors.useEmailSignIn, HTTP 403)."
+    "description": "The number belongs to an editor or admin, who sign in on the admin panel, not by code (auth.errors.useEmailSignIn, HTTP 403)."
   },
   "problemNumberTaken": "This number already signs in to another account.",
   "@problemNumberTaken": {
@@ -230,6 +230,10 @@
   "problemAcceptTerms": "Please accept the Terms and the Privacy Policy to create an account.",
   "@problemAcceptTerms": {
     "description": "Creator sign-up without ticking the legal box (auth.errors.acceptTerms). Same words as the website."
+  },
+  "problemSignupRequired": "First time here? Tell us which you are, then continue.",
+  "@problemSignupRequired": {
+    "description": "A correct code for a number with no account yet (auth.errors.signupRequired, HTTP 409): the code screen then asks the role. Same words as the website."
   },
   "backAction": "Back",
   "@backAction": {
@@ -294,14 +298,6 @@
   "legalPrivacyLink": "privacy notice",
   "@legalPrivacyLink": {
     "description": "Link to the Privacy Policy inside signInLegal."
-  },
-  "editorPrompt": "Editor?",
-  "@editorPrompt": {
-    "description": "Before the email sign-in link at the foot of screen 20."
-  },
-  "editorSignIn": "Sign in with email",
-  "@editorSignIn": {
-    "description": "Link that opens the website's email sign-in (editors and admins)."
   },
   "codeTitle": "Enter the code",
   "@codeTitle": {
@@ -3003,6 +2999,10 @@
   "@mlMenuAccount": {
     "description": "Menu row, signed in: to the person's account; the name is shown at its end."
   },
+  "mlMenuBookings": "Bookings",
+  "@mlMenuBookings": {
+    "description": "Menu row, signed in: to the person's bookings (a creator's booking requests, a client's quotations and bookings), like the website header's Bookings tab."
+  },
   "mlMenuLanguage": "Language",
   "@mlMenuLanguage": {
     "description": "Menu setting label."
@@ -3030,14 +3030,6 @@
   "mlMenuPrivacy": "Privacy",
   "@mlMenuPrivacy": {
     "description": "Menu legal link."
-  },
-  "mlMenuEditorPrompt": "Editor?",
-  "@mlMenuEditorPrompt": {
-    "description": "Menu: before the editor sign-in link."
-  },
-  "mlMenuEditorSignIn": "Sign in with email",
-  "@mlMenuEditorSignIn": {
-    "description": "Menu: opens the website's editor sign-in in the browser."
   },
   "mlBriefPlaceholder": "Say what you need…",
   "@mlBriefPlaceholder": {

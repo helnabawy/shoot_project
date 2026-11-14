@@ -32,6 +32,7 @@ void main() {
         challenge: any(named: 'challenge'),
         code: any(named: 'code'),
         signup: any(named: 'signup'),
+        askIfNew: any(named: 'askIfNew'),
       ),
     ).thenAnswer((_) async => Ok(verified));
 
@@ -39,6 +40,7 @@ void main() {
       challenge: challenge,
       code: '482713',
       signup: signup,
+      askIfNew: true,
     ));
 
     expect(result, Ok(verified));
@@ -47,6 +49,7 @@ void main() {
         challenge: challenge,
         code: '482713',
         signup: signup,
+        askIfNew: true,
       ),
     ).called(1);
   });
@@ -57,6 +60,7 @@ void main() {
         challenge: challenge,
         code: code,
         signup: null,
+        askIfNew: false,
       ));
       expect(result, const Err<Verified>(VerifyCode.codeInvalid));
       verifyZeroInteractions(repository);

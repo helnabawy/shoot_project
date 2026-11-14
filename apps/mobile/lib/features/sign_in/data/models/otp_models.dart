@@ -68,6 +68,7 @@ final class OtpVerifyModel {
     required this.phone,
     required this.code,
     this.signup,
+    this.askIfNew = false,
   });
 
   factory OtpVerifyModel.fromJson(Json json) {
@@ -85,6 +86,7 @@ final class OtpVerifyModel {
               name: readNullableString(signup, 'name'),
             )
           : SignupChoice.seeker(name: readNullableString(signup, 'name')),
+      askIfNew: json['askIfNew'] == true,
     );
   }
 
@@ -92,6 +94,10 @@ final class OtpVerifyModel {
   final String phone;
   final String code;
   final SignupChoice? signup;
+
+  /// Sign in only: a new number answers `409 auth.errors.signupRequired`
+  /// and keeps its challenge, so the role can be asked.
+  final bool askIfNew;
 
   Json toJson() {
     final s = signup;
@@ -109,6 +115,7 @@ final class OtpVerifyModel {
           if (s.accountType == AccountType.provider && s.acceptTerms)
             'acceptTerms': true,
         },
+      if (askIfNew) 'askIfNew': true,
     };
   }
 }

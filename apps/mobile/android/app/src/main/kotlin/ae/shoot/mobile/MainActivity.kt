@@ -1,4 +1,4 @@
-package ae.shoot.shoot_mobile
+package ae.shoot.mobile
 
 import io.flutter.embedding.android.FlutterActivity
 

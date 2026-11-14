@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/routing/app_routes.dart';
-import 'package:shoot_mobile/core/web/website_links.dart';
 import 'package:shoot_mobile/core/widgets/inline_error.dart';
 import 'package:shoot_mobile/core/widgets/linked_text.dart';
 import 'package:shoot_mobile/core/widgets/message_banner.dart';
@@ -17,12 +16,10 @@ import 'package:shoot_mobile/features/sign_in/domain/entities/otp_challenge.dart
 import 'package:shoot_mobile/features/sign_in/presentation/cubit/sign_in_flow_cubit.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/widgets/sign_in_parts.dart';
 
-/// Screen 20, built to board `S09-signin-number`: the number, the channel and "Send code". The
-/// legal links and "Sign in with email" open the website (research R17).
+/// Screen 20, built to board `S09-signin-number`: the number, the channel and "Send code". There is
+/// no email sign-in: team members sign in on the website's admin panel.
 class NumberPage extends StatefulWidget {
-  const NumberPage({super.key, required this.links});
-
-  final WebsiteLinks links;
+  const NumberPage({super.key});
 
   @override
   State<NumberPage> createState() => _NumberPageState();
@@ -46,9 +43,6 @@ class _NumberPageState extends State<NumberPage> {
   }
 
   void _send() => unawaited(context.read<SignInFlowCubit>().sendCode());
-
-  void _open(Future<bool> Function(String) page) =>
-      unawaited(page(Localizations.localeOf(context).languageCode));
 
   /// The legal documents open in the app (feature 015, FR-007).
   void _openLegal(String path) => unawaited(context.push<void>(path));
@@ -141,23 +135,7 @@ class _NumberPageState extends State<NumberPage> {
                         height: 1.5,
                       ),
                     ],
-                    bottom: Padding(
-                      padding: const EdgeInsetsDirectional.only(bottom: 18),
-                      child: metaLines(
-                        LinkedText(
-                          '${l10n.editorPrompt} {email}',
-                          textAlign: TextAlign.center,
-                          style: meta,
-                          parts: {
-                            'email': LinkedText.quiet(
-                              l10n.editorSignIn,
-                              () => _open(widget.links.emailSignIn),
-                              underline: true,
-                            ),
-                          },
-                        ),
-                      ),
-                    ),
+                    bottom: const SizedBox(height: 18),
                   ),
                 ),
               ],

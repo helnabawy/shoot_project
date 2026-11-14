@@ -27,7 +27,7 @@ test.describe('009 US5 the website signs in by code', () => {
 
   test('OT-US5-S4 /register offers Join as a creator by code; no page offers an email registration', async ({ page }, info) => {
     const arabic = info.project.name === 'ar-mobile'
-    for (const path of ['/register', '/login', '/login/email']) {
+    for (const path of ['/register', '/login']) {
       await page.goto(arabic ? `/ar${path}` : path)
       await expect(page.locator('input[autocomplete="new-password"]')).toHaveCount(0)
     }

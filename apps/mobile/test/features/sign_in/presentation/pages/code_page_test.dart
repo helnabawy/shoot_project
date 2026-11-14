@@ -25,18 +25,22 @@ void main() {
 
   setUp(() => repository = MockAuthRepository());
 
-  SignInFlowCubit awaiting({AccountType role = AccountType.seeker}) =>
-      flowCubit(
-        repository: repository,
-        initial: SignInFlowState(
-          status: SignInStatus.awaitingCode,
-          phone: '050 123 4567',
-          challenge: challenge,
-          personas: examplePersonas(),
-          joinPersonas: const ['photographer'],
-          role: role,
-        ),
-      );
+  // The role rows show once a correct code proved a new number (OT-US1-S11).
+  SignInFlowCubit awaiting({
+    AccountType role = AccountType.seeker,
+    bool roleNeeded = true,
+  }) => flowCubit(
+    repository: repository,
+    initial: SignInFlowState(
+      status: SignInStatus.awaitingCode,
+      phone: '050 123 4567',
+      challenge: challenge,
+      personas: examplePersonas(),
+      joinPersonas: const ['photographer'],
+      role: role,
+      roleNeeded: roleNeeded,
+    ),
+  );
 
   testWidgets(
     'OT-US1-S1 the code screen shows number, channel, countdown and the role rows '
@@ -76,6 +80,20 @@ void main() {
   );
 
   testWidgets(
+    'OT-US1-S11 before the code is proven there is no role question',
+    (tester) async {
+      await pumpSignIn(
+        tester,
+        cubit: awaiting(roleNeeded: false),
+        location: '/login/code',
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(ChoiceRowGroup<AccountType>), findsNothing);
+      expect(find.text('Continue'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
     'OT-US1-S1 the code screen in Arabic names the professions from personas.ar',
     (tester) async {
       await pumpSignIn(
@@ -87,6 +105,7 @@ void main() {
             status: SignInStatus.awaitingCode,
             challenge: challenge,
             personas: examplePersonas(arabic: true),
+            roleNeeded: true,
           ),
         ),
         location: '/login/code',
@@ -108,6 +127,7 @@ void main() {
           challenge: any(named: 'challenge'),
           code: any(named: 'code'),
           signup: any(named: 'signup'),
+          askIfNew: any(named: 'askIfNew'),
         ),
       ).thenAnswer(
         (_) async => const Err<Verified>(

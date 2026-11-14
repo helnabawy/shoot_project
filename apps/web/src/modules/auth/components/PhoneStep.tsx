@@ -91,11 +91,6 @@ export function PhoneStep({
                 {t('auth.otp.joinLink')}
               </Link>
             </p>
-            <p>
-              <Link href={{ pathname: '/login/email', query: next ? { next } : {} }} className="font-medium text-ink underline">
-                {t('auth.otp.emailFallback')}
-              </Link>
-            </p>
           </div>
         ) : mode === 'join' ? (
           <p className="border-t border-hair px-4 py-3 text-[14px] text-mute">
