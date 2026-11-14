@@ -521,6 +521,11 @@ kept; both create creator accounts with three acceptances.
 
 ## Phase 7: User Story 5 — The website signs in the same way (P3)
 
+> **Update 2026-11-13** (commit 3ef282c): email sign-in is removed from the website and the app.
+> Members sign in only by mobile number and code; editors and admins sign in at `/admin`. A returning
+> number goes straight in after the code; only a new number is asked whether they are a client or a
+> creator. Text below that mentions `/login/email` or "Sign in with email" is kept for history.
+
 **Goal**: `/login` and `/register` by code with the HTTP-only cookie, `/login/email` for editors,
 logout that revokes, and number linking.
 

@@ -25,10 +25,10 @@ Feature 001 is `specs/001-landing-auth-cms/` (planned, 106 tasks, T001–T107; T
 is `specs/002-creator-profiles/` (creator profiles and directory: `/creators`, `/creators/{code}`,
 `/book/{code}`, `/work/{specialty}`, the provider editor at `/account/profile`; module
 `apps/web/src/modules/creators/`, rules in `packages/domain/src/creators/`, test-id prefix `CP-`;
-implemented on this branch, open items in its `tasks.md`). Feature 005 is
+implemented, open items in its `tasks.md`). Feature 005 is
 `specs/005-marketing-pages/` (editor-built pages, versioned legal documents, guides with RSS, `/hire/…`
 intent pages, not-found/removed: modules `apps/web/src/modules/{pages,legal,guides}/`, rules in
-`packages/domain/src/pages/`, test-id prefix `MP-`; implemented on this branch, open items in its
+`packages/domain/src/pages/`, test-id prefix `MP-`; implemented, open items in its
 `tasks.md`).
 Feature 003 is `specs/003-quick-match-booking/`
 (Quick Match steps 2–4 and bookings: `/match/{ref}/{key}` (step 2), `/match/{ref}/{key}/details`
@@ -40,24 +40,32 @@ provider: payments are recorded by an admin). The shootix.ae feature map and the
 `specs/ROADMAP.md`. Feature 006 is `specs/006-mobile-accent-colour/` (Flutter app `apps/mobile`: a
 per-device accent choice from five curated accents, Blue default, in an Appearance sheet; accent, theme
 mode and language saved with `shared_preferences`; primary actions get a fixed `primary` red; test-id
-prefix `MA-`; implemented on this branch; open in its `tasks.md`: the rest of the device walkthrough T033: iPad, Android, VoiceOver / TalkBack).
+prefix `MA-`; implemented; open in its `tasks.md`: the rest of the device walkthrough T033: iPad, Android, VoiceOver / TalkBack).
 
 Features 007–015 build the whole Flutter app from the approved design canvas (40 screens at 360 px,
 imported into `specs/design-system/canvas/` with `manifest.json`), pixel-perfect, after 006 lands.
-Feature 009 (`specs/009-otp-sign-in/`, test-id prefix `OT-`) is implemented on its branch: sign-in by UAE mobile
+Feature 009 (`specs/009-otp-sign-in/`, test-id prefix `OT-`) is implemented: sign-in by UAE mobile
 number and one-time code (module `apps/web/src/modules/auth/` `otp/`, `commands/`, `api.ts`; rules in
 `packages/domain/src/auth/otp.ts`; the verified number is the users `username` via `loginWithUsername`; console
-provider outbox read with `pnpm --filter web otp:last`; the website's `/login`, `/login/code`, `/login/email`,
-`/register` by code; the app's `core/auth/` and `features/sign_in/`, screens 20–23). Open in its `tasks.md`: the
+provider outbox read with `pnpm --filter web otp:last`; the website's `/login`, `/login/code` and
+`/register` by code (email sign-in removed 2026-11-13: editors and admins use `/admin`; a returning number goes
+straight in, only a new number is asked client or creator); the app's `core/auth/` and `features/sign_in/`, screens 20–23). Open in its `tasks.md`: the
 vendor (owner approval, T006, T051, T056, T092) and the manual and review gates. Feature 012
-(`specs/012-mobile-quick-match/`, test-id prefix `MQ-`) is implemented on its branch: Quick Match
+(`specs/012-mobile-quick-match/`, test-id prefix `MQ-`) is implemented: Quick Match
 steps 2–4 and the booking pages in the app (`apps/mobile/lib/features/quick_match/`, screens 07–14
 and 40) over eight additive endpoints (`/api/mobile/v1/match/…`, `/quotations/…`; commands in
 `apps/web/src/modules/booking/commands/`, shared with the website's actions); open in its `tasks.md`:
-the golden and pixel-diff proof, the Arabic review and the device walkthrough. Of the rest, none is
-implemented.
-007, 008 and 009 are planned (spec, plan, research, data model, contracts,
-quickstart, tasks: 73, 95 and 93 tasks); 010–015 are draft specs (plan and tasks when next).
+the golden and pixel-diff proof, the Arabic review and the device walkthrough. Feature 008
+(`specs/008-mobile-api/`, test-id prefix `MR-`) is implemented: the wrapper in `apps/web/src/shared/api/`,
+the contract in `packages/domain/src/api/v1/` (snapshot `specs/contracts/mobile-api/v1.schema.json`),
+read handlers in each module's `api.ts`, the resolver `GET resolve?path=` (`modules/pages/resolve.ts`,
+`classifyPath` in `v1/resolve.ts`), the `.well-known` app-link files (`modules/app-links/`, env
+`APP_IOS_APP_IDS`, `APP_ANDROID_PACKAGE`, `APP_ANDROID_CERT_SHA256`) and the app's data layers including
+`features/links/`; open: the `mr-smoke` e2e run and the store validators on staging. Features 007, 010, 011,
+013, 014 and 015 are implemented too; what is left in each is in its `tasks.md` (mostly goldens and
+`pnpm fidelity`, device walkthroughs and owner decisions), summarised in `specs/ROADMAP.md`. Feature 019
+(`specs/019-creator-brief-inbox/`, creator brief inbox and app push) is in progress on branch
+`019-creator-brief-inbox`, not yet on `main`.
 `specs/ROADMAP.md` has the screens per feature:
 
 | # | Feature (test-id prefix) | What |

@@ -35,7 +35,7 @@ Format: `- [ ] Tnnn [P] [USn] description with path`. Tests first in every phase
 
 - [ ] T018 (open: screen golden test files and pixel fidelity not written; the views are built from the catalogue but not yet diffed against boards 27 to 32) Screen goldens for 27 to 32 (four variants) and `pnpm fidelity` (macOS, pinned Flutter)
 - [ ] T019 `pnpm check:scenarios`, `pnpm typecheck && pnpm test`, `dart format`, `flutter analyze`, `flutter test --coverage`
-- [ ] T020 Camera, photo library and file picking (`image_picker`, `file_picker`): needs owner approval of the packages
+- [x] T020 Camera, photo library and file picking (`image_picker` 1.2.4, `file_picker` 13.3.3): added by the owner in commit 84915ae (`creator_account/data/platform_file_picker.dart`, Info.plist and manifest entries)
 - [ ] T021 Manual device walkthrough: 360 px, English and Arabic, light and dark, largest text, VoiceOver and TalkBack
 
 ## Dependencies

@@ -43,4 +43,8 @@ test.describe('derivation', () => {
     expect(message).toContain('S09b-signin-code.dc.html')
     expect(message).toMatch(/\.h1 \{ color \}: rgb\(18, 52, 86\) has no role/)
   })
+
+  // Waits for the designer's Arabic dark boards 42 and 43 (research R6, T035 in
+  // specs/007-mobile-foundation/tasks.md). Marked fixme so the scenario stays visible and open.
+  test.fixme('MF-US2-S2 derived Arabic dark of 21 and 13 match boards 42 and 43', async () => {})
 })
