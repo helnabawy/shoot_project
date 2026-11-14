@@ -54,7 +54,16 @@ vendor (owner approval, T006, T051, T056, T092) and the manual and review gates.
 steps 2–4 and the booking pages in the app (`apps/mobile/lib/features/quick_match/`, screens 07–14
 and 40) over eight additive endpoints (`/api/mobile/v1/match/…`, `/quotations/…`; commands in
 `apps/web/src/modules/booking/commands/`, shared with the website's actions); open in its `tasks.md`:
-the golden and pixel-diff proof, the Arabic review and the device walkthrough. Of the rest, none is
+the golden and pixel-diff proof, the Arabic review and the device walkthrough. Feature 019
+(`specs/019-creator-brief-inbox/`, test-id prefix `BI-`) is implemented on its branch: live creators see
+open client briefs that match them (Quick Match step-2 rules, `packages/domain/src/booking/inbox.ts`) in
+Up next and at `/account/inbox` (web and app), accept or reject them (optional reason from the
+`brief-reject-reasons` option set); step 2 lists acceptors first and a picked acceptor starts confirmed;
+clients and creators get app push (modules `apps/web/src/modules/{inbox,push}/`, collections
+`brief-answers` and `push-devices`, `PUSH_PROVIDER` = `fcm` | `console` | `off` with `FCM_SERVICE_ACCOUNT`;
+the app's `core/push/`, Firebase values from `--dart-define-from-file=firebase.env.json`). Open in its
+`tasks.md`: the APNs key and service account from the owner, the device walkthrough, goldens and the
+design finish review. Of the rest, none is
 implemented.
 007, 008 and 009 are planned (spec, plan, research, data model, contracts,
 quickstart, tasks: 73, 95 and 93 tasks); 010–015 are draft specs (plan and tasks when next).

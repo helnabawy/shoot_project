@@ -42,16 +42,16 @@ cd apps/mobile && dart format --set-exit-if-changed lib test && flutter analyze 
 
 | Id | Scenario | Tests |
 |---|---|---|
-| BI-US1-S1 | Up next shows the waiting count and the soonest matching brief | `inbox-queries.int.test.ts`, `account-home.test.ts`, `AccountHome.inbox.test.tsx`, `account_cubit_test.dart` |
+| BI-US1-S1 | Up next shows the waiting count and the soonest matching brief | `inbox-queries.int.test.ts`, `account-home.test.ts`, `AccountHome.inbox.test.tsx`, `inbox_cubit_test.dart`, `inbox_page_test.dart` |
 | BI-US1-S2 | Wrong type, emirate, blocked or booked date, or unmet filter: not shown | `inbox.test.ts`, `inbox-queries.int.test.ts` |
 | BI-US1-S3 | Occasion, type, emirate, date and sent time; never client contact | `inbox-queries.int.test.ts`, `mobile-api-inbox.int.test.ts` |
 | BI-US1-S4 | A hidden profile sees no briefs; Up next keeps the profile message | `inbox-queries.int.test.ts`, `account-home.test.ts` |
-| BI-US1-S5 | Bookings waiting for an answer come before briefs | `account-home.test.ts`, `account_cubit_test.dart` |
-| BI-US1-S6 | Nothing matching: Up next is clear | `account-home.test.ts`, `account_cubit_test.dart` |
+| BI-US1-S5 | Bookings waiting for an answer come before briefs | `account-home.test.ts`, `inbox_cubit_test.dart` |
+| BI-US1-S6 | Nothing matching: Up next is clear | `account-home.test.ts`, `inbox_cubit_test.dart` |
 | BI-US1-S7 | The app shows the same briefs and counts as the website | `mobile-api-inbox.int.test.ts`, `inbox_cubit_test.dart`, `inbox_page_test.dart` |
 | BI-US2-S1 | Accepting records the answer and leaves the waiting count | `inbox-commands.int.test.ts`, `inbox_cubit_test.dart`, `InboxList.test.tsx` |
 | BI-US2-S2 | Several creators accept the same brief | `inbox-commands.int.test.ts` |
-| BI-US2-S3 | Step 2 lists acceptors first, marked "said yes" | `inbox.test.ts`, `booking-match-acceptors.int.test.ts`, `mobile-api-inbox.int.test.ts` |
+| BI-US2-S3 | Step 2 lists acceptors first, marked "said yes" | `inbox.test.ts`, `booking-match-acceptors.int.test.ts`, `quick_match_pages_test.dart`, `bi-us2-inbox.spec.ts` |
 | BI-US2-S4 | Picked acceptor starts confirmed after the quotation is accepted | `inbox.test.ts`, `booking-match-acceptors.int.test.ts` |
 | BI-US2-S5 | Picking a non-acceptor or "let us choose" follows today's flow | `booking-match-acceptors.int.test.ts` |
 | BI-US2-S6 | Booked with another creator: "went to another creator" | `inbox-queries.int.test.ts` |
@@ -72,7 +72,7 @@ cd apps/mobile && dart format --set-exit-if-changed lib test && flutter analyze 
 | BI-US5-S1 | New brief: one push to each matching creator, in their language | `inbox-announce.int.test.ts` |
 | BI-US5-S2 | Named-creator brief pushes only that creator | `inbox-announce.int.test.ts` |
 | BI-US5-S3 | Non-matching, hidden or push-off creators get none | `inbox-announce.int.test.ts` |
-| BI-US5-S4 | Expired device is forgotten; the brief is still saved | `push-fcm.test.ts`, `inbox-announce.int.test.ts` |
+| BI-US5-S4 | Expired device is forgotten; the brief is still saved | `fcm.test.ts`, `inbox-announce.int.test.ts` |
 | BI-US6-S1 | The app asks permission once, with a reason | `push_cubit_test.dart` |
 | BI-US6-S2 | Allowing registers the device; sign-out removes it | `push-devices.int.test.ts`, `push_cubit_test.dart`, `session_cubit_test.dart` |
 | BI-US6-S3 | Push switched off: nothing is sent until on again | `push-devices.int.test.ts`, `inbox-notify.int.test.ts`, `menu_page_test.dart` |
