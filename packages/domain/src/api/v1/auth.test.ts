@@ -19,6 +19,7 @@ describe('the 009 examples parse with their schemas', () => {
     [otpChallengeV1, 'auth-challenge'],
     [otpVerifyV1, 'auth-verify-seeker'],
     [otpVerifyV1, 'auth-verify-provider'],
+    [otpVerifyV1, 'auth-verify-sign-in'],
     [authTokenV1, 'auth-token'],
     [authRefreshV1, 'auth-refresh'],
     [meV1, 'me-seeker'],

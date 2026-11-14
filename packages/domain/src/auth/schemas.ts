@@ -42,13 +42,6 @@ export const registerSchema = z
 
 export type RegisterInput = z.infer<typeof registerSchema>
 
-export const loginSchema = z.object({
-  email,
-  password: z.string().min(1, 'auth.errors.passwordRequired'),
-})
-
-export type LoginInput = z.infer<typeof loginSchema>
-
 /**
  * A provider must pick personas that are all currently active, at most as many as a profile holds;
  * seekers never need one (FR-019).

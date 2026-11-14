@@ -9,6 +9,7 @@ typedef VerifyCodeParams = ({
   OtpChallenge challenge,
   String code,
   SignupChoice? signup,
+  bool askIfNew,
 });
 
 /// Checks a code. A code that is not six digits fails here, as the server
@@ -33,6 +34,7 @@ final class VerifyCode implements UseCase<Verified, VerifyCodeParams> {
       challenge: params.challenge,
       code: params.code,
       signup: params.signup,
+      askIfNew: params.askIfNew,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shoot_mobile/core/content/sections.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/core/preferences/preferences_store.dart';
@@ -255,6 +256,49 @@ void main() {
     final gradient =
         (box.decoration! as BoxDecoration).gradient! as LinearGradient;
     expect(gradient.colors.first.computeLuminance(), lessThan(0.05));
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('the dark band, when it ends the page, runs to the bottom edge '
+      'with no strip of ground under it', (tester) async {
+    final full = exampleLanding();
+    final landing = Landing(
+      locale: full.locale,
+      hero: full.hero,
+      navigation: full.navigation,
+      sections: [
+        for (final s in full.sections)
+          if (s is! CallToActionSection) s,
+      ],
+    );
+    await pumpLanding(tester, landing: Ok(landing), size: const Size(360, 800));
+    final scroll = tester
+        .widget<SingleChildScrollView>(
+          find.byKey(const ValueKey('landing:scroll')),
+        )
+        .controller!;
+    scroll.jumpTo(scroll.position.maxScrollExtent);
+    await tester.pump();
+    final band = tester.getRect(find.byKey(const ValueKey('landing:band')));
+    expect(band.bottom, 800);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('a closing call to action ends the page 32 px above the edge', (
+    tester,
+  ) async {
+    await pumpLanding(tester, size: const Size(360, 800));
+    final scroll = tester
+        .widget<SingleChildScrollView>(
+          find.byKey(const ValueKey('landing:scroll')),
+        )
+        .controller!;
+    scroll.jumpTo(scroll.position.maxScrollExtent);
+    await tester.pump();
+    final hit = tester.getRect(
+      find.byKey(const ValueKey('landing:closingTopHit')),
+    );
+    expect(hit.bottom, 800 - 32);
     await tester.pumpWidget(const SizedBox());
   });
 

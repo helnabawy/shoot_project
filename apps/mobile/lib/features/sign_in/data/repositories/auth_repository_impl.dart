@@ -26,6 +26,7 @@ final class AuthRepositoryImpl implements AuthRepository {
     required OtpChallenge challenge,
     required String code,
     SignupChoice? signup,
+    bool askIfNew = false,
   }) => apiResult(
     () async => (await _remote.verifyCode(
       OtpVerifyModel(
@@ -33,6 +34,7 @@ final class AuthRepositoryImpl implements AuthRepository {
         phone: challenge.phone,
         code: code,
         signup: signup,
+        askIfNew: askIfNew,
       ),
     )).toEntity(),
   );

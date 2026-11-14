@@ -27,8 +27,8 @@ function useCountdown(resendAt: string): number {
 
 /**
  * The code step (FR-060, FR-053): one field with `autocomplete="one-time-code"`, the countdown to a
- * new code, and (standalone sign-in only) the role rows: "I need a …" (default) or "I'm a …", which
- * asks for the professions and the acceptance before Continue.
+ * new code, and (standalone sign-in only, once the code proved a new number) the role rows:
+ * "I need a …" (default) or "I'm a …", which asks for the professions and the acceptance before Continue.
  */
 export function CodeStep({
   locale,
@@ -57,7 +57,10 @@ export function CodeStep({
   const [role, setRole] = useState<'seeker' | 'provider'>(state?.values?.role === 'provider' ? 'provider' : 'seeker')
   const err = (key: string) => (state?.errors?.[key] ? t(state.errors[key]) : undefined)
   const other = current.channel === 'sms' ? 'whatsapp' : 'sms'
-  const showRoles = mode === 'login' && personas.length > 0
+  // The role rows show only once a correct code turned out to be a new number; a returning member
+  // signs straight in.
+  const askRole = mode === 'login' && personas.length > 0
+  const showRoles = askRole && state?.needsRole === true
   const list = (kind: 'or' | 'and') => joinList(personas.map((p) => p.label), kind, locale)
   const combined =
     personas.length > 1 && personas.length <= MAX_PROVIDER_PERSONAS
@@ -75,6 +78,7 @@ export function CodeStep({
       </p>
       <BriefBar as="form" action={action} noValidate data-testid="code-step" aria-label={t('auth.otp.codeTitle')}>
         <input type="hidden" name="locale" value={locale} />
+        {askRole && !showRoles ? <input type="hidden" name="askRole" value="1" /> : null}
         <div className="py-2">
           <Field
             id={`${id}-code`}
@@ -86,6 +90,7 @@ export function CodeStep({
             maxLength={6}
             required
             autoFocus
+            defaultValue={state?.values?.code}
             label={t('auth.otp.code')}
             className="[&_input]:font-mono [&_input]:tracking-[0.4em] [&_input]:text-[22px]"
             error={err('code')}

@@ -8,13 +8,12 @@ spec, once the design is approved.
 | | |
 |---|---|
 | Dart package | `shoot_mobile` |
-| Android application id | `ae.shoot.shoot_mobile` |
-| iOS bundle id | `ae.shoot.shootMobile` |
+| Android application id | `ae.shoot.mobile` |
+| iOS bundle id | `ae.shoot.mobile` |
 | Flutter / Dart | 3.47.9 / 3.13.7 (stable) |
 | Platforms | iOS, Android |
 
-The ids come from `flutter create --org ae.shoot`. Change them before the first store upload if the
-owner picks a different reverse domain; after that they are permanent.
+Android and iOS share one id, `ae.shoot.mobile`. It is permanent after the first store upload.
 
 ## Run it
 

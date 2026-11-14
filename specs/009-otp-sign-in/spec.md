@@ -63,8 +63,8 @@ again with the same number by WhatsApp and land in the same account.
    that number as a client, acceptance of the current Terms and Privacy Policy is recorded, and the
    person is signed in and taken to where they were going (or home).
 3. **Given** a code was sent to a number that already has an account, **When** the person enters the
-   correct code, **Then** they are signed in to that same account and their role choice on the code
-   screen changes nothing.
+   correct code, **Then** they are signed in to that same account straight away: no role question,
+   no further step, and nothing about the account changes.
 4. **Given** the code screen, **When** the person enters six digits that are not the code, **Then**
    the cells show the error state, "That code isn't right. Check the text we sent and type it
    again." is announced, the primary action reads "Try again" (clearing the cells), and the screen
@@ -261,8 +261,10 @@ add a number to an email account and sign in with it.
 - An existing email member signs in by code in the app with a number never attached to their
   account: a new, separate account is created; joining the two is done on the website (User Story 5,
   scenario 5).
-- A returning person picks "I'm a …" on the code screen: they see screen 23, and completing it signs
-  them in to their existing account unchanged.
+- A returning person never sees the role question: the code screen first verifies the code alone, and
+  only a number with no account then shows "I need a …" / "I'm a …" with the code kept (the answer
+  depends on the account only after the code is proven, FR-031). Choosing "I'm a …" there opens
+  screen 23 as before.
 - An account created by code has no name yet: the app and the website show "Your account" until the
   person gives one (name is asked after the brief in 012 and in Finish your account in 013).
 - The device clock is wrong: the countdown runs from the server's "resend at" and "expires at"
@@ -300,7 +302,11 @@ add a number to an email account and sign in with it.
   of the current Terms, Professional Terms and Privacy Policy; a client account MUST record the
   Terms and Privacy Policy (accepted by continuing, as screen 20 states).
 - **FR-012**: Choices made for a new account (role, professions, name) MUST be ignored when the
-  number already has an account; that account is never changed by signing in.
+  number already has an account; that account is never changed by signing in. On the standalone
+  sign-in (app and website) the role question MUST be shown only after a correct code proved that the
+  number has no account; a number with an account MUST be signed in directly after its code
+  (`askIfNew` on verify answers `409 auth.errors.signupRequired` and keeps the challenge live, without
+  counting the attempt).
 - **FR-013**: Only a number proven with a code MAY sign in to an account; numbers typed elsewhere
   (bookings, profiles) MUST never be used to find or join accounts.
 - **FR-014**: A name MUST be optional for accounts created by code; when given (first time only) it

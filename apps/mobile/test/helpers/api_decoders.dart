@@ -35,6 +35,7 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'auth-request': (json) => OtpRequestModel.fromJson(json).toJson(),
   'auth-verify-seeker': (json) => OtpVerifyModel.fromJson(json).toJson(),
   'auth-verify-provider': (json) => OtpVerifyModel.fromJson(json).toJson(),
+  'auth-verify-sign-in': (json) => OtpVerifyModel.fromJson(json).toJson(),
   // 013: the client account.
   'me-account': (json) => AccountHomeModel.fromJson(json).toEntity(),
   'me-account-empty': (json) => AccountHomeModel.fromJson(json).toEntity(),

@@ -152,6 +152,7 @@ void main() {
           challenge: any(named: 'challenge'),
           code: any(named: 'code'),
           signup: any(named: 'signup'),
+          askIfNew: any(named: 'askIfNew'),
         ),
       ).thenAnswer(
         (_) async => Ok(Verified(session: exampleSession(), isNew: true)),
@@ -171,6 +172,7 @@ void main() {
                   challenge: any(named: 'challenge'),
                   code: '123456',
                   signup: captureAny(named: 'signup'),
+                  askIfNew: any(named: 'askIfNew'),
                 ),
               ).captured.single
               as SignupChoice;
@@ -192,6 +194,7 @@ void main() {
           challenge: any(named: 'challenge'),
           code: any(named: 'code'),
           signup: any(named: 'signup'),
+          askIfNew: any(named: 'askIfNew'),
         ),
       ).thenAnswer(
         (_) async => const Err(
@@ -286,6 +289,7 @@ void main() {
           challenge: any(named: 'challenge'),
           code: any(named: 'code'),
           signup: any(named: 'signup'),
+          askIfNew: any(named: 'askIfNew'),
         ),
       ).thenAnswer(
         (_) async => Ok(Verified(session: exampleSession(), isNew: false)),
@@ -309,6 +313,7 @@ void main() {
           challenge: any(named: 'challenge'),
           code: any(named: 'code'),
           signup: any(named: 'signup'),
+          askIfNew: any(named: 'askIfNew'),
         ),
       ).called(1);
     });

@@ -26,6 +26,7 @@ import 'package:shoot_mobile/core/widgets/shoot_header.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon_button.dart';
 import 'package:shoot_mobile/core/widgets/shoot_image.dart';
+import 'package:shoot_mobile/core/widgets/specialty_scene.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/core/widgets/wordmark.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_bar.dart';
@@ -201,6 +202,9 @@ class _LandingPageState extends State<LandingPage> {
   }
 }
 
+/// Which section ends the page: it drops the gap that separates it from a next one.
+enum _Last { hero, occasions, creators, band, closing }
+
 class _LandingView extends StatelessWidget {
   const _LandingView({
     required this.state,
@@ -221,7 +225,15 @@ class _LandingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sections = state.sections;
-    final c = context.colors;
+    final last = sections.closing != null
+        ? _Last.closing
+        : sections.band != null
+        ? _Last.band
+        : sections.creators != null
+        ? _Last.creators
+        : sections.occasions != null
+        ? _Last.occasions
+        : _Last.hero;
     // The hero (and its golden-hour scene) fills the screen on first view; sections follow below.
     return LayoutBuilder(
       builder: (context, box) => SingleChildScrollView(
@@ -243,13 +255,21 @@ class _LandingView extends StatelessWidget {
                   pauseNearHero: sections.creators == null,
                 ),
                 if (sections.occasions case final s?)
-                  _Occasions(section: s, brief: brief),
-                if (sections.creators case final s?) _Creators(section: s),
-                if (sections.band case final s?) _Band(section: s),
+                  _Occasions(
+                    section: s,
+                    brief: brief,
+                    last: last == _Last.occasions,
+                  ),
+                if (sections.creators case final s?)
+                  _Creators(section: s, last: last == _Last.creators),
+                if (sections.band case final s?)
+                  _Band(section: s, last: last == _Last.band),
                 if (sections.closing case final s?)
                   _Closing(section: s, brief: brief),
-                SizedBox(height: MediaQuery.paddingOf(context).bottom + 32),
-                ColoredBox(color: c.ground),
+                // The dark band runs to the bottom edge itself; any other last section keeps a
+                // short gap above the home indicator, never the gap between sections as well.
+                if (last != _Last.band)
+                  SizedBox(height: MediaQuery.paddingOf(context).bottom + 32),
               ],
             ),
           ),
@@ -488,16 +508,21 @@ class _SectionHead extends StatelessWidget {
 
 /// "What do you need shot?": a tile starts the brief with that occasion chosen.
 class _Occasions extends StatelessWidget {
-  const _Occasions({required this.section, required this.brief});
+  const _Occasions({
+    required this.section,
+    required this.brief,
+    required this.last,
+  });
 
   final CategoriesGridSection section;
   final BriefCubit brief;
+  final bool last;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 64, top: 16),
+      padding: EdgeInsets.only(bottom: last ? 0 : 64, top: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -573,9 +598,10 @@ class _OccasionTile extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 image.image == null
-                    ? SceneTile(
+                    ? SpecialtyScene(
+                        scene: image.scene,
+                        glyph: image.glyph,
                         variant: SceneTile.variantFor(index + 1),
-                        radius: 0,
                       )
                     : ShootImage(image.image, sceneIndex: index),
                 Align(
@@ -610,15 +636,16 @@ class _OccasionTile extends StatelessWidget {
 
 /// "Meet the creators": a slowly moving strip of real creator cards, behind the page's one Pause.
 class _Creators extends StatelessWidget {
-  const _Creators({required this.section});
+  const _Creators({required this.section, required this.last});
 
   final CreatorNetworkSection section;
+  final bool last;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 64),
+      padding: EdgeInsets.only(bottom: last ? 0 : 64),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -834,17 +861,25 @@ class _CreatorCard extends StatelessWidget {
 
 /// "Shoot for a living?": stays dark in both themes (spec FR-023).
 class _Band extends StatelessWidget {
-  const _Band({required this.section});
+  const _Band({required this.section, required this.last});
 
   final PersonaBandSection section;
+
+  /// The band ends the page: it runs under the home indicator instead of leaving a strip of ground.
+  final bool last;
 
   @override
   Widget build(BuildContext context) {
     const ink = Color(0xFFF5F5F7);
     return Container(
       key: const ValueKey('landing:band'),
-      margin: const EdgeInsets.only(bottom: 64),
-      padding: const EdgeInsetsDirectional.fromSTEB(20, 56, 20, 56),
+      margin: EdgeInsets.only(bottom: last ? 0 : 64),
+      padding: EdgeInsetsDirectional.fromSTEB(
+        20,
+        56,
+        20,
+        56 + (last ? MediaQuery.paddingOf(context).bottom : 0),
+      ),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,

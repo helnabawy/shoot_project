@@ -23,6 +23,8 @@ Widget _screen(Variant variant) {
       challenge: exampleChallenge(),
       code: '4827',
       personas: examplePersonas(arabic: arabic),
+      // Board 21 is the new-number case: the role question after a proven code.
+      roleNeeded: true,
     ),
   );
   return BlocProvider.value(value: cubit, child: const CodePage());
