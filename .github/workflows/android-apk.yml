@@ -2,7 +2,7 @@ name: Android APK
 
 # Builds the release APK of apps/mobile.
 # - Push to main touching the app: APK as a workflow artifact (kept 30 days), plus the rolling
-#   "latest" pre-release, replaced on every build: …/releases/download/latest/shoot-latest.apk
+#   "latest" pre-release, replaced on every main build (a manual run on main too): …/releases/download/latest/shoot-latest.apk
 # - Tag v* (e.g. v0.1.0): the same, plus a GitHub Release with the APK attached.
 # - Run workflow (Actions tab): build on demand, optionally against another API.
 #
@@ -131,10 +131,13 @@ jobs:
         env: { GH_TOKEN: '${{ github.token }}' }
         run: gh release create "$GITHUB_REF_NAME" "build/$APK_NAME" --title "$GITHUB_REF_NAME" --generate-notes
 
-      - name: Rolling "latest" pre-release (pushes to main only)
+      - name: Rolling "latest" pre-release (main only)
         # One fixed file name, so the download link never changes. A pre-release is never
-        # GitHub's "Latest release", so a v* release keeps that badge.
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        # GitHub's "Latest release", so a v* release keeps that badge. A manual run on main counts too,
+        # unless it was pointed at another API.
+        if: >-
+          github.ref == 'refs/heads/main' &&
+          (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.api_base_url == ''))
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
           cp "build/$APK_NAME" build/shoot-latest.apk
@@ -143,7 +146,7 @@ jobs:
             --prerelease \
             --target "$GITHUB_SHA" \
             --title "Latest main build (#${{ github.run_number }})" \
-            --notes "Built from ${GITHUB_SHA::7} against $API_BASE_URL ($APP_ENV). Replaced on every push to main that touches the app."
+            --notes "Built from ${GITHUB_SHA::7} against $API_BASE_URL ($APP_ENV). Replaced on every main build."
 
       - name: Remove the keystore and Firebase config
         if: always()
