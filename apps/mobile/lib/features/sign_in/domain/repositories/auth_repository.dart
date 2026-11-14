@@ -26,9 +26,12 @@ abstract interface class AuthRepository {
     required OtpChannel channel,
   });
 
+  /// With [askIfNew], a number with no account fails with
+  /// `auth.errors.signupRequired` and the challenge stays live.
   Future<Result<Verified>> verifyCode({
     required OtpChallenge challenge,
     required String code,
     SignupChoice? signup,
+    bool askIfNew = false,
   });
 }

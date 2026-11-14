@@ -44,6 +44,7 @@ final class SignInFlowState extends Equatable {
     this.failure,
     this.errorCount = 0,
     this.isNew = false,
+    this.roleNeeded = false,
   });
 
   final SignInStatus status;
@@ -77,8 +78,13 @@ final class SignInFlowState extends Equatable {
   final int errorCount;
   final bool isNew;
 
-  /// The role question shows only on the standalone sign-in, and only when the personas loaded.
-  bool get asksRole => mode == SignInMode.signIn && personas.isNotEmpty;
+  /// The code was right but the number has no account (`auth.errors.signupRequired`).
+  final bool roleNeeded;
+
+  /// The role question shows only on the standalone sign-in, when the personas loaded, and only
+  /// once a correct code proved a new number: a returning member signs straight in.
+  bool get asksRole =>
+      mode == SignInMode.signIn && personas.isNotEmpty && roleNeeded;
 
   /// Screen 23 finishing a sign-up whose code was already sent from screen 20 (OT-US4-S2):
   /// the number is read-only and the Top Hit verifies.
@@ -114,6 +120,7 @@ final class SignInFlowState extends Equatable {
     Failure? Function()? failure,
     int? errorCount,
     bool? isNew,
+    bool? roleNeeded,
   }) {
     return SignInFlowState(
       status: status ?? this.status,
@@ -130,6 +137,7 @@ final class SignInFlowState extends Equatable {
       failure: failure != null ? failure() : this.failure,
       errorCount: errorCount ?? this.errorCount,
       isNew: isNew ?? this.isNew,
+      roleNeeded: roleNeeded ?? this.roleNeeded,
     );
   }
 
@@ -149,6 +157,7 @@ final class SignInFlowState extends Equatable {
     failure,
     errorCount,
     isNew,
+    roleNeeded,
   ];
 
   // The state holds the typed number and code: never print them.

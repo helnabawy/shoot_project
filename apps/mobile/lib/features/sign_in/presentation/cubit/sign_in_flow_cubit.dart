@@ -102,6 +102,7 @@ class SignInFlowCubit extends Cubit<SignInFlowState> {
       status: SignInStatus.editingNumber,
       challenge: () => null,
       code: '',
+      roleNeeded: false,
       failure: () => null,
       fieldError: () => null,
     ),
@@ -177,7 +178,13 @@ class SignInFlowCubit extends Cubit<SignInFlowState> {
       emit(state.copyWith(status: SignInStatus.finishing));
       return;
     }
-    await _verify(state.mode == SignInMode.join ? _providerSignup() : null);
+    if (state.mode == SignInMode.join) return _verify(_providerSignup());
+    // Before the role is known, a returning member signs straight in; a new number comes back
+    // with `roleNeeded` and the code kept.
+    await _verify(
+      null,
+      askIfNew: state.personas.isNotEmpty && !state.roleNeeded,
+    );
   }
 
   /// Continue on screen 23 in finish mode: verifies once, with the creator sign-up.
@@ -223,7 +230,7 @@ class SignInFlowCubit extends Cubit<SignInFlowState> {
     acceptTerms: state.accepted,
   );
 
-  Future<void> _verify(SignupChoice? signup) async {
+  Future<void> _verify(SignupChoice? signup, {bool askIfNew = false}) async {
     final challenge = state.challenge!;
     emit(
       state.copyWith(
@@ -236,6 +243,7 @@ class SignInFlowCubit extends Cubit<SignInFlowState> {
       challenge: challenge,
       code: state.code,
       signup: signup,
+      askIfNew: askIfNew,
     ));
     if (isClosed) return;
     switch (result) {
@@ -273,6 +281,17 @@ class SignInFlowCubit extends Cubit<SignInFlowState> {
           fieldError: () => field,
         );
 
+    if (code == 'auth.errors.signupRequired') {
+      emit(
+        state.copyWith(
+          status: SignInStatus.awaitingCode,
+          roleNeeded: true,
+          failure: () => null,
+          fieldError: () => null,
+        ),
+      );
+      return;
+    }
     if (fieldCodes.contains('auth.errors.phoneInvalid') ||
         code == 'auth.errors.phoneInvalid') {
       emit(next(SignInStatus.editingNumber, field: 'auth.errors.phoneInvalid'));

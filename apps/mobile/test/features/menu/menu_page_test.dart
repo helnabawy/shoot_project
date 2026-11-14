@@ -53,6 +53,7 @@ Future<(RecordingOpener, RecordingOpener, InMemoryPreferencesStore)> pumpMenu(
       '/login',
       '/register',
       '/account',
+      '/account/bookings',
     ],
     routes: [
       GoRoute(
@@ -109,7 +110,7 @@ void main() {
       expect(find.text('Terms', findRichText: true), findsWidgets);
       expect(
         find.textContaining('Sign in with email', findRichText: true),
-        findsWidgets,
+        findsNothing,
       );
       // One primary action.
       expect(find.text('Start a brief'), findsOneWidget);
@@ -160,6 +161,31 @@ void main() {
       expect(find.text('stub:/register'), findsOneWidget);
     },
   );
+
+  testWidgets('a signed-in creator opens their bookings from the menu', (
+    tester,
+  ) async {
+    final session = SessionCubit(
+      store: MemorySessionStore(),
+      api: MockAuthApi(),
+      clock: examplesClock,
+      restored: exampleSession(exp: DateTime.utc(2030)),
+      storeRead: true,
+    );
+    addTearDown(session.close);
+    await pumpMenu(tester, session: session);
+    final bookings = find.byKey(const ValueKey('menu:bookings'));
+    await tester.ensureVisible(bookings);
+    expect(find.text('Bookings'), findsOneWidget);
+    await tester.tap(bookings);
+    await tester.pumpAndSettle();
+    expect(find.text('stub:/account/bookings'), findsOneWidget);
+  });
+
+  testWidgets('a signed-out visitor sees no Bookings row', (tester) async {
+    await pumpMenu(tester);
+    expect(find.byKey(const ValueKey('menu:bookings')), findsNothing);
+  });
 
   testWidgets('BI-US6-S3 a signed-in member switches app notifications off', (
     tester,
@@ -252,7 +278,7 @@ void main() {
   });
 
   testWidgets(
-    'ML-US3-S1 destinations open their screens; the legal and editor links go to the website',
+    'ML-US3-S1 destinations open their screens; the legal links go to the website',
     (tester) async {
       final (web, _, _) = await pumpMenu(tester);
       await tester.tap(find.text('Creators'));
@@ -261,9 +287,8 @@ void main() {
       tester.state<NavigatorState>(find.byType(Navigator).first).pop();
       await tester.pumpAndSettle();
       await tester.tap(find.bySemanticsLabel('Terms'));
-      await tester.tap(find.bySemanticsLabel('Sign in with email'));
       await tester.pumpAndSettle();
-      expect(web.opened.map((u) => u.path), ['/terms', '/login/email']);
+      expect(web.opened.map((u) => u.path), ['/terms']);
     },
   );
 

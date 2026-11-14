@@ -26,7 +26,7 @@ List<RouteBase> signInRoutes({
       routes: [
         GoRoute(
           path: AppRoutes.login,
-          builder: (context, state) => NumberPage(links: links),
+          builder: (context, state) => const NumberPage(),
           routes: [
             GoRoute(
               path: 'code',

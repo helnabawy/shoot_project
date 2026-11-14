@@ -5,18 +5,15 @@ import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderWithLocale } from '../../../../tests/setup/render'
 import { CodeStep } from './CodeStep'
-import { LoginForm } from './LoginForm'
 import { PhoneStep } from './PhoneStep'
 
 const requestCodeAction = vi.fn(async () => ({ errors: { phone: 'auth.errors.phoneInvalid' }, values: { phone: '04 123 4567' } }))
 const verifyCodeAction = vi.fn(async () => ({ errors: { code: 'auth.errors.codeInvalid' }, values: {} }))
 const resendCodeAction = vi.fn(async () => ({ resendAt: new Date(Date.now() + 60_000).toISOString(), channel: 'whatsapp' }))
-const login = vi.fn(async () => ({ formError: 'auth.errors.locked' }))
 vi.mock('../actions', () => ({
   requestCodeAction: (...a: unknown[]) => requestCodeAction(...(a as [])),
   verifyCodeAction: (...a: unknown[]) => verifyCodeAction(...(a as [])),
   resendCodeAction: (...a: unknown[]) => resendCodeAction(...(a as [])),
-  login: (...a: unknown[]) => login(...(a as [])),
 }))
 vi.mock('@/i18n/navigation', () => ({
   Link: ({ href, children, ...rest }: { href: unknown; children: React.ReactNode }) => (
@@ -40,7 +37,7 @@ const later = (s: number) => new Date(Date.now() + s * 1000).toISOString()
 describe('009 US5 the number step (/login, /register)', () => {
   beforeEach(() => vi.clearAllMocks())
 
-  it('OT-US5-S1 asks for a UAE mobile number and a channel, SMS first, with the email fallback', () => {
+  it('OT-US5-S1 asks for a UAE mobile number and a channel, SMS first, with no email sign-in', () => {
     renderWithLocale(<PhoneStep locale="en" next="/account" />)
     const phone = screen.getByLabelText('Mobile number')
     expect(phone).toHaveAttribute('type', 'tel')
@@ -48,7 +45,7 @@ describe('009 US5 the number step (/login, /register)', () => {
     expect(screen.getByRole('group', { name: 'Send the code by' })).toBeInTheDocument()
     expect(screen.getByRole('radio', { name: 'SMS' })).toBeChecked()
     expect(screen.getByRole('radio', { name: 'WhatsApp' })).not.toBeChecked()
-    expect(screen.getByRole('link', { name: 'Editor? Sign in with email' }).getAttribute('href')).toContain('/login/email')
+    expect(screen.queryByRole('link', { name: /email/i })).toBeNull()
     expect(screen.queryByLabelText('Password')).toBeNull()
   })
 
@@ -126,8 +123,23 @@ describe('009 US5 the code step (/login/code)', () => {
     expect(screen.queryByRole('button', { name: /WhatsApp instead/ })).toBeNull()
   })
 
-  it('the role rows come from the active personas, "I need a …" first; "I\'m a …" asks for the profession and acceptance', async () => {
+  it('OT-US1-S11 no role question before the code is proven: Continue asks the server whether the number is new', async () => {
     renderWithLocale(<CodeStep locale="en" phone="+971 50 123 4567" channel="sms" resendAt={later(0)} mode="login" personas={personas} legal={legal} />)
+    expect(screen.queryByRole('radio')).toBeNull()
+    await userEvent.type(screen.getByLabelText('Six-digit code'), '482713')
+    await userEvent.click(screen.getByTestId('verify-code'))
+    const form = (verifyCodeAction.mock.calls[0] as unknown as [unknown, FormData])[1]
+    expect(form.get('askRole')).toBe('1')
+    expect(form.has('role')).toBe(false)
+  })
+
+  it('OT-US1-S11 a new number gets the role rows with the code kept; "I\'m a …" asks for the profession and acceptance', async () => {
+    verifyCodeAction.mockResolvedValueOnce({ needsRole: true, values: { code: '482713' } } as never)
+    renderWithLocale(<CodeStep locale="en" phone="+971 50 123 4567" channel="sms" resendAt={later(0)} mode="login" personas={personas} legal={legal} />)
+    await userEvent.type(screen.getByLabelText('Six-digit code'), '482713')
+    await userEvent.click(screen.getByTestId('verify-code'))
+    expect(await screen.findByRole('radio', { name: 'I need a Photographer or Videographer' })).toBeChecked()
+    expect(screen.getByLabelText('Six-digit code')).toHaveValue('482713')
     expect(screen.getByRole('radio', { name: 'I need a Photographer or Videographer' })).toBeChecked()
     expect(screen.queryByRole('checkbox')).toBeNull()
     await userEvent.click(screen.getByRole('radio', { name: "I'm a Photographer or Videographer" }))
@@ -154,23 +166,6 @@ describe('009 US5 the code step (/login/code)', () => {
   it('renders in Arabic', () => {
     renderWithLocale(<CodeStep locale="ar" phone="+971 50 123 4567" channel="sms" resendAt={later(10)} mode="login" personas={personas} />, { locale: 'ar' })
     expect(screen.getByLabelText('الرمز المكوّن من ستة أرقام')).toHaveAttribute('dir', 'ltr')
-  })
-})
-
-describe('US4 login form (now /login/email)', () => {
-  it('carries the return destination and announces a locked account', async () => {
-    renderWithLocale(<LoginForm locale="en" next="/account" />)
-    const form = screen.getByTestId('login-form') as HTMLFormElement
-    expect(new FormData(form).get('next')).toBe('/account')
-    expect(screen.getByLabelText('Password')).toHaveAttribute('autocomplete', 'current-password')
-    await userEvent.click(screen.getByTestId('login-submit'))
-    expect(await screen.findByRole('alert')).toHaveTextContent('Too many attempts. Try again in 15 minutes.')
-    expect(screen.getByRole('link', { name: 'Sign in with your mobile number' }).getAttribute('href')).toContain('/login')
-  })
-
-  it('renders in Arabic', () => {
-    renderWithLocale(<LoginForm locale="ar" />, { locale: 'ar' })
-    expect(screen.getByLabelText('البريد الإلكتروني')).toBeInTheDocument()
   })
 })
 

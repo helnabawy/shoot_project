@@ -6,7 +6,6 @@ library;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shoot_mobile/core/web/website_links.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/cubit/sign_in_flow_cubit.dart';
 import 'package:shoot_mobile/features/sign_in/presentation/pages/number_page.dart';
 
@@ -20,10 +19,7 @@ Widget _screen(Variant variant) {
     repository: MockAuthRepository(),
     initial: SignInFlowState(personas: examplePersonas(arabic: arabic)),
   );
-  return BlocProvider.value(
-    value: cubit,
-    child: const NumberPage(links: WebsiteLinks(testConfig)),
-  );
+  return BlocProvider.value(value: cubit, child: const NumberPage());
 }
 
 void main() {

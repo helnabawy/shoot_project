@@ -9,7 +9,7 @@ Future<bool> openInBrowser(Uri uri) =>
     launchUrl(uri, mode: LaunchMode.externalApplication);
 
 /// Pages of the website the app opens in the browser (research R17): the legal documents a
-/// person accepts (until feature 015 builds them in the app) and the email sign-in for editors.
+/// person accepts (until feature 015 builds them in the app).
 /// Addresses follow the web's `LEGAL_PATHS` and an `/ar` prefix for Arabic.
 class WebsiteLinks {
   const WebsiteLinks(this._config, {this._open = openInBrowser});
@@ -30,8 +30,4 @@ class WebsiteLinks {
 
   Future<bool> privacy(String languageCode) =>
       _open(address('/privacy', languageCode: languageCode));
-
-  /// The website's email sign-in (009 User Story 5).
-  Future<bool> emailSignIn(String languageCode) =>
-      _open(address('/login/email', languageCode: languageCode));
 }

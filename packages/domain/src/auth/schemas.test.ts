@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { combinedPersonaValue, isProviderRegistrationValid, loginSchema, MAX_PROVIDER_PERSONAS, registerSchema } from './schemas'
+import { combinedPersonaValue, isProviderRegistrationValid, MAX_PROVIDER_PERSONAS, registerSchema } from './schemas'
 
 const valid = {
   name: 'Mariam Saeed',
@@ -63,15 +63,6 @@ describe('FR-019 registration schema', () => {
     const parsed = registerSchema.parse({ ...valid, accountType: 'provider', persona: combinedPersonaValue(['photographer', 'videographer']) })
     expect(parsed.persona).toEqual(['photographer', 'videographer'])
     expect(registerSchema.parse({ ...valid, accountType: 'provider', persona: ' a , ,b,a ' }).persona).toEqual(['a', 'b'])
-  })
-})
-
-describe('FR-022 login schema', () => {
-  it('normalises the email and requires a password', () => {
-    expect(loginSchema.parse({ email: ' A@B.co ', password: 'x' }).email).toBe('a@b.co')
-    expect(firstMessage(loginSchema.safeParse({ email: 'a@b.co', password: '' }))?.message).toBe(
-      'auth.errors.passwordRequired',
-    )
   })
 })
 

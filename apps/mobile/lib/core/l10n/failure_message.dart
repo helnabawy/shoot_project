@@ -27,6 +27,7 @@ enum ProblemCode {
   personaRequired('auth.errors.personaRequired'),
   personaInactive('auth.errors.personaInactive'),
   acceptTerms('auth.errors.acceptTerms'),
+  signupRequired('auth.errors.signupRequired'),
   // 013: the client account.
   emailInvalid('account.errors.emailInvalid'),
   emailInUse('account.errors.emailInUse'),
@@ -119,6 +120,7 @@ enum ProblemCode {
       personaRequired => l10n.problemPersonaRequired,
       personaInactive => l10n.problemPersonaInactive,
       acceptTerms => l10n.problemAcceptTerms,
+      signupRequired => l10n.problemSignupRequired,
       emailInvalid => l10n.problemEmailInvalid,
       emailInUse => l10n.problemEmailInUse,
       nameLength => l10n.problemNameLength,

@@ -1,14 +1,12 @@
 'use server'
 
 import { otpRequestV1 } from '@shoot/domain/api/v1'
-import { loginSchema } from '@shoot/domain/auth'
 import { cookies } from 'next/headers'
 import { redirect } from '@/i18n/navigation'
 import type { User } from '@/payload-types'
 import type { Problem } from '@/shared/api/problem'
 import { isLocale, type Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
-import { isPayloadError } from '@/shared/payload/errors'
 import { endSession } from './commands/end-session'
 import { linkNumber } from './commands/link-number'
 import { channelLabel } from './otp/message'
@@ -29,18 +27,14 @@ export type AuthState =
       /** The code step after a resend: when the next code may be asked for, and by which channel. */
       resendAt?: string
       channel?: 'sms' | 'whatsapp'
+      /** The code was right but the number is new: ask the role, keeping the typed code. */
+      needsRole?: boolean
     }
   | undefined
 
 const localeOf = (form: FormData): Locale => {
   const value = String(form.get('locale') ?? 'en')
   return isLocale(value) ? value : 'en'
-}
-
-function fieldErrors(issues: { path: PropertyKey[]; message: string }[]): Record<string, string> {
-  const errors: Record<string, string> = {}
-  for (const issue of issues) errors[String(issue.path[0])] ??= issue.message
-  return errors
 }
 
 export async function setSessionCookie(token: string, exp: number | undefined) {
@@ -52,25 +46,6 @@ export async function setSessionCookie(token: string, exp: number | undefined) {
     path: '/',
     expires: exp ? new Date(exp * 1000) : undefined,
   })
-}
-
-/** FR-022 / FR-023: log in; wrong credentials and locked accounts get distinct, safe messages. */
-export async function login(_prev: AuthState, form: FormData): Promise<AuthState> {
-  const locale = localeOf(form)
-  const values = { email: String(form.get('email') ?? '') }
-  const parsed = loginSchema.safeParse({ email: form.get('email'), password: form.get('password') })
-  if (!parsed.success) return { errors: fieldErrors(parsed.error.issues), values }
-  const payload = await getPayloadClient()
-  try {
-    const result = await payload.login({ collection: 'users', data: parsed.data })
-    if (!result.token) return { formError: 'auth.errors.generic', values }
-    await setSessionCookie(result.token, result.exp)
-  } catch (error) {
-    if (isPayloadError(error, 'LockedAuth')) return { formError: 'auth.errors.locked', values }
-    if (isPayloadError(error, 'AuthenticationError')) return { formError: 'auth.errors.invalid', values }
-    return { formError: 'auth.errors.generic', values }
-  }
-  redirect({ href: safeNext(form.get('next')), locale })
 }
 
 /** FR-062: logging out ends the session on the server (the old cookie stops working), then clears it. */
@@ -179,13 +154,26 @@ export async function verifyCodeAction(_prev: AuthState, form: FormData): Promis
     redirect({ href: '/account', locale })
   }
 
+  // Standalone sign-in, before the role was asked: a known number signs straight in; a new one
+  // comes back to this step with the role rows and the code kept.
+  if (p.mode === 'login' && !form.has('role') && form.get('askRole') === '1') {
+    const known = await verifyCode(await webActor(locale), { challengeId: p.challengeId, phone: p.phone, code, askIfNew: true })
+    if (isProblemValue(known)) {
+      if (known.code === 'auth.errors.signupRequired') return { needsRole: true, values: { ...values, code } }
+      return stateOf(known, values, other)
+    }
+    await setSessionCookie(known.token, known.exp)
+    await clearPending()
+    redirect({ href: p.next, locale })
+  }
+
   const personas = p.mode === 'join' ? p.personas : [...new Set(values.persona.split(',').map((s) => s.trim()).filter(Boolean))]
   const provider = p.mode === 'join' || values.role === 'provider'
   if (p.mode === 'login' && provider) {
     const errors: Record<string, string> = {}
     if (personas.length === 0) errors.persona = 'auth.errors.personaRequired'
     if (form.get('acceptTerms') !== 'on') errors.acceptTerms = 'auth.errors.acceptTerms'
-    if (Object.keys(errors).length) return { errors, values }
+    if (Object.keys(errors).length) return { errors, values: { ...values, code }, needsRole: true }
   }
   const signup = provider ? { accountType: 'provider' as const, personas, acceptTerms: true as const } : { accountType: 'seeker' as const, personas: [] }
   const result = await verifyCode(await webActor(locale), { challengeId: p.challengeId, phone: p.phone, code, signup })

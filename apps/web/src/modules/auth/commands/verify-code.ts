@@ -6,13 +6,14 @@ import type { ActorContext } from '@/shared/api/actor'
 import { problem, type Problem } from '@/shared/api/problem'
 import { isEditorUser } from '@/shared/payload/access'
 import { consumeAll } from '../otp/allowance'
-import { attempt, markUsed, stateOf } from '../otp/challenges'
+import { attempt, markUsed, releaseAttempt, stateOf } from '../otp/challenges'
 import { codesMatch, digestsEqual, phoneHash } from '../otp/codes'
 import { mintSession } from '../otp/mint'
 import { createCodeAccount, isUniqueViolation, resolvePersonas } from '../otp/signup'
 import { toWireMe } from '../wire'
 
 const CODE_INVALID = problem(422, 'auth.errors.codeInvalid', { fields: [{ path: 'body.code', code: 'auth.errors.codeInvalid' }] })
+const SIGNUP_REQUIRED = problem(409, 'auth.errors.signupRequired')
 
 /**
  * Steps 2–6 of verify (contracts/auth-api.md): the address allowance, the provider signup's personas
@@ -20,7 +21,11 @@ const CODE_INVALID = problem(422, 'auth.errors.codeInvalid', { fields: [{ path: 
  * Shared by `verify-code` and the website's `link-number`. Before it succeeds no answer depends on
  * whether an account exists (FR-031).
  */
-export async function proveCode(ctx: ActorContext, input: OtpVerifyV1): Promise<{ personaIds: number[] } | Problem> {
+export async function proveCode(
+  ctx: ActorContext,
+  input: OtpVerifyV1,
+  { requireAccount = false }: { requireAccount?: boolean } = {},
+): Promise<{ personaIds: number[] } | Problem> {
   const { payload } = ctx
   const now = ctx.now()
   if (ctx.clientAddress) {
@@ -44,6 +49,12 @@ export async function proveCode(ctx: ActorContext, input: OtpVerifyV1): Promise<
   const codeOk = codesMatch(row.codeHash, input.challengeId, input.code)
   const phoneOk = digestsEqual(row.phoneHash, phoneHash(input.phone))
   if (!(codeOk && phoneOk)) return CODE_INVALID
+  // Sign in only: a new number learns that it is new only after its code is proven (FR-031), and
+  // keeps the challenge (and the attempt) for the second verify with the role.
+  if (requireAccount && !(await findByUsername(ctx, input.phone))) {
+    await releaseAttempt(payload, input.challengeId)
+    return SIGNUP_REQUIRED
+  }
   if (!(await markUsed(payload, input.challengeId, now))) return problem(422, 'auth.errors.codeExpired')
   return { personaIds }
 }
@@ -55,11 +66,14 @@ async function findByUsername(ctx: ActorContext, phone: string): Promise<User | 
 
 /**
  * `POST auth/otp/verify` and the website's code step: proves the code, then finds the account by its
- * verified number or creates one from `signup` (research R12), refuses admins and editors (R13), and
+ * verified number or creates one from `signup` (research R12) — with `askIfNew`, a number with no
+ * account answers `409 auth.errors.signupRequired` instead, so a returning member never sees the role
+ * question, refuses admins and editors (R13), and
  * mints a Payload session (R2).
  */
 export async function verifyCode(ctx: ActorContext, input: OtpVerifyV1): Promise<AuthTokenV1 | Problem> {
-  const proven = await proveCode(ctx, input)
+  // `askIfNew` with a `signup` already chosen is a plain verify: the role was asked.
+  const proven = await proveCode(ctx, input, { requireAccount: input.askIfNew === true && !input.signup })
   if ('status' in proven) return proven
 
   let user = await findByUsername(ctx, input.phone)

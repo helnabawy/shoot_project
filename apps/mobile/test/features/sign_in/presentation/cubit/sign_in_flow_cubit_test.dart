@@ -68,6 +68,7 @@ void main() {
         challenge: any(named: 'challenge'),
         code: any(named: 'code'),
         signup: any(named: 'signup'),
+        askIfNew: any(named: 'askIfNew'),
       ),
     ).thenAnswer((_) async => Ok(verified));
   });
@@ -103,6 +104,7 @@ void main() {
       challenge: any(named: 'challenge'),
       code: any(named: 'code'),
       signup: any(named: 'signup'),
+      askIfNew: any(named: 'askIfNew'),
     ),
   ).thenAnswer((_) async => Err(failure));
 
@@ -147,7 +149,7 @@ void main() {
   );
 
   blocTest<SignInFlowCubit, SignInFlowState>(
-    'OT-US1-S2 the right code for a new number: awaitingCode → verifying → '
+    'OT-US1-S2 the right code: awaitingCode → verifying → '
     'signedIn(isNew: true), SessionCubit.signIn called with the token',
     build: () => build(initial: awaiting()),
     act: (c) => c.submitCode('482713'),
@@ -170,10 +172,91 @@ void main() {
           challenge: challenge,
           code: '482713',
           signup: null,
+          askIfNew: true,
         ),
       ).called(1);
     },
   );
+
+  group('OT-US1-S11 a known number signs straight in; a new number then gets the role question', () {
+    blocTest<SignInFlowCubit, SignInFlowState>(
+      'OT-US1-S11 a known number: one verify with askIfNew, signed in, no role question',
+      build: () => build(initial: awaiting()),
+      act: (c) async {
+        expect(c.state.asksRole, isFalse);
+        await c.submitCode('482713');
+      },
+      verify: (c) {
+        expect(c.state.status, SignInStatus.signedIn);
+        expect(c.state.roleNeeded, isFalse);
+        verify(
+          () => repository.verifyCode(
+            challenge: challenge,
+            code: '482713',
+            signup: null,
+            askIfNew: true,
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<SignInFlowCubit, SignInFlowState>(
+      'OT-US1-S11 a new number: signupRequired keeps the code and shows the role rows',
+      setUp: () => stubVerifyFails(
+        const ServerFailure(
+          statusCode: 409,
+          code: 'auth.errors.signupRequired',
+        ),
+      ),
+      build: () => build(initial: awaiting()),
+      act: (c) => c.submitCode('482713'),
+      verify: (c) {
+        expect(c.state.status, SignInStatus.awaitingCode);
+        expect(c.state.roleNeeded, isTrue);
+        expect(c.state.asksRole, isTrue);
+        expect(c.state.code, '482713');
+        expect(c.state.failure, isNull);
+      },
+    );
+
+    blocTest<SignInFlowCubit, SignInFlowState>(
+      'OT-US1-S11 after the role question, I need a … verifies as a client without askIfNew',
+      build: () =>
+          build(initial: awaiting().copyWith(roleNeeded: true, code: '482713')),
+      act: (c) => c.submitCode(),
+      verify: (c) {
+        expect(c.state.status, SignInStatus.signedIn);
+        verify(
+          () => repository.verifyCode(
+            challenge: challenge,
+            code: '482713',
+            signup: null,
+            askIfNew: false,
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<SignInFlowCubit, SignInFlowState>(
+      "OT-US1-S11 after the role question, I'm a … opens screen 23 without verifying",
+      build: () => build(
+        initial: awaiting(role: AccountType.provider)
+            .copyWith(roleNeeded: true, code: '482713'),
+      ),
+      act: (c) => c.submitCode(),
+      verify: (c) {
+        expect(c.state.status, SignInStatus.finishing);
+        verifyZeroInteractions(repository);
+      },
+    );
+
+    blocTest<SignInFlowCubit, SignInFlowState>(
+      'OT-US1-S11 changing the number forgets that it was new',
+      build: () => build(initial: awaiting().copyWith(roleNeeded: true)),
+      act: (c) => c.changeNumber(),
+      verify: (c) => expect(c.state.roleNeeded, isFalse),
+    );
+  });
 
   group(
     'OT-US1-S8 send it on WhatsApp sends a new code by the other channel',
@@ -355,6 +438,7 @@ void main() {
               personas: ['photographer', 'videographer'],
               acceptTerms: true,
             ),
+            askIfNew: false,
           ),
         ).called(1);
       },
@@ -385,7 +469,10 @@ void main() {
   group('OT-US4-S2 I\'m a … on the code screen opens screen 23 with the code kept, no new code', () {
     blocTest<SignInFlowCubit, SignInFlowState>(
       "OT-US4-S2 I'm a … + Continue does not call verify; it finishes on /register",
-      build: () => build(initial: awaiting(role: AccountType.provider)),
+      build: () => build(
+        initial: awaiting(role: AccountType.provider)
+            .copyWith(roleNeeded: true),
+      ),
       act: (c) => c.submitCode('482713'),
       expect: () => [
         isA<SignInFlowState>().having((s) => s.code, 'code', '482713'),
@@ -416,6 +503,7 @@ void main() {
               personas: ['videographer'],
               acceptTerms: true,
             ),
+            askIfNew: false,
           ),
         ).called(1);
         verifyNever(

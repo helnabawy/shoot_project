@@ -59,6 +59,12 @@ export const otpVerifyV1 = z.object({
   phone: z.string().regex(UAE_MOBILE_E164, 'auth.errors.phoneInvalid'),
   code: z.string().regex(/^\d{6}$/, 'auth.errors.codeInvalid'),
   signup: signupV1.optional(),
+  /**
+   * Sign in only (additive): a correct code for a number with no account answers
+   * `409 auth.errors.signupRequired` and leaves the challenge live, so the client asks the role and
+   * verifies again with `signup`. A known number signs straight in. Absent: today's behaviour.
+   */
+  askIfNew: z.boolean().optional(),
 })
 export type OtpVerifyV1 = z.infer<typeof otpVerifyV1>
 
