@@ -70,6 +70,12 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
       ...accountRoutes(
         createAccount: getIt.call<AccountCubit>,
         createBookings: getIt.call<BookingsCubit>,
+        creator: creatorAccountPages(
+          session: getIt<SessionCubit>(),
+          createAccount: getIt.call<creator_account.AccountCubit>,
+          createBookings: getIt.call<creator_bookings.BookingsCubit>,
+          onAccountShown: _askCreatorForPush,
+        ),
       ),
       ...contentRoutes(getIt<ContentDeps>()),
       ...creatorAccountRoutes(
@@ -79,11 +85,8 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         createBookings: getIt.call<creator_bookings.BookingsCubit>,
         createAvailability: getIt.call<AvailabilityCubit>,
         createInbox: getIt.call<InboxCubit>,
-        onInboxShown: (context) => askForPushOnce(
-          context,
-          getIt<PushService>(),
-          PushAskReason.creatorInbox,
-        ),
+        onInboxShown: _askCreatorForPush,
+        onAccountShown: _askCreatorForPush,
       ),
       ...quickMatchRoutes(
         flows: getIt<QuickMatchFlows>(),
@@ -144,6 +147,11 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
       );
     _router.routerDelegate.addListener(_askOnMatch);
   }
+
+  /// A creator is asked once, on their account or inbox, so requests and briefs reach them.
+  static void _askCreatorForPush(BuildContext context) => unawaited(
+    askForPushOnce(context, getIt<PushService>(), PushAskReason.creatorInbox),
+  );
 
   void _askOnMatch() {
     final path = _router.routerDelegate.currentConfiguration.uri.path;

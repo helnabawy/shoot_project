@@ -3254,11 +3254,11 @@
   "@pushAskTitle": {
     "description": "Before the system notification permission prompt."
   },
-  "pushAskCreator": "We tell you when a client brief matches you, so you can answer first.",
+  "pushAskCreator": "We tell you when a client brief matches you or a client picks you, so you can answer first.",
   "@pushAskCreator": {
     "description": "Why a creator should allow notifications."
   },
-  "pushAskClient": "We tell you when a creator says yes to your brief.",
+  "pushAskClient": "We tell you when a creator says yes to your brief and when your booking moves on.",
   "@pushAskClient": {
     "description": "Why a client should allow notifications."
   },

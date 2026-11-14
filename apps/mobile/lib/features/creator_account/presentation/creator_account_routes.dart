@@ -14,6 +14,35 @@ import 'package:shoot_mobile/features/creator_account/presentation/pages/booking
 import 'package:shoot_mobile/features/creator_account/presentation/pages/inbox_page.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/pages/profile_page.dart';
 
+/// The creator's page at a path the client's account also uses: `/account`, `/account/bookings`
+/// and `/account/bookings/:ref`. The client's routes (feature 013) come first in the route list and
+/// go_router builds the first match, so they call this and show its page instead of theirs when it
+/// is not `null`; it is `null` for anyone who is not a signed-in creator.
+Widget? Function(BuildContext context, GoRouterState state)
+creatorAccountPages({
+  required SessionCubit session,
+  required AccountCubit Function() createAccount,
+  required BookingsCubit Function() createBookings,
+  void Function(BuildContext context)? onAccountShown,
+}) {
+  return (context, state) {
+    final s = session.state;
+    if (s is! SignedIn || s.session.user.accountType != AccountType.provider) {
+      return null;
+    }
+    return switch (state.fullPath) {
+      AppRoutes.account => AccountPage(
+        create: createAccount,
+        onShown: onAccountShown,
+      ),
+      AppRoutes.accountBookings => BookingsPage(create: createBookings),
+      final path? when path == '${AppRoutes.accountBookings}/:ref' =>
+        BookingsPage(create: createBookings, ref: state.pathParameters['ref']),
+      _ => null,
+    };
+  };
+}
+
 /// A signed-in creator's `/account`, `/account/profile`, `/account/availability`,
 /// `/account/bookings` and `/account/bookings/:ref` (feature 014). A client who opens one of
 /// them goes home (the client's account is feature 013); a signed-out person never gets here,
@@ -26,6 +55,7 @@ List<RouteBase> creatorAccountRoutes({
   required AvailabilityCubit Function() createAvailability,
   required InboxCubit Function() createInbox,
   void Function(BuildContext context)? onInboxShown,
+  void Function(BuildContext context)? onAccountShown,
 }) {
   String? creatorOnly(BuildContext context, GoRouterState state) {
     final s = session.state;
@@ -38,7 +68,8 @@ List<RouteBase> creatorAccountRoutes({
     GoRoute(
       path: AppRoutes.account,
       redirect: creatorOnly,
-      builder: (context, state) => AccountPage(create: createAccount),
+      builder: (context, state) =>
+          AccountPage(create: createAccount, onShown: onAccountShown),
       routes: [
         GoRoute(
           path: 'profile',

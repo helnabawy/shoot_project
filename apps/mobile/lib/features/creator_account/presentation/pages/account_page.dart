@@ -19,16 +19,25 @@ import 'package:shoot_mobile/features/creator_account/presentation/widgets/creat
 
 /// Screen 27 at `/account` (a creator's), built to board `S07c-account-creator`.
 class AccountPage extends StatelessWidget {
-  const AccountPage({super.key, required this.create});
+  const AccountPage({super.key, required this.create, this.onShown});
 
   final AccountCubit Function() create;
+
+  /// Called once after the screen first shows (the push permission ask, so a creator hears about
+  /// requests and briefs without opening the inbox first).
+  final void Function(BuildContext context)? onShown;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) {
+      create: (context) {
         final cubit = create();
         unawaited(cubit.load());
+        if (onShown case final shown?) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) shown(context);
+          });
+        }
         return cubit;
       },
       child: BlocBuilder<AccountCubit, AccountState>(

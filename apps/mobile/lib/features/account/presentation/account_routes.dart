@@ -19,10 +19,16 @@ import 'package:shoot_mobile/features/account/presentation/pages/finish_page.dar
 ///
 /// [booking] builds the page a booking row opens (feature 012's quotation and booking screens);
 /// it defaults to a stand-in.
+///
+/// [creator] gives a signed-in creator's page for `/account`, `/account/bookings` and
+/// `/account/bookings/:ref`, which feature 014 shares with the client. go_router builds the first
+/// route that matches a path and these routes come first, so each asks [creator] before building
+/// the client's screen; `null` means the person is not a creator.
 List<RouteBase> accountRoutes({
   required AccountCubit Function() createAccount,
   required BookingsCubit Function() createBookings,
   Widget Function(BuildContext context, String reference)? booking,
+  Widget? Function(BuildContext context, GoRouterState state)? creator,
 }) {
   final holder = _AccountHolder(createAccount);
   return [
@@ -32,7 +38,8 @@ List<RouteBase> accountRoutes({
       routes: [
         GoRoute(
           path: AppRoutes.account,
-          builder: (context, state) => const AccountHomePage(),
+          builder: (context, state) =>
+              creator?.call(context, state) ?? const AccountHomePage(),
         ),
         GoRoute(
           path: AppRoutes.accountFinish,
@@ -40,16 +47,19 @@ List<RouteBase> accountRoutes({
         ),
         GoRoute(
           path: AppRoutes.accountBookings,
-          builder: (context, state) => BlocProvider<BookingsCubit>(
-            create: (_) => createBookings(),
-            child: const BookingsPage(),
-          ),
+          builder: (context, state) =>
+              creator?.call(context, state) ??
+              BlocProvider<BookingsCubit>(
+                create: (_) => createBookings(),
+                child: const BookingsPage(),
+              ),
         ),
         GoRoute(
           path: '${AppRoutes.accountBookings}/:ref',
           builder: (context, state) {
             final ref = state.pathParameters['ref']!;
-            return booking?.call(context, ref) ??
+            return creator?.call(context, state) ??
+                booking?.call(context, ref) ??
                 BookingStandInPage(reference: ref);
           },
         ),

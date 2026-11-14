@@ -12,6 +12,8 @@ import 'package:shoot_mobile/core/routing/app_router.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
+import 'package:shoot_mobile/features/account/domain/repositories/account_repository.dart';
+import 'package:shoot_mobile/features/account/presentation/account_routes.dart';
 import 'package:shoot_mobile/features/creator_account/domain/entities/creator_account.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/creator_account_routes.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/account_cubit.dart';
@@ -24,6 +26,7 @@ import 'package:shoot_mobile/features/creator_account/presentation/pages/availab
 import 'package:shoot_mobile/features/creator_account/presentation/pages/bookings_page.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/pages/profile_page.dart';
 
+import '../../../helpers/account_harness.dart' as client;
 import '../../../helpers/auth_fixtures.dart';
 import '../../../helpers/pump_app.dart';
 import '../fixtures.dart';
@@ -694,6 +697,113 @@ void main() {
       return router;
     }
 
+    // The app registers the client's account routes (013) before the creator's (014), at the same
+    // paths; go_router builds the first match, so the client's routes hand a creator their page.
+    Future<void> openBoth(
+      WidgetTester tester,
+      AccountType type,
+      String location, {
+      void Function(BuildContext context)? onAccountShown,
+    }) async {
+      final session = SessionCubit(
+        store: MemorySessionStore(),
+        api: MockAuthApi(),
+        clock: examplesClock,
+        restored: Session(
+          token: 't',
+          exp: DateTime.utc(2026, 12, 21),
+          user: SessionUser(id: '1', name: 'Omar K.', accountType: type),
+        ),
+        storeRead: true,
+      );
+      addTearDown(session.close);
+      final clientRepo = _MockClientRepository();
+      when(clientRepo.getHome)
+          .thenAnswer((_) async => Ok(client.exampleHome()));
+      when(() => clientRepo.getBookings(page: any(named: 'page')))
+          .thenAnswer((_) async => Ok(client.exampleBookings()));
+      when(() => clientRepo.getBriefs(page: any(named: 'page')))
+          .thenAnswer((_) async => Ok(client.exampleBriefs()));
+      when(() => repo.account()).thenAnswer((_) async => Ok(accountExample()));
+      when(() => repo.bookings())
+          .thenAnswer((_) async => Ok(bookingsExample()));
+      ProfileCubit profile() =>
+          ProfileCubit(repository: repo, picker: FakeFilePicker());
+      BookingsCubit bookings() =>
+          BookingsCubit(repository: repo, clock: FixedClock(now));
+      final router = createAppRouter(
+        initialLocation: location,
+        isDebug: false,
+        session: session,
+        routes: [
+          ...accountRoutes(
+            createAccount: () => client.accountCubit(clientRepo),
+            createBookings: () => client.bookingsCubit(clientRepo),
+            creator: creatorAccountPages(
+              session: session,
+              createAccount: () => AccountCubit(repo),
+              createBookings: bookings,
+              onAccountShown: onAccountShown,
+            ),
+          ),
+          ...creatorAccountRoutes(
+            session: session,
+            createAccount: () => AccountCubit(repo),
+            createProfile: profile,
+            createBookings: bookings,
+            createAvailability: () => AvailabilityCubit(repo),
+            createInbox: () => InboxCubit(MockInboxRepository()),
+          ),
+        ],
+        home: (_) => const Text('home'),
+      );
+      addTearDown(router.dispose);
+      phone(tester);
+      await tester.pumpWidget(
+        MaterialApp.router(
+          routerConfig: router,
+          theme: AppTheme.light,
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+        ),
+      );
+      await tester.pump(const Duration(seconds: 2));
+    }
+
+    for (final location in ['/account/bookings', '/account/bookings/BK-1']) {
+      testWidgets(
+        'a creator who opens $location gets their requests, with the client routes registered first',
+        (tester) async {
+          await openBoth(tester, AccountType.provider, location);
+          expect(find.byType(BookingsView), findsOneWidget);
+        },
+      );
+    }
+
+    testWidgets(
+      'a creator who opens /account gets their account, with the client routes registered first',
+      (tester) async {
+        var asked = 0;
+        await openBoth(
+          tester,
+          AccountType.provider,
+          '/account',
+          onAccountShown: (_) => asked += 1,
+        );
+        expect(find.byType(AccountPage), findsOneWidget);
+        // The push ask: a creator hears about requests without opening the inbox first.
+        expect(asked, 1);
+      },
+    );
+
+    testWidgets(
+      'a client who opens /account/bookings still gets the client bookings',
+      (tester) async {
+        await openBoth(tester, AccountType.seeker, '/account/bookings');
+        expect(find.byType(BookingsView), findsNothing);
+      },
+    );
+
     testWidgets('a creator opens their account', (tester) async {
       await open(tester, AccountType.provider, '/account');
       expect(find.text('Finish my profile'), findsOneWidget);
@@ -726,3 +836,5 @@ class BlocHost extends StatelessWidget {
     );
   }
 }
+
+class _MockClientRepository extends Mock implements AccountRepository {}
