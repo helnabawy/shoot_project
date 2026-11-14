@@ -25,6 +25,7 @@ import 'package:shoot_mobile/features/creator_account/presentation/cubit/account
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/availability_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/bookings_cubit.dart'
     as creator_bookings;
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/inbox_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/profile_cubit.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/landing/presentation/landing_cubit.dart';
@@ -72,6 +73,7 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         createProfile: getIt.call<ProfileCubit>,
         createBookings: getIt.call<creator_bookings.BookingsCubit>,
         createAvailability: getIt.call<AvailabilityCubit>,
+        createInbox: getIt.call<InboxCubit>,
       ),
       ...quickMatchRoutes(
         flows: getIt<QuickMatchFlows>(),
