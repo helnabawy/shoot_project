@@ -79,7 +79,7 @@ const BOOKING: Record<string, number> = {
 
 /** Feature 009's endpoints: an anonymous call is refused as declared (401 signed in, 422 without a body); their own suites cover the rest. */
 // 014's creator endpoints are signed-in too: anonymous is 401 (their own suite covers the rest).
-const SIGN_IN = new Set(['otpRequest', 'otpVerify', 'authRefresh', 'authLogout', 'me', 'meAccount', 'meBookings', 'meBriefs', 'meUpdate', ...ENDPOINTS.filter((x) => x.path.includes('/me/creator/')).map((x) => x.id)])
+const SIGN_IN = new Set(['otpRequest', 'otpVerify', 'authRefresh', 'authLogout', 'me', 'meAccount', 'meBookings', 'meBriefs', 'meUpdate', ...ENDPOINTS.filter((x) => x.path.includes('/me/creator/') || x.path.includes('/me/push')).map((x) => x.id)])
 
 describe('MR-US2-S7 every registered endpoint', () => {
   beforeAll(async () => {

@@ -69,6 +69,12 @@ export const PROBLEM_CODES = [
   'brief.errors.pastDate',
   'brief.errors.tooMany',
   'brief.errors.generic',
+  // 019: the creator brief inbox and push.
+  'inbox.errors.briefClosed',
+  'inbox.errors.notMatching',
+  'inbox.errors.reasonUnknown',
+  'inbox.errors.alreadyPicked',
+  'push.errors.tokenInvalid',
 ] as const
 export type ProblemCode = (typeof PROBLEM_CODES)[number]
 

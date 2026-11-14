@@ -30,6 +30,8 @@ import {
   quotationRequestV1,
   reportRequestV1,
 } from './booking'
+import { briefAnswerRequestV1, briefPersonaQueryV1, briefRefParamV1, creatorBriefsV1 } from './inbox'
+import { pushDeviceRequestV1, pushPreferenceV1, pushTokenParamV1 } from './push'
 import { creatorListV1, creatorProfileRequestV1, creatorProfileV1, creatorsRequestV1, specialtyPageV1, specialtyRequestV1 } from './creators'
 import { hirePageRequestV1, hirePageV1 } from './hire'
 import {
@@ -311,7 +313,7 @@ export const endpoints = {
     examples: ['resolve-page', 'resolve-page.ar', 'resolve-removed', 'resolve-not-found'],
   }),
   // 014: the creator's own account (specs/014-creator-account/contracts/mobile-api.md).
-  creatorAccount: defineEndpoint({ ...mineRead, id: 'creatorAccount', path: '/api/mobile/v1/me/creator/account', output: creatorAccountV1, examples: ['creator-account'] }),
+  creatorAccount: defineEndpoint({ ...mineRead, id: 'creatorAccount', path: '/api/mobile/v1/me/creator/account', output: creatorAccountV1, examples: ['creator-account', 'creator-account-briefs'] }),
   myCreatorProfile: defineEndpoint({ ...mineRead, id: 'myCreatorProfile', path: '/api/mobile/v1/me/creator/profile', output: myProfileV1, examples: ['creator-profile-draft', 'creator-profile-ready', 'creator-profile-review'] }),
   creatorProfileSave: defineEndpoint({ ...mine, id: 'creatorProfileSave', method: 'PATCH', path: '/api/mobile/v1/me/creator/profile', input: z.object({ body: profilePatchV1 }), output: myProfileV1, examples: ['creator-profile-saved'], requestExamples: ['creator-profile-patch'] }),
   creatorProfileSubmit: defineEndpoint({ ...mine, id: 'creatorProfileSubmit', method: 'POST', path: '/api/mobile/v1/me/creator/profile/submit', input: noInput, output: myProfileV1, examples: ['creator-profile-submitted'] }),
@@ -326,6 +328,14 @@ export const endpoints = {
   creatorBookingAnswer: defineEndpoint({ ...mine, id: 'creatorBookingAnswer', method: 'POST', path: '/api/mobile/v1/me/creator/bookings/{ref}/answer', input: z.object({ params: creatorRefParamV1, body: answerV1 }), output: creatorBookingsV1, examples: ['creator-bookings-answered'], requestExamples: ['creator-answer'] }),
   creatorBookingDeliver: defineEndpoint({ ...mine, id: 'creatorBookingDeliver', method: 'POST', path: '/api/mobile/v1/me/creator/bookings/{ref}/deliver', input: z.object({ params: creatorRefParamV1 }), output: creatorBookingsV1, examples: ['creator-bookings-delivered'] }),
   creatorUpdateRead: defineEndpoint({ ...mine, id: 'creatorUpdateRead', method: 'POST', path: '/api/mobile/v1/me/creator/updates/{id}/read', input: z.object({ params: creatorIdParamV1 }), output: creatorBookingsV1, examples: ['creator-bookings-read'] }),
+  // 019: the creator brief inbox and app push (specs/019-creator-brief-inbox/contracts/mobile-api.md).
+  creatorBriefs: defineEndpoint({ ...mineRead, id: 'creatorBriefs', path: '/api/mobile/v1/me/creator/briefs', output: creatorBriefsV1, examples: ['creator-briefs'] }),
+  answerCreatorBrief: defineEndpoint({ ...mine, id: 'answerCreatorBrief', method: 'POST', path: '/api/mobile/v1/me/creator/briefs/{ref}/answer', input: z.object({ params: briefRefParamV1, body: briefAnswerRequestV1 }), output: creatorBriefsV1, examples: ['creator-briefs-answered'], requestExamples: ['creator-brief-answer', 'creator-brief-reject'] }),
+  withdrawCreatorBrief: defineEndpoint({ ...mine, id: 'withdrawCreatorBrief', method: 'DELETE', path: '/api/mobile/v1/me/creator/briefs/{ref}/answer', input: z.object({ params: briefRefParamV1, query: briefPersonaQueryV1 }), output: creatorBriefsV1, examples: ['creator-briefs-withdrawn'] }),
+  registerPushDevice: defineEndpoint({ ...mine, id: 'registerPushDevice', method: 'POST', path: '/api/mobile/v1/me/push/devices', status: 204, input: z.object({ body: pushDeviceRequestV1 }), output: noContentV1, examples: [], requestExamples: ['push-device'] }),
+  removePushDevice: defineEndpoint({ ...mine, id: 'removePushDevice', method: 'DELETE', path: '/api/mobile/v1/me/push/devices/{token}', status: 204, input: z.object({ params: pushTokenParamV1 }), output: noContentV1, examples: [] }),
+  pushPreference: defineEndpoint({ ...mineRead, id: 'pushPreference', path: '/api/mobile/v1/me/push', output: pushPreferenceV1, examples: ['push-preference'] }),
+  setPushPreference: defineEndpoint({ ...mine, id: 'setPushPreference', method: 'PUT', path: '/api/mobile/v1/me/push', input: z.object({ body: pushPreferenceV1 }), output: pushPreferenceV1, examples: ['push-preference-set'], requestExamples: ['push-preference-request'] }),
 } satisfies Record<string, Endpoint>
 
 /** The registry as a list, in declaration order. */

@@ -24,8 +24,8 @@ next), *implemented* = built on its branch, *idea* = not yet specified.
 | 015 | Mobile guides, editor pages and legal | Screens 33–36, 38 | 007, 008 | implemented (open: fidelity waits for the owner's dark-token decision for 33–35; accessibility and motion passes) |
 | 016 | Introducer / referral programme | 10% / 15% agency commission, referral links, payouts | 003 | idea |
 | 017 | Google (and Apple) sign-in | "Continue with Google", Sign in with Apple (required on iOS once Google is offered) | 009 | idea |
-| 018 | Notifications & messaging | WhatsApp / email / push notifications for briefs, quotations, confirmations, creator requests; admin alerts | 003, 009 | idea |
-| 019 | Creator brief inbox: matching creators see new briefs and answer them; app push (Firebase) for new briefs and acceptances (`specs/019-creator-brief-inbox/`, on branch `019-creator-brief-inbox`, not yet on `main`) | creator inbox, push notifications | 003, 009, 014 | in progress on its branch |
+| 018 | Notifications & messaging | WhatsApp / email notifications (app push for briefs comes with 019) for briefs, quotations, confirmations, creator requests; admin alerts | 003, 009 | idea |
+| 019 | Creator brief inbox (`specs/019-creator-brief-inbox/`, `BI-`): matching creators see open briefs in Up next (web and app), accept or reject; acceptors listed first at step 2 and assigned confirmed; app push both ways | Creator account home, Quick Match step 2, app creator account | 003, 012, 014 | implemented (open: owner's APNs key and service account, device walkthrough, goldens, finish review) |
 
 Renumbered 2026-11-11: the ideas once listed as 006 (Introducer), 007 (one-time-code sign-in) and
 008 (Notifications) are now 016, 009/017 and 018. Older specs that say "feature 008" for outbound

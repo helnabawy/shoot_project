@@ -328,3 +328,19 @@ Remove `service_health` once the first real feature has replaced it as the home 
 - Arabic references for the fidelity check wait for the designer's Arabic dark boards
   (`specs/007-mobile-foundation/designer-request.md`).
 - No flavors (separate dev/staging/production apps); `APP_ENV` is a build-time value only.
+
+## App push (feature 019)
+
+Push uses Firebase Cloud Messaging (`firebase_core`, `firebase_messaging`, pinned in `pubspec.yaml`).
+The owner's Firebase project values are build-time defines kept out of git:
+
+```bash
+cp firebase.env.example.json firebase.env.json   # fill in from the Firebase console (or the config files)
+flutter run --dart-define-from-file=firebase.env.json --dart-define=API_BASE_URL=http://localhost:3000
+```
+
+Without them (or the native `GoogleService-Info.plist` / `google-services.json`, also git-ignored)
+the app runs with push off and nothing else changes. iOS also needs the APNs key uploaded to the
+Firebase project (Project settings → Cloud Messaging); the `aps-environment` entitlement and the
+`remote-notification` background mode are in `ios/Runner`. Tapped notifications open their
+`data.path` only after `safe_next` accepts it. Release builds set `aps-environment` to `production`.

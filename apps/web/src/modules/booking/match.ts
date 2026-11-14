@@ -1,5 +1,5 @@
 import 'server-only'
-import { dubaiToday, matchCreators, nearbyDates, type MatchFilter } from '@shoot/domain/booking'
+import { acceptorsFirst, dubaiToday, matchCreators, nearbyDates, type MatchFilter } from '@shoot/domain/booking'
 import type { CreatorSummary } from '@shoot/domain/creators'
 import { quotePrice, type QuoteResult } from '@shoot/domain/pricing'
 import { getTranslations } from 'next-intl/server'
@@ -82,10 +82,32 @@ export async function unavailableOn(dates: readonly string[]): Promise<Map<strin
   return out
 }
 
+/** The creators who currently say yes to a brief, per professional type (feature 019). */
+export async function acceptedFor(briefId: number | string | null | undefined): Promise<Map<string, Set<string>>> {
+  const out = new Map<string, Set<string>>()
+  if (briefId == null || briefId === '') return out
+  const payload = await getPayloadClient()
+  const { docs } = await payload.find({
+    collection: 'brief-answers',
+    where: { and: [{ brief: { equals: briefId } }, { decision: { equals: 'accepted' } }, { withdrawnAt: { exists: false } }] },
+    depth: 0,
+    pagination: false,
+    overrideAccess: true,
+    select: { creator: true, persona: true },
+  })
+  for (const a of docs) {
+    const persona = idOf(a.persona)
+    out.set(persona, (out.get(persona) ?? new Set()).add(idOf(a.creator)))
+  }
+  return out
+}
+
 export interface MatchSection {
   persona: AudiencePersona
   price: QuoteResult
   creators: CreatorSummary[]
+  /** 019: creators who said yes to this brief for this type (listed first). */
+  saidYes: string[]
 }
 
 export interface MatchPage {
@@ -132,10 +154,16 @@ export async function getMatchPage(brief: BriefRecord, locale: Locale, now: Date
   const freeFor = (personaId: string, day: string | null) =>
     matchCreators(creators, { personaId, emirateId: emirate, blocked: day ? (blocks.get(day) ?? new Set()) : new Set(), filters: facts.filters, categoryId: facts.categoryId })
 
+  // 019: creators who said yes come first (US2-S3); one who is no longer free is simply not listed (US2-S8).
+  const accepted = await acceptedFor(brief.id)
   const sections = facts.personaIds
     .map((id) => personas.find((p) => p.id === id))
     .filter((p): p is AudiencePersona => Boolean(p))
-    .map((persona) => ({ persona, price: quotePrice(rules, { ...base, personaIds: [persona.id] }), creators: freeFor(persona.id, date) }))
+    .map((persona) => {
+      const yes = accepted.get(persona.id) ?? new Set<string>()
+      const creators = acceptorsFirst(freeFor(persona.id, date), yes)
+      return { persona, price: quotePrice(rules, { ...base, personaIds: [persona.id] }), creators, saidYes: creators.filter((c) => yes.has(c.id)).map((c) => c.id) }
+    })
 
   const nearby =
     date && sections.some((s) => s.creators.length === 0)

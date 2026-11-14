@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +9,9 @@ import 'package:shoot_mobile/core/first_run/first_run_store.dart';
 import 'package:shoot_mobile/core/l10n/app_locales.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/l10n/locale_cubit.dart';
+import 'package:shoot_mobile/core/push/push_ask_sheet.dart';
+import 'package:shoot_mobile/core/push/push_cubit.dart';
+import 'package:shoot_mobile/core/push/push_service.dart';
 import 'package:shoot_mobile/core/routing/app_router.dart';
 import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
@@ -25,6 +30,7 @@ import 'package:shoot_mobile/features/creator_account/presentation/cubit/account
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/availability_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/bookings_cubit.dart'
     as creator_bookings;
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/inbox_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/profile_cubit.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/landing/presentation/landing_cubit.dart';
@@ -72,6 +78,12 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         createProfile: getIt.call<ProfileCubit>,
         createBookings: getIt.call<creator_bookings.BookingsCubit>,
         createAvailability: getIt.call<AvailabilityCubit>,
+        createInbox: getIt.call<InboxCubit>,
+        onInboxShown: (context) => askForPushOnce(
+          context,
+          getIt<PushService>(),
+          PushAskReason.creatorInbox,
+        ),
       ),
       ...quickMatchRoutes(
         flows: getIt<QuickMatchFlows>(),
@@ -90,6 +102,7 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
       menuRoute(
         loadSite: getIt<SiteRepository>().getSite,
         links: getIt<WebsiteLinks>(),
+        createPush: getIt.call<PushCubit>,
       ),
       // Feature 015's `/{slug}` page route stays last so it never shadows another route.
       editorPageRoute(getIt<ContentDeps>()),
@@ -105,15 +118,50 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         ),
   );
 
+  final _subscriptions = <StreamSubscription<Object?>>[];
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _startPush();
+  }
+
+  /// Feature 019: app push. Taps open their page; this device is registered on sign-in and on a
+  /// language change, removed before sign-out; a client who reaches step 2 is asked once.
+  void _startPush() {
+    final push = getIt<PushService>();
+    final session = getIt<SessionCubit>()..beforeSignOut = push.unregister;
+    unawaited(push.start(open: _router.go));
+    _subscriptions
+      ..add(
+        session.stream.where((s) => s is SignedIn).listen((_) {
+          unawaited(push.register());
+        }),
+      )
+      ..add(
+        getIt<LocaleCubit>().stream.listen((_) => unawaited(push.register())),
+      );
+    _router.routerDelegate.addListener(_askOnMatch);
+  }
+
+  void _askOnMatch() {
+    final path = _router.routerDelegate.currentConfiguration.uri.path;
+    if (!path.startsWith('/match/')) return;
+    final context = _router.routerDelegate.navigatorKey.currentContext;
+    if (context == null) return;
+    unawaited(
+      askForPushOnce(context, getIt<PushService>(), PushAskReason.clientBrief),
+    );
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _router.routerDelegate.removeListener(_askOnMatch);
+    for (final s in _subscriptions) {
+      unawaited(s.cancel());
+    }
     _router.dispose();
     super.dispose();
   }

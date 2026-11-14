@@ -25,9 +25,10 @@ final class AccountFailed extends AccountState {
   List<Object?> get props => [failure];
 }
 
-/// What Up next offers (FR-002): the most urgent of a request to answer, a profile to finish
-/// (or resend after a document was not accepted), a delivery to mark; else nothing.
-enum UpNextKind { answerRequest, finishProfile, markDelivered, none }
+/// What Up next offers (FR-002): the most urgent of a request to answer, open client briefs that
+/// match (feature 019), a profile to finish (or resend after a document was not accepted), a
+/// delivery to mark; else nothing.
+enum UpNextKind { answerRequest, briefs, finishProfile, markDelivered, none }
 
 final class AccountLoaded extends AccountState {
   const AccountLoaded(this.account);
@@ -36,6 +37,7 @@ final class AccountLoaded extends AccountState {
 
   UpNextKind get upNext {
     if (account.waiting != null) return UpNextKind.answerRequest;
+    if ((account.briefs?.count ?? 0) > 0) return UpNextKind.briefs;
     if (account.needs.any((n) => n.required.isNotEmpty)) {
       return UpNextKind.finishProfile;
     }

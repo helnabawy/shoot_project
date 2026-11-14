@@ -44,6 +44,8 @@ export const briefSummaryV1 = z.object({
   status: briefStatusV1,
   /** The booking this brief led to, when there is one. */
   bookingReference: z.string().nullable(),
+  /** 019: how many creators said yes to this brief while it is open. */
+  saidYes: z.int().nonnegative().optional(),
 })
 export type BriefSummaryV1 = z.infer<typeof briefSummaryV1>
 

@@ -231,6 +231,30 @@ class _UpNext extends StatelessWidget {
           onPressed: () => onOpen(AppRoutes.accountBookings),
         ),
       ],
+      UpNextKind.briefs => <Widget>[
+        MetaText(
+          [
+            if (a.briefs!.soonest?.date case final d?)
+              formatDay(context, d)
+            else
+              l10n.inboxAnyDate,
+            if (a.briefs!.soonest?.emirate case final e? when e.isNotEmpty) e,
+          ].join(' · '),
+        ),
+        Text(
+          l10n.caBriefsTitle(a.briefs!.count),
+          style: ShootType.heading.copyWith(color: context.colors.ink),
+        ),
+        if (a.briefs!.soonest case final s?)
+          MetaText(
+            [s.profession, s.occasion].where((t) => t.isNotEmpty).join(' · '),
+          ),
+        TopHit(
+          label: l10n.caBriefsAction(a.briefs!.count),
+          chevron: true,
+          onPressed: () => onOpen(AppRoutes.accountInbox),
+        ),
+      ],
       UpNextKind.markDelivered => <Widget>[
         Text(
           l10n.caMarkDeliveredTitle,
