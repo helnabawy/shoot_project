@@ -12,6 +12,8 @@ vi.mock('../actions', () => ({
   reportProblem: vi.fn(),
   requestFreshQuotation: vi.fn(),
 }))
+vi.mock('@/modules/payments/actions', () => ({ payOnline: vi.fn() }))
+vi.mock('next/navigation', () => ({ useRouter: () => ({ refresh: vi.fn() }) }))
 vi.mock('@payloadcms/richtext-lexical/react', () => ({ RichText: () => <p>Rich text</p> }))
 
 const status = (over: Partial<BookingStatusProps> = {}): BookingStatusProps => ({

@@ -55,6 +55,7 @@
   "canAccept": true,
   "canConfirmDelivery": false,
   "canReport": false,
+  "canPayOnline": false,
   "replacements": [],
   "holdReason": null,
   "whatsappUrl": "https://wa.me/971500000000?text=Hi%21%20About%20my%20quotation%20Q-4F8Z2."

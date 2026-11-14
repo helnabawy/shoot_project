@@ -36,6 +36,13 @@ describe('QM-US3-S5 booking state machine', () => {
     expect(allowedEvents(state, 'admin')).toEqual([])
   })
 
+  it('PY-US1-S3 a provider-confirmed online payment (system) pays a confirmed booking; a client or creator cannot', () => {
+    const now = new Date('2026-11-14T10:00:00Z')
+    expect(transition({ state: 'confirmed' }, 'pay', 'system', now)).toMatchObject({ ok: true, to: 'paid' })
+    expect(transition({ state: 'confirmed' }, 'pay', 'client', now)).toEqual({ ok: false, reason: 'not-allowed' })
+    expect(transition({ state: 'paid' }, 'pay', 'system', now)).toEqual({ ok: false, reason: 'not-allowed' })
+  })
+
   it('a client cannot cancel once paid; an admin can', () => {
     expect(transition({ state: 'paid' }, 'cancel', 'client', now)).toEqual({ ok: false, reason: 'not-allowed' })
     expect(transition({ state: 'paid' }, 'cancel', 'admin', now).ok).toBe(true)

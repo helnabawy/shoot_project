@@ -80,6 +80,7 @@ export interface Config {
     bookings: Booking;
     quotations: Quotation;
     payments: Payment;
+    'payment-sessions': PaymentSession;
     'availability-blocks': AvailabilityBlock;
     'booking-events': BookingEvent;
     notifications: Notification;
@@ -128,6 +129,7 @@ export interface Config {
     bookings: BookingsSelect<false> | BookingsSelect<true>;
     quotations: QuotationsSelect<false> | QuotationsSelect<true>;
     payments: PaymentsSelect<false> | PaymentsSelect<true>;
+    'payment-sessions': PaymentSessionsSelect<false> | PaymentSessionsSelect<true>;
     'availability-blocks': AvailabilityBlocksSelect<false> | AvailabilityBlocksSelect<true>;
     'booking-events': BookingEventsSelect<false> | BookingEventsSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
@@ -806,11 +808,16 @@ export interface Payment {
    * AED
    */
   amount: number;
-  method: 'bank-transfer' | 'cash' | 'card' | 'other';
+  method: 'bank-transfer' | 'cash' | 'card' | 'card-online' | 'other';
   /**
    * Receipt or transfer reference.
    */
   note?: string | null;
+  source?: ('manual' | 'online') | null;
+  /**
+   * Find it in the provider dashboard (pi_…).
+   */
+  providerRef?: string | null;
   recordedBy?: (number | null) | User;
   recordedAt?: string | null;
   updatedAt: string;
@@ -888,7 +895,8 @@ export interface Notification {
     | 'expired'
     | 'delivery-overdue'
     | 'brief-accepted'
-    | 'brief-new';
+    | 'brief-new'
+    | 'payment-attention';
   audience: 'client' | 'creator' | 'admin';
   channel: 'whatsapp' | 'email' | 'in-app' | 'push';
   locale?: ('en' | 'ar') | null;
@@ -897,6 +905,26 @@ export interface Notification {
   link?: string | null;
   dedupeKey: string;
   readAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Each time a client opened the secure payment page. Paid attempts have a payment in Payments.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-sessions".
+ */
+export interface PaymentSession {
+  id: number;
+  booking: number | Booking;
+  revision: number;
+  amountFils: number;
+  provider: 'stripe';
+  providerSessionId: string;
+  url: string;
+  status: 'open' | 'paid' | 'expired';
+  expiresAt: string;
+  paymentRef?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1716,6 +1744,10 @@ export interface PayloadLockedDocument {
         value: number | Payment;
       } | null)
     | ({
+        relationTo: 'payment-sessions';
+        value: number | PaymentSession;
+      } | null)
+    | ({
         relationTo: 'availability-blocks';
         value: number | AvailabilityBlock;
       } | null)
@@ -2187,8 +2219,27 @@ export interface PaymentsSelect<T extends boolean = true> {
   amount?: T;
   method?: T;
   note?: T;
+  source?: T;
+  providerRef?: T;
   recordedBy?: T;
   recordedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-sessions_select".
+ */
+export interface PaymentSessionsSelect<T extends boolean = true> {
+  booking?: T;
+  revision?: T;
+  amountFils?: T;
+  provider?: T;
+  providerSessionId?: T;
+  url?: T;
+  status?: T;
+  expiresAt?: T;
+  paymentRef?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3113,7 +3164,8 @@ export interface SiteSetting {
             | 'expired'
             | 'delivery-overdue'
             | 'brief-accepted'
-            | 'brief-new';
+            | 'brief-new'
+            | 'payment-attention';
           audience: 'client' | 'creator' | 'admin';
           text: string;
           id?: string | null;

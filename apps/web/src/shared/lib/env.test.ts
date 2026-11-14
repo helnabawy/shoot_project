@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hasS3, parseEnv, pushProviderOf } from './env'
+import { hasS3, parseEnv, paymentProviderOf, pushProviderOf } from './env'
 
 const valid = {
   DATABASE_URI: 'postgres://shoot:shoot@127.0.0.1:5432/shoot',
@@ -115,6 +115,24 @@ describe('environment validation', () => {
 
     it('refuses an unknown provider', () => {
       expect(() => parseEnv({ ...valid, OTP_PROVIDER: 'pigeon' })).toThrow(/OTP_PROVIDER: must be console or unifonic/)
+    })
+  })
+
+  describe('PY-US3-S1 online payment (feature 020)', () => {
+    const keys = { STRIPE_SECRET_KEY: 'sk_test_123', STRIPE_WEBHOOK_SECRET: 'whsec_123' }
+
+    it('is off without keys, and stripe when the secret key is set', () => {
+      expect(paymentProviderOf(parseEnv(valid))).toBe('off')
+      expect(paymentProviderOf(parseEnv({ ...valid, ...keys }))).toBe('stripe')
+      expect(paymentProviderOf(parseEnv({ ...valid, ...keys, PAYMENT_PROVIDER: 'off' }))).toBe('off')
+    })
+
+    it('stripe needs both keys, in their Stripe shapes', () => {
+      expect(() => parseEnv({ ...valid, PAYMENT_PROVIDER: 'stripe' })).toThrow(/STRIPE_SECRET_KEY/)
+      expect(() => parseEnv({ ...valid, STRIPE_SECRET_KEY: 'sk_test_123' })).toThrow(/STRIPE_WEBHOOK_SECRET/)
+      expect(() => parseEnv({ ...valid, ...keys, STRIPE_SECRET_KEY: 'pk_test_123' })).toThrow(/STRIPE_SECRET_KEY: must be a secret key/)
+      expect(() => parseEnv({ ...valid, ...keys, STRIPE_WEBHOOK_SECRET: 'abc' })).toThrow(/STRIPE_WEBHOOK_SECRET: must be a webhook signing secret/)
+      expect(() => parseEnv({ ...valid, PAYMENT_PROVIDER: 'paypal' })).toThrow(/PAYMENT_PROVIDER: must be stripe or off/)
     })
   })
 

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:shoot_mobile/core/network/api_get.dart';
 import 'package:shoot_mobile/core/network/api_post.dart';
+import 'package:shoot_mobile/core/network/json_read.dart';
 import 'package:shoot_mobile/features/quick_match/data/models/quick_match_models.dart';
 import 'package:shoot_mobile/features/quick_match/domain/entities/quick_match.dart';
 
@@ -38,6 +39,9 @@ abstract interface class QuickMatchRemoteDataSource {
   );
 
   Future<FreshQuotationModel> fresh(String ref, String key);
+
+  /// `POST quotations/{ref}/{key}/pay`: the secure payment page's address.
+  Future<String> pay(String ref, String key);
 }
 
 final class QuickMatchRemoteDataSourceImpl
@@ -121,4 +125,10 @@ final class QuickMatchRemoteDataSourceImpl
       FreshQuotationModel.fromJson(
         (await apiPost(_dio, 'quotations/${_q(ref, key)}/fresh')).body!,
       );
+
+  @override
+  Future<String> pay(String ref, String key) async => readString(
+    (await apiPost(_dio, 'quotations/${_q(ref, key)}/pay')).body!,
+    'url',
+  );
 }

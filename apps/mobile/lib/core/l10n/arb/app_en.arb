@@ -3410,5 +3410,38 @@
         "type": "int"
       }
     }
+  },
+  "qmPayAction": "Pay",
+  "@qmPayAction": {
+    "description": "Feature 020: the primary action on a confirmed booking with online payment on; the amount shows at its end."
+  },
+  "qmPaySecure": "Secure payment by card, Apple Pay or Google Pay. You come back here when it's done.",
+  "@qmPaySecure": {
+    "description": "Under Pay: how the payment is made."
+  },
+  "qmNextPayOnline": "Confirmed. Pay {total} to secure your date.",
+  "@qmNextPayOnline": {
+    "description": "Next step when the booking is confirmed and online payment is on.",
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "qmPaymentPending": "Payment received. We're confirming it, this takes a few seconds.",
+  "@qmPaymentPending": {
+    "description": "Back from the payment page while the booking is not paid yet."
+  },
+  "qmPaymentNotYet": "We haven't received the payment yet. If you left the payment page, nothing was charged; you can try again.",
+  "@qmPaymentNotYet": {
+    "description": "Back from the payment page and still not paid after a short wait."
+  },
+  "problemPaymentUnavailable": "Online payment isn't available right now. Please try again later or contact us on WhatsApp.",
+  "@problemPaymentUnavailable": {
+    "description": "payment.errors.unavailable"
+  },
+  "problemPaymentProvider": "We couldn't open the payment page. Please try again in a moment.",
+  "@problemPaymentProvider": {
+    "description": "payment.errors.provider"
   }
 }

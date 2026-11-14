@@ -19,6 +19,21 @@ void main() {
     'future': 'podcast',
   };
 
+  group('readOptionalBool', () {
+    test('reads a boolean, and an absent or null key as the fallback', () {
+      expect(readOptionalBool({'on': true}, 'on'), isTrue);
+      expect(readOptionalBool({'on': false}, 'on', fallback: true), isFalse);
+      expect(readOptionalBool(<String, Object?>{}, 'on'), isFalse);
+      expect(readOptionalBool({'on': null}, 'on', fallback: true), isTrue);
+    });
+    test('refuses another type', () {
+      expect(
+        () => readOptionalBool({'on': 'yes'}, 'on'),
+        throwsFormatException,
+      );
+    });
+  });
+
   group('readString', () {
     test('reads a string', () => expect(readString(json, 'name'), 'Shoot'));
     test(

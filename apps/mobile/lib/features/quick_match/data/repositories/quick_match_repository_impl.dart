@@ -69,4 +69,8 @@ final class QuickMatchRepositoryImpl implements QuickMatchRepository {
   @override
   Future<Result<FreshQuotation>> fresh(String ref, String key) =>
       apiResult(() async => (await _remote.fresh(ref, key)).toEntity());
+
+  @override
+  Future<Result<String>> pay(String ref, String key) =>
+      apiResult(() => _remote.pay(ref, key));
 }

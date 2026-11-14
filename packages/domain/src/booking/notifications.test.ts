@@ -31,7 +31,7 @@ describe('QM-FR-006 notifications per state change', () => {
   })
 
   it('documents the placeholders a template may use', () => {
-    expect(NOTIFICATION_PLACEHOLDERS).toEqual(['name', 'reference', 'date', 'total', 'link', 'occasion', 'type', 'emirate', 'creator'])
+    expect(NOTIFICATION_PLACEHOLDERS).toEqual(['name', 'reference', 'date', 'total', 'link', 'occasion', 'type', 'emirate', 'creator', 'reason'])
   })
 
   it('dedupe keys are stable and distinguish every part', () => {
@@ -44,6 +44,8 @@ describe('BI-US4-S6 brief notifications are keyed by brief, not booking revision
   it('who hears about brief events', () => {
     expect(notificationsFor('brief-accepted')).toEqual(['client', 'admin'])
     expect(notificationsFor('brief-new')).toEqual(['creator'])
+    // PY-US3-S3: an unexpected online payment alerts the team only.
+    expect(notificationsFor('payment-attention')).toEqual(['admin'])
   })
 
   it('one key per brief, event, audience, channel and recipient', () => {

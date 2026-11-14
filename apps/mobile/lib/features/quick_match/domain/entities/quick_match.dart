@@ -334,6 +334,7 @@ final class BookingView extends Equatable {
     required this.canAccept,
     required this.canConfirmDelivery,
     required this.canReport,
+    this.canPayOnline = false,
     required this.replacements,
     required this.holdReason,
     required this.whatsappUrl,
@@ -354,6 +355,9 @@ final class BookingView extends Equatable {
   final bool canAccept;
   final bool canConfirmDelivery;
   final bool canReport;
+
+  /// Feature 020: "Pay {total}" through the secure payment page (confirmed, online payment on).
+  final bool canPayOnline;
   final List<Replacement> replacements;
   final String? holdReason;
   final String? whatsappUrl;
@@ -375,6 +379,7 @@ final class BookingView extends Equatable {
     canAccept,
     canConfirmDelivery,
     canReport,
+    canPayOnline,
     replacements,
     holdReason,
     whatsappUrl,

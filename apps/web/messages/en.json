@@ -698,7 +698,8 @@
       "on-hold": "We are looking into this and will reply on WhatsApp.",
       "cancelled": "This booking was cancelled.",
       "expired": "This quotation has expired.",
-      "lapsed": "{type}: your professional could not confirm. Choose someone else at the same price."
+      "lapsed": "{type}: your professional could not confirm. Choose someone else at the same price.",
+      "confirmedOnline": "Confirmed. Pay {total} to secure your date."
     },
     "payment": "How to pay",
     "sendReceipt": "Send receipt on WhatsApp",
@@ -722,7 +723,12 @@
       "cancelledAt": "Cancelled",
       "expiredAt": "Expired",
       "issuedAt": "Issued"
-    }
+    },
+    "payOnlineGroup": "Payment",
+    "pay": "Pay {total}",
+    "paySecure": "Secure payment by card, Apple Pay or Google Pay. You come back here when it's done.",
+    "paymentPending": "Payment received. We're confirming it, this takes a few seconds.",
+    "paymentCancelled": "Payment not completed. Nothing was charged; you can try again."
   },
   "booking": {
     "metaTitle": "Bookings",
@@ -851,6 +857,12 @@
   "push": {
     "errors": {
       "tokenInvalid": "This device could not be registered for notifications."
+    }
+  },
+  "payment": {
+    "errors": {
+      "unavailable": "Online payment isn't available right now. Please try again later or contact us on WhatsApp.",
+      "provider": "We couldn't open the payment page. Please try again in a moment."
     }
   }
 }

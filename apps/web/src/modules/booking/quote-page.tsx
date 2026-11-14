@@ -18,12 +18,15 @@ export async function QuotationPage({
   keyParam,
   error,
   promo,
+  payment,
 }: {
   access: QuotationAccess
   locale: Locale
   keyParam: string
   error?: string
   promo?: string
+  /** Back from the payment page (feature 020). */
+  payment?: string
 }) {
   const now = new Date()
   const [settings, ctx, all] = await Promise.all([
@@ -85,9 +88,9 @@ export async function QuotationPage({
         {...view}
         notice={notice}
         error={
-          error && /^(booking|availability)\.errors\.[\w-]+$/.test(error) ? known(error) : null
+          error && /^(booking|availability|payment)\.errors\.[\w-]+$/.test(error) ? known(error) : null
         }
-        status={<BookingStatus {...status} />}
+        status={<BookingStatus {...status} paymentReturn={payment === 'done' || payment === 'cancelled' ? payment : null} />}
         endActions={
           status.canCancel ? (
             <CancelBooking access={status.access} label={all('quote.cancel')} />

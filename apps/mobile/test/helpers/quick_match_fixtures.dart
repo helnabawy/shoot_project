@@ -15,8 +15,14 @@ MatchPage exampleMatch() =>
 MatchPage exampleNoneFree() =>
     MatchPageModel.fromJson(loadExample('match-none-free')).toEntity();
 
-BookingView exampleView(String name) =>
-    BookingViewModel.fromJson(loadExample('booking-view-$name')).toEntity();
+BookingView exampleView(
+  String name, [
+  void Function(Map<String, Object?> json)? patch,
+]) {
+  final json = loadExample('booking-view-$name');
+  patch?.call(json);
+  return BookingViewModel.fromJson(json).toEntity();
+}
 
 QuotationIssued exampleIssued() =>
     QuotationIssuedModel.fromJson(loadExample('quotation-issued')).toEntity();

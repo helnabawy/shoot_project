@@ -34,6 +34,7 @@ const SAMPLE_PARAMS: Record<string, Record<string, string>> = {
   quotationIssue: { ref: 'B-NONE', key: 'x' },
   quotationView: { ref: 'Q-NONE', key: 'x' },
   quotationAccept: { ref: 'Q-NONE', key: 'x' },
+  quotationPay: { ref: 'Q-NONE', key: 'x' },
   quotationConfirmDelivery: { ref: 'Q-NONE', key: 'x' },
   quotationReport: { ref: 'Q-NONE', key: 'x' },
   quotationFresh: { ref: 'Q-NONE', key: 'x' },
@@ -75,6 +76,8 @@ const BOOKING: Record<string, number> = {
   quotationFresh: 404,
   quotationReport: 422,
   quotationPickAnother: 422,
+  // 020: online payment for a confirmed booking.
+  quotationPay: 404,
 }
 
 /** Feature 009's endpoints: an anonymous call is refused as declared (401 signed in, 422 without a body); their own suites cover the rest. */

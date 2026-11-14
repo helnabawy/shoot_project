@@ -1,7 +1,7 @@
 export type Audience = 'client' | 'creator' | 'admin'
 
 /** What a notification template may say; anything else is left out when it is rendered. */
-export const NOTIFICATION_PLACEHOLDERS = ['name', 'reference', 'date', 'total', 'link', 'occasion', 'type', 'emirate', 'creator'] as const
+export const NOTIFICATION_PLACEHOLDERS = ['name', 'reference', 'date', 'total', 'link', 'occasion', 'type', 'emirate', 'creator', 'reason'] as const
 export type Channel = 'whatsapp' | 'email' | 'in-app' | 'push'
 
 export const NOTIFICATION_EVENTS = [
@@ -23,6 +23,8 @@ export const NOTIFICATION_EVENTS = [
   // Feature 019: a creator said yes to a brief; a new brief matches a creator.
   'brief-accepted',
   'brief-new',
+  // Feature 020: an online payment the booking did not expect (refund or check it).
+  'payment-attention',
 ] as const
 export type NotificationEvent = (typeof NOTIFICATION_EVENTS)[number]
 
@@ -44,6 +46,7 @@ const AUDIENCES: Readonly<Record<NotificationEvent, readonly Audience[]>> = {
   'delivery-overdue': ['admin'],
   'brief-accepted': ['client', 'admin'],
   'brief-new': ['creator'],
+  'payment-attention': ['admin'],
 }
 
 /** Who hears about an event (FR-006). Channels and wording come from the content area. */

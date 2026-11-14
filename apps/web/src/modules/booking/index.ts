@@ -16,3 +16,7 @@ export { myProfileIds } from './queries'
 export { readQuickMatch } from './settings'
 export { absolute, matchPath } from './paths'
 export { acceptedFor } from './match'
+// 020: online payment starts from a quotation link and reports through the booking's notifications.
+export { getQuotationAccess, type QuotationAccess } from './queries'
+export { quotePath } from './paths'
+export { notify } from './notify'

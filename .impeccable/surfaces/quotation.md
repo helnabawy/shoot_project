@@ -13,7 +13,7 @@ Reassure, then convert. `/q/{ref}/{key}` (and `/account/bookings/{ref}` for memb
 
 ## Audience, job, action
 
-A client deciding to commit, then following their booking. One primary action per state, as the Top Hit: quoted → "Accept quotation"; accepted → none (status "Waiting for Sara Khan to confirm by 14:00 tomorrow"); confirmed → "Send receipt on WhatsApp" with the payment instructions above it; delivered → "Confirm delivery" (secondary: "Report a problem"); expired → "Get a fresh quotation"; lapsed creator → choose another (rows like step 2). "Download PDF" is always a quiet Actions row; WhatsApp too.
+A client deciding to commit, then following their booking. One primary action per state, as the Top Hit: quoted → "Accept quotation"; accepted → none (status "Waiting for Sara Khan to confirm by 14:00 tomorrow"); confirmed → "Pay AED {total}" (feature 020, online payment on: a lock glyph, one quiet line naming card, Apple Pay and Google Pay; back from the payment page the status line becomes "Payment received. We're confirming it…" with a pulsing accent dot until paid; after leaving the page a plain "Nothing was charged" line above Pay), or with online payment off "Send receipt on WhatsApp" with the payment instructions above it; delivered → "Confirm delivery" (secondary: "Report a problem"); expired → "Get a fresh quotation"; lapsed creator → choose another (rows like step 2). "Download PDF" is always a quiet Actions row; WhatsApp too.
 
 ## Proof and constraints
 
@@ -29,7 +29,7 @@ quoted, accepted, confirmed, paid, scheduled, delivered, completed, on-hold, can
 
 ## Deliberately absent
 
-Stamps, fake signatures, logos the owner has not uploaded, "best price" claims, countdown timers.
+Stamps, fake signatures, logos the owner has not uploaded, "best price" claims, countdown timers, card-brand logo strips or "secured by" badges.
 
 ## RTL and dark
 

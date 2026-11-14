@@ -52,6 +52,13 @@ bool readBool(Json json, String key) {
   return value is bool ? value : _bad(key, 'a boolean', value);
 }
 
+/// A boolean a newer server adds (v1 changes are additive): absent or `null` reads as [fallback].
+bool readOptionalBool(Json json, String key, {bool fallback = false}) {
+  final value = json[key];
+  if (value == null) return fallback;
+  return value is bool ? value : _bad(key, 'a boolean or null', value);
+}
+
 /// A list, each item mapped by [item] (use [asObject] for object items).
 List<T> readList<T>(Json json, String key, T Function(Object? item) item) {
   final value = json[key];

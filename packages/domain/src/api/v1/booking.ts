@@ -137,12 +137,18 @@ export const bookingViewV1 = z.object({
   canAccept: z.boolean(),
   canConfirmDelivery: z.boolean(),
   canReport: z.boolean(),
+  /** Feature 020: "Pay {total}" online (confirmed, a total above zero, the current quotation, payment on). */
+  canPayOnline: z.boolean(),
   /** Types whose professional declined or did not answer, with others who are free at the same price. */
   replacements: z.array(z.object({ persona: z.object({ slug: z.string(), singular: z.string() }), creators: z.array(creatorCardV1) })),
   holdReason: z.string().nullable(),
   whatsappUrl: z.string().regex(/^https:\/\/\S+$/).nullable(),
 })
 export type BookingViewV1 = z.infer<typeof bookingViewV1>
+
+/** Feature 020: where the provider's secure payment page is (`POST quotations/{ref}/{key}/pay`). */
+export const checkoutV1 = z.object({ url: z.string().regex(/^https:\/\/\S+$/) })
+export type CheckoutV1 = z.infer<typeof checkoutV1>
 
 export const freshQuotationV1 = z.object({
   briefReference: z.string(),

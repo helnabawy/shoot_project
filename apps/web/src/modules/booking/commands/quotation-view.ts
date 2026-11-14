@@ -1,12 +1,15 @@
 import 'server-only'
 import type { BookingViewV1 } from '@shoot/domain/api/v1'
 import { allowedEvents, effectiveState, type BookingState } from '@shoot/domain/booking'
+import { onlinePaymentAllowed } from '@shoot/domain/payments'
 import { formatMoney } from '@shoot/domain/pricing'
 import { getTranslations } from 'next-intl/server'
 import { whatsappHref } from '@/modules/contact/whatsapp'
 import { getDirectoryContext, toWireCreatorCard } from '@/modules/creators'
 import { getSiteSettings } from '@/modules/site-settings/queries'
 import { wireContext } from '@/shared/api/wire'
+import { env } from '@/shared/lib/env'
+import { getPaymentProvider } from '@/shared/payments'
 import type { Locale } from '@/shared/lib/locale'
 import { getMatchPage } from '../match'
 import type { QuotationAccess } from '../queries'
@@ -106,6 +109,7 @@ export async function quotationView(access: QuotationAccess, options: { locale: 
     canAccept: isCurrent && state === 'quoted',
     canConfirmDelivery: isCurrent && state === 'delivered',
     canReport: isCurrent && allowedEvents(state, 'client').includes('hold'),
+    canPayOnline: isCurrent && getPaymentProvider(env()).name !== 'off' && onlinePaymentAllowed({ state, totalFils: current.totalFils }),
     replacements,
     holdReason: state === 'on-hold' ? (booking.holdReason ?? null) : null,
     whatsappUrl: whatsappHref(settings.whatsappNumber, text),

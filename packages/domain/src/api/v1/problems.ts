@@ -63,6 +63,9 @@ export const PROBLEM_CODES = [
   'booking.errors.creatorUnavailable',
   'booking.errors.terminal',
   'booking.errors.expired-quotation',
+  // Feature 020: online payment switched off, or the provider refused / could not be reached.
+  'payment.errors.unavailable',
+  'payment.errors.provider',
   // 010: recording a brief.
   'brief.errors.required',
   'brief.errors.optionGone',

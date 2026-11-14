@@ -89,6 +89,7 @@ Cache:
 | `quotationConfirmDelivery` | `POST /quotations/{ref}/{key}/confirm-delivery` | opt | no-store | `quotationAddressV1` | `bookingViewV1` | `booking` `confirm-delivery` (012) | unknown, wrong key |
 | `quotationReport` | `POST /quotations/{ref}/{key}/report` | opt | no-store | `reportRequestV1` | `bookingViewV1` | `booking` `report-problem` (012) | unknown, wrong key |
 | `quotationFresh` | `POST /quotations/{ref}/{key}/fresh` | opt | no-store | `quotationAddressV1` | `freshQuotationV1` | `booking` `fresh-quotation` (012) | unknown, wrong key |
+| `quotationPay` | `POST /quotations/{ref}/{key}/pay` | opt | no-store | `quotationAddressV1` | `checkoutV1` | `checkout` (020) | unknown, wrong key; 409 not confirmed; 503 payment off or provider failed |
 | `quotationPickAnother` | `POST /quotations/{ref}/{key}/pick-another` | opt | no-store | `pickAnotherRequestV1` | `bookingViewV1` | `booking` `pick-another` (012) | unknown, wrong key |
 | `briefRecord` | `POST /briefs` | opt | no-store | `briefRecordV1` | `briefReceiptV1` | `brief` `record-brief` (010) | — |
 | — | any other address under `/api/mobile` | none | no-store | — | `problemV1` | catch-all | always |

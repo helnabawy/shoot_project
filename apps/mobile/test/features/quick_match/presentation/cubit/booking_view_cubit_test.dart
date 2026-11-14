@@ -10,8 +10,13 @@ import '../../../../helpers/quick_match_fixtures.dart';
 void main() {
   late MockQuickMatchRepository repository;
 
-  BookingViewCubit make() =>
-      BookingViewCubit(repository: repository, ref: 'Q-4F8Z2', key: exampleKey);
+  BookingViewCubit make() => BookingViewCubit(
+    repository: repository,
+    ref: 'Q-4F8Z2',
+    key: exampleKey,
+    pollEvery: Duration.zero,
+    pollTimes: 3,
+  );
 
   setUp(() {
     repository = MockQuickMatchRepository();
@@ -169,5 +174,83 @@ void main() {
         'booking.errors.terminal',
       );
     });
+  });
+
+  group('020 paying online from the app', () {
+    const checkout = 'https://checkout.stripe.com/c/pay/cs_test_1';
+    BookingView paid() => exampleView('confirmed', (j) {
+      j['state'] = 'paid';
+      j['nextStep'] = 'shootDay';
+      j['canPayOnline'] = false;
+    });
+
+    test('PY-US2-S1 a confirmed booking with online payment on offers Pay; an older server without the field does not', () {
+      expect(exampleView('confirmed').canPayOnline, isTrue);
+      expect(
+        exampleView('confirmed', (j) => j.remove('canPayOnline')).canPayOnline,
+        isFalse,
+      );
+      expect(paid().canPayOnline, isFalse);
+    });
+
+    test('PY-US2-S2 PY-US1-S4 Pay opens the secure page; back in the app it reloads until the booking is paid', () async {
+      when(() => repository.getBooking(any(), any()))
+          .thenAnswer((_) async => Ok(exampleView('confirmed')));
+      when(() => repository.pay(any(), any()))
+          .thenAnswer((_) async => const Ok(checkout));
+      final cubit = make();
+      await cubit.load();
+      final opened = <Uri>[];
+      await cubit.pay((uri) async => opened.add(uri));
+      expect(opened, [Uri.parse(checkout)]);
+      expect(cubit.state.paying, isTrue);
+      expect(cubit.state.busy, isFalse);
+
+      // PY-US1-S4: still confirmed on the first read back, paid on the next.
+      var reads = 0;
+      when(() => repository.getBooking(any(), any())).thenAnswer(
+        (_) async => Ok(++reads == 1 ? exampleView('confirmed') : paid()),
+      );
+      await cubit.resumed();
+      expect(cubit.state.view!.state, BookingState.paid);
+      expect(cubit.state.paying, isFalse);
+      expect(cubit.state.notPaidYet, isFalse);
+    });
+
+    test('PY-US2-S3 left the secure page: after a short wait it is still confirmed and Pay is offered again', () async {
+      when(() => repository.getBooking(any(), any()))
+          .thenAnswer((_) async => Ok(exampleView('confirmed')));
+      when(() => repository.pay(any(), any()))
+          .thenAnswer((_) async => const Ok(checkout));
+      final cubit = make();
+      await cubit.load();
+      await cubit.pay((_) async {});
+      await cubit.resumed();
+      expect(cubit.state.view!.state, BookingState.confirmed);
+      expect(cubit.state.paying, isFalse);
+      expect(cubit.state.notPaidYet, isTrue);
+      // 1 load + 1 resume read + 3 polls.
+      verify(() => repository.getBooking(any(), any())).called(5);
+    });
+
+    test(
+      'a refused or failed start shows its message and opens nothing',
+      () async {
+        when(() => repository.getBooking(any(), any()))
+            .thenAnswer((_) async => Ok(exampleView('confirmed')));
+        when(() => repository.pay(any(), any())).thenAnswer(
+          (_) async => const Err(
+            ServerFailure(statusCode: 503, code: 'payment.errors.unavailable'),
+          ),
+        );
+        final cubit = make();
+        await cubit.load();
+        final opened = <Uri>[];
+        await cubit.pay((uri) async => opened.add(uri));
+        expect(opened, isEmpty);
+        expect(cubit.state.paying, isFalse);
+        expect(cubit.state.commandFailure, isA<ServerFailure>());
+      },
+    );
   });
 }

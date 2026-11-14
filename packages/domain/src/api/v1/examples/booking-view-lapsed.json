@@ -55,6 +55,7 @@
   "canAccept": false,
   "canConfirmDelivery": false,
   "canReport": false,
+  "canPayOnline": false,
   "replacements": [
     {
       "persona": {

@@ -41,6 +41,8 @@ export const quickMatchTemplates: T[] = [
   t('brief-accepted', 'client', '{creator} said yes to your brief for {occasion}. Choose your creator: {link}', 'وافق {creator} على طلبك لـ{occasion}. اختر المحترف: {link}'),
   t('brief-accepted', 'admin', '{creator} said yes to brief {reference} ({type}, {emirate}, {date}). Send the client the link: {link}', 'وافق {creator} على الطلب {reference} ({type}، {emirate}، {date}). أرسل الرابط للعميل: {link}'),
   t('brief-new', 'creator', 'New brief: {type} for {occasion} in {emirate}, {date}.', 'طلب جديد: {type} لـ{occasion} في {emirate}، {date}.'),
+  // Feature 020: an online payment the booking did not expect (cancelled, already paid, other amount).
+  t('payment-attention', 'admin', 'Online payment for {reference} ({total}) needs a check: {reason}. Refund it or record it in Payments.', 'دفعة إلكترونية للحجز {reference} ({total}) تحتاج مراجعة: {reason}. أعدها أو سجّلها في المدفوعات.'),
   t('delivery-overdue', 'admin', 'The client has not confirmed delivery of {reference}. You may complete it.', 'لم يؤكد العميل استلام {reference}. يمكنك إكماله.'),
 ]
 

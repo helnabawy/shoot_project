@@ -19110,6 +19110,9 @@
           "canConfirmDelivery": {
             "type": "boolean"
           },
+          "canPayOnline": {
+            "type": "boolean"
+          },
           "canReport": {
             "type": "boolean"
           },
@@ -19492,6 +19495,7 @@
           "canAccept",
           "canConfirmDelivery",
           "canReport",
+          "canPayOnline",
           "replacements",
           "holdReason",
           "whatsappUrl"
@@ -19543,6 +19547,9 @@
           "canConfirmDelivery": {
             "type": "boolean"
           },
+          "canPayOnline": {
+            "type": "boolean"
+          },
           "canReport": {
             "type": "boolean"
           },
@@ -19925,6 +19932,7 @@
           "canAccept",
           "canConfirmDelivery",
           "canReport",
+          "canPayOnline",
           "replacements",
           "holdReason",
           "whatsappUrl"
@@ -20170,6 +20178,55 @@
       },
       "path": "/api/mobile/v1/match/{ref}/{key}/quotation"
     },
+    "quotationPay": {
+      "auth": "optional",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "params": {
+            "properties": {
+              "key": {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              "ref": {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "ref",
+              "key"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "pattern": "^https:\\/\\/\\S+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/quotations/{ref}/{key}/pay"
+    },
     "quotationPickAnother": {
       "auth": "optional",
       "cache": "no-store",
@@ -20231,6 +20288,9 @@
             "type": "boolean"
           },
           "canConfirmDelivery": {
+            "type": "boolean"
+          },
+          "canPayOnline": {
             "type": "boolean"
           },
           "canReport": {
@@ -20615,6 +20675,7 @@
           "canAccept",
           "canConfirmDelivery",
           "canReport",
+          "canPayOnline",
           "replacements",
           "holdReason",
           "whatsappUrl"
@@ -20680,6 +20741,9 @@
           "canConfirmDelivery": {
             "type": "boolean"
           },
+          "canPayOnline": {
+            "type": "boolean"
+          },
           "canReport": {
             "type": "boolean"
           },
@@ -21062,6 +21126,7 @@
           "canAccept",
           "canConfirmDelivery",
           "canReport",
+          "canPayOnline",
           "replacements",
           "holdReason",
           "whatsappUrl"
@@ -21113,6 +21178,9 @@
           "canConfirmDelivery": {
             "type": "boolean"
           },
+          "canPayOnline": {
+            "type": "boolean"
+          },
           "canReport": {
             "type": "boolean"
           },
@@ -21495,6 +21563,7 @@
           "canAccept",
           "canConfirmDelivery",
           "canReport",
+          "canPayOnline",
           "replacements",
           "holdReason",
           "whatsappUrl"
@@ -22754,6 +22823,8 @@
     "inbox.errors.reasonUnknown",
     "media.upload.size",
     "media.upload.type",
+    "payment.errors.provider",
+    "payment.errors.unavailable",
     "push.errors.tokenInvalid"
   ],
   "version": 1

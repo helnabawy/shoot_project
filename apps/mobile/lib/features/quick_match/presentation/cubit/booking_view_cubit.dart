@@ -14,6 +14,8 @@ final class BookingViewState extends Equatable {
     this.busy = false,
     this.commandFailure,
     this.fresh,
+    this.paying = false,
+    this.notPaidYet = false,
   });
 
   final BookingViewStatus status;
@@ -28,12 +30,21 @@ final class BookingViewState extends Equatable {
   /// Set when "Get a fresh quotation" has the brief's link: the screen opens step 2 with it.
   final FreshQuotation? fresh;
 
+  /// Feature 020: the secure payment page was opened; back in the app the booking is read again until
+  /// it is paid ("Payment received, we're confirming it").
+  final bool paying;
+
+  /// Back from the payment page, the booking is still waiting for payment (left the page, or slow).
+  final bool notPaidYet;
+
   BookingViewState copyWith({
     BookingViewStatus? status,
     BookingView? view,
     bool? busy,
     Failure? Function()? commandFailure,
     FreshQuotation? Function()? fresh,
+    bool? paying,
+    bool? notPaidYet,
   }) => BookingViewState(
     status: status ?? this.status,
     view: view ?? this.view,
@@ -42,10 +53,20 @@ final class BookingViewState extends Equatable {
         ? this.commandFailure
         : commandFailure(),
     fresh: fresh == null ? this.fresh : fresh(),
+    paying: paying ?? this.paying,
+    notPaidYet: notPaidYet ?? this.notPaidYet,
   );
 
   @override
-  List<Object?> get props => [status, view, busy, commandFailure, fresh];
+  List<Object?> get props => [
+    status,
+    view,
+    busy,
+    commandFailure,
+    fresh,
+    paying,
+    notPaidYet,
+  ];
 }
 
 /// Screens 12, 13, 14, 40 and the states without a board (feature 012 US3 to US5). The state is
@@ -56,11 +77,17 @@ final class BookingViewCubit extends Cubit<BookingViewState> {
     required this._repository,
     required this.ref,
     required this.key,
+    this.pollEvery = const Duration(seconds: 3),
+    this.pollTimes = 20,
   }) : super(const BookingViewState());
 
   final QuickMatchRepository _repository;
   final String ref;
   final String key;
+
+  /// Back from the payment page: how often, and how many times, the booking is read again (R7).
+  final Duration pollEvery;
+  final int pollTimes;
 
   Future<void> load() async {
     // A refresh keeps what is on screen; only the first load shows the spinner.
@@ -80,6 +107,40 @@ final class BookingViewCubit extends Cubit<BookingViewState> {
 
   Future<void> pickAnother(String persona, String code) =>
       _command(() => _repository.pickAnother(ref, key, persona, code));
+
+  /// Feature 020: opens the secure payment page with [open]. The server decides the amount.
+  Future<void> pay(Future<void> Function(Uri url) open) async {
+    if (state.busy) return;
+    emit(
+      state.copyWith(busy: true, commandFailure: () => null, notPaidYet: false),
+    );
+    final result = await _repository.pay(ref, key);
+    if (isClosed) return;
+    switch (result) {
+      case Ok(:final value):
+        emit(state.copyWith(busy: false, paying: true));
+        await open(Uri.parse(value));
+      case Err(:final failure):
+        emit(state.copyWith(busy: false, commandFailure: () => failure));
+        if (failure is ServerFailure && failure.statusCode == 409) await load();
+    }
+  }
+
+  /// The app came back to the foreground: read the booking again, and after a payment keep reading
+  /// it for a short while until the provider's confirmation has made it paid.
+  Future<void> resumed() async {
+    await load();
+    if (!state.paying) return;
+    for (var i = 0; i < pollTimes && _awaitingPayment; i++) {
+      await Future<void>.delayed(pollEvery);
+      if (isClosed) return;
+      await load();
+    }
+    if (isClosed) return;
+    emit(state.copyWith(paying: false, notPaidYet: _awaitingPayment));
+  }
+
+  bool get _awaitingPayment => state.view?.state == BookingState.confirmed;
 
   /// "Get a fresh quotation": the brief's link and the old picks, for step 2.
   Future<void> getFresh() async {

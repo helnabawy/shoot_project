@@ -42,6 +42,12 @@ enum ShootIcons {
   ),
   alert('<circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01"/>'),
 
+  /// A padlock (feature 020: the secure payment action).
+  lock(
+    '<rect x="5" y="11" width="14" height="10" rx="2"/>'
+    '<path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  ),
+
   /// A place (the creator's booking and brief facts).
   pin(
     '<path d="M12 21s-7-6.1-7-11.2a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/>'

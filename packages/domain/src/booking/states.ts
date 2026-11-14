@@ -18,7 +18,8 @@ export const TRANSITIONS: readonly Rule[] = [
   { event: 'accept', from: ['quoted'], to: 'accepted', actors: ['client'] },
   { event: 'expire', from: ['quoted'], to: 'expired', actors: ['system'] },
   { event: 'confirm', from: ['accepted'], to: 'confirmed', actors: ['creator', 'admin'] },
-  { event: 'pay', from: ['confirmed'], to: 'paid', actors: ['admin'] },
+  // Feature 020: `system` is a provider-confirmed online payment.
+  { event: 'pay', from: ['confirmed'], to: 'paid', actors: ['admin', 'system'] },
   { event: 'schedule', from: ['paid'], to: 'scheduled', actors: ['system', 'admin'] },
   { event: 'schedule', from: ['on-hold'], to: 'scheduled', actors: ['admin'] },
   { event: 'deliver', from: ['scheduled'], to: 'delivered', actors: ['creator', 'admin'] },

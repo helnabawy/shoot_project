@@ -72,7 +72,14 @@ clients and creators get app push (modules `apps/web/src/modules/{inbox,push}/`,
 `brief-answers` and `push-devices`, `PUSH_PROVIDER` = `fcm` | `console` | `off` with `FCM_SERVICE_ACCOUNT`;
 the app's `core/push/`, Firebase values from `--dart-define-from-file=firebase.env.json`). Open in its
 `tasks.md`: the APNs key and service account from the owner, the device walkthrough, goldens and the
-design finish review.
+design finish review. Feature 020 (`specs/020-online-payment/`, test-id prefix `PY-`) is implemented: a
+confirmed booking offers "Pay {total}" (web quotation page and the app's booking screen) through Stripe
+Checkout over REST (no SDK); the signed webhook `/api/webhooks/stripe` records one `card-online` payment
+that pays the booking as `system`, an unexpected one is held and alerts admins (`payment-attention`);
+module `apps/web/src/modules/payments/` (collection `payment-sessions`, endpoint `quotations/{ref}/{key}/pay`),
+providers in `apps/web/src/shared/payments/`, rules in `packages/domain/src/payments/`; `PAYMENT_PROVIDER` =
+`stripe` | `off` (unset: stripe when `STRIPE_SECRET_KEY` is set) with `STRIPE_WEBHOOK_SECRET`. Open in its
+`tasks.md`: the owner's Stripe account, keys and webhook endpoint, a real test-mode payment, Apple Pay domain.
 `specs/ROADMAP.md` has the screens per feature:
 
 | # | Feature (test-id prefix) | What |

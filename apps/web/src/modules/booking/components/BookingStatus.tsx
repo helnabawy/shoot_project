@@ -2,9 +2,11 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import { useTranslations } from 'next-intl'
 import { cx, ResultGroup, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
-import { AlertIcon, CloseIcon, WhatsAppIcon } from '@/shared/ui/icons'
+import { payOnline } from '@/modules/payments/actions'
+import { AlertIcon, CloseIcon, LockIcon, WhatsAppIcon } from '@/shared/ui/icons'
 import { acceptQuotation, cancelByClient, confirmDelivery, pickAnotherCreator, reportProblem, requestFreshQuotation } from '../actions'
 import { CreatorPickRow } from './CreatorPickRow'
+import { PaymentPending } from './PaymentPending'
 import type { PickRowView } from './types'
 
 export interface BookingStatusProps {
@@ -15,10 +17,13 @@ export interface BookingStatusProps {
   sentence: string
   canAccept: boolean
   canCancel: boolean
-  payment: { instructions?: SerializedEditorState | null; receiptHref: string } | null
+  /** `online`: Pay through the provider (feature 020); else the receipt flow with the CMS instructions. */
+  payment: { online?: boolean; total?: string; instructions?: SerializedEditorState | null; receiptHref: string } | null
   /** Types whose creator declined or did not answer, with free alternatives at the same price. */
   replacements: { personaId: string; type: string; sentence: string; creators: PickRowView[] }[]
   history: { label: string; at: string }[]
+  /** Back from the payment page (feature 020): `done` paid there, `cancelled` left it. */
+  paymentReturn?: 'done' | 'cancelled' | null
 }
 
 function Hidden({ access }: { access: BookingStatusProps['access'] }) {
@@ -32,14 +37,24 @@ function Hidden({ access }: { access: BookingStatusProps['access'] }) {
 }
 
 /** The one action per state (surface brief quotation): accept, pay and send the receipt, confirm delivery… */
-export function BookingStatus({ state, access, sentence, canAccept, payment, replacements, history }: BookingStatusProps) {
+export function BookingStatus({ state, access, sentence, canAccept, payment, replacements, history, paymentReturn }: BookingStatusProps) {
   const t = useTranslations('quote')
+  const waitingForPayment = Boolean(payment?.online) && paymentReturn === 'done'
   return (
     <div data-testid="booking-status" data-state={state}>
       <ResultGroup label={t(`state.${state}` as never)}>
-        <p className="px-4 pb-2 text-[15px] text-ink" role="status" dir="auto">
-          {sentence}
-        </p>
+        {waitingForPayment ? (
+          // Paid on the provider's page; "paid" shows as soon as its notice is recorded (FR-011).
+          <div role="status" data-testid="quote-payment-pending" className="flex items-start gap-3 px-4 pb-2">
+            <span aria-hidden="true" className="mt-[8px] size-2 shrink-0 animate-pulse rounded-full bg-accent motion-reduce:animate-none" />
+            <p className="text-[15px] text-ink">{t('paymentPending')}</p>
+            <PaymentPending />
+          </div>
+        ) : (
+          <p className="px-4 pb-2 text-[15px] text-ink" role="status" dir="auto">
+            {sentence}
+          </p>
+        )}
       </ResultGroup>
 
       {canAccept ? (
@@ -56,7 +71,22 @@ export function BookingStatus({ state, access, sentence, canAccept, payment, rep
         </form>
       ) : null}
 
-      {payment ? (
+      {payment?.online ? (
+        waitingForPayment ? null : (
+          <ResultGroup label={t('payOnlineGroup')}>
+            {paymentReturn === 'cancelled' ? (
+              <p role="status" className="px-4 pb-2 text-[15px] text-ink">
+                {t('paymentCancelled')}
+              </p>
+            ) : null}
+            <form action={payOnline} className="pb-1">
+              <Hidden access={access} />
+              <TopHit label={t('pay', { total: payment.total ?? '' })} glyph={<LockIcon width={16} height={16} />} testId="quote-pay" />
+            </form>
+            <p className="px-4 pb-2 text-[13px] text-mute">{t('paySecure')}</p>
+          </ResultGroup>
+        )
+      ) : payment ? (
         <ResultGroup label={t('payment')}>
           {payment.instructions ? (
             <div className="px-4 pb-2 text-[15px] text-ink">

@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
+import 'package:shoot_mobile/core/widgets/money.dart';
 import 'package:shoot_mobile/core/widgets/phone_field.dart';
 import 'package:shoot_mobile/core/widgets/snap_carousel.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
@@ -269,10 +270,12 @@ void main() {
     });
 
     testWidgets(
-      'MQ-US4-S1 MQ-US4-S6 MQ-US4-S7 confirmed shows the chat, offers no way to pay and points date changes to the chat',
+      'MQ-US4-S1 MQ-US4-S6 MQ-US4-S7 PY-US3-S1 with online payment off, confirmed shows the chat, offers no way to pay and points date changes to the chat',
       (tester) async {
-        when(() => repository.getBooking(any(), any()))
-            .thenAnswer((_) async => Ok(exampleView('confirmed')));
+        when(() => repository.getBooking(any(), any())).thenAnswer(
+          (_) async =>
+              Ok(exampleView('confirmed', (j) => j['canPayOnline'] = false)),
+        );
         await pumpQuickMatch(tester, repository: repository, location: quote);
         await tester.pumpAndSettle();
         expect(find.text('Awaiting payment'), findsOneWidget);
@@ -284,6 +287,41 @@ void main() {
           ),
           findsNothing,
         );
+      },
+    );
+
+    testWidgets(
+      'PY-US2-S1 with online payment on, confirmed shows one Pay action with the total and opens the secure page',
+      (tester) async {
+        when(() => repository.getBooking(any(), any()))
+            .thenAnswer((_) async => Ok(exampleView('confirmed')));
+        when(() => repository.pay(any(), any())).thenAnswer(
+          (_) async => const Ok('https://checkout.stripe.com/c/pay/cs_test_1'),
+        );
+        final opener = RecordingOpener();
+        await pumpQuickMatch(
+          tester,
+          repository: repository,
+          location: quote,
+          opener: opener,
+        );
+        await tester.pumpAndSettle();
+        final total = exampleView('confirmed').totalFils / 100;
+        final pay = find.widgetWithText(TopHit, 'Pay');
+        expect(pay, findsOneWidget);
+        expect(
+          find.descendant(of: pay, matching: find.text(Money.format(total))),
+          findsOneWidget,
+        );
+        expect(find.text('Open the WhatsApp chat'), findsNothing);
+        expect(find.textContaining('Apple Pay'), findsOneWidget);
+        await tester.tap(pay);
+        await tester.pumpAndSettle();
+        expect(
+          opener.opened.map((u) => u.toString()),
+          contains('https://checkout.stripe.com/c/pay/cs_test_1'),
+        );
+        expect(find.textContaining('confirming'), findsOneWidget);
       },
     );
 
@@ -306,8 +344,11 @@ void main() {
     testWidgets('MQ-US4-S2 the chat opens with the booking written in', (
       tester,
     ) async {
-      when(() => repository.getBooking(any(), any()))
-          .thenAnswer((_) async => Ok(exampleView('confirmed')));
+      // Online payment off: the chat is the way to pay (PY-US3-S1).
+      when(() => repository.getBooking(any(), any())).thenAnswer(
+        (_) async =>
+            Ok(exampleView('confirmed', (j) => j['canPayOnline'] = false)),
+      );
       final opener = RecordingOpener();
       await pumpQuickMatch(
         tester,

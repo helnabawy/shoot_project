@@ -21,6 +21,7 @@ import {
 } from './creator-account'
 import {
   bookingViewV1,
+  checkoutV1,
   freshQuotationV1,
   matchRequestV1,
   matchV1,
@@ -258,6 +259,16 @@ export const endpoints = {
     input: quotationAddressV1,
     output: freshQuotationV1,
     examples: ['fresh-quotation'],
+  }),
+  quotationPay: defineEndpoint({
+    id: 'quotationPay',
+    method: 'POST',
+    path: '/api/mobile/v1/quotations/{ref}/{key}/pay',
+    auth: 'optional',
+    cache: 'no-store',
+    input: quotationAddressV1,
+    output: checkoutV1,
+    examples: ['checkout'],
   }),
   quotationPickAnother: defineEndpoint({
     id: 'quotationPickAnother',

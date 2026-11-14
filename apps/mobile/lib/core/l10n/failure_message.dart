@@ -59,6 +59,9 @@ enum ProblemCode {
   bookingCreatorUnavailable('booking.errors.creatorUnavailable'),
   bookingTerminal('booking.errors.terminal'),
   bookingExpiredQuotation('booking.errors.expired-quotation'),
+  // 020: online payment.
+  paymentUnavailable('payment.errors.unavailable'),
+  paymentProvider('payment.errors.provider'),
   // 010: recording a brief.
   briefRequired('brief.errors.required'),
   briefOptionGone('brief.errors.optionGone'),
@@ -143,6 +146,8 @@ enum ProblemCode {
       bookingUnavailable || bookingCreatorUnavailable => l10n.qmErrUnavailable,
       bookingTerminal => l10n.qmErrNotAllowed,
       bookingExpiredQuotation => l10n.qmErrExpired,
+      paymentUnavailable => l10n.problemPaymentUnavailable,
+      paymentProvider => l10n.problemPaymentProvider,
       inboxBriefClosed => l10n.problemBriefClosed,
       inboxNotMatching => l10n.problemBriefNotMatching,
       inboxReasonUnknown => l10n.problemInvalidInput,

@@ -1,12 +1,15 @@
 import 'server-only'
 import { allowedEvents, effectiveState, formatPicks, parsePicks, withPick, type BookingState, type Pick } from '@shoot/domain/booking'
 import { formatBriefDate } from '@shoot/domain/brief/message'
+import { onlinePaymentAllowed } from '@shoot/domain/payments'
 import { formatMoney } from '@shoot/domain/pricing'
 import { getTranslations } from 'next-intl/server'
 import { whatsappHref } from '@/modules/contact/whatsapp'
 import { describeCreator, type DirectoryContext } from '@/modules/creators'
 import type { Booking, SiteSetting } from '@/payload-types'
 import { localizeHref } from '@/shared/i18n/href'
+import { env } from '@/shared/lib/env'
+import { getPaymentProvider } from '@/shared/payments'
 import type { Locale } from '@/shared/lib/locale'
 import type { BookingStatusProps } from './components/BookingStatus'
 import type { CreatorBookingView } from './components/CreatorBookingRow'
@@ -102,7 +105,9 @@ export async function quotationView(
   const pending = toAssignments(assignments).find((a) => a.status === 'pending' && a.respondBy)
   const total = money(current.totalFils)
   const date = booking.date ? formatDay(booking.date, locale) : ''
-  const sentenceKey = state === 'accepted' && !names ? 'acceptedOpen' : state
+  // Feature 020: with online payment on, the confirmed sentence asks to pay here, not to send a receipt.
+  const payOnline = isCurrent && getPaymentProvider(env()).name !== 'off' && onlinePaymentAllowed({ state, totalFils: current.totalFils })
+  const sentenceKey = state === 'accepted' && !names ? 'acceptedOpen' : state === 'confirmed' && payOnline ? 'confirmedOnline' : state
   const sentence = t(`status.${sentenceKey}` as never, { date: state === 'quoted' ? formatDateTime(current.validUntil, locale) : date, creators: names, time: pending?.respondBy ? formatDateTime(pending.respondBy, locale) : '', total } as never)
   const reference = current.reference
   const receipt = t('receiptMessage', { reference, total })
@@ -138,7 +143,16 @@ export async function quotationView(
       canAccept: isCurrent && state === 'quoted',
       // While quoted, ignoring the quotation is enough: Accept stays the only action (Principle IX).
       canCancel: isCurrent && state !== 'quoted' && allowedEvents(state, 'client').includes('cancel'),
-      payment: state === 'confirmed' ? { instructions: (qm?.paymentInstructions ?? null) as never, receiptHref: whatsappHref(options.settings.whatsappNumber, receipt) ?? '#' } : null,
+      payment:
+        state === 'confirmed'
+          ? {
+              // Feature 020: with online payment on, Pay replaces the receipt flow (FR-001); off, it is today's.
+              online: payOnline,
+              total,
+              instructions: (qm?.paymentInstructions ?? null) as never,
+              receiptHref: whatsappHref(options.settings.whatsappNumber, receipt) ?? '#',
+            }
+          : null,
       replacements:
         state === 'accepted'
           ? options.replacements.filter((r) => lapsedTypes.includes(r.personaId)).map((r) => ({ ...r, sentence: replacementSentence(r.type) }))

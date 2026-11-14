@@ -12,6 +12,7 @@ import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
 import 'package:shoot_mobile/core/widgets/message_banner.dart';
+import 'package:shoot_mobile/core/widgets/money.dart';
 import 'package:shoot_mobile/core/widgets/quote_lines.dart';
 import 'package:shoot_mobile/core/widgets/shoot_field.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
@@ -60,11 +61,12 @@ class _BookingPageState extends State<BookingPage> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  // Back from WhatsApp: show the booking as it stands now (FR-017, FR-030).
+  // Back from WhatsApp or the payment page: show the booking as it stands now (FR-017, FR-030;
+  // 020: after paying, keep reading it until it is paid).
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      unawaited(context.read<BookingViewCubit>().load());
+      unawaited(context.read<BookingViewCubit>().resumed());
     }
   }
 
@@ -124,6 +126,11 @@ class _BookingPageState extends State<BookingPage> with WidgetsBindingObserver {
               onChat: () => _chat(state.view!),
               onPdf: _pdf,
               onReport: () => unawaited(_report()),
+              onPay: () => unawaited(
+                context.read<BookingViewCubit>().pay(
+                  (url) async => widget.openUrl(url),
+                ),
+              ),
             );
         }
       },
@@ -138,6 +145,7 @@ class _Ready extends StatelessWidget {
     required this.onChat,
     required this.onPdf,
     required this.onReport,
+    required this.onPay,
   });
 
   final BookingViewState state;
@@ -145,6 +153,9 @@ class _Ready extends StatelessWidget {
   final VoidCallback onChat;
   final VoidCallback onPdf;
   final VoidCallback onReport;
+  final VoidCallback onPay;
+
+  bool get _payOnline => view.nextStep == NextStep.pay && view.canPayOnline;
 
   static (String, BadgeTone) _badge(BuildContext context, BookingState s) {
     final l10n = context.l10n;
@@ -174,6 +185,12 @@ class _Ready extends StatelessWidget {
       NextStep.waitProfessional =>
         name == null ? l10n.qmNextWaitTeam : l10n.qmNextWait(name),
       NextStep.chooseAnother => l10n.qmNextChooseAnother(lapsed.toLowerCase()),
+      NextStep.pay when state.paying => l10n.qmPaymentPending,
+      NextStep.pay when state.notPaidYet && view.canPayOnline =>
+        l10n.qmPaymentNotYet,
+      NextStep.pay when view.canPayOnline => l10n.qmNextPayOnline(
+        Money.format(view.totalFils / 100),
+      ),
       NextStep.pay => l10n.qmNextPay,
       NextStep.shootDay =>
         view.shootDate == null
@@ -269,6 +286,16 @@ class _Ready extends StatelessWidget {
           );
         case NextStep.none:
           return null;
+        case NextStep.pay when view.canPayOnline:
+          return state.paying
+              ? null
+              : TopHit(
+                  label: l10n.qmPayAction,
+                  price: Money.format(view.totalFils / 100),
+                  leading: ShootIcons.lock,
+                  loading: loading,
+                  onPressed: onPay,
+                );
         case NextStep.waitProfessional ||
             NextStep.pay ||
             NextStep.shootDay ||
@@ -421,6 +448,12 @@ class _Ready extends StatelessWidget {
                 spacing: 12,
                 children: [
                   ?primary(),
+                  if (_payOnline && !state.paying)
+                    Text(
+                      l10n.qmPaySecure,
+                      textAlign: TextAlign.center,
+                      style: meta,
+                    ),
                   if (view.canReport &&
                       view.nextStep == NextStep.confirmDelivery)
                     Center(

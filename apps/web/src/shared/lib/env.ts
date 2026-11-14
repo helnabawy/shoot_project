@@ -44,6 +44,14 @@ function serviceAccountOk(value: string | undefined): boolean {
   }
 }
 
+/**
+ * The payment provider in use (feature 020, research R8): `PAYMENT_PROVIDER` when set, else `stripe` when a
+ * Stripe secret key is configured, else `off` (today's WhatsApp receipt flow).
+ */
+export function paymentProviderOf(env: { PAYMENT_PROVIDER?: 'stripe' | 'off'; STRIPE_SECRET_KEY?: string }): 'stripe' | 'off' {
+  return env.PAYMENT_PROVIDER ?? (env.STRIPE_SECRET_KEY ? 'stripe' : 'off')
+}
+
 const LOCAL_SITE = /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/
 
 export const envSchema = z
@@ -76,6 +84,10 @@ export const envSchema = z
     // App push (feature 019, research R7): off by default; fcm needs the service-account JSON (base64).
     PUSH_PROVIDER: z.enum(['fcm', 'console', 'off'], { message: 'must be fcm, console or off' }).optional(),
     FCM_SERVICE_ACCOUNT: optional,
+    // Online payment (feature 020, research R8): Stripe Checkout; off (WhatsApp receipt) without keys.
+    PAYMENT_PROVIDER: z.enum(['stripe', 'off'], { message: 'must be stripe or off' }).optional(),
+    STRIPE_SECRET_KEY: optional.refine((v) => v === undefined || /^(sk|rk)_(test|live)_\w+$/.test(v), 'must be a secret key (sk_test_… or sk_live_…)'),
+    STRIPE_WEBHOOK_SECRET: optional.refine((v) => v === undefined || /^whsec_\w+$/.test(v), 'must be a webhook signing secret (whsec_…)'),
     APP_ANDROID_CERT_SHA256: list(CERT_SHA256, 'must be comma-separated SHA-256 fingerprints, AA:BB:… (32 bytes)').transform((v) =>
       v?.map((c) => c.toUpperCase()),
     ),
@@ -115,6 +127,10 @@ export const envSchema = z
     }
     if (pushProviderOf(env) === 'fcm' && !serviceAccountOk(env.FCM_SERVICE_ACCOUNT)) {
       ctx.addIssue({ code: 'custom', path: ['FCM_SERVICE_ACCOUNT'], message: 'PUSH_PROVIDER=fcm needs the Firebase service-account JSON, base64-encoded (project_id, client_email, private_key)' })
+    }
+    if (paymentProviderOf(env) === 'stripe') {
+      if (!env.STRIPE_SECRET_KEY) ctx.addIssue({ code: 'custom', path: ['STRIPE_SECRET_KEY'], message: 'PAYMENT_PROVIDER=stripe needs the Stripe secret key (sk_test_… or sk_live_…)' })
+      if (!env.STRIPE_WEBHOOK_SECRET) ctx.addIssue({ code: 'custom', path: ['STRIPE_WEBHOOK_SECRET'], message: 'Stripe needs the webhook signing secret (whsec_…) so payments can be confirmed' })
     }
     const missingVendor = unifonicKeys.filter((k) => !env[k])
     const someVendor = missingVendor.length < unifonicKeys.length

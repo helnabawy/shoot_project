@@ -136,6 +136,8 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'match-none-free': (json) => MatchPageModel.fromJson(json).toEntity(),
   'quotation-issued': (json) => QuotationIssuedModel.fromJson(json).toEntity(),
   'fresh-quotation': (json) => FreshQuotationModel.fromJson(json).toEntity(),
+  // 020: the secure payment page's address.
+  'checkout': (json) => readString(json, 'url'),
   'booking-view-quoted': (json) => BookingViewModel.fromJson(json).toEntity(),
   'booking-view-accepted': (json) => BookingViewModel.fromJson(json).toEntity(),
   'booking-view-lapsed': (json) => BookingViewModel.fromJson(json).toEntity(),

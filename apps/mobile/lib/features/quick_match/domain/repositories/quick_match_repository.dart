@@ -36,4 +36,7 @@ abstract interface class QuickMatchRepository {
   );
 
   Future<Result<FreshQuotation>> fresh(String ref, String key);
+
+  /// Feature 020: the secure payment page for a confirmed booking (`checkoutV1.url`).
+  Future<Result<String>> pay(String ref, String key);
 }

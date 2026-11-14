@@ -126,21 +126,39 @@ export const bookingAfterChange: CollectionAfterChangeHook = async ({ doc, req }
 }
 
 /** A payment may be recorded only in the state it belongs to (FR-007). */
-export const paymentBeforeChange: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
+/** Feature 020: what the server passes when it records a provider-confirmed payment. */
+export interface OnlinePaymentContext {
+  outcome: 'apply' | 'attention'
+  reason?: string
+}
+
+export const paymentBeforeChange: CollectionBeforeChangeHook = async ({ data, req, operation, context }) => {
   if (operation !== 'create') return data
   const bookingId = relId(data.booking)
   if (!bookingId) throw refuse('booking.errors.paymentState')
+  // Money that arrived online is always recorded, whatever the booking's state (FR-009).
+  if (context.online) return { ...data, source: 'online', recordedBy: null, recordedAt: new Date().toISOString() }
   const booking = (await req.payload.findByID({ collection: 'bookings', id: bookingId, depth: 0, overrideAccess: true, req })) as Booking
   if (!paymentAllowed(data.kind as PaymentKind, booking.state)) throw refuse('booking.errors.paymentState')
   return { ...data, recordedBy: req.user?.id ?? null, recordedAt: new Date().toISOString() }
 }
 
 /** Money received from the client moves a confirmed booking to "paid" (held until delivery is confirmed). */
-export const paymentAfterChange: CollectionAfterChangeHook = async ({ doc, req, operation }) => {
+export const paymentAfterChange: CollectionAfterChangeHook = async ({ doc, req, operation, context }) => {
   if (operation !== 'create') return doc
   const bookingId = relId(doc.booking) as number
   const now = new Date()
   const actor = req.user ? Number(req.user.id) : null
+  const online = context.online as OnlinePaymentContext | undefined
+  if (online) {
+    // A provider-confirmed payment: the expected one pays the booking; any other waits for the team (FR-007, FR-009).
+    if (online.outcome === 'apply') {
+      const result = await applyTransition(req.payload, bookingId, 'pay', { actor: 'system', now, note: doc.providerRef ?? null, req })
+      if (result.ok) return doc
+    }
+    await recordEvent(req.payload, { booking: bookingId, event: 'payment-attention', actorRole: 'system', actor: null, note: `${online.reason ?? 'state'} · ${doc.providerRef ?? ''}`, at: now }, req)
+    return doc
+  }
   if (doc.kind === 'received') {
     const result = await applyTransition(req.payload, bookingId, 'pay', { actor: 'admin', actorUser: actor, now, note: doc.note ?? null, req })
     if (!result.ok) throw refuse(`booking.errors.${result.reason}`)

@@ -154,6 +154,7 @@ final class BookingViewModel {
         canAccept: readBool(json, 'canAccept'),
         canConfirmDelivery: readBool(json, 'canConfirmDelivery'),
         canReport: readBool(json, 'canReport'),
+        canPayOnline: readOptionalBool(json, 'canPayOnline'),
         replacements: List.unmodifiable(
           readList(json, 'replacements', (item) {
             final r = asObject(item);

@@ -149,9 +149,9 @@ see one extra payment recorded and an admin alert, with the booking unchanged.
 ### Functional Requirements
 
 - **FR-001**: For a booking in the **confirmed** state, with online payment switched on, the quotation
-  page (website) and the quotation and booking screens (app) MUST show one primary action "Pay AED
-  {total}" in place of the WhatsApp receipt action; the "How to pay" content stays available as
-  secondary text only if the owner fills a separate online-payment note (otherwise it is hidden).
+  page (website) and the booking screen (app) MUST show one primary action "Pay AED {total}" in place of
+  the WhatsApp receipt action and the "How to pay" text, with one line saying it is a secure card,
+  Apple Pay or Google Pay payment.
 - **FR-002**: Choosing Pay MUST open the payment provider's own hosted secure payment page. Card details
   never pass through or are stored by this system.
 - **FR-003**: The amount MUST be the booking total in AED as held on the server at the moment the

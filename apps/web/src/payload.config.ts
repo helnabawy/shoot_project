@@ -29,6 +29,7 @@ import { Notifications } from './modules/booking/collections/Notifications'
 import { BriefAnswers } from './modules/inbox/collections/BriefAnswers'
 import { PushDevices } from './modules/push/collections/PushDevices'
 import { Payments } from './modules/booking/collections/Payments'
+import { PaymentSessions } from './modules/payments/collections/PaymentSessions'
 import { Quotations } from './modules/booking/collections/Quotations'
 import { Media } from './modules/media/collections/Media'
 import { Categories } from './modules/personas/collections/Categories'
@@ -77,6 +78,7 @@ export default buildConfig({
     Bookings,
     Quotations,
     Payments,
+    PaymentSessions,
     AvailabilityBlocks,
     BookingEvents,
     Notifications,

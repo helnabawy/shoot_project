@@ -26,6 +26,7 @@ next), *implemented* = built on its branch, *idea* = not yet specified.
 | 017 | Google (and Apple) sign-in | "Continue with Google", Sign in with Apple (required on iOS once Google is offered) | 009 | idea |
 | 018 | Notifications & messaging | WhatsApp / email notifications (app push for briefs comes with 019) for briefs, quotations, confirmations, creator requests; admin alerts | 003, 009 | idea |
 | 019 | Creator brief inbox (`specs/019-creator-brief-inbox/`, `BI-`): matching creators see open briefs in Up next (web and app), accept or reject; acceptors listed first at step 2 and assigned confirmed; app push both ways | Creator account home, Quick Match step 2, app creator account | 003, 012, 014 | implemented (open: owner's APNs key and service account, device walkthrough, goldens, finish review) |
+| 020 | Online payment (`specs/020-online-payment/`, `PY-`): "Pay {total}" on a confirmed booking through Stripe Checkout; signed webhook records the payment and pays the booking; unexpected payments held and flagged; WhatsApp receipt flow when off | Quotation page, app booking screen, admin Payments | 003, 012 | implemented (open: owner's Stripe account and keys, webhook on Vercel, test-mode payment, Apple Pay domain) |
 
 Renumbered 2026-11-11: the ideas once listed as 006 (Introducer), 007 (one-time-code sign-in) and
 008 (Notifications) are now 016, 009/017 and 018. Older specs that say "feature 008" for outbound
