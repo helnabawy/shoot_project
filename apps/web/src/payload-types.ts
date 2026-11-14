@@ -633,6 +633,7 @@ export interface BriefAnswer {
   note?: string | null;
   answeredAt: string;
   withdrawnAt?: string | null;
+  statusNow?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2252,6 +2253,7 @@ export interface BriefAnswersSelect<T extends boolean = true> {
   note?: T;
   answeredAt?: T;
   withdrawnAt?: T;
+  statusNow?: T;
   updatedAt?: T;
   createdAt?: T;
 }

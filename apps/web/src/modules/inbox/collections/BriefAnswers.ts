@@ -1,4 +1,4 @@
-import { APIError, type Access, type CollectionBeforeValidateHook, type CollectionConfig } from 'payload'
+import { APIError, type Access, type CollectionBeforeValidateHook, type CollectionConfig, type FieldHook } from 'payload'
 import { hasRole, nobody } from '@/shared/payload/access'
 
 /** Admins read every answer; a creator reads only the answers given for their own profiles. */
@@ -15,6 +15,29 @@ const onlyRejectionsCarryReasons: CollectionBeforeValidateHook = ({ data, origin
   return data
 }
 
+const relId = (v: unknown) => (v && typeof v === 'object' ? (v as { id: number }).id : (v as number))
+
+/**
+ * Where an answer stands now, for the team (US2-S8, FR-011): withdrawn, the creator's profile hidden,
+ * the creator no longer free on the brief's day, or still listed. Read-only, computed on read.
+ */
+const statusNow: FieldHook = async ({ data, req }) => {
+  if (!data) return null
+  if (data.withdrawnAt) return 'withdrawn'
+  const creator = relId(data.creator)
+  const listing = (await req.payload.find({ collection: 'creator-listings', where: { profile: { equals: creator } }, limit: 1, depth: 0, overrideAccess: true, req })).docs[0] as
+    | { active?: boolean | null; suspended?: boolean | null }
+    | undefined
+  if (!listing || listing.active === false || listing.suspended) return 'profile hidden'
+  const brief = (await req.payload.findByID({ collection: 'briefs', id: relId(data.brief), depth: 0, overrideAccess: true, req }).catch(() => null)) as { date?: string | null } | null
+  const day = brief?.date ? String(brief.date).slice(0, 10) : null
+  if (day && data.decision === 'accepted') {
+    const blocked = await req.payload.count({ collection: 'availability-blocks', where: { and: [{ creator: { equals: creator } }, { date: { equals: day } }] }, overrideAccess: true, req })
+    if (blocked.totalDocs) return 'not free any more'
+  }
+  return 'listed'
+}
+
 /**
  * One creator's answer to one brief for one professional type (feature 019, research R3). Written only by
  * the inbox commands; undo and withdraw set `withdrawnAt` so the team keeps the history (FR-011).
@@ -25,7 +48,7 @@ export const BriefAnswers: CollectionConfig = {
   admin: {
     group: 'Brief builder',
     useAsTitle: 'decision',
-    defaultColumns: ['brief', 'creator', 'persona', 'decision', 'reason', 'answeredAt', 'withdrawnAt'],
+    defaultColumns: ['brief', 'creator', 'persona', 'decision', 'reason', 'statusNow', 'answeredAt'],
     description: 'Creators who said yes or no to a brief. Read-only.',
   },
   access: { read: readOwnOrAll, create: nobody, update: nobody, delete: nobody },
@@ -52,5 +75,7 @@ export const BriefAnswers: CollectionConfig = {
     { name: 'note', type: 'textarea', maxLength: 300, admin: { readOnly: true } },
     { name: 'answeredAt', type: 'date', required: true, admin: { readOnly: true, date: { pickerAppearance: 'dayAndTime' } } },
     { name: 'withdrawnAt', type: 'date', admin: { readOnly: true, date: { pickerAppearance: 'dayAndTime' } } },
+    // Computed for the team; never stored.
+    { name: 'statusNow', label: 'Status now', type: 'text', virtual: true, admin: { readOnly: true }, hooks: { afterRead: [statusNow] } },
   ],
 }
