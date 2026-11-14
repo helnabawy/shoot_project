@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { IDENTITY_DOCUMENTS, MAX_IDENTITY_BYTES, PROFILE_STEPS, SOCIAL_PLATFORMS } from '../../creators'
 import { imageV1 } from './common'
+import { briefsSummaryV1 } from './inbox'
 
 /**
  * The creator's own account (feature 014, contracts/mobile-api.md): the profile editor, availability
@@ -167,6 +168,8 @@ export const creatorAccountV1 = z.object({
   /** A booking whose shoot day passed and that can be marked delivered. */
   deliverable: bookingRequestV1.nullable(),
   counts: z.object({ waiting: z.int().nonnegative(), upcoming: z.int().nonnegative(), blockedDays: z.int().nonnegative() }),
+  /** 019: open briefs that match the creator; absent while the profile is not live. */
+  briefs: briefsSummaryV1.optional(),
 })
 export type CreatorAccountV1 = z.infer<typeof creatorAccountV1>
 

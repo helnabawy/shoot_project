@@ -227,7 +227,14 @@ export async function setAvailability(ctx: ActorContext, date: string, blocked: 
 export async function creatorAccount(ctx: ActorContext, profile: MyProfileV1): Promise<CreatorAccountV1 | Problem> {
   const user = providerOf(ctx)
   if (!user) return notProvider()
-  const [{ requests }, availability, directory] = await Promise.all([requestsOf(ctx, user), availabilityView(ctx, user), getDirectoryContext(ctx.locale)])
+  // 019: loaded lazily, the inbox module reads booking's own helpers.
+  const { briefsSummary } = await import('@/modules/inbox')
+  const [{ requests }, availability, directory, briefs] = await Promise.all([
+    requestsOf(ctx, user),
+    availabilityView(ctx, user),
+    getDirectoryContext(ctx.locale),
+    briefsSummary({ payload: ctx.payload, locale: ctx.locale, now: ctx.now() }, user.id),
+  ])
   const waiting = requests
     .filter((r) => r.answer === 'pending' && r.state === 'accepted' && r.respondBy !== null)
     .sort((a, b) => (a.respondBy ?? '').localeCompare(b.respondBy ?? ''))
@@ -246,6 +253,7 @@ export async function creatorAccount(ctx: ActorContext, profile: MyProfileV1): P
       upcoming: requests.filter((r) => r.answer === 'confirmed' && UPCOMING.includes(r.state)).length,
       blockedDays: availability.blockedCount,
     },
+    ...(briefs ? { briefs } : {}),
   }
 }
 

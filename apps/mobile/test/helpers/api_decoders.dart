@@ -6,6 +6,7 @@ import 'package:shoot_mobile/features/content/data/models/editor_page_model.dart
 import 'package:shoot_mobile/features/content/data/models/guide_models.dart';
 import 'package:shoot_mobile/features/content/data/models/legal_models.dart';
 import 'package:shoot_mobile/features/creator_account/data/models/creator_account_models.dart';
+import 'package:shoot_mobile/features/creator_account/data/models/inbox_models.dart';
 import 'package:shoot_mobile/features/creators/data/models/creator_models.dart';
 import 'package:shoot_mobile/features/landing/data/models/landing_model.dart';
 import 'package:shoot_mobile/features/links/data/models/resolution_model.dart';
@@ -91,6 +92,21 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'creator-availability-set-result': (json) =>
       AvailabilityModel.fromJson(json).toEntity(),
   'creator-account': (json) => CreatorAccountModel.fromJson(json).toEntity(),
+  // 019: the creator brief inbox and app push.
+  'creator-account-briefs': (json) =>
+      CreatorAccountModel.fromJson(json).toEntity(),
+  'creator-briefs': (json) => CreatorInboxModel.fromJson(json).toEntity(),
+  'creator-briefs-answered': (json) =>
+      CreatorInboxModel.fromJson(json).toEntity(),
+  'creator-briefs-withdrawn': (json) =>
+      CreatorInboxModel.fromJson(json).toEntity(),
+  'creator-brief-answer': (json) => only(json, {'persona', 'decision'}),
+  'creator-brief-reject': (json) =>
+      only(json, {'persona', 'decision', 'reason', 'note'}),
+  'push-device': (json) => only(json, {'token', 'platform', 'locale'}),
+  'push-preference': (json) => only(json, {'enabled'}),
+  'push-preference-set': (json) => only(json, {'enabled'}),
+  'push-preference-request': (json) => only(json, {'enabled'}),
   'creator-profile-patch': (json) => only(json, {
     'displayName',
     'bio',

@@ -64,8 +64,15 @@ read handlers in each module's `api.ts`, the resolver `GET resolve?path=` (`modu
 `features/links/`; open: the `mr-smoke` e2e run and the store validators on staging. Features 007, 010, 011,
 013, 014 and 015 are implemented too; what is left in each is in its `tasks.md` (mostly goldens and
 `pnpm fidelity`, device walkthroughs and owner decisions), summarised in `specs/ROADMAP.md`. Feature 019
-(`specs/019-creator-brief-inbox/`, creator brief inbox and app push) is in progress on branch
-`019-creator-brief-inbox`, not yet on `main`.
+(`specs/019-creator-brief-inbox/`, test-id prefix `BI-`) is implemented: live creators see
+open client briefs that match them (Quick Match step-2 rules, `packages/domain/src/booking/inbox.ts`) in
+Up next and at `/account/inbox` (web and app), accept or reject them (optional reason from the
+`brief-reject-reasons` option set); step 2 lists acceptors first and a picked acceptor starts confirmed;
+clients and creators get app push (modules `apps/web/src/modules/{inbox,push}/`, collections
+`brief-answers` and `push-devices`, `PUSH_PROVIDER` = `fcm` | `console` | `off` with `FCM_SERVICE_ACCOUNT`;
+the app's `core/push/`, Firebase values from `--dart-define-from-file=firebase.env.json`). Open in its
+`tasks.md`: the APNs key and service account from the owner, the device walkthrough, goldens and the
+design finish review.
 `specs/ROADMAP.md` has the screens per feature:
 
 | # | Feature (test-id prefix) | What |

@@ -38,6 +38,27 @@ describe('account home: what comes next', () => {
   })
 })
 
+describe('BI-US1 account home: open briefs in Up next', () => {
+  const briefs = { count: 3, soonest: { ref: 'BR-1', profession: 'Photographer', occasion: 'an event', emirate: 'Dubai', date: '2026-11-20' } }
+
+  it('BI-US1-S1 a live creator with matching briefs sees how many and the soonest', () => {
+    expect(pickNextUp({ today, provider: true, profileStatus: 'live', jobs: [job()], bookings: [], briefs })).toEqual({ kind: 'briefs', count: 3, brief: briefs.soonest })
+  })
+
+  it('BI-US1-S5 bookings waiting for an answer come before briefs', () => {
+    const waiting = job({ reference: 'S-9', state: 'accepted', awaitingAnswer: true })
+    expect(pickNextUp({ today, provider: true, profileStatus: 'live', jobs: [waiting], bookings: [], briefs }).kind).toBe('answer')
+  })
+
+  it('BI-US1-S4 a hidden profile has no briefs and keeps the profile message', () => {
+    expect(pickNextUp({ today, provider: true, profileStatus: 'paused', jobs: [], bookings: [], briefs: null })).toEqual({ kind: 'profile', status: 'paused' })
+  })
+
+  it('BI-US1-S6 nothing matching: Up next is clear', () => {
+    expect(pickNextUp({ today, provider: true, profileStatus: 'live', jobs: [], bookings: [], briefs: { count: 0, soonest: null } })).toEqual({ kind: 'clear' })
+  })
+})
+
 describe('account home: one-line status of each place', () => {
   it('counts what waits, then unread updates, then what is open', () => {
     expect(placeStatus({ today, waiting: 2, unread: 1, jobs: [], bookings: [] })).toEqual({ key: 'waiting', count: 2 })

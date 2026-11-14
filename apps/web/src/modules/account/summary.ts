@@ -50,12 +50,13 @@ export function toAccountBooking(booking: Booking, now: Date): AccountBooking {
   }
 }
 
-export function toBriefSummary(brief: Brief, bookingReference: string | null): BriefSummaryV1 {
+export function toBriefSummary(brief: Brief, bookingReference: string | null, saidYes = 0): BriefSummaryV1 {
   return {
     reference: brief.reference ?? String(brief.id),
     sentence: brief.sentence ?? '',
     sentAt: new Date(brief.createdAt).toISOString(),
     status: brief.status === 'contacted' || brief.status === 'closed' ? brief.status : 'new',
     bookingReference,
+    ...(saidYes ? { saidYes } : {}),
   }
 }

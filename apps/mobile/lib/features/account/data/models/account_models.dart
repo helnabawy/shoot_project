@@ -44,6 +44,7 @@ BriefSummary briefFromJson(Json json) {
       _ => BriefStatus.newBrief,
     },
     bookingReference: readNullableString(json, 'bookingReference'),
+    saidYes: readNullableInt(json, 'saidYes') ?? 0,
   );
 }
 

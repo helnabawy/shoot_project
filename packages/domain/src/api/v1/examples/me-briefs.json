@@ -1,7 +1,20 @@
 {
   "items": [
-    { "reference": "B-2026-0311", "sentence": "A wedding photographer in Dubai on 12 December", "sentAt": "2026-11-10T09:30:00.000Z", "status": "contacted", "bookingReference": "Q-2026-0142" },
-    { "reference": "B-2026-0290", "sentence": "A videographer for a brand shoot in Sharjah", "sentAt": "2026-10-28T12:00:00.000Z", "status": "new", "bookingReference": null }
+    {
+      "reference": "B-2026-0311",
+      "sentence": "A wedding photographer in Dubai on 12 December",
+      "sentAt": "2026-11-10T09:30:00.000Z",
+      "status": "contacted",
+      "bookingReference": "Q-2026-0142",
+      "saidYes": 2
+    },
+    {
+      "reference": "B-2026-0290",
+      "sentence": "A videographer for a brand shoot in Sharjah",
+      "sentAt": "2026-10-28T12:00:00.000Z",
+      "status": "new",
+      "bookingReference": null
+    }
   ],
   "page": 1,
   "hasMore": false

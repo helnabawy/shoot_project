@@ -18,6 +18,8 @@ export const START_TIME = /^([01]\d|2[0-3]):[0-5]\d$/
 /** A card of step 2: the directory card and up to three pieces of work (a play mark on video). */
 export const matchCreatorV1 = creatorCardV1.extend({
   gallery: z.array(z.object({ kind: z.enum(['image', 'video']), thumb: imageV1 })).max(3),
+  /** 019: this creator already said yes to the brief; listed first. */
+  saidYes: z.boolean().optional(),
 })
 export type MatchCreatorV1 = z.infer<typeof matchCreatorV1>
 
