@@ -9,10 +9,12 @@ import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/core/l10n/locale_cubit.dart';
 import 'package:shoot_mobile/core/preferences/preferences_store.dart';
+import 'package:shoot_mobile/core/push/push_cubit.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
 import 'package:shoot_mobile/features/menu/presentation/menu_page.dart';
 
+import '../../core/push/fakes.dart';
 import '../../helpers/auth_fixtures.dart';
 import '../../helpers/in_memory_preferences_store.dart';
 import '../../helpers/ml_harness.dart';
@@ -29,6 +31,7 @@ Future<(RecordingOpener, RecordingOpener, InMemoryPreferencesStore)> pumpMenu(
   Locale locale = const Locale('en'),
   bool whatsappInstalled = true,
   SessionCubit? session,
+  PushCubit Function()? createPush,
 }) async {
   final site = FakeSiteRepository();
   final web = RecordingOpener();
@@ -62,6 +65,7 @@ Future<(RecordingOpener, RecordingOpener, InMemoryPreferencesStore)> pumpMenu(
             return whatsappInstalled || uri.scheme == 'https';
           },
           onStartBrief: () => wa.opened.add(Uri.parse('brief:start')),
+          createPush: createPush,
         ),
       ),
     ],
@@ -156,6 +160,36 @@ void main() {
       expect(find.text('stub:/register'), findsOneWidget);
     },
   );
+
+  testWidgets('BI-US6-S3 a signed-in member switches app notifications off', (
+    tester,
+  ) async {
+    final push = MockPushApi();
+    when(push.enabled).thenAnswer((_) async => true);
+    when(() => push.setEnabled(enabled: false)).thenAnswer((_) async => false);
+    final session = SessionCubit(
+      store: MemorySessionStore(),
+      api: MockAuthApi(),
+      clock: examplesClock,
+      restored: exampleSession(exp: DateTime.utc(2030)),
+      storeRead: true,
+    );
+    addTearDown(session.close);
+    await pumpMenu(tester, session: session, createPush: () => PushCubit(push));
+    final toggle = find.byKey(const Key('menu-push-switch'));
+    await tester.ensureVisible(toggle);
+    expect(find.text('Notifications'), findsOneWidget);
+    await tester.tap(toggle);
+    await tester.pumpAndSettle();
+    verify(() => push.setEnabled(enabled: false)).called(1);
+  });
+
+  testWidgets('BI-US6-S3 the switch is not shown when signed out', (
+    tester,
+  ) async {
+    await pumpMenu(tester, createPush: () => PushCubit(MockPushApi()));
+    expect(find.byKey(const Key('menu-push-switch')), findsNothing);
+  });
 
   testWidgets('a signed-in person logs out from the menu and lands home', (
     tester,

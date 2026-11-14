@@ -25,7 +25,7 @@ List<RouteBase> creatorAccountRoutes({
   required BookingsCubit Function() createBookings,
   required AvailabilityCubit Function() createAvailability,
   required InboxCubit Function() createInbox,
-  VoidCallback? onInboxShown,
+  void Function(BuildContext context)? onInboxShown,
 }) {
   String? creatorOnly(BuildContext context, GoRouterState state) {
     final s = session.state;

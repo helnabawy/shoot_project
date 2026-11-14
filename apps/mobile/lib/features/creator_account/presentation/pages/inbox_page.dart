@@ -25,16 +25,20 @@ class InboxPage extends StatelessWidget {
 
   final InboxCubit Function() create;
 
-  /// Called once the screen is shown (the push permission ask, research R7).
-  final VoidCallback? onShown;
+  /// Called once after the screen first shows (the push permission ask, research R7).
+  final void Function(BuildContext context)? onShown;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) {
+      create: (context) {
         final cubit = create();
         unawaited(cubit.load());
-        onShown?.call();
+        if (onShown case final shown?) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) shown(context);
+          });
+        }
         return cubit;
       },
       child: BlocBuilder<InboxCubit, InboxState>(

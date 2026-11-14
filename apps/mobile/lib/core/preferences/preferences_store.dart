@@ -33,11 +33,15 @@ abstract final class PreferenceKeys {
   /// `true` while the landing's loops are paused (feature 010, `LandingMotionStore`).
   static const landingMotionPaused = 'landing.motionPaused';
 
+  /// `true` once the app-push reason sheet was shown on this device (feature 019).
+  static const pushAsked = 'push.asked';
+
   static const all = {
     accent,
     themeMode,
     locale,
     welcomeSeen,
+    pushAsked,
     installId,
     installSeen,
     landingMotionPaused,
