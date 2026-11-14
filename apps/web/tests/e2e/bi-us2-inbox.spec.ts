@@ -10,9 +10,14 @@ test.describe('BI-US2 a creator says yes; the client sees them first', () => {
     const ref = step2.match(/\/match\/(B-[0-9A-Z]+)\//)![1]!
 
     // Sara (D2222, Dubai Marina) sees it in her inbox and says yes.
+    // Signed in through the email form (REST /api/users/login refuses email logins since 009's guard).
     const creator = await browser.newContext()
-    expect((await creator.request.post('/api/users/login', { data: { email: 'demo-sara@demo.test', password: ADMIN.password } })).ok()).toBeTruthy()
     const inbox = await creator.newPage()
+    await inbox.goto('/login/email?next=/account/inbox')
+    await inbox.getByLabel('Email').fill('demo-sara@demo.test')
+    await inbox.getByLabel('Password').fill(ADMIN.password)
+    await inbox.getByTestId('login-submit').click()
+    await expect(inbox).toHaveURL((url) => url.pathname === '/account/inbox' || url.pathname === '/account', { timeout: 20_000 })
     await inbox.goto('/account/inbox')
     const card = inbox.locator(`[data-testid="inbox-brief"][data-ref="${ref}"]`)
     await expect(card).toBeVisible()

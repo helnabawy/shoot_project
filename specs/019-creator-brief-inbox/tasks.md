@@ -135,7 +135,7 @@ against `apps/web/.env`'s production database.
 
 ## Phase 9: Polish and gates
 
-- [ ] T056 [P] Playwright journey `apps/web/tests/e2e/brief-inbox.spec.ts`: a creator accepts a matching brief on `/account/inbox`; the client's step-2 link shows them first with "Said yes"; en and ar
+- [X] T056 [P] Playwright journey `apps/web/tests/e2e/brief-inbox.spec.ts`: a creator accepts a matching brief on `/account/inbox`; the client's step-2 link shows them first with "Said yes"; en and ar
 - [ ] T057 [P] Responsive and theme pass for `/account` Up next and `/account/inbox` at 360/768/1024/1440 px, en/ar, light/dark; impeccable detector on changed UI and the finish review returns `ship`; update `DESIGN.md` through the documenter
 - [ ] T058 [P] App goldens for the inbox board (en-light, en-dark, ar-light, ar-dark) with `apps/mobile/tool/goldens.sh` and `pnpm fidelity` within the board's threshold; widget checks at 360, 768 and 1024 px (iPad); largest text size, VoiceOver and TalkBack labels on accept, reject and the switch
 - [X] T059 [P] Admin: `brief-answers` list columns (brief, creator, persona, decision, reason, answeredAt, and a computed "status now": listed / not free any more / profile hidden / withdrawn, for US2-S8), and the brief record shows `answers` (FR-011); check in `/admin` locally
