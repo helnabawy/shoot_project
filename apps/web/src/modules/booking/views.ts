@@ -27,11 +27,11 @@ export const formatDateTime = (iso: string, locale: Locale) => DATE_TIME(locale)
 /** "8 years' experience" in the page language (002 FR-011). */
 export type ExperienceLabel = (years: number) => string
 
-function rowView(c: MatchPage['sections'][number]['creators'][number], ctx: DirectoryContext, locale: Locale, href: string, chosen: boolean, experience?: ExperienceLabel): PickRowView {
+function rowView(c: MatchPage['sections'][number]['creators'][number], ctx: DirectoryContext, locale: Locale, href: string, chosen: boolean, experience?: ExperienceLabel, saidYes = false): PickRowView {
   const view = describeCreator(c, ctx.lookups, ctx.prefix, locale)
   const years = c.yearsExperience != null && experience ? experience(c.yearsExperience) : ''
   const meta = [view.specialties || view.place, years].filter(Boolean).join(' · ')
-  return { id: c.id, code: c.code, displayCode: view.displayCode, name: view.name, initials: view.initials, photo: c.photo, meta, href, chosen }
+  return { id: c.id, code: c.code, displayCode: view.displayCode, name: view.name, initials: view.initials, photo: c.photo, meta, href, chosen, ...(saidYes ? { saidYes } : {}) }
 }
 
 /** Step 2's view (QM-US1): chosen picks stay in the URL, so the whole flow works without JavaScript. */
@@ -58,7 +58,7 @@ export function matchView(
       singular: s.persona.singular,
       price: s.price.ok ? formatMoney(s.price.total, locale) : null,
       deliverables: tier?.deliverables?.[locale] ?? [],
-      creators: creators.map((c) => rowView(c, ctx, locale, target(withPick(options.picks, { persona: s.persona.slug, code: c.code })), current?.code === c.code, options.experience)),
+      creators: creators.map((c) => rowView(c, ctx, locale, target(withPick(options.picks, { persona: s.persona.slug, code: c.code })), current?.code === c.code, options.experience, (s.saidYes ?? []).includes(c.id))),
       anyHref: target(withPick(options.picks, { persona: s.persona.slug, code: null })),
       anyChosen: Boolean(current && current.code === null),
     }

@@ -17,6 +17,7 @@ import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/shoot_image.dart';
 import 'package:shoot_mobile/core/widgets/shoot_scaffold.dart';
 import 'package:shoot_mobile/core/widgets/snap_carousel.dart';
+import 'package:shoot_mobile/core/widgets/status_badge.dart';
 import 'package:shoot_mobile/core/widgets/text_link.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/quick_match/domain/entities/quick_match.dart';
@@ -315,6 +316,7 @@ class _CreatorCardView extends StatelessWidget {
     return CreatorCard(
       label: [
         card.name,
+        if (creator.saidYes) l10n.quickMatchSaidYes,
         card.displayCode,
         facts,
         if (price != null) Money.format(price / 100),
@@ -327,7 +329,24 @@ class _CreatorCardView extends StatelessWidget {
           child: Row(
             spacing: 6,
             children: [
-              Expanded(flex: 2, child: tile(0, 176)),
+              Expanded(
+                flex: 2,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    tile(0, 176),
+                    if (creator.saidYes)
+                      PositionedDirectional(
+                        top: 8,
+                        start: 8,
+                        child: StatusBadge(
+                          label: l10n.quickMatchSaidYes,
+                          tone: BadgeTone.success,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
               Expanded(
                 child: Column(
                   spacing: 6,

@@ -2,12 +2,16 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/features/creator_account/data/datasources/creator_account_remote_data_source.dart';
+import 'package:shoot_mobile/features/creator_account/data/datasources/inbox_remote_data_source.dart';
 import 'package:shoot_mobile/features/creator_account/data/platform_file_picker.dart';
 import 'package:shoot_mobile/features/creator_account/data/repositories/creator_account_repository_impl.dart';
+import 'package:shoot_mobile/features/creator_account/data/repositories/inbox_repository_impl.dart';
 import 'package:shoot_mobile/features/creator_account/domain/repositories/creator_account_repository.dart';
+import 'package:shoot_mobile/features/creator_account/domain/repositories/inbox_repository.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/account_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/availability_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/bookings_cubit.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/inbox_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/profile_cubit.dart';
 
 /// The picker for targets without a platform one: it reports that access is not available, so the
@@ -45,5 +49,13 @@ void registerCreatorAccountFeature(GetIt getIt) {
     )
     ..registerFactory(
       () => AvailabilityCubit(getIt<CreatorAccountRepository>()),
-    );
+    )
+    // 019: the creator brief inbox.
+    ..registerLazySingleton<InboxRemoteDataSource>(
+      () => InboxRemoteDataSourceImpl(getIt<Dio>()),
+    )
+    ..registerLazySingleton<InboxRepository>(
+      () => InboxRepositoryImpl(getIt<InboxRemoteDataSource>()),
+    )
+    ..registerFactory(() => InboxCubit(getIt<InboxRepository>()));
 }

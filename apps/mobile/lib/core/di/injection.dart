@@ -14,6 +14,11 @@ import 'package:shoot_mobile/core/l10n/app_locales.dart';
 import 'package:shoot_mobile/core/l10n/locale_cubit.dart';
 import 'package:shoot_mobile/core/network/dio_client.dart';
 import 'package:shoot_mobile/core/preferences/preferences_store.dart';
+import 'package:shoot_mobile/core/push/push_api.dart';
+import 'package:shoot_mobile/core/push/push_ask_store.dart';
+import 'package:shoot_mobile/core/push/push_cubit.dart';
+import 'package:shoot_mobile/core/push/push_messaging.dart';
+import 'package:shoot_mobile/core/push/push_service.dart';
 import 'package:shoot_mobile/core/theme/accent_cubit.dart';
 import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
@@ -75,6 +80,23 @@ void configureDependencies(
   registerQuickMatchFeature(getIt);
   registerBriefFeature(getIt);
   registerWelcomeFeature(getIt);
+  _registerPush(store);
+}
+
+/// Feature 019: app push. Firebase only on a phone build with its config files; else push is off.
+void _registerPush(PreferencesStore store) {
+  getIt
+    ..registerLazySingleton<PushApi>(() => PushApi(getIt<Dio>()))
+    ..registerLazySingleton<PushService>(
+      () => PushService(
+        messaging: FirebasePushMessaging(),
+        api: getIt<PushApi>(),
+        store: PreferencesPushAskStore(store),
+        signedIn: () => getIt<SessionCubit>().token != null,
+        language: _currentLanguageCode,
+      ),
+    )
+    ..registerFactory<PushCubit>(() => PushCubit(getIt<PushApi>()));
 }
 
 /// Feature 009: the session, its own Dio (no auth interceptor, so a refresh never recurses)

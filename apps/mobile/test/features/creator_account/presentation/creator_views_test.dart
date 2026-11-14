@@ -17,6 +17,7 @@ import 'package:shoot_mobile/features/creator_account/presentation/creator_accou
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/account_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/availability_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/bookings_cubit.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/cubit/inbox_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/profile_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/pages/account_page.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/pages/availability_page.dart';
@@ -675,6 +676,7 @@ void main() {
           createBookings: () =>
               BookingsCubit(repository: repo, clock: FixedClock(now)),
           createAvailability: () => AvailabilityCubit(repo),
+          createInbox: () => InboxCubit(MockInboxRepository()),
         ),
         home: (_) => const Text('home'),
       );

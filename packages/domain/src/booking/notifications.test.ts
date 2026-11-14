@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { dedupeKey, NOTIFICATION_EVENTS, NOTIFICATION_PLACEHOLDERS, notificationsFor, renderTemplate } from './notifications'
+import { briefDedupeKey, dedupeKey, NOTIFICATION_EVENTS, NOTIFICATION_PLACEHOLDERS, notificationsFor, renderTemplate } from './notifications'
 
 describe('QM-FR-006 notifications per state change', () => {
   it.each([
@@ -31,11 +31,23 @@ describe('QM-FR-006 notifications per state change', () => {
   })
 
   it('documents the placeholders a template may use', () => {
-    expect(NOTIFICATION_PLACEHOLDERS).toEqual(['name', 'reference', 'date', 'total', 'link'])
+    expect(NOTIFICATION_PLACEHOLDERS).toEqual(['name', 'reference', 'date', 'total', 'link', 'occasion', 'type', 'emirate', 'creator'])
   })
 
   it('dedupe keys are stable and distinguish every part', () => {
     expect(dedupeKey(1, 3, 'paid', 'client', 'whatsapp')).toBe('1:3:paid:client:whatsapp:')
     expect(dedupeKey('1', 3, 'paid', 'creator', 'in-app', '7')).toBe('1:3:paid:creator:in-app:7')
+  })
+})
+
+describe('BI-US4-S6 brief notifications are keyed by brief, not booking revision', () => {
+  it('who hears about brief events', () => {
+    expect(notificationsFor('brief-accepted')).toEqual(['client', 'admin'])
+    expect(notificationsFor('brief-new')).toEqual(['creator'])
+  })
+
+  it('one key per brief, event, audience, channel and recipient', () => {
+    expect(briefDedupeKey(7, 'brief-new', 'creator', 'push', '12')).toBe('brief:7:brief-new:creator:push:12')
+    expect(briefDedupeKey(7, 'brief-accepted', 'admin', 'in-app')).toBe('brief:7:brief-accepted:admin:in-app:')
   })
 })

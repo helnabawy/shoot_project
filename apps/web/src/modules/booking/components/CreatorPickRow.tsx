@@ -2,17 +2,23 @@ import Link from 'next/link'
 import { PhotoTile } from '@/modules/creators/client'
 import { Bidi } from '@/shared/ui/Bidi'
 import { cx, rowClass } from '@/shared/ui/bar'
-import { ForwardIcon } from '@/shared/ui/icons'
+import { CheckIcon, ForwardIcon } from '@/shared/ui/icons'
 import type { PickRowView } from './types'
 
 /** One free creator: photo tile, name and code, specialties; the whole row chooses them. */
-export function CreatorPickRow({ row, chosenLabel, submit = false }: { row: PickRowView; chosenLabel: string; submit?: boolean }) {
+export function CreatorPickRow({ row, chosenLabel, saidYesLabel, submit = false }: { row: PickRowView; chosenLabel: string; saidYesLabel?: string; submit?: boolean }) {
   const className = rowClass(row.chosen ? 'set' : 'open', true, 'photo')
   const content = (
     <>
       <PhotoTile photo={row.photo} initials={row.initials} />
       <span className="min-w-0">
         <span className="block break-words font-semibold text-ink">{row.name}</span>
+        {row.saidYes && saidYesLabel ? (
+          <span data-testid="said-yes" className="mt-0.5 flex items-center gap-1 text-[13px] font-medium text-selected-ink">
+            <CheckIcon width={12} height={12} aria-hidden />
+            {saidYesLabel}
+          </span>
+        ) : null}
         {row.meta ? <span className="block text-[13px] font-normal text-mute">{row.meta}</span> : null}
       </span>
       <span className={cx('flex items-center gap-2 text-[13px] font-normal tabular-nums', row.chosen ? 'text-selected-ink' : 'text-mute')}>

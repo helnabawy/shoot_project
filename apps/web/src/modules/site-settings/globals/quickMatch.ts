@@ -35,6 +35,14 @@ export const quickMatchTab: Tab = {
           { name: 'deliveryConfirmDays', type: 'number', defaultValue: 7, min: 1, max: 30, admin: { width: '25%', description: 'Client confirms delivery within (days)' } },
           { name: 'payoutDays', type: 'number', defaultValue: 10, min: 1, max: 60, admin: { width: '25%', description: 'Creator paid within (days)' } },
         ] },
+        {
+          name: 'inboxDays',
+          type: 'number',
+          defaultValue: 30,
+          min: 1,
+          max: 365,
+          admin: { description: 'Creator inbox (feature 019): a brief without a date stays open for this many days after it was sent.' },
+        },
         { name: 'quoteLimitPerHour', type: 'number', defaultValue: 5, min: 1, max: 100, admin: { description: 'Quotations one visitor may request per hour.' } },
         { name: 'paymentInstructions', type: 'richText', localized: true, admin: { description: 'Shown once the creator confirms: how to pay and to send the receipt on WhatsApp.' } },
         { name: 'quotationTerms', type: 'richText', localized: true, admin: { description: 'Printed at the end of every quotation.' } },
@@ -48,7 +56,7 @@ export const quickMatchTab: Tab = {
           name: 'templates',
           type: 'array',
           labels: { singular: 'Message', plural: 'Messages' },
-          admin: { description: 'Placeholders: {name} {reference} {date} {total} {link}. A missing Arabic text falls back to English.', initCollapsed: true },
+          admin: { description: 'Placeholders: {name} {reference} {date} {total} {link}; for brief messages {occasion} {type} {emirate} {creator}. Brief messages also go out as app notifications. A missing Arabic text falls back to English.', initCollapsed: true },
           fields: [
             { type: 'row', fields: [
               { name: 'event', type: 'select', required: true, options: NOTIFICATION_EVENTS.map((value) => ({ label: value, value })), admin: { width: '50%' } },

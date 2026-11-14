@@ -1,5 +1,358 @@
 {
   "endpoints": {
+    "answerCreatorBrief": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "body": {
+            "properties": {
+              "decision": {
+                "enum": [
+                  "accept",
+                  "reject"
+                ],
+                "type": "string"
+              },
+              "note": {
+                "maxLength": 300,
+                "type": "string"
+              },
+              "persona": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "reason": {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "persona",
+              "decision"
+            ],
+            "type": "object"
+          },
+          "params": {
+            "properties": {
+              "ref": {
+                "maxLength": 32,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "ref"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "params",
+          "body"
+        ],
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "accepted": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "accepted",
+                        "rejected"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "emirate": {
+                  "type": "string"
+                },
+                "occasion": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "enum": [
+                    "open",
+                    "other-creator",
+                    "booked-you",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                "persona": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "profession": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "ref": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sentAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "sentence": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ref",
+                "persona",
+                "profession",
+                "occasion",
+                "sentence",
+                "emirate",
+                "date",
+                "sentAt",
+                "answer",
+                "reason",
+                "outcome"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "open": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "accepted",
+                        "rejected"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "emirate": {
+                  "type": "string"
+                },
+                "occasion": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "enum": [
+                    "open",
+                    "other-creator",
+                    "booked-you",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                "persona": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "profession": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "ref": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sentAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "sentence": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ref",
+                "persona",
+                "profession",
+                "occasion",
+                "sentence",
+                "emirate",
+                "date",
+                "sentAt",
+                "answer",
+                "reason",
+                "outcome"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "reasons": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "value",
+                "label"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "rejected": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "accepted",
+                        "rejected"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "emirate": {
+                  "type": "string"
+                },
+                "occasion": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "enum": [
+                    "open",
+                    "other-creator",
+                    "booked-you",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                "persona": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "profession": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "ref": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sentAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "sentence": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ref",
+                "persona",
+                "profession",
+                "occasion",
+                "sentence",
+                "emirate",
+                "date",
+                "sentAt",
+                "answer",
+                "reason",
+                "outcome"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "open",
+          "accepted",
+          "rejected",
+          "reasons"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/creator/briefs/{ref}/answer"
+    },
     "authLogout": {
       "auth": "required",
       "cache": "no-store",
@@ -327,6 +680,64 @@
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "additionalProperties": false,
         "properties": {
+          "briefs": {
+            "additionalProperties": false,
+            "properties": {
+              "count": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "soonest": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "date": {
+                        "anyOf": [
+                          {
+                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "emirate": {
+                        "type": "string"
+                      },
+                      "occasion": {
+                        "type": "string"
+                      },
+                      "profession": {
+                        "type": "string"
+                      },
+                      "ref": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "ref",
+                      "profession",
+                      "occasion",
+                      "emirate",
+                      "date"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "count",
+              "soonest"
+            ],
+            "type": "object"
+          },
           "code": {
             "type": [
               "string",
@@ -1695,6 +2106,312 @@
         "type": "object"
       },
       "path": "/api/mobile/v1/me/creator/bookings"
+    },
+    "creatorBriefs": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {},
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "accepted": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "accepted",
+                        "rejected"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "emirate": {
+                  "type": "string"
+                },
+                "occasion": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "enum": [
+                    "open",
+                    "other-creator",
+                    "booked-you",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                "persona": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "profession": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "ref": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sentAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "sentence": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ref",
+                "persona",
+                "profession",
+                "occasion",
+                "sentence",
+                "emirate",
+                "date",
+                "sentAt",
+                "answer",
+                "reason",
+                "outcome"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "open": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "accepted",
+                        "rejected"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "emirate": {
+                  "type": "string"
+                },
+                "occasion": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "enum": [
+                    "open",
+                    "other-creator",
+                    "booked-you",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                "persona": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "profession": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "ref": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sentAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "sentence": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ref",
+                "persona",
+                "profession",
+                "occasion",
+                "sentence",
+                "emirate",
+                "date",
+                "sentAt",
+                "answer",
+                "reason",
+                "outcome"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "reasons": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "value",
+                "label"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "rejected": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "accepted",
+                        "rejected"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "emirate": {
+                  "type": "string"
+                },
+                "occasion": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "enum": [
+                    "open",
+                    "other-creator",
+                    "booked-you",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                "persona": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "profession": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "ref": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sentAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "sentence": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ref",
+                "persona",
+                "profession",
+                "occasion",
+                "sentence",
+                "emirate",
+                "date",
+                "sentAt",
+                "answer",
+                "reason",
+                "outcome"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "open",
+          "accepted",
+          "rejected",
+          "reasons"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/creator/briefs"
     },
     "creatorIdentityUpload": {
       "auth": "required",
@@ -14494,6 +15211,9 @@
                         },
                         "type": "array"
                       },
+                      "saidYes": {
+                        "type": "boolean"
+                      },
                       "sampleCount": {
                         "maximum": 9007199254740991,
                         "minimum": 0,
@@ -14735,6 +15455,11 @@
                 "reference": {
                   "minLength": 1,
                   "type": "string"
+                },
+                "saidYes": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
                 },
                 "sentAt": {
                   "format": "date-time",
@@ -15278,6 +16003,11 @@
                 "reference": {
                   "minLength": 1,
                   "type": "string"
+                },
+                "saidYes": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
                 },
                 "sentAt": {
                   "format": "date-time",
@@ -18309,6 +19039,31 @@
       },
       "path": "/api/mobile/v1/personas"
     },
+    "pushPreference": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {},
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/push"
+    },
     "quotationAccept": {
       "auth": "optional",
       "cache": "no-store",
@@ -20745,6 +21500,128 @@
       },
       "path": "/api/mobile/v1/quotations/{ref}/{key}"
     },
+    "registerPushDevice": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "body": {
+            "properties": {
+              "locale": {
+                "enum": [
+                  "en",
+                  "ar"
+                ],
+                "type": "string"
+              },
+              "platform": {
+                "enum": [
+                  "ios",
+                  "android"
+                ],
+                "type": "string"
+              },
+              "token": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "token",
+              "platform",
+              "locale"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "null"
+      },
+      "path": "/api/mobile/v1/me/push/devices"
+    },
+    "removePushDevice": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "params": {
+            "properties": {
+              "token": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "token"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "type": "object"
+      },
+      "method": "DELETE",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "null"
+      },
+      "path": "/api/mobile/v1/me/push/devices/{token}"
+    },
+    "setPushPreference": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "body": {
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "enabled"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      },
+      "method": "PUT",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/push"
+    },
     "site": {
       "auth": "none",
       "cache": "public",
@@ -21340,6 +22217,342 @@
         "type": "object"
       },
       "path": "/api/mobile/v1/work/{specialty}"
+    },
+    "withdrawCreatorBrief": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "params": {
+            "properties": {
+              "ref": {
+                "maxLength": 32,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "ref"
+            ],
+            "type": "object"
+          },
+          "query": {
+            "properties": {
+              "persona": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "persona"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "params",
+          "query"
+        ],
+        "type": "object"
+      },
+      "method": "DELETE",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "accepted": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "accepted",
+                        "rejected"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "emirate": {
+                  "type": "string"
+                },
+                "occasion": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "enum": [
+                    "open",
+                    "other-creator",
+                    "booked-you",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                "persona": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "profession": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "ref": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sentAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "sentence": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ref",
+                "persona",
+                "profession",
+                "occasion",
+                "sentence",
+                "emirate",
+                "date",
+                "sentAt",
+                "answer",
+                "reason",
+                "outcome"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "open": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "accepted",
+                        "rejected"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "emirate": {
+                  "type": "string"
+                },
+                "occasion": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "enum": [
+                    "open",
+                    "other-creator",
+                    "booked-you",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                "persona": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "profession": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "ref": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sentAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "sentence": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ref",
+                "persona",
+                "profession",
+                "occasion",
+                "sentence",
+                "emirate",
+                "date",
+                "sentAt",
+                "answer",
+                "reason",
+                "outcome"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "reasons": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "value",
+                "label"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "rejected": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "accepted",
+                        "rejected"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "emirate": {
+                  "type": "string"
+                },
+                "occasion": {
+                  "type": "string"
+                },
+                "outcome": {
+                  "enum": [
+                    "open",
+                    "other-creator",
+                    "booked-you",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                "persona": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "profession": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "ref": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sentAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "sentence": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ref",
+                "persona",
+                "profession",
+                "occasion",
+                "sentence",
+                "emirate",
+                "date",
+                "sentAt",
+                "answer",
+                "reason",
+                "outcome"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "open",
+          "accepted",
+          "rejected",
+          "reasons"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/creator/briefs/{ref}/answer"
     }
   },
   "problems": [
@@ -21394,8 +22607,13 @@
     "creators.samples.limit",
     "creators.samples.poster",
     "creators.submit.incomplete",
+    "inbox.errors.alreadyPicked",
+    "inbox.errors.briefClosed",
+    "inbox.errors.notMatching",
+    "inbox.errors.reasonUnknown",
     "media.upload.size",
-    "media.upload.type"
+    "media.upload.type",
+    "push.errors.tokenInvalid"
   ],
   "version": 1
 }

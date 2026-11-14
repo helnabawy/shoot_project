@@ -37,6 +37,10 @@ export const quickMatchTemplates: T[] = [
   t('cancelled', 'creator', '{reference} on {date} was cancelled.', 'تم إلغاء {reference} بتاريخ {date}.'),
   t('cancelled', 'admin', '{reference} was cancelled.', 'تم إلغاء {reference}.'),
   t('expired', 'client', 'Your quotation {reference} has expired. Ask for a fresh one: {link}', 'انتهت صلاحية عرض السعر {reference}. اطلب عرضاً جديداً: {link}'),
+  // Feature 019: the creator brief inbox. Never {phone}, {name} of the client or an email (FR-019).
+  t('brief-accepted', 'client', '{creator} said yes to your brief for {occasion}. Choose your creator: {link}', 'وافق {creator} على طلبك لـ{occasion}. اختر المحترف: {link}'),
+  t('brief-accepted', 'admin', '{creator} said yes to brief {reference} ({type}, {emirate}, {date}). Send the client the link: {link}', 'وافق {creator} على الطلب {reference} ({type}، {emirate}، {date}). أرسل الرابط للعميل: {link}'),
+  t('brief-new', 'creator', 'New brief: {type} for {occasion} in {emirate}, {date}.', 'طلب جديد: {type} لـ{occasion} في {emirate}، {date}.'),
   t('delivery-overdue', 'admin', 'The client has not confirmed delivery of {reference}. You may complete it.', 'لم يؤكد العميل استلام {reference}. يمكنك إكماله.'),
 ]
 
@@ -47,6 +51,7 @@ export const quickMatchSettings = {
   deliveryConfirmDays: 7,
   payoutDays: 10,
   quoteLimitPerHour: 5,
+  inboxDays: 30,
   paymentInstructions: rt(
     'Pay by bank transfer to the account we share on WhatsApp, then send us the receipt with your reference.',
     'ادفع بتحويل بنكي إلى الحساب الذي نرسله عبر واتساب، ثم أرسل لنا الإيصال مع رقم المرجع.',

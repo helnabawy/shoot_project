@@ -83,6 +83,8 @@ export interface Config {
     'availability-blocks': AvailabilityBlock;
     'booking-events': BookingEvent;
     notifications: Notification;
+    'brief-answers': BriefAnswer;
+    'push-devices': PushDevice;
     'service-tiers': ServiceTier;
     'travel-fees': TravelFee;
     'add-ons': AddOn;
@@ -102,6 +104,9 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    briefs: {
+      answers: 'brief-answers';
+    };
     bookings: {
       quotations: 'quotations';
       payments: 'payments';
@@ -126,6 +131,8 @@ export interface Config {
     'availability-blocks': AvailabilityBlocksSelect<false> | AvailabilityBlocksSelect<true>;
     'booking-events': BookingEventsSelect<false> | BookingEventsSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
+    'brief-answers': BriefAnswersSelect<false> | BriefAnswersSelect<true>;
+    'push-devices': PushDevicesSelect<false> | PushDevicesSelect<true>;
     'service-tiers': ServiceTiersSelect<false> | ServiceTiersSelect<true>;
     'travel-fees': TravelFeesSelect<false> | TravelFeesSelect<true>;
     'add-ons': AddOnsSelect<false> | AddOnsSelect<true>;
@@ -208,6 +215,7 @@ export interface User {
   persona?: (number | Persona)[] | null;
   categories?: (number | Category)[] | null;
   accountFinishDismissedAt?: string | null;
+  pushEnabled?: boolean | null;
   phone?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -597,10 +605,35 @@ export interface Brief {
     whatsapp?: string | null;
   };
   creator?: (number | null) | CreatorProfile;
+  answers?: {
+    docs?: (number | BriefAnswer)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   sourcePath?: string | null;
   fingerprint?: string | null;
   accessSalt?: string | null;
   website?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Creators who said yes or no to a brief. Read-only.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brief-answers".
+ */
+export interface BriefAnswer {
+  id: number;
+  brief: number | Brief;
+  creator: number | CreatorProfile;
+  persona: number | Persona;
+  decision: 'accepted' | 'rejected';
+  reason?: string | null;
+  note?: string | null;
+  answeredAt: string;
+  withdrawnAt?: string | null;
+  statusNow?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -836,7 +869,8 @@ export interface BookingEvent {
  */
 export interface Notification {
   id: number;
-  booking: number | Booking;
+  booking?: (number | null) | Booking;
+  brief?: (number | null) | Brief;
   event:
     | 'quoted'
     | 'accepted'
@@ -852,9 +886,11 @@ export interface Notification {
     | 'on-hold'
     | 'cancelled'
     | 'expired'
-    | 'delivery-overdue';
+    | 'delivery-overdue'
+    | 'brief-accepted'
+    | 'brief-new';
   audience: 'client' | 'creator' | 'admin';
-  channel: 'whatsapp' | 'email' | 'in-app';
+  channel: 'whatsapp' | 'email' | 'in-app' | 'push';
   locale?: ('en' | 'ar') | null;
   user?: (number | null) | User;
   text: string;
@@ -880,6 +916,22 @@ export interface AvailabilityBlock {
   date: string;
   kind: 'blocked' | 'booking';
   booking?: (number | null) | Booking;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Phones that receive app notifications.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "push-devices".
+ */
+export interface PushDevice {
+  id: number;
+  user: number | User;
+  token: string;
+  platform: 'ios' | 'android';
+  locale: 'en' | 'ar';
+  lastSeenAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1676,6 +1728,14 @@ export interface PayloadLockedDocument {
         value: number | Notification;
       } | null)
     | ({
+        relationTo: 'brief-answers';
+        value: number | BriefAnswer;
+      } | null)
+    | ({
+        relationTo: 'push-devices';
+        value: number | PushDevice;
+      } | null)
+    | ({
         relationTo: 'service-tiers';
         value: number | ServiceTier;
       } | null)
@@ -1780,6 +1840,7 @@ export interface UsersSelect<T extends boolean = true> {
   persona?: T;
   categories?: T;
   accountFinishDismissedAt?: T;
+  pushEnabled?: T;
   phone?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2008,6 +2069,7 @@ export interface BriefsSelect<T extends boolean = true> {
         whatsapp?: T;
       };
   creator?: T;
+  answers?: T;
   sourcePath?: T;
   fingerprint?: T;
   accessSalt?: T;
@@ -2165,6 +2227,7 @@ export interface BookingEventsSelect<T extends boolean = true> {
  */
 export interface NotificationsSelect<T extends boolean = true> {
   booking?: T;
+  brief?: T;
   event?: T;
   audience?: T;
   channel?: T;
@@ -2174,6 +2237,36 @@ export interface NotificationsSelect<T extends boolean = true> {
   link?: T;
   dedupeKey?: T;
   readAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brief-answers_select".
+ */
+export interface BriefAnswersSelect<T extends boolean = true> {
+  brief?: T;
+  creator?: T;
+  persona?: T;
+  decision?: T;
+  reason?: T;
+  note?: T;
+  answeredAt?: T;
+  withdrawnAt?: T;
+  statusNow?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "push-devices_select".
+ */
+export interface PushDevicesSelect<T extends boolean = true> {
+  user?: T;
+  token?: T;
+  platform?: T;
+  locale?: T;
+  lastSeenAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2947,6 +3040,10 @@ export interface SiteSetting {
      */
     payoutDays?: number | null;
     /**
+     * Creator inbox (feature 019): a brief without a date stays open for this many days after it was sent.
+     */
+    inboxDays?: number | null;
+    /**
      * Quotations one visitor may request per hour.
      */
     quoteLimitPerHour?: number | null;
@@ -2995,7 +3092,7 @@ export interface SiteSetting {
       admin?: ('whatsapp' | 'email' | 'in-app')[] | null;
     };
     /**
-     * Placeholders: {name} {reference} {date} {total} {link}. A missing Arabic text falls back to English.
+     * Placeholders: {name} {reference} {date} {total} {link}; for brief messages {occasion} {type} {emirate} {creator}. Brief messages also go out as app notifications. A missing Arabic text falls back to English.
      */
     templates?:
       | {
@@ -3014,7 +3111,9 @@ export interface SiteSetting {
             | 'on-hold'
             | 'cancelled'
             | 'expired'
-            | 'delivery-overdue';
+            | 'delivery-overdue'
+            | 'brief-accepted'
+            | 'brief-new';
           audience: 'client' | 'creator' | 'admin';
           text: string;
           id?: string | null;
@@ -3179,6 +3278,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         confirmHours?: T;
         deliveryConfirmDays?: T;
         payoutDays?: T;
+        inboxDays?: T;
         quoteLimitPerHour?: T;
         paymentInstructions?: T;
         quotationTerms?: T;

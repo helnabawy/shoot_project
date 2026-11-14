@@ -158,45 +158,57 @@ void main() {
     },
   );
 
-  group(
-    'OT-US3-S3 sign-out ends the server session; the old token gets 401',
-    () {
-      blocTest<SessionCubit, SessionState>(
-        'OT-US3-S3 signOut calls logout, clears the store and emits SignedOut',
-        setUp: () async {
-          await store.write(session);
-          when(() => api.logout(session.token)).thenAnswer((_) async {});
-        },
-        build: () => cubit(restored: session),
-        act: (c) => c.signOut(),
-        expect: () => [const SignedOut()],
-        verify: (_) async {
-          verify(() => api.logout(session.token)).called(1);
-          expect(await store.read(), isNull);
-        },
-      );
+  group('OT-US3-S3 sign-out ends the server session; the old token gets 401', () {
+    blocTest<SessionCubit, SessionState>(
+      'OT-US3-S3 signOut calls logout, clears the store and emits SignedOut',
+      setUp: () async {
+        await store.write(session);
+        when(() => api.logout(session.token)).thenAnswer((_) async {});
+      },
+      build: () => cubit(restored: session),
+      act: (c) => c.signOut(),
+      expect: () => [const SignedOut()],
+      verify: (_) async {
+        verify(() => api.logout(session.token)).called(1);
+        expect(await store.read(), isNull);
+      },
+    );
 
-      blocTest<SessionCubit, SessionState>(
-        'OT-US3-S3 a 401 from logout still signs out',
-        setUp: () => when(() => api.logout(any())).thenThrow(
-          const ServerException(
-            statusCode: 401,
-            code: 'api.errors.tokenInvalid',
-          ),
-        ),
-        build: () => cubit(restored: session),
-        act: (c) => c.signOut(),
-        expect: () => [const SignedOut()],
-      );
+    blocTest<SessionCubit, SessionState>(
+      'BI-US6-S2 sign-out removes the push device first, while the token works',
+      setUp: () => when(() => api.logout(any())).thenAnswer((_) async {}),
+      build: () {
+        final calls = <String>[];
+        final c = cubit(restored: session)
+          ..beforeSignOut = () async {
+            calls.add('push');
+            throw Exception('offline');
+          };
+        addTearDown(() => expect(calls, ['push']));
+        return c;
+      },
+      act: (c) => c.signOut(),
+      expect: () => [const SignedOut()],
+      verify: (_) => verify(() => api.logout(session.token)).called(1),
+    );
 
-      blocTest<SessionCubit, SessionState>(
-        'OT-US3-S3 offline, signOut still signs out',
-        setUp: () =>
-            when(() => api.logout(any())).thenThrow(const NetworkException()),
-        build: () => cubit(restored: session),
-        act: (c) => c.signOut(),
-        expect: () => [const SignedOut()],
-      );
-    },
-  );
+    blocTest<SessionCubit, SessionState>(
+      'OT-US3-S3 a 401 from logout still signs out',
+      setUp: () => when(() => api.logout(any())).thenThrow(
+        const ServerException(statusCode: 401, code: 'api.errors.tokenInvalid'),
+      ),
+      build: () => cubit(restored: session),
+      act: (c) => c.signOut(),
+      expect: () => [const SignedOut()],
+    );
+
+    blocTest<SessionCubit, SessionState>(
+      'OT-US3-S3 offline, signOut still signs out',
+      setUp: () =>
+          when(() => api.logout(any())).thenThrow(const NetworkException()),
+      build: () => cubit(restored: session),
+      act: (c) => c.signOut(),
+      expect: () => [const SignedOut()],
+    );
+  });
 }

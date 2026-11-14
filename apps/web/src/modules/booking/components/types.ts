@@ -11,6 +11,8 @@ export interface PickRowView {
   meta: string
   href: string
   chosen: boolean
+  /** 019: this creator already said yes to the brief. */
+  saidYes?: boolean
 }
 
 export interface MatchSectionView {

@@ -63,7 +63,13 @@ enum ProblemCode {
   briefOptionGone('brief.errors.optionGone'),
   briefPastDate('brief.errors.pastDate'),
   briefTooMany('brief.errors.tooMany'),
-  briefGeneric('brief.errors.generic');
+  briefGeneric('brief.errors.generic'),
+  // 019: the creator brief inbox and push.
+  inboxBriefClosed('inbox.errors.briefClosed'),
+  inboxNotMatching('inbox.errors.notMatching'),
+  inboxReasonUnknown('inbox.errors.reasonUnknown'),
+  inboxAlreadyPicked('inbox.errors.alreadyPicked'),
+  pushTokenInvalid('push.errors.tokenInvalid');
 
   const ProblemCode(this.wire);
 
@@ -135,6 +141,11 @@ enum ProblemCode {
       bookingUnavailable || bookingCreatorUnavailable => l10n.qmErrUnavailable,
       bookingTerminal => l10n.qmErrNotAllowed,
       bookingExpiredQuotation => l10n.qmErrExpired,
+      inboxBriefClosed => l10n.problemBriefClosed,
+      inboxNotMatching => l10n.problemBriefNotMatching,
+      inboxReasonUnknown => l10n.problemInvalidInput,
+      inboxAlreadyPicked => l10n.problemBriefAlreadyPicked,
+      pushTokenInvalid => l10n.problemUnexpected,
       briefRequired => l10n.mlBriefRequired,
       briefOptionGone => l10n.mlBriefOptionGone,
       briefPastDate => l10n.mlBriefPastDate,

@@ -133,11 +133,20 @@ class SessionCubit extends Cubit<SessionState> {
     emit(const SignedOut());
   }
 
+  /// Runs before sign-out while the token still works (feature 019: remove this device's push
+  /// registration). Set once at start-up; failures never stop the sign-out.
+  Future<void> Function()? beforeSignOut;
+
   /// Ends the session on the server too (OT-US3-S3). Signs out locally whatever the server
   /// answers: a 401 means it is already over, and offline the token still expires.
   Future<void> signOut() async {
     final token = this.token;
     if (token != null) {
+      try {
+        await beforeSignOut?.call();
+      } on Object {
+        // Signed out regardless.
+      }
       try {
         await _api.logout(token);
       } on Object {

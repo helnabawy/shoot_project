@@ -8,6 +8,7 @@ import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/core/l10n/app_locales.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/l10n/locale_cubit.dart';
+import 'package:shoot_mobile/core/push/push_cubit.dart';
 import 'package:shoot_mobile/core/routing/app_router.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
@@ -43,6 +44,7 @@ class MenuPage extends StatefulWidget {
     required this.links,
     this.open = openInBrowser,
     this.onStartBrief,
+    this.createPush,
   });
 
   /// Site settings, for the WhatsApp number and default message.
@@ -54,6 +56,9 @@ class MenuPage extends StatefulWidget {
 
   /// Opens the landing's brief at its first unanswered step; defaults to the app's [BriefCubit].
   final VoidCallback? onStartBrief;
+
+  /// 019: the push switch, shown to a signed-in member when given.
+  final PushCubit Function()? createPush;
 
   @override
   State<MenuPage> createState() => _MenuPageState();
@@ -263,6 +268,11 @@ class _MenuPageState extends State<MenuPage> {
                                       .select,
                                 ),
                               ),
+                              if (session is SignedIn &&
+                                  widget.createPush != null) ...[
+                                const SizedBox(height: 8),
+                                _PushSetting(create: widget.createPush!),
+                              ],
                               const SizedBox(height: 8),
                               _Setting(
                                 label: l10n.appearanceTitle,
@@ -464,6 +474,36 @@ class _Setting extends StatelessWidget {
         const SizedBox(width: ShootSpace.s3),
         SizedBox(width: 190, child: child),
       ],
+    );
+  }
+}
+
+/// The member's app-notification switch (feature 019, US6-S3).
+class _PushSetting extends StatelessWidget {
+  const _PushSetting({required this.create});
+
+  final PushCubit Function() create;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) {
+        final cubit = create();
+        unawaited(cubit.load());
+        return cubit;
+      },
+      child: BlocBuilder<PushCubit, PushSwitchState>(
+        builder: (context, state) => _Setting(
+          label: context.l10n.pushSetting,
+          child: Switch.adaptive(
+            key: const Key('menu-push-switch'),
+            value: state.enabled ?? true,
+            onChanged: state.enabled == null || state.busy
+                ? null
+                : (on) => context.read<PushCubit>().set(enabled: on),
+          ),
+        ),
+      ),
     );
   }
 }
