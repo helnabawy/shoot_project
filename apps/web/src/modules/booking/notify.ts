@@ -42,9 +42,24 @@ async function creatorRecipients(payload: Payload, booking: Booking, only: numbe
   })
 }
 
+type Localized = Partial<Record<Lang, string | null>> | string | null | undefined
+const pick = (value: Localized, locale: Lang) => (typeof value === 'string' ? value : (value?.[locale] || value?.en || ''))
+
+/** Runs `work` after the response when there is one (Next `after`), else at once (cron, scripts, tests). */
+async function later(work: () => Promise<unknown>): Promise<void> {
+  const { after } = await import('next/server')
+  try {
+    after(work)
+  } catch {
+    await work()
+  }
+}
+
 /**
  * Writes the notification log for one change (FR-006, research §11). Nothing is sent: WhatsApp rows carry a
- * pre-filled wa.me link, in-app rows show on the account page. A repeated call writes nothing new.
+ * pre-filled wa.me link, in-app rows show on the account page. A creator or member client with the app also gets
+ * one push per change (a `push` row is written first, so a repeated call pushes nothing), in each device's
+ * language, opening the booking. A repeated call writes nothing new.
  */
 export async function notify(
   payload: Payload,
@@ -54,6 +69,7 @@ export async function notify(
 ): Promise<number> {
   const settings = (await payload.findGlobal({ slug: 'site-settings', locale: 'all' as never, depth: 0, overrideAccess: true, req: options.req })) as unknown as {
     whatsappNumber?: string
+    siteName?: Localized
     quickMatch?: { channels?: Partial<Record<Audience, Channel[] | null>> | null; templates?: Template[] | null } | null
   }
   const qm = settings.quickMatch ?? {}
@@ -64,6 +80,7 @@ export async function notify(
   const clientLink = salt ? absolute(quotePath(reference, accessKey(salt, 'booking'), clientLocale)) : absolute('/account/bookings')
 
   let written = 0
+  const pushes: ((send: typeof import('@/modules/push').pushToUser) => Promise<unknown>)[] = []
   for (const audience of notificationsFor(event)) {
     const recipients: Recipient[] =
       audience === 'client'
@@ -119,7 +136,38 @@ export async function notify(
           if ((error as Error).name !== 'ValidationError') throw error
         }
       }
+      // The app (feature 019's devices): one push per person per change; admins work in the content area.
+      if (audience !== 'admin' && recipient.userId) {
+        const key = dedupeKey(booking.id, booking.revision ?? 0, event, audience, 'push', String(recipient.userId))
+        const path = audience === 'creator' ? `/account/bookings/${booking.reference}` : salt ? quotePath(reference, accessKey(salt, 'booking'), 'en') : '/account/bookings'
+        const text = (locale: Lang) =>
+          renderTemplate(templateText(qm.templates ?? [], event, audience, locale), { ...vars, date: booking.date ? formatBriefDate(booking.date, locale) : '', total: booking.totalFils != null ? formatMoney(booking.totalFils, locale) : '', link: '' })
+            .replace(/[:：]\s*$/, '.')
+            .slice(0, 1000)
+        const exists = await payload.count({ collection: 'notifications', where: { dedupeKey: { equals: key } }, overrideAccess: true, req: options.req })
+        if (exists.totalDocs) continue
+        try {
+          await payload.create({
+            collection: 'notifications',
+            data: { booking: booking.id, event, audience, channel: 'push', locale: recipient.locale, user: recipient.userId, text: text(recipient.locale), link: path, dedupeKey: key },
+            overrideAccess: true,
+            req: options.req,
+          })
+        } catch (error) {
+          if ((error as Error).name !== 'ValidationError') throw error
+          continue
+        }
+        written += 1
+        const userId = recipient.userId
+        pushes.push((pushToUser) => pushToUser(payload, userId, (locale) => ({ title: pick(settings.siteName, locale), body: text(locale), data: { event, path } })))
+      }
     }
+  }
+  // After the rows are saved: a slow or failing push service never holds up the change (019 FR-019).
+  // Loaded lazily: the push module is server-only and this file is also loaded by the Payload CLI (hooks).
+  if (pushes.length) {
+    const { pushToUser } = await import('@/modules/push')
+    await later(() => Promise.all(pushes.map((send) => send(pushToUser))))
   }
   return written
 }

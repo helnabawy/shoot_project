@@ -1,7 +1,7 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { bookingByRef, bookingWorld, briefFor, notificationsOf, quoteFor, type BookingWorld } from './setup/booking'
 import { asVisitor } from './setup/next-mocks'
-import { getTestPayload, quiet } from './setup/payload'
+import { createUser, getTestPayload, quiet } from './setup/payload'
 
 vi.mock('next/headers', async () => (await import('./setup/next-mocks')).nextHeaders)
 vi.mock('next/navigation', async () => (await import('./setup/next-mocks')).nextNavigation)
@@ -11,6 +11,7 @@ vi.mock('@/i18n/navigation', async () => (await import('./setup/next-mocks')).i1
 const { submitBrief } = await import('@/modules/brief/actions')
 const { requestQuotation } = await import('@/modules/booking/actions')
 const { notify } = await import('@/modules/booking/notify')
+const { consoleProvider, setPushProvider } = await import('@/modules/push')
 
 describe('QM-FR-006 the notification log', () => {
   let world: BookingWorld
@@ -46,3 +47,50 @@ describe('QM-FR-006 the notification log', () => {
     expect(arClient?.text.length).toBeGreaterThan(0)
   })
 })
+
+describe('QM-FR-006 booking changes reach the app by push', () => {
+  let world: BookingWorld
+  const pushes = consoleProvider(() => {})
+  beforeAll(async () => {
+    world = await bookingWorld()
+    setPushProvider(pushes)
+    const payload = await getTestPayload()
+    for (const [key, c] of Object.entries(world.creators)) {
+      await payload.create({ collection: 'push-devices', data: { user: c.user.id, token: `creator-${key}-token-1`, platform: 'android', locale: 'en' }, overrideAccess: true })
+    }
+  })
+  afterAll(() => setPushProvider(undefined))
+
+  it('the assigned creator and the member client get one push each per change, opening the booking', async () => {
+    const payload = await getTestPayload()
+    asVisitor()
+    const b = await briefFor(submitBrief as never, world, { occasion: 'portrait' })
+    const q = await quoteFor(requestQuotation as never, b, { pick: `photographer:${world.creators.sara!.code}` })
+    const member = await createUser(['member'])
+    await payload.create({ collection: 'push-devices', data: { user: member.id, token: 'member-token-1', platform: 'ios', locale: 'ar' }, overrideAccess: true })
+    const booking = await bookingByRef(payload, q.ref)
+    await payload.update({ collection: 'bookings', id: booking.id, data: { member: member.id } as never, overrideAccess: true, context: quiet })
+    const full = await payload.findByID({ collection: 'bookings', id: booking.id, depth: 1, overrideAccess: true, showHiddenFields: true })
+    const assigned = (full.assignments ?? []).map((a) => (typeof a.creator === 'object' ? a.creator?.id : a.creator))
+    const creatorKey = Object.entries(world.creators).find(([, c]) => assigned.includes(c.id))?.[0]
+    expect(creatorKey).toBeDefined()
+
+    pushes.sent.length = 0
+    await notify(payload, full as never, 'accepted')
+    const toCreator = pushes.sent.filter((m) => m.token === `creator-${creatorKey}-token-1`)
+    expect(toCreator).toHaveLength(1)
+    expect(toCreator[0]).toMatchObject({ data: { event: 'accepted', path: `/account/bookings/${q.ref}` } })
+    expect(toCreator[0]!.body.length).toBeGreaterThan(0)
+    const toMember = pushes.sent.filter((m) => m.token === 'member-token-1')
+    expect(toMember).toHaveLength(1)
+    expect(toMember[0]!.data.path).toMatch(new RegExp(`^/q/${q.ref}/[^/]+$`))
+    // Creators not on the booking hear nothing.
+    expect(pushes.sent.filter((m) => m.token.startsWith('creator-') && m.token !== `creator-${creatorKey}-token-1`)).toHaveLength(0)
+
+    // The same change again pushes nothing.
+    pushes.sent.length = 0
+    await notify(payload, full as never, 'accepted')
+    expect(pushes.sent).toHaveLength(0)
+  })
+})
+
