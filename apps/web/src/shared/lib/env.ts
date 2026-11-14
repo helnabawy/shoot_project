@@ -26,6 +26,14 @@ const s3Keys = ['S3_BUCKET', 'S3_REGION', 'S3_ENDPOINT', 'S3_ACCESS_KEY_ID', 'S3
 // One-time-code delivery (feature 009, contracts/otp-provider.md): the vendor's variables, all or none.
 const unifonicKeys = ['UNIFONIC_APP_SID', 'OTP_SMS_SENDER_ID', 'OTP_WHATSAPP_SENDER', 'OTP_WHATSAPP_TEMPLATE'] as const
 /** The base64 service-account JSON carries what the FCM HTTP v1 call needs. */
+/**
+ * The push provider in use: `PUSH_PROVIDER` when set, else `fcm` when a service account is configured, else
+ * `off` (local runs and tests without one send nothing).
+ */
+export function pushProviderOf(env: { PUSH_PROVIDER?: 'fcm' | 'console' | 'off'; FCM_SERVICE_ACCOUNT?: string }): 'fcm' | 'console' | 'off' {
+  return env.PUSH_PROVIDER ?? (env.FCM_SERVICE_ACCOUNT ? 'fcm' : 'off')
+}
+
 function serviceAccountOk(value: string | undefined): boolean {
   if (!value) return false
   try {
@@ -105,7 +113,7 @@ export const envSchema = z
     if (deployed && env.OTP_FIXED_CODE && env.OTP_ALLOW_FIXED_CODE !== '1') {
       ctx.addIssue({ code: 'custom', path: ['OTP_FIXED_CODE'], message: 'a fixed code is for local testing only; unset it in production (or set OTP_ALLOW_FIXED_CODE=1 on a throwaway test deployment)' })
     }
-    if (env.PUSH_PROVIDER === 'fcm' && !serviceAccountOk(env.FCM_SERVICE_ACCOUNT)) {
+    if (pushProviderOf(env) === 'fcm' && !serviceAccountOk(env.FCM_SERVICE_ACCOUNT)) {
       ctx.addIssue({ code: 'custom', path: ['FCM_SERVICE_ACCOUNT'], message: 'PUSH_PROVIDER=fcm needs the Firebase service-account JSON, base64-encoded (project_id, client_email, private_key)' })
     }
     const missingVendor = unifonicKeys.filter((k) => !env[k])

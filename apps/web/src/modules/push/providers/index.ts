@@ -1,4 +1,4 @@
-import type { Env } from '@/shared/lib/env'
+import { pushProviderOf, type Env } from '@/shared/lib/env'
 import { consoleProvider, offProvider } from './console'
 import { fcmProvider, parseServiceAccount } from './fcm'
 import type { PushProvider } from './types'
@@ -14,11 +14,11 @@ export function setPushProvider(provider: PushProvider | undefined): void {
   override = provider
 }
 
-/** The provider `PUSH_PROVIDER` names: `off` when unset (research R7). */
+/** The provider `PUSH_PROVIDER` names; unset, `fcm` when `FCM_SERVICE_ACCOUNT` is set, else `off` (research R7). */
 export function getPushProvider(e: Pick<Env, 'PUSH_PROVIDER' | 'FCM_SERVICE_ACCOUNT'>): PushProvider {
   if (override) return override
   if (cached) return cached
-  switch (e.PUSH_PROVIDER) {
+  switch (pushProviderOf(e)) {
     case 'fcm':
       cached = fcmProvider(parseServiceAccount(e.FCM_SERVICE_ACCOUNT ?? ''))
       break

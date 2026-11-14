@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hasS3, parseEnv } from './env'
+import { hasS3, parseEnv, pushProviderOf } from './env'
 
 const valid = {
   DATABASE_URI: 'postgres://shoot:shoot@127.0.0.1:5432/shoot',
@@ -123,7 +123,15 @@ describe('environment validation', () => {
 
     it('is off unless chosen, and console needs nothing', () => {
       expect(parseEnv(valid).PUSH_PROVIDER).toBeUndefined()
+      expect(pushProviderOf(parseEnv(valid))).toBe('off')
       expect(parseEnv({ ...valid, PUSH_PROVIDER: 'console' }).PUSH_PROVIDER).toBe('console')
+    })
+
+    it('defaults to fcm when a service account is set and the provider is not', () => {
+      expect(pushProviderOf(parseEnv({ ...valid, FCM_SERVICE_ACCOUNT: account }))).toBe('fcm')
+      expect(pushProviderOf(parseEnv({ ...valid, FCM_SERVICE_ACCOUNT: account, PUSH_PROVIDER: 'off' }))).toBe('off')
+      expect(pushProviderOf(parseEnv({ ...valid, FCM_SERVICE_ACCOUNT: account, PUSH_PROVIDER: 'console' }))).toBe('console')
+      expect(() => parseEnv({ ...valid, FCM_SERVICE_ACCOUNT: 'not-json' })).toThrow(/FCM_SERVICE_ACCOUNT/)
     })
 
     it('fcm needs a readable base64 service account', () => {
