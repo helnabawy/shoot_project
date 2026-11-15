@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto'
+import { createLocalReq } from 'payload'
 import sharp from 'sharp'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { createUser, getTestPayload, quiet } from './setup/payload'
@@ -36,6 +37,17 @@ describe('CP-FR-008 provider uploads are bounded (research §6)', () => {
     await expect(
       world.payload.create({ collection: 'media', data: { alt: 'x' }, file: { data: tiny, mimetype: 'image/png', name: 'anon.png', size: tiny.length }, overrideAccess: false }),
     ).rejects.toThrow()
+  })
+
+  it('CP-FR-008 the hourly count leaves the file on the request, so cloud storage still receives a provider upload', async () => {
+    const provider = await makeProvider(world)
+    // Twice: the first upload creates the counters, the second updates them.
+    for (const name of ['kept-1.png', 'kept-2.png']) {
+      const req = await createLocalReq({ user: provider, context: { ...quiet, visitorId: `v-${provider.id}` } }, world.payload)
+      await world.payload.create({ collection: 'media', data: { alt: 'A sample' }, file: { data: tiny, mimetype: 'image/png', name, size: tiny.length }, req, overrideAccess: false })
+      // The storage adapter reads `req.file` after the save; without it the row is stored and the file is not.
+      expect(req.file?.name).toBe(name)
+    }
   })
 
   it('refuses a type other than JPEG, PNG or WebP', async () => {

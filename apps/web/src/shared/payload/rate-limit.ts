@@ -13,7 +13,7 @@ export function visitorKey(req: PayloadRequest): string {
 /**
  * Counts one action against `key`'s hourly allowance and refuses it past `limit` with a 429 that
  * carries `messageKey` and, in `data.retryAfter`, the seconds to the end of the window. The counters live in the `rate-limits` collection so the limit holds across
- * instances (Principle V). Used by the brief hook and by provider uploads.
+ * instances (Principle V). Used by the brief hook and by provider uploads; the request's upload file is kept.
  */
 export async function consumeAllowance(
   req: PayloadRequest,
@@ -37,20 +37,27 @@ export async function consumeAllowance(
     const retryAfter = Math.max(1, Math.ceil((Date.parse(row.windowStart) + RATE_WINDOW_MS - now) / 1000))
     throw new APIError(messageKey, 429, { retryAfter }, true)
   }
-  if (!row) {
-    await req.payload.create({
-      collection: 'rate-limits',
-      data: { key, count: 1, windowStart: new Date(now).toISOString() },
-      overrideAccess: true,
-      req,
-    })
-  } else {
-    await req.payload.update({
-      collection: 'rate-limits',
-      id: row.id,
-      data: windowOpen ? { count: row.count + 1 } : { count: 1, windowStart: new Date(now).toISOString() },
-      overrideAccess: true,
-      req,
-    })
+  // A Local API write that reuses this request resets `req.file`. Upload hooks call this before the
+  // storage adapter reads the file, so it is put back: otherwise the row is saved and the file never is.
+  const file = req.file
+  try {
+    if (!row) {
+      await req.payload.create({
+        collection: 'rate-limits',
+        data: { key, count: 1, windowStart: new Date(now).toISOString() },
+        overrideAccess: true,
+        req,
+      })
+    } else {
+      await req.payload.update({
+        collection: 'rate-limits',
+        id: row.id,
+        data: windowOpen ? { count: row.count + 1 } : { count: 1, windowStart: new Date(now).toISOString() },
+        overrideAccess: true,
+        req,
+      })
+    }
+  } finally {
+    req.file = file
   }
 }
