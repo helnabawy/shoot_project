@@ -36,13 +36,7 @@ typedef SiteLoader = Future<Result<SiteInfo>> Function();
 /// system back gesture) returns to the screen it came from unchanged (FR-045). Destinations whose
 /// feature is not built are not registered routes, so they show screen 37 (FR-047).
 class MenuPage extends StatefulWidget {
-  const MenuPage({
-    super.key,
-    required this.loadSite,
-    required this.links,
-    this.open = openInBrowser,
-    this.createPush,
-  });
+  const MenuPage({super.key, required this.loadSite, required this.links, this.open = openInBrowser, this.createPush});
 
   /// Site settings, for the WhatsApp number and default message.
   final SiteLoader loadSite;
@@ -85,19 +79,13 @@ class _MenuPageState extends State<MenuPage> {
     final number = _site?.whatsapp.number;
     if (number == null) return;
     final message = _site?.whatsapp.defaultMessage;
-    final opened = await widget.open(
-      WhatsappLink.native(number, message: message),
-    );
+    final opened = await widget.open(WhatsappLink.native(number, message: message));
     if (!opened) await widget.open(WhatsappLink.web(number, message: message));
   }
 
   void _logOut() {
     final router = GoRouter.of(context);
-    unawaited(
-      context.read<SessionCubit>().signOut().then(
-        (_) => router.go(AppRoutes.home),
-      ),
-    );
+    unawaited(context.read<SessionCubit>().signOut().then((_) => router.go(AppRoutes.home)));
   }
 
   String get _lang => Localizations.localeOf(context).languageCode;
@@ -112,13 +100,7 @@ class _MenuPageState extends State<MenuPage> {
     final hasWhatsapp = _site?.whatsapp.number != null;
     final meta = ShootType.meta.copyWith(color: c.mute, height: 1.9);
 
-    Widget row(
-      ShootIcons icon,
-      String label,
-      VoidCallback onTap, {
-      String? hint,
-      RowDivider divider = RowDivider.top,
-    }) {
+    Widget row(ShootIcons icon, String label, VoidCallback onTap, {String? hint, RowDivider divider = RowDivider.top}) {
       // At large text sizes the quiet hint joins the label so nothing is cut off.
       final large = MediaQuery.textScalerOf(context).scale(16) > 22;
       return ShootRow(
@@ -126,9 +108,7 @@ class _MenuPageState extends State<MenuPage> {
         onTap: onTap,
         divider: divider,
         leading: IconTile(icon),
-        trailing: hint == null || large
-            ? null
-            : Text(hint, style: ShootType.meta.copyWith(color: c.mute)),
+        trailing: hint == null || large ? null : Text(hint, style: ShootType.meta.copyWith(color: c.mute)),
       );
     }
 
@@ -139,13 +119,7 @@ class _MenuPageState extends State<MenuPage> {
         children: [
           ShootHeader(
             leading: Wordmark(label: l10n.appTitle, onTap: _close),
-            trailing: [
-              ShootIconButton(
-                icon: ShootIcons.close,
-                label: l10n.mlCloseMenu,
-                onPressed: _close,
-              ),
-            ],
+            trailing: [ShootIconButton(icon: ShootIcons.close, label: l10n.mlCloseMenu, onPressed: _close)],
           ),
           Expanded(
             child: CustomScrollView(
@@ -203,45 +177,23 @@ class _MenuPageState extends State<MenuPage> {
                         _Section(
                           label: l10n.mlMenuBrowse,
                           children: [
-                            row(
-                              ShootIcons.creators,
-                              l10n.mlMenuCreators,
-                              () => context.push(AppRoutes.creators),
-                            ),
-                            row(
-                              ShootIcons.guides,
-                              l10n.mlMenuGuides,
-                              () => context.push('/guides'),
-                            ),
-                            row(
-                              ShootIcons.lines,
-                              l10n.mlMenuHowItWorks,
-                              () => context.push('/how-it-works'),
-                              divider: RowDivider.topAndBottom,
-                            ),
+                            row(ShootIcons.creators, l10n.mlMenuCreators, () => context.push(AppRoutes.creators)),
+                            row(ShootIcons.guides, l10n.mlMenuGuides, () => context.push('/guides')),
                           ],
                         ),
                         const SizedBox(height: 18),
                         Padding(
-                          padding: const EdgeInsetsDirectional.symmetric(
-                            horizontal: 8,
-                          ),
+                          padding: const EdgeInsetsDirectional.symmetric(horizontal: 8),
                           child: Column(
                             children: [
                               _Setting(
                                 label: l10n.mlMenuLanguage,
                                 child: SegmentedControl<bool>(
-                                  segments: const [
-                                    (false, 'English'),
-                                    (true, 'عربي'),
-                                  ],
+                                  segments: const [(false, 'English'), (true, 'عربي')],
                                   selected: arabic,
-                                  onChanged: (toArabic) =>
-                                      context.read<LocaleCubit>().select(
-                                        toArabic
-                                            ? AppLocales.arabic
-                                            : AppLocales.english,
-                                      ),
+                                  onChanged: (toArabic) => context.read<LocaleCubit>().select(
+                                    toArabic ? AppLocales.arabic : AppLocales.english,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -254,13 +206,10 @@ class _MenuPageState extends State<MenuPage> {
                                     (ThemeMode.system, l10n.mlThemeAuto),
                                   ],
                                   selected: theme,
-                                  onChanged: context
-                                      .read<ThemeModeCubit>()
-                                      .select,
+                                  onChanged: context.read<ThemeModeCubit>().select,
                                 ),
                               ),
-                              if (session is SignedIn &&
-                                  widget.createPush != null) ...[
+                              if (session is SignedIn && widget.createPush != null) ...[
                                 const SizedBox(height: 8),
                                 _PushSetting(create: widget.createPush!),
                               ],
@@ -269,8 +218,7 @@ class _MenuPageState extends State<MenuPage> {
                                 label: l10n.appearanceTitle,
                                 child: _AccentButton(
                                   key: const Key('menu-accent-button'),
-                                  onTap: () =>
-                                      unawaited(showAppearanceSheet(context)),
+                                  onTap: () => unawaited(showAppearanceSheet(context)),
                                 ),
                               ),
                             ],
@@ -278,12 +226,7 @@ class _MenuPageState extends State<MenuPage> {
                         ),
                         const Spacer(),
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                            8,
-                            16,
-                            8,
-                            16,
-                          ),
+                          padding: const EdgeInsetsDirectional.fromSTEB(8, 16, 8, 16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
@@ -297,21 +240,11 @@ class _MenuPageState extends State<MenuPage> {
                               Text.rich(
                                 TextSpan(
                                   children: [
-                                    _link(
-                                      l10n.mlMenuTerms,
-                                      () => widget.links.terms(_lang),
-                                    ),
+                                    _link(l10n.mlMenuTerms, () => widget.links.terms(_lang)),
                                     const TextSpan(text: ' · '),
-                                    _link(
-                                      l10n.mlMenuProfessionalTerms,
-                                      () =>
-                                          widget.links.professionalTerms(_lang),
-                                    ),
+                                    _link(l10n.mlMenuProfessionalTerms, () => widget.links.professionalTerms(_lang)),
                                     const TextSpan(text: ' · '),
-                                    _link(
-                                      l10n.mlMenuPrivacy,
-                                      () => widget.links.privacy(_lang),
-                                    ),
+                                    _link(l10n.mlMenuPrivacy, () => widget.links.privacy(_lang)),
                                   ],
                                 ),
                                 textAlign: TextAlign.center,
@@ -358,13 +291,7 @@ class _MenuLink extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        child: Text(
-          text,
-          style: ShootType.meta.copyWith(
-            color: context.colors.accentInk,
-            height: 1.9,
-          ),
-        ),
+        child: Text(text, style: ShootType.meta.copyWith(color: context.colors.accentInk, height: 1.9)),
       ),
     );
   }
@@ -416,10 +343,7 @@ class _AccentButton extends StatelessWidget {
               Container(
                 width: 22,
                 height: 22,
-                decoration: BoxDecoration(
-                  color: c.accent,
-                  shape: BoxShape.circle,
-                ),
+                decoration: BoxDecoration(color: c.accent, shape: BoxShape.circle),
               ),
               const SizedBox(width: ShootSpace.s2),
               ShootIcon(ShootIcons.chevron, size: 18, color: c.mute),
@@ -439,16 +363,10 @@ class _Setting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final text = Text(
-      label,
-      style: ShootType.chip.copyWith(color: context.colors.ink),
-    );
+    final text = Text(label, style: ShootType.chip.copyWith(color: context.colors.ink));
     // At large text sizes the control moves under its label and takes the full width.
     if (MediaQuery.textScalerOf(context).scale(15) > 21) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [text, const SizedBox(height: 6), child],
-      );
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [text, const SizedBox(height: 6), child]);
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
