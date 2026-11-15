@@ -16,6 +16,7 @@
     "./brief/sentence": "./src/brief/sentence.ts",
     "./brief/options": "./src/brief/options.ts",
     "./brief/message": "./src/brief/message.ts",
+    "./brief/kept": "./src/brief/kept.ts",
     "./pricing": "./src/pricing/index.ts",
     "./booking": "./src/booking/index.ts",
     "./payments": "./src/payments/index.ts",

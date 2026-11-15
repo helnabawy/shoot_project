@@ -84,6 +84,8 @@ describe('server actions', () => {
     jar.clear()
     await resetDatabase()
     await seed(await getTestPayload(), { log: () => {} })
+    // 001's brief cases predate the sign-in gate (021), which has its own tests (brief-sign-in.int.test.ts).
+    await (await getTestPayload()).updateGlobal({ slug: 'site-settings', data: { briefNeedsSignIn: false } as never, context: { disableRevalidate: true } })
   })
 
   describe('US4 auth actions', () => {

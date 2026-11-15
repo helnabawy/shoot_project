@@ -91,7 +91,7 @@ Cache:
 | `quotationFresh` | `POST /quotations/{ref}/{key}/fresh` | opt | no-store | `quotationAddressV1` | `freshQuotationV1` | `booking` `fresh-quotation` (012) | unknown, wrong key |
 | `quotationPay` | `POST /quotations/{ref}/{key}/pay` | opt | no-store | `quotationAddressV1` | `checkoutV1` | `checkout` (020) | unknown, wrong key; 409 not confirmed; 503 payment off or provider failed |
 | `quotationPickAnother` | `POST /quotations/{ref}/{key}/pick-another` | opt | no-store | `pickAnotherRequestV1` | `bookingViewV1` | `booking` `pick-another` (012) | unknown, wrong key |
-| `briefRecord` | `POST /briefs` | opt | no-store | `briefRecordV1` | `briefReceiptV1` | `brief` `record-brief` (010) | — |
+| `briefRecord` | `POST /briefs` | opt | no-store | `briefRecordV1` | `briefReceiptV1` | `brief` `record-brief` (010) | a guest while briefs need sign-in (401 `brief.errors.signInRequired`, 021) |
 | — | any other address under `/api/mobile` | none | no-store | — | `problemV1` | catch-all | always |
 
 App links, at the site root and outside v1:

@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import { adminToken, auth, expectNoSeriousA11yIssues } from './helpers'
-import { setQuickMatch } from './helpers'
+import { setBriefSignIn, setQuickMatch } from './helpers'
 import { DEMO_CREATORS } from '../../src/shared/payload/seed/demo-creators.data'
 
 // Demo seed: D2222 Sara (photographer, 4 samples, featured), D7777 Maya (photo + video, 4 samples),
@@ -113,8 +113,15 @@ test.describe('CP-US2 view a creator profile', () => {
 
 test.describe('CP-US2-S2 booking a creator', () => {
   // Feature 002 flow: the brief goes to WhatsApp. Quick Match (003) has its own specs.
-  test.beforeAll(async ({ request }) => setQuickMatch(request, false))
-  test.afterAll(async ({ request }) => setQuickMatch(request, true))
+  // The WhatsApp-only guest flow of 001/002: Quick Match and the sign-in gate (021) off.
+  test.beforeAll(async ({ request }) => {
+    await setQuickMatch(request, false)
+    await setBriefSignIn(request, false)
+  })
+  test.afterAll(async ({ request }) => {
+    await setBriefSignIn(request, true)
+    await setQuickMatch(request, true)
+  })
   test('@smoke CP-US2-S2 "Book with this creator" opens the brief with the creator fixed; sending it names them and records them', async ({ page, request }, info) => {
     test.skip(info.project.name === 'nojs' || info.project.name === 'ar-mobile', 'the JavaScript flow in English; the no-JS and Arabic forms are covered below')
     await stubWhatsApp(page)

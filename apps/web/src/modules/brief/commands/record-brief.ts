@@ -11,6 +11,7 @@ import { getSiteSettings } from '../../site-settings/queries'
 import { getBriefBuilderConfig } from '../queries'
 import { composeMessage, composeSentence, resolveBrief } from '../submit'
 import { PROBLEM_FOR, toAnswers } from './brief-answers'
+import { briefNeedsSignIn } from '../sign-in-rule'
 
 const DUPLICATE_WINDOW_MS = 60_000
 
@@ -26,6 +27,8 @@ export async function recordBrief(ctx: ActorContext, input: BriefRecordV1): Prom
   const { payload, locale } = ctx
   const [config, settings] = await Promise.all([getBriefBuilderConfig(locale), getSiteSettings(locale)])
   if (!config) return problem(503, 'brief.errors.generic')
+  // 021 (BS-US5-S4): while "Briefs need sign-in" is on, only a signed-in member records a brief.
+  if (!ctx.user && briefNeedsSignIn(settings)) return problem(401, 'brief.errors.signInRequired')
 
   const mapped = toAnswers(config, input)
   if (!mapped.ok) {

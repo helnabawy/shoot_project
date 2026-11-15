@@ -19,6 +19,7 @@ import * as migration_20261113_201723_brief_inbox from './20261113_201723_brief_
 import * as migration_20261114_160000_brief_templates from './20261114_160000_brief_templates';
 import * as migration_20261114_195105_online_payment from './20261114_195105_online_payment';
 import * as migration_20261114_195200_payment_attention_template from './20261114_195200_payment_attention_template';
+import * as migration_20261114_202819_brief_sign_in from './20261114_202819_brief_sign_in';
 
 export const migrations = [
   {
@@ -125,5 +126,10 @@ export const migrations = [
     up: migration_20261114_195200_payment_attention_template.up,
     down: migration_20261114_195200_payment_attention_template.down,
     name: '20261114_195200_payment_attention_template',
+  },
+  {
+    up: migration_20261114_202819_brief_sign_in.up,
+    down: migration_20261114_202819_brief_sign_in.down,
+    name: '20261114_202819_brief_sign_in',
   },
 ];

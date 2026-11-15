@@ -20,8 +20,11 @@ const pendingSchema = z.object({
   next: z.string(),
   /** Join as a creator: the professions chosen on the join page (acceptance was given there). */
   personas: z.array(z.string()).default([]),
+  /** 021: `brief` when sign-in sends a kept brief: no role question, a new number becomes a client. */
+  intent: z.enum(['none', 'brief']).default('none'),
 })
 export type PendingChallenge = z.infer<typeof pendingSchema>
+export type PendingInput = z.input<typeof pendingSchema>
 
 export async function readPending(): Promise<PendingChallenge | null> {
   const raw = (await cookies()).get(PENDING_COOKIE)?.value
@@ -34,7 +37,7 @@ export async function readPending(): Promise<PendingChallenge | null> {
   }
 }
 
-export async function writePending(value: PendingChallenge): Promise<void> {
+export async function writePending(value: PendingInput): Promise<void> {
   ;(await cookies()).set(PENDING_COOKIE, JSON.stringify(value), {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

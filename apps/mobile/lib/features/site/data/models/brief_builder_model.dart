@@ -13,6 +13,8 @@ final class BriefBuilderModel {
       BriefBuilder(
         locale: readString(json, 'locale'),
         builder: builder == null ? null : _config(builder),
+        // 021, additive: an older server leaves it out (false).
+        signInRequired: json['signInRequired'] == true,
       ),
     );
   }

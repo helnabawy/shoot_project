@@ -45,6 +45,7 @@ final class SignInFlowState extends Equatable {
     this.errorCount = 0,
     this.isNew = false,
     this.roleNeeded = false,
+    this.forBrief = false,
   });
 
   final SignInStatus status;
@@ -81,10 +82,17 @@ final class SignInFlowState extends Equatable {
   /// The code was right but the number has no account (`auth.errors.signupRequired`).
   final bool roleNeeded;
 
+  /// 021: this sign-in sends the person's brief (`/login?for=brief`): no role question, a new
+  /// number becomes a client.
+  final bool forBrief;
+
   /// The role question shows only on the standalone sign-in, when the personas loaded, and only
   /// once a correct code proved a new number: a returning member signs straight in.
   bool get asksRole =>
-      mode == SignInMode.signIn && personas.isNotEmpty && roleNeeded;
+      mode == SignInMode.signIn &&
+      !forBrief &&
+      personas.isNotEmpty &&
+      roleNeeded;
 
   /// Screen 23 finishing a sign-up whose code was already sent from screen 20 (OT-US4-S2):
   /// the number is read-only and the Top Hit verifies.
@@ -121,6 +129,7 @@ final class SignInFlowState extends Equatable {
     int? errorCount,
     bool? isNew,
     bool? roleNeeded,
+    bool? forBrief,
   }) {
     return SignInFlowState(
       status: status ?? this.status,
@@ -138,6 +147,7 @@ final class SignInFlowState extends Equatable {
       errorCount: errorCount ?? this.errorCount,
       isNew: isNew ?? this.isNew,
       roleNeeded: roleNeeded ?? this.roleNeeded,
+      forBrief: forBrief ?? this.forBrief,
     );
   }
 
@@ -158,6 +168,7 @@ final class SignInFlowState extends Equatable {
     errorCount,
     isNew,
     roleNeeded,
+    forBrief,
   ];
 
   // The state holds the typed number and code: never print them.

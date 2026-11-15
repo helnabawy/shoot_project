@@ -73,7 +73,8 @@
       "generic": "Something went wrong sending your brief. Please try again, or WhatsApp us directly.",
       "creatorPersona": "This professional does not offer that. Choose one of their types.",
       "optionGone": "That option is no longer available. Choose another.",
-      "pastDate": "Pick today or a later date."
+      "pastDate": "Pick today or a later date.",
+      "signInRequired": "Log in to send your brief."
     },
     "showMore": "Show {count} more",
     "successNextTitle": "What happens next",
@@ -87,7 +88,9 @@
       "loading": "Finding who's free…",
       "none": "No one is free for this yet. See who's free for other options.",
       "more": "+{count} more on the next step"
-    }
+    },
+    "signInNext": "Next, we'll send a code to your mobile number to log you in.",
+    "signingIn": "Taking you to log in…"
   },
   "auth": {
     "loginTitle": "Log in",
@@ -165,7 +168,11 @@
         "sms": "SMS",
         "whatsapp": "WhatsApp"
       },
-      "sms": "Your Shoot code is {code}. It expires in {minutes} minutes. Don't share it.\n\n@{domain} #{code}"
+      "sms": "Your Shoot code is {code}. It expires in {minutes} minutes. Don't share it.\n\n@{domain} #{code}",
+      "briefTitle": "Log in to send your brief",
+      "briefIntro": "We'll send a code to your UAE mobile number; your brief goes out as soon as you're in. New here? The same steps create your account.",
+      "briefLabel": "Your brief",
+      "briefChange": "Change it"
     }
   },
   "account": {

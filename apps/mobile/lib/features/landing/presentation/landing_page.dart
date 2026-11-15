@@ -31,6 +31,7 @@ import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/core/widgets/wordmark.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_bar.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
+import 'package:shoot_mobile/features/brief/presentation/brief_routes.dart';
 import 'package:shoot_mobile/features/landing/presentation/landing_cubit.dart';
 
 /// The Pause choice, kept on the device (spec FR-031).
@@ -86,6 +87,18 @@ class _LandingPageState extends State<LandingPage> {
     super.initState();
     unawaited(widget.landing.load());
     unawaited(widget.brief.load());
+    // 021: a brief sent by `/brief/send` while this page was being rebuilt.
+    if (widget.brief.state.receipt != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _onReceipt(context, widget.brief.state);
+      });
+    }
+  }
+
+  /// 021 (BS-US4-S1): a signed-out person sent the brief: sign in, then `/brief/send` sends it.
+  void _onSignInNeeded(BuildContext context, BriefState _) {
+    widget.brief.signInOpened();
+    unawaited(context.push(briefSignInPath));
   }
 
   @override
@@ -151,6 +164,10 @@ class _LandingPageState extends State<LandingPage> {
         BlocListener<BriefCubit, BriefState>(
           listenWhen: (a, b) => a.receipt != b.receipt && b.receipt != null,
           listener: _onReceipt,
+        ),
+        BlocListener<BriefCubit, BriefState>(
+          listenWhen: (a, b) => !a.signInNeeded && b.signInNeeded,
+          listener: _onSignInNeeded,
         ),
         BlocListener<BriefCubit, BriefState>(
           // "Start your brief" and the tiles return to the hero (spec US4-S1, S7).
@@ -409,6 +426,7 @@ class _Hero extends StatelessWidget {
                                         onSubmit: () =>
                                             unawaited(brief.submit()),
                                         onWhatsapp: onWhatsapp,
+                                        guest: session is! SignedIn,
                                         onProvider: (slug) => unawaited(
                                           context.push(
                                             '/register?type=provider&persona=$slug',

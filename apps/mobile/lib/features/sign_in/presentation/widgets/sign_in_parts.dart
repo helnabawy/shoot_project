@@ -187,11 +187,21 @@ String? flowMessage(
   return state.failure?.message(l10n);
 }
 
-/// `/login/code?next=…`: keeps where the person was going while they move between screens.
+/// `/login/code?next=…`: keeps where the person was going (and, 021, `for=brief`) while they move
+/// between screens.
 String withNext(BuildContext context, String path) {
-  final next = GoRouterState.of(context).uri.queryParameters['next'];
-  return next == null ? path : '$path?next=${Uri.encodeComponent(next)}';
+  final query = GoRouterState.of(context).uri.queryParameters;
+  final kept = {
+    if (query['next'] != null) 'next': query['next']!,
+    if (query['for'] == 'brief') 'for': 'brief',
+  };
+  if (kept.isEmpty) return path;
+  return '$path?${kept.entries.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&')}';
 }
+
+/// 021: this sign-in sends the person's brief (`?for=brief`).
+bool forBrief(BuildContext context) =>
+    GoRouterState.of(context).uri.queryParameters['for'] == 'brief';
 
 /// The bottom part of a sign-in form (`margin-top: auto` on the boards): the content above
 /// scrolls when it does not fit (large text), and [bottom] stays at the foot.

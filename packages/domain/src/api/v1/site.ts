@@ -94,5 +94,10 @@ export const briefBuilderConfigV1 = z.object({
 })
 
 /** `builder` is `null` when the brief builder is switched off. */
-export const briefBuilderV1 = z.object({ locale: localeV1, builder: briefBuilderConfigV1.nullable() })
+export const briefBuilderV1 = z.object({
+  locale: localeV1,
+  builder: briefBuilderConfigV1.nullable(),
+  /** 021: sending a brief needs a signed-in member (the owner's switch); missing means false (older servers). */
+  signInRequired: z.boolean().optional(),
+})
 export type BriefBuilderV1 = z.infer<typeof briefBuilderV1>

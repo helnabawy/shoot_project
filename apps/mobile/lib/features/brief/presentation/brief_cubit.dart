@@ -32,6 +32,9 @@ final class BriefState extends Equatable {
     this.messageToken,
     this.submitting = false,
     this.receipt,
+    this.signInRequired = false,
+    this.signInNeeded = false,
+    this.awaitingSignIn = false,
   });
 
   final BriefLoad load;
@@ -50,6 +53,16 @@ final class BriefState extends Equatable {
   /// Set once after a brief was recorded; the landing reads it, then calls `acknowledge`.
   final BriefReceipt? receipt;
 
+  /// 021: sending needs a signed-in member (the owner's switch, from `GET brief-builder`).
+  final bool signInRequired;
+
+  /// 021: set once when a signed-out person sends; the landing opens sign-in, then calls
+  /// `signInOpened`.
+  final bool signInNeeded;
+
+  /// 021: the brief waits for sign-in; `/brief/send` sends it once the person is in.
+  final bool awaitingSignIn;
+
   BriefState copyWith({
     BriefLoad? load,
     BriefBuilderConfig? config,
@@ -60,6 +73,9 @@ final class BriefState extends Equatable {
     Object? messageToken = _unset,
     bool? submitting,
     Object? receipt = _unset,
+    bool? signInRequired,
+    bool? signInNeeded,
+    bool? awaitingSignIn,
   }) => BriefState(
     load: load ?? this.load,
     config: config ?? this.config,
@@ -76,6 +92,9 @@ final class BriefState extends Equatable {
     receipt: identical(receipt, _unset)
         ? this.receipt
         : receipt as BriefReceipt?,
+    signInRequired: signInRequired ?? this.signInRequired,
+    signInNeeded: signInNeeded ?? this.signInNeeded,
+    awaitingSignIn: awaitingSignIn ?? this.awaitingSignIn,
   );
 
   @override
@@ -89,6 +108,9 @@ final class BriefState extends Equatable {
     messageToken,
     submitting,
     receipt,
+    signInRequired,
+    signInNeeded,
+    awaitingSignIn,
   ];
 }
 
@@ -102,11 +124,18 @@ class BriefCubit extends Cubit<BriefState> {
     required this._loadBuilder,
     required this._repository,
     required this._clock,
-  }) : super(const BriefState());
+    bool Function()? isSignedIn,
+  }) : _isSignedIn = isSignedIn ?? _alwaysSignedIn,
+       super(const BriefState());
 
   final BriefBuilderLoader _loadBuilder;
   final BriefRepository _repository;
   final Clock _clock;
+
+  /// 021: whether a member is signed in now (the session). Without it the gate never applies.
+  final bool Function() _isSignedIn;
+
+  static bool _alwaysSignedIn() => true;
 
   BriefEngine? get engine {
     final config = state.config;
@@ -125,7 +154,11 @@ class BriefCubit extends Cubit<BriefState> {
         emit(
           config == null || !_hasOptions(config)
               ? state.copyWith(load: BriefLoad.off)
-              : state.copyWith(load: BriefLoad.ready, config: config),
+              : state.copyWith(
+                  load: BriefLoad.ready,
+                  config: config,
+                  signInRequired: value.signInRequired,
+                ),
         );
       case Err():
         emit(state.copyWith(load: BriefLoad.failed));
@@ -282,6 +315,8 @@ class BriefCubit extends Cubit<BriefState> {
         ),
       );
     }
+    // 021 (BS-US4-S1): signed out while sending needs sign-in: keep the draft, ask for sign-in.
+    if (state.signInRequired && !_isSignedIn()) return _askSignIn();
     emit(state.copyWith(submitting: true, message: null, messageToken: null));
     final result = await _repository.record(config, state.draft);
     if (isClosed) return;
@@ -293,11 +328,35 @@ class BriefCubit extends Cubit<BriefState> {
             config: config,
             example: false,
             receipt: value,
+            signInRequired: state.signInRequired,
           ),
         );
       case Err(:final failure):
         emit(_failed(failure));
     }
+  }
+
+  void _askSignIn() => emit(
+    state.copyWith(
+      example: false,
+      submitting: false,
+      signInRequired: true,
+      signInNeeded: true,
+      awaitingSignIn: true,
+      message: null,
+      messageToken: null,
+    ),
+  );
+
+  /// The landing has opened the sign-in screens.
+  void signInOpened() => emit(state.copyWith(signInNeeded: false));
+
+  /// `/brief/send` (021, BS-US4-S2): the person signed in from the brief; the kept draft is sent
+  /// once. A visit without a waiting brief, or still signed out, does nothing.
+  Future<void> sendAfterSignIn() async {
+    if (!state.awaitingSignIn || state.submitting || !_isSignedIn()) return;
+    emit(state.copyWith(awaitingSignIn: false, signInNeeded: false));
+    await submit();
   }
 
   BriefState _failed(Failure failure) {
@@ -306,6 +365,14 @@ class BriefCubit extends Cubit<BriefState> {
       return base.copyWith(message: BriefMessage.network);
     }
     if (failure is ServerFailure) {
+      if (failure.code == 'brief.errors.signInRequired') {
+        // The switch was turned on after the builder loaded: ask for sign-in (BS-US5-S4).
+        return base.copyWith(
+          signInRequired: true,
+          signInNeeded: true,
+          awaitingSignIn: true,
+        );
+      }
       if (failure.statusCode == 429 || failure.code == 'brief.errors.tooMany') {
         return base.copyWith(message: BriefMessage.rateLimited);
       }

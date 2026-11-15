@@ -24,6 +24,7 @@ import 'package:shoot_mobile/features/account/presentation/account_routes.dart';
 import 'package:shoot_mobile/features/account/presentation/cubit/account_cubit.dart';
 import 'package:shoot_mobile/features/account/presentation/cubit/bookings_cubit.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
+import 'package:shoot_mobile/features/brief/presentation/brief_routes.dart';
 import 'package:shoot_mobile/features/content/presentation/content_deps.dart';
 import 'package:shoot_mobile/features/content/presentation/content_routes.dart';
 import 'package:shoot_mobile/features/creator_account/domain/repositories/creator_account_repository.dart';
@@ -100,6 +101,8 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         ),
         links: getIt<WebsiteLinks>(),
       ),
+      // Feature 021: sign-in from the brief ends on `/brief/send`.
+      briefSendRoute(getIt<BriefCubit>()),
       // Feature 010: the first visit and the menu.
       welcomeRoute(
         createWelcome: getIt.call<WelcomeCubit>,

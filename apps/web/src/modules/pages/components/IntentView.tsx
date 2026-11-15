@@ -23,13 +23,15 @@ export interface IntentViewProps {
   sourcePath: string
   /** Quick Match is on (feature 003): the brief continues to step 2. */
   quickMatch?: boolean
+  /** 021: sending the brief needs sign-in. */
+  signInRequired?: boolean
 }
 
 /**
  * An intent page: the brief is the page. It starts with the answers the page is about (still changeable),
  * then who can do it, the questions people ask and the editor's sections. Nothing is shown that is not real.
  */
-export async function IntentView({ page, locale, builder, preset, labels, creators, creatorTotal, faq, context, whatsappHref, sourcePath, quickMatch = false }: IntentViewProps) {
+export async function IntentView({ page, locale, builder, preset, labels, creators, creatorTotal, faq, context, whatsappHref, sourcePath, quickMatch = false, signInRequired = false }: IntentViewProps) {
   const t = await getTranslations({ locale, namespace: 'intent' })
   const intro = page.intent?.intro
   return (
@@ -39,7 +41,7 @@ export async function IntentView({ page, locale, builder, preset, labels, creato
         {intro ? <p className="mt-2 mb-5 px-1 text-[15px] text-mute">{intro}</p> : <div className="mb-5" />}
         {builder ? (
           <div data-floating-hide>
-            <BriefBuilder config={builder} preset={preset} whatsappHref={whatsappHref} providerHref={localizeHref('/register?type=provider', locale)} sourcePath={sourcePath} labels={labels} quickMatch={quickMatch} />
+            <BriefBuilder config={builder} preset={preset} whatsappHref={whatsappHref} providerHref={localizeHref('/register?type=provider', locale)} sourcePath={sourcePath} labels={labels} quickMatch={quickMatch} signInRequired={signInRequired} />
           </div>
         ) : null}
       </section>

@@ -18,6 +18,8 @@ export async function creatorWorld(): Promise<CreatorWorld> {
   await resetDatabase()
   const payload = await getTestPayload()
   await seed(payload, { log: () => {} })
+  // These worlds test what follows a brief; the sign-in gate (021) has its own tests (brief-sign-in.int.test.ts).
+  await payload.updateGlobal({ slug: 'site-settings', data: { briefNeedsSignIn: false } as never, context: quiet })
   const admin = await createUser(['admin'])
   const find = async (collection: 'personas' | 'categories', slug: string) =>
     (await payload.find({ collection, where: { slug: { equals: slug } }, limit: 1, depth: 0 })).docs[0]!.id

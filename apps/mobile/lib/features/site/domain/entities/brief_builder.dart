@@ -112,13 +112,20 @@ final class BriefBuilderConfig extends Equatable {
 /// The brief builder (`briefBuilderV1`) in [locale]; [builder] is `null` when
 /// it is switched off.
 final class BriefBuilder extends Equatable {
-  const BriefBuilder({required this.locale, required this.builder});
+  const BriefBuilder({
+    required this.locale,
+    required this.builder,
+    this.signInRequired = false,
+  });
 
   final String locale;
   final BriefBuilderConfig? builder;
 
+  /// 021: sending a brief needs a signed-in member (the owner's switch).
+  final bool signInRequired;
+
   bool get enabled => builder != null;
 
   @override
-  List<Object?> get props => [locale, builder];
+  List<Object?> get props => [locale, builder, signInRequired];
 }

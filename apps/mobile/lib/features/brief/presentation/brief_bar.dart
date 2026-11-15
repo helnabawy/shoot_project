@@ -30,7 +30,12 @@ class BriefBar extends StatefulWidget {
     required this.clock,
     this.onWhatsapp,
     this.onProvider,
+    this.guest = false,
   });
+
+  /// 021: a signed-out person while sending needs sign-in: one line under the Top Hit says a
+  /// code comes next (BS-US5-S2).
+  final bool guest;
 
   final BriefState state;
   final VoidCallback onTouch;
@@ -137,6 +142,15 @@ class _BriefBarState extends State<BriefBar> {
               loading: state.submitting,
               onPressed: widget.onSubmit,
             ),
+            if (widget.guest && state.signInRequired)
+              Padding(
+                key: const ValueKey('brief:signInNext'),
+                padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 0),
+                child: Text(
+                  l10n.briefSignInNext,
+                  style: ShootType.meta.copyWith(color: c.mute),
+                ),
+              ),
             if (config.helperText.isNotEmpty)
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 4),

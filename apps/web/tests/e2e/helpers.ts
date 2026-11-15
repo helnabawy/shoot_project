@@ -50,6 +50,27 @@ export async function setQuickMatch(request: APIRequestContext, enabled: boolean
   }
 }
 
+/** Turns "Briefs need sign-in" (feature 021) on or off for specs of the guest flows of 001/002. */
+export async function setBriefSignIn(request: APIRequestContext, enabled: boolean) {
+  const token = await adminToken(request)
+  const res = await request.post('/api/globals/site-settings', { headers: auth(token), data: { briefNeedsSignIn: enabled } })
+  expect(res.ok(), await res.text()).toBeTruthy()
+  for (const path of ['/', '/ar']) {
+    await expect
+      .poll(async () => /signInRequired\\?":(true|false)/.exec(await (await request.get(path)).text())?.[1], { timeout: 30_000, intervals: [500, 1000, 2000] })
+      .toBe(String(enabled))
+  }
+}
+
+/** Feature 021: a guest's brief goes to sign-in first; sign in with a fresh number (the console outbox). */
+export async function signInIfAsked(page: Page) {
+  await page.waitForURL(/\/match\/B-|\/login\?/, { timeout: 20_000 })
+  if (!/\/login\?/.test(page.url())) return
+  await page.getByLabel(/Mobile number|رقم الهاتف المتحرك/).fill(e2ePhone().slice(4))
+  await page.getByTestId('send-code').click()
+  await enterOutboxCode(page)
+}
+
 /** Answers the brief step by step with defaults (first option, skip optional steps). */
 export async function finishBriefSteps(page: Page) {
   for (let i = 0; i < 12; i += 1) {
@@ -80,6 +101,7 @@ export async function briefToStep2(page: Page, path = '/', options: { nojs?: boo
       if (await first.count()) await first.check({ force: true })
     }
     await page.getByTestId('brief-submit').click()
+    await signInIfAsked(page)
     await expect(page).toHaveURL(/\/match\/B-[0-9A-Z]{5}\//, { timeout: 20_000 })
     return
   }
@@ -88,6 +110,7 @@ export async function briefToStep2(page: Page, path = '/', options: { nojs?: boo
   if (await next.isVisible()) await next.click()
   await finishBriefSteps(page)
   await page.getByTestId('brief-submit').click()
+  await signInIfAsked(page)
   await expect(page).toHaveURL(/\/match\/B-[0-9A-Z]{5}\//, { timeout: 20_000 })
 }
 
