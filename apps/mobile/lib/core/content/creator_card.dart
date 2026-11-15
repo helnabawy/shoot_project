@@ -18,6 +18,7 @@ final class CreatorCard extends Equatable {
     required this.yearsExperience,
     required this.sampleCount,
     required this.featured,
+    this.samplePreviews = const [],
   });
 
   /// The stored code, opaque: what `creators/{code}` takes.
@@ -40,6 +41,10 @@ final class CreatorCard extends Equatable {
   final int sampleCount;
   final bool featured;
 
+  /// The pictures of the creator's first samples, in their order (at most
+  /// three): the card's work row. Empty where the answer carries none.
+  final List<ImageRef> samplePreviews;
+
   @override
   List<Object?> get props => [
     code,
@@ -54,6 +59,7 @@ final class CreatorCard extends Equatable {
     yearsExperience,
     sampleCount,
     featured,
+    samplePreviews,
   ];
 }
 
@@ -77,6 +83,13 @@ final class CreatorCardModel {
         yearsExperience: readNullableInt(json, 'yearsExperience'),
         sampleCount: readInt(json, 'sampleCount'),
         featured: readBool(json, 'featured'),
+        samplePreviews: List.unmodifiable(
+          readOptionalList(
+            json,
+            'samplePreviews',
+            (item) => ImageRefModel.fromJson(asObject(item)).toEntity(),
+          ),
+        ),
       ),
     );
   }

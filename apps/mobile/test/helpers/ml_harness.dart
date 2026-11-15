@@ -74,6 +74,7 @@ CreatorCard _card(CreatorCard c, int i) => CreatorCard(
   yearsExperience: c.yearsExperience,
   sampleCount: c.sampleCount,
   featured: c.featured,
+  samplePreviews: c.samplePreviews,
 );
 
 SiteInfo exampleSite({bool arabic = false}) =>

@@ -1,6 +1,6 @@
 import type { CreatorCardV1, CreatorListV1, CreatorProfileV1, ImageV1, SampleV1, SpecialtyPageV1 } from '@shoot/domain/api/v1'
-import type { CreatorSummary } from '@shoot/domain/creators'
-import { toWireImage, type WireContext } from '@/shared/api/wire'
+import { CARD_SAMPLE_PREVIEWS, type CreatorSummary } from '@shoot/domain/creators'
+import { toWireImage, type ImageInput, type WireContext } from '@/shared/api/wire'
 import { describeCreator, type Lookups } from './describe'
 import type { DirectoryView, FilterKey } from './directory'
 import { languageName, sampleView } from './profile'
@@ -11,9 +11,10 @@ const names = (ids: readonly string[], map: ReadonlyMap<string, string>) =>
 
 /**
  * One creator card (008 data-model.md "Creators"): the website row's words, with the places,
- * specialties and languages as name lists. Gender and match values stay behind.
+ * specialties and languages as name lists. Gender and match values stay behind. `previews` are the
+ * pictures of the card's work row; only the directory sends them (011 FR-034).
  */
-export function toWireCreatorCard(c: CreatorSummary, lookups: Lookups, prefix: string, ctx: WireContext): CreatorCardV1 {
+export function toWireCreatorCard(c: CreatorSummary, lookups: Lookups, prefix: string, ctx: WireContext, previews?: ImageV1[]): CreatorCardV1 {
   const view = describeCreator(c, lookups, prefix, ctx.locale)
   return {
     code: c.code,
@@ -27,6 +28,7 @@ export function toWireCreatorCard(c: CreatorSummary, lookups: Lookups, prefix: s
     languages: c.languages.map((code) => languageName(code, ctx.locale)),
     yearsExperience: typeof c.yearsExperience === 'number' && c.yearsExperience >= 0 ? Math.floor(c.yearsExperience) : null,
     sampleCount: c.sampleCount,
+    ...(previews ? { samplePreviews: previews } : {}),
     featured: c.featured,
   }
 }
@@ -40,12 +42,33 @@ export function upTo(image: ImageV1, maxWidth: number): ImageV1 {
   return { ...image, sizes: fitting.length > 0 ? fitting : image.sizes.slice(0, 1) }
 }
 
-/** The directory as `buildDirectory` computed it: the Top Hit leads page 1, then the rows. */
-export function toWireCreatorList(view: DirectoryView, context: DirectoryContext, labels: Record<FilterKey, string>, ctx: WireContext): CreatorListV1 {
-  const items = view.topHit ? [view.topHit, ...view.rows] : view.rows
+/** The first samples that have a picture, as a card shows them: the grid sizes, in the creator's order (a video's poster counts). */
+export function toWireSamplePreviews(samples: readonly { image?: ImageInput }[] | null | undefined, base: string): ImageV1[] {
+  const previews: ImageV1[] = []
+  for (const sample of samples ?? []) {
+    const image = toWireImage(sample.image, base)
+    if (image) previews.push(upTo(image, THUMB_MAX_WIDTH))
+    if (previews.length === CARD_SAMPLE_PREVIEWS) break
+  }
+  return previews
+}
+
+/** The creators a directory page shows, in its order: the Top Hit leads page 1, then the rows. */
+export function directoryItems(view: DirectoryView): CreatorSummary[] {
+  return view.topHit ? [view.topHit, ...view.rows] : view.rows
+}
+
+/** The directory as `buildDirectory` computed it, each card with the pictures of its first samples (by creator id). */
+export function toWireCreatorList(
+  view: DirectoryView,
+  context: DirectoryContext,
+  labels: Record<FilterKey, string>,
+  ctx: WireContext,
+  samples: ReadonlyMap<string, readonly { image?: ImageInput }[]> = new Map(),
+): CreatorListV1 {
   return {
     locale: ctx.locale,
-    items: items.map((c) => toWireCreatorCard(c, context.lookups, context.prefix, ctx)),
+    items: directoryItems(view).map((c) => toWireCreatorCard(c, context.lookups, context.prefix, ctx, toWireSamplePreviews(samples.get(c.id), ctx.base))),
     filters: view.groups.map((g) => ({
       key: g.key,
       label: labels[g.key],

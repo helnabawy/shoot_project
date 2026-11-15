@@ -40,6 +40,29 @@ function getPublicList(locale: Locale): Promise<CreatorSummary[]> {
 }
 
 /**
+ * The samples' pictures of the given published creators (profile ids), for the work row on their
+ * cards (011 FR-034). Read for one page of cards at a time: the cached list holds counts only, to stay small.
+ */
+export function getCardSamples(ids: readonly string[], locale: Locale): Promise<Map<string, { image?: Media | number | null }[]>> {
+  if (ids.length === 0) return Promise.resolve(new Map())
+  return cachedQuery(TAGS, ['creator-card-samples', locale, ...ids], async () => {
+    const payload = await getPayloadClient()
+    const { docs } = await payload.find({
+      collection: 'creator-profiles',
+      where: { and: [{ id: { in: ids.map(Number) } }, { _status: { equals: 'published' } }] },
+      locale,
+      fallbackLocale: 'en',
+      depth: 1,
+      pagination: false,
+      select: { samples: { image: true } },
+      populate: { media: { alt: true, url: true, filename: true, width: true, height: true, sizes: true } },
+      overrideAccess: true,
+    })
+    return docs.map((d) => [String(d.id), (d.samples ?? []).map((s) => ({ image: s.image }))] as const)
+  }).then((rows) => new Map(rows))
+}
+
+/**
  * Public creators in the cached order of the database. By default only those *listed*: at least one
  * of their professional types is in the site's audience (the directory, landing block, specialty
  * pages and sitemap). `listedOnly: false` also returns reachable-but-unlisted creators.

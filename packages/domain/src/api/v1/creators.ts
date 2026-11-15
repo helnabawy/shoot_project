@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { CARD_SAMPLE_PREVIEWS } from '../../creators/limits'
 import { externalLinkV1, imageV1, localeV1, paginationV1 } from './common'
 
 /**
@@ -22,6 +23,8 @@ export const creatorCardV1 = z.object({
   languages: z.array(z.string()),
   yearsExperience: z.int().nonnegative().nullable(),
   sampleCount: z.int().nonnegative(),
+  /** The first samples' pictures in the creator's order, for the card's work row. Added after the first release: an older answer has none. */
+  samplePreviews: z.array(imageV1).max(CARD_SAMPLE_PREVIEWS).optional(),
   featured: z.boolean(),
 })
 export type CreatorCardV1 = z.infer<typeof creatorCardV1>

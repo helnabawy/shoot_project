@@ -66,6 +66,15 @@ List<T> readList<T>(Json json, String key, T Function(Object? item) item) {
   return [for (final element in value) item(element)];
 }
 
+/// A list a newer server adds (v1 changes are additive): absent or `null` reads as empty.
+List<T> readOptionalList<T>(
+  Json json,
+  String key,
+  T Function(Object? item) item,
+) {
+  return json[key] == null ? <T>[] : readList(json, key, item);
+}
+
 /// A list of strings.
 List<String> readStringList(Json json, String key) {
   return readList(

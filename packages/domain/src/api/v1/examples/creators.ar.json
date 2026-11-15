@@ -39,6 +39,59 @@
       ],
       "yearsExperience": 6,
       "sampleCount": 8,
+      "samplePreviews": [
+        {
+          "alt": "حفل زفاف وقت الغروب",
+          "width": 1600,
+          "height": 1200,
+          "sizes": [
+            {
+              "url": "https://example.test/api/media/file/work-0087-1-400.webp",
+              "width": 400,
+              "height": 300
+            },
+            {
+              "url": "https://example.test/api/media/file/work-0087-1-800.webp",
+              "width": 800,
+              "height": 600
+            }
+          ]
+        },
+        {
+          "alt": "الرقصة الأولى",
+          "width": 1600,
+          "height": 1200,
+          "sizes": [
+            {
+              "url": "https://example.test/api/media/file/work-0087-2-400.webp",
+              "width": 400,
+              "height": 300
+            },
+            {
+              "url": "https://example.test/api/media/file/work-0087-2-800.webp",
+              "width": 800,
+              "height": 600
+            }
+          ]
+        },
+        {
+          "alt": "صورة شخصية على الكورنيش",
+          "width": 1600,
+          "height": 1200,
+          "sizes": [
+            {
+              "url": "https://example.test/api/media/file/work-0087-3-400.webp",
+              "width": 400,
+              "height": 300
+            },
+            {
+              "url": "https://example.test/api/media/file/work-0087-3-800.webp",
+              "width": 800,
+              "height": 600
+            }
+          ]
+        }
+      ],
       "featured": true
     },
     {

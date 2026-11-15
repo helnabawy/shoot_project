@@ -81,6 +81,19 @@ describe('MR-US3 creators in the app', () => {
       expect(JSON.stringify([list, page2])).not.toMatch(/Vera|Sami|Dana|"gender"|matchValues/)
     })
 
+    it('MC-FR-034 each card carries the pictures of the creator\'s first samples, and an empty list when they have none', async () => {
+      const list = await read(await directory(), creatorListV1)
+      const alma = list.items.find((c) => c.name === 'Alma Featured')
+      expect(alma?.sampleCount).toBe(1)
+      expect(alma?.samplePreviews).toHaveLength(1)
+      expect(alma?.samplePreviews?.[0]?.alt).toBe('Alma Featured at work')
+      expect(alma?.samplePreviews?.[0]?.sizes[0]?.url).toMatch(/^https?:\/\/[^/]+\/api\/media\/file\/Alma/)
+      expect(list.items.find((c) => c.name === 'Filler 4')?.samplePreviews).toEqual([])
+      // In Arabic the pictures are the same ones.
+      const arabic = await read(await call(directoryRoute, 'creators', {}, { 'accept-language': 'ar' }), creatorListV1)
+      expect(arabic.items.find((c) => c.code === alma?.code)?.samplePreviews).toHaveLength(1)
+    })
+
     it('?page=99 answers the last page with its real number', async () => {
       const list = await read(await directory('?page=99'), creatorListV1)
       expect(list.pagination.page).toBe(2)

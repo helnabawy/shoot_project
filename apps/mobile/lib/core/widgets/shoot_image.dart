@@ -20,6 +20,7 @@ class ShootImage extends StatelessWidget {
     this.height,
     this.fit = BoxFit.cover,
     this.sceneIndex = 0,
+    this.placeholder,
   });
 
   final ImageRef? image;
@@ -32,10 +33,14 @@ class ShootImage extends StatelessWidget {
   /// The [SceneTile] variant shown in place of the photo.
   final int sceneIndex;
 
+  /// Shown in place of the photo instead of the plain scene tile, where the
+  /// design gives the empty tile its own mark (a directory card's work row).
+  final Widget? placeholder;
+
   @override
   Widget build(BuildContext context) {
     final image = this.image;
-    final scene = SceneTile(variant: sceneIndex);
+    final scene = placeholder ?? SceneTile(variant: sceneIndex);
     final Widget content;
     if (image == null) {
       content = scene;

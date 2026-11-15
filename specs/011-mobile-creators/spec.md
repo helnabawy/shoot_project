@@ -287,6 +287,11 @@ and see the brief recorded with the changed place; the questions expand and coll
   back.
 - **FR-033**: With no match, the directory MUST show an empty state with the brief as its primary
   action.
+- **FR-034** (added 2026-11-15, owner request): Each card MUST show the pictures of the creator's
+  first samples (at most three, in the creator's order) above their name. A sample with no picture,
+  a picture still loading and one that fails to load MUST show the designed scene tile in its
+  place; a creator with no samples MUST have no work row. Only the directory's cards carry the
+  pictures (`samplePreviews` on `creatorCardV1`, read for the page of cards shown).
 
 **Work by specialty (18)**
 

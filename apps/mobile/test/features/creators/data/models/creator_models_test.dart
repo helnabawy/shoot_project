@@ -47,6 +47,29 @@ void main() {
       expect(list.pagination.hasNext, isTrue);
     });
 
+    test('MC-FR-034 a card decodes its sample previews, and has none when '
+        'the answer carries none', () {
+      final json = loadExample('creators');
+      final list = CreatorListModel.fromJson(json).toEntity();
+      final omar = list.items.first;
+      expect(omar.samplePreviews.map((p) => p.alt), [
+        'A wedding at golden hour',
+        'First dance',
+        'Portrait on the corniche',
+      ]);
+      expect(omar.samplePreviews.first.sizes.map((s) => s.width), [400, 800]);
+      // An older server sends no previews; `null` reads the same.
+      expect(list.items[1].samplePreviews, isEmpty);
+      final items = (json['items'] as List).cast<Map<String, dynamic>>();
+      final older = Map.of(json)
+        ..['items'] = [
+          Map.of(items.first)..['samplePreviews'] = null,
+          ...items.skip(1),
+        ];
+      final decoded = CreatorListModel.fromJson(older).toEntity();
+      expect(decoded.items.first.samplePreviews, isEmpty);
+    });
+
     test('creators.ar.json decodes in Arabic', () {
       final list = CreatorListModel.fromJson(loadExample('creators.ar'))
           .toEntity();

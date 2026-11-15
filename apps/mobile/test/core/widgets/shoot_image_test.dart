@@ -182,6 +182,25 @@ void main() {
       done();
     });
 
+    testWidgets('MC-FR-034 a placeholder stands in for the scene tile while '
+        'loading and after a failed load', (tester) async {
+      const mark = Text('mark', textDirection: TextDirection.ltr);
+      await pump(
+        tester,
+        ShootImage(_photo(), width: 120, height: 150, placeholder: mark),
+        respond: _failing,
+      );
+      expect(find.text('mark'), findsOneWidget);
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.text('mark'), findsOneWidget);
+      expect(find.byType(SceneTile), findsNothing);
+      expect(find.byType(RawImage), findsNothing);
+      expect(tester.takeException(), isNull);
+      done();
+    });
+
     testWidgets('the semantics label is the alt text', (tester) async {
       final semantics = tester.ensureSemantics();
       await pump(tester, ShootImage(_photo(), width: 120, height: 150));

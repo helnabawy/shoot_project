@@ -78,6 +78,13 @@ test is named with its scenario id (`MC-US1-S1 ...`). `[P]` = different files, n
 - [ ] T038 Device walkthrough at 360 px, English and Arabic, light and dark, text scale 2, VoiceOver and TalkBack (manual)
 - [x] T039 Code review for constants: no profession, specialty, place or price written in `lib/features/creators/` (SC-006)
 
+## Phase 9: Sample pictures on directory cards (FR-034, added 2026-11-15)
+
+- [x] T040 [P] Tests `MC-FR-034`: card schema and examples (`packages/domain/src/api/v1/creators.test.ts`), `toWireSamplePreviews` and the list (`apps/web/src/modules/creators/wire.test.ts`), the directory endpoint (`apps/web/tests/integration/mobile-api-creators.int.test.ts`), the Dart model, `ShootImage` placeholder and the card (`apps/mobile/test/`)
+- [x] T041 API: optional `samplePreviews` on `creatorCardV1` (additive; snapshot updated), `getCardSamples` read per page of cards (the cached list keeps counts only, under its 1.5 MB ceiling), `toWireSamplePreviews`
+- [x] T042 App: `CreatorCard.samplePreviews`, the card's work row shows the pictures over the designed tile; screen 15 goldens unchanged
+- [ ] T043 A real device check of the directory against the deployed API (pictures load, Arabic, dark)
+
 ## Dependencies
 
 Phase 1 then 2 then stories. US2 reuses US1's profile reads; US5 reuses US2's brief. US3 and US4

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoot_mobile/core/content/pagination.dart';
+import 'package:shoot_mobile/core/widgets/shoot_image.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/creators/domain/entities/creators.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/book_hire_cubits.dart';
@@ -9,6 +10,7 @@ import 'package:shoot_mobile/features/creators/presentation/cubit/specialty_cubi
 import 'package:shoot_mobile/features/creators/presentation/pages/directory_page.dart';
 import 'package:shoot_mobile/features/creators/presentation/pages/hire_page.dart';
 import 'package:shoot_mobile/features/creators/presentation/pages/specialty_page.dart';
+import 'package:shoot_mobile/features/creators/presentation/widgets/creator_directory_card.dart';
 
 import '../../../../helpers/creators_fixtures.dart';
 
@@ -172,6 +174,37 @@ void main() {
       expect(find.textContaining('from '), findsNothing);
       expect(find.text('Speaks Arabic, English'), findsWidgets);
     });
+
+    testWidgets(
+      'MC-FR-034 a card shows the pictures of the creator\'s samples, '
+      'and a scene tile for a sample it has no picture of',
+      (tester) async {
+        await pumpScreen(tester, _directory(_ready()), height: 3200);
+        Finder picturesIn(int card) => find.descendant(
+          of: find.byType(CreatorDirectoryCard).at(card),
+          matching: find.byKey(const ValueKey('card-sample-picture')),
+        );
+        Finder tilesIn(int card) => find.descendant(
+          of: find.byType(CreatorDirectoryCard).at(card),
+          matching: find.byKey(const ValueKey('card-sample-tile')),
+        );
+        // Omar K.: 8 samples, the answer carries three pictures.
+        expect(picturesIn(0), findsNWidgets(3));
+        expect(tilesIn(0), findsNothing);
+        expect(
+          tester.widgetList<ShootImage>(picturesIn(0)).map((w) => w.image?.alt),
+          [
+            'A wedding at golden hour',
+            'First dance',
+            'Portrait on the corniche',
+          ],
+        );
+        // Mariam A.: samples but no pictures in the answer, so the designed tiles stay.
+        final mariam = exampleCreatorList().items[1];
+        expect(picturesIn(1), findsNothing);
+        expect(tilesIn(1), findsNWidgets(mariam.sampleCount.clamp(0, 3)));
+      },
+    );
 
     testWidgets('a failed first load shows screen 39', (tester) async {
       await pumpScreen(

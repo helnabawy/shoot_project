@@ -6,3 +6,5 @@ export const MAX_FILES_PER_ACCOUNT = 60
 export const UPLOADS_PER_ACCOUNT_HOUR = 20
 export const UPLOADS_PER_VISITOR_HOUR = 40
 export const MAX_SAMPLES = 30
+/** The pictures a directory card shows from a creator's samples: one row of three. */
+export const CARD_SAMPLE_PREVIEWS = 3

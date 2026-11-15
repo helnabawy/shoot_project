@@ -6,8 +6,8 @@ import { defineHandler, problem } from '@/shared/api/handler'
 import { wireContext } from '@/shared/api/wire'
 import type { Locale } from '@/shared/lib/locale'
 import { buildDirectory, type FilterKey } from './directory'
-import { getCreatorProfile, getDirectoryContext, getPublicCreators, getSpecialtyPage } from './queries'
-import { toWireCreatorList, toWireCreatorProfile, toWireSpecialtyPage } from './wire'
+import { getCardSamples, getCreatorProfile, getDirectoryContext, getPublicCreators, getSpecialtyPage } from './queries'
+import { directoryItems, toWireCreatorList, toWireCreatorProfile, toWireSpecialtyPage } from './wire'
 
 /** The directory's filter group names, the words the website's filter field shows. */
 export function filterLabels(locale: Locale): Record<FilterKey, string> {
@@ -21,7 +21,8 @@ export const getCreatorsV1 = defineHandler({
   run: async ({ locale }, { query }) => {
     const [creators, context] = await Promise.all([getPublicCreators(locale), getDirectoryContext(locale)])
     const view = buildDirectory({ creators, context, params: query, locale })
-    return toWireCreatorList(view, context, filterLabels(locale), wireContext(locale))
+    const samples = await getCardSamples(directoryItems(view).map((c) => c.id), locale)
+    return toWireCreatorList(view, context, filterLabels(locale), wireContext(locale), samples)
   },
 })
 

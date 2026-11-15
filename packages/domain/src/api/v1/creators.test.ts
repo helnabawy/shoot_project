@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { z } from 'zod'
+import { CARD_SAMPLE_PREVIEWS } from '../../creators'
 import { creatorListV1, creatorProfileRequestV1, creatorProfileV1, creatorsRequestV1, specialtyPageV1, specialtyRequestV1 } from './creators'
 import { hirePageRequestV1, hirePageV1 } from './hire'
 
@@ -43,6 +44,17 @@ describe('the creator card', () => {
     expect(list.items.map((c) => c.name)).toEqual(['Omar K.', 'Mariam A.', 'Yusuf R.'])
     expect(omar?.photo?.sizes.map((s) => s.width)).toEqual([400, 800])
     expect(omar?.photo?.sizes[0]?.url).toMatch(/^https:\/\/example\.test\/api\/media\/file\//)
+  })
+
+  it('MC-FR-034 a card carries up to three sample previews, and may carry none', () => {
+    const [first, ...rest] = list.items
+    const omar = first as NonNullable<typeof first>
+    expect(omar.samplePreviews?.map((p) => p.sizes[0]?.width)).toEqual([400, 400, 400])
+    expect(omar.samplePreviews?.every((p) => p.alt.length > 0)).toBe(true)
+    // An older answer has no previews at all: still a card.
+    expect(creatorListV1.safeParse({ ...list, items: [without(omar as Record<string, unknown>, 'samplePreviews'), ...rest] }).success).toBe(true)
+    const four = [...(omar.samplePreviews ?? []), ...(omar.samplePreviews ?? [])].slice(0, CARD_SAMPLE_PREVIEWS + 1)
+    expect(creatorListV1.safeParse({ ...list, items: [{ ...omar, samplePreviews: four }, ...rest] }).success).toBe(false)
   })
 
   it('MR-US3-S2 the profile example has no gender', () => {

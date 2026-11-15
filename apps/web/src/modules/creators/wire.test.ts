@@ -5,7 +5,7 @@ import type { Media } from '@/payload-types'
 import { describeCreator, type Lookups } from './describe'
 import { buildDirectory } from './directory'
 import type { CreatorProfilePage, DirectoryContext, SpecialtyPage } from './queries'
-import { toWireCreatorCard, toWireCreatorList, toWireCreatorProfile, toWireSpecialtyPage, upTo } from './wire'
+import { THUMB_MAX_WIDTH, toWireCreatorCard, toWireCreatorList, toWireCreatorProfile, toWireSamplePreviews, toWireSpecialtyPage, upTo } from './wire'
 
 const base = 'https://shoot.example'
 const en = { locale: 'en' as const, base }
@@ -113,6 +113,26 @@ describe('toWireCreatorCard', () => {
     expect(card.photo).toEqual({ alt: 'Omar', width: 400, height: 500, sizes: [{ url: `${base}/api/media/file/omar-1-400.webp`, width: 400, height: 500 }] })
     expect(toWireCreatorCard(creator('1', { photo: null }), lookups, 'SH', en).photo).toBeNull()
   })
+
+  it('MC-FR-034 carries the previews it is given, and none on the cards of other pages', () => {
+    const previews = toWireSamplePreviews([{ image: media('work-a', 'Work a') }], base)
+    const card = creatorCardV1.parse(toWireCreatorCard(creator('1'), lookups, 'SH', en, previews))
+    expect(card.samplePreviews).toEqual(previews)
+    expect(toWireCreatorCard(creator('1'), lookups, 'SH', en)).not.toHaveProperty('samplePreviews')
+  })
+})
+
+describe('toWireSamplePreviews', () => {
+  it('MC-FR-034 keeps the first three samples that have a picture, in order, with sizes up to the grid size', () => {
+    const previews = toWireSamplePreviews([{ image: media('a', 'Work a') }, { image: 7 }, {}, { image: media('b') }, { image: media('c') }, { image: media('d') }], base)
+    expect(previews.map((p) => p.alt)).toEqual(['Work a', 'b', 'c'])
+    for (const p of previews) {
+      expect(p.sizes.length).toBeGreaterThan(0)
+      expect(p.sizes.every((s) => s.width <= THUMB_MAX_WIDTH && s.url.startsWith(`${base}/api/media/file/`))).toBe(true)
+    }
+    expect(toWireSamplePreviews(null, base)).toEqual([])
+    expect(toWireSamplePreviews([{ image: null }], base)).toEqual([])
+  })
 })
 
 describe('toWireCreatorList', () => {
@@ -124,6 +144,10 @@ describe('toWireCreatorList', () => {
     const list = creatorListV1.parse(toWireCreatorList(view, context, labels, en))
     expect(list.items.map((c) => c.code)).toEqual(['0082', '0083'])
     expect(list.pagination).toEqual({ page: 1, pageCount: 2, total: 3, pageSize: 2 })
+    // MC-FR-034: no samples read, so every card says it has no pictures; a creator's samples land on their card.
+    expect(list.items.map((c) => c.samplePreviews)).toEqual([[], []])
+    const withWork = toWireCreatorList(view, context, labels, en, new Map([['3', [{ image: media('work-3') }]]]))
+    expect(withWork.items.map((c) => c.samplePreviews?.length)).toEqual([0, 1])
     expect(list.filters.map((f) => [f.key, f.label])).toEqual([
       ['type', 'Professional'],
       ['specialty', 'Specialty'],

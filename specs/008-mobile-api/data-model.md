@@ -94,7 +94,7 @@ are left out when they do not apply, as in the owner's `{ type, status, code, fi
 
 | Shape | Fields | Source |
 |---|---|---|
-| `creatorCardV1` | `code` (stored, opaque), `displayCode` ("SH-…"), `name`, `initials`, `photo: imageV1 \| null`, `types` (the "Photographer and videographer" line, CMS words), `places: string[]`, `specialties: string[]`, `languages: string[]`, `yearsExperience: number \| null`, `sampleCount`, `featured` | `describeCreator` over `CreatorSummary` |
+| `creatorCardV1` | `code` (stored, opaque), `displayCode` ("SH-…"), `name`, `initials`, `photo: imageV1 \| null`, `types` (the "Photographer and videographer" line, CMS words), `places: string[]`, `specialties: string[]`, `languages: string[]`, `yearsExperience: number \| null`, `sampleCount`, `samplePreviews?: imageV1[]` (at most 3, the directory only; 011 FR-034), `featured` | `describeCreator` over `CreatorSummary`; previews from `getCardSamples` |
 | `creatorsRequestV1` | `query: { type?, specialty?, place?, page? }` | slugs; `page` an integer ≥ 1 as a string |
 | `creatorListV1` | `locale`, `items: creatorCardV1[]`, `filters: [{ key: 'type'\|'specialty'\|'place', label, options: [{ slug, name, count, selected }] }]`, `pagination: paginationV1` | `buildDirectory` (the website's order, counts and page clamping) |
 | `sampleV1` | `id`, `kind: 'image'\|'video'`, `thumb: imageV1`, `large: imageV1`, `alt`, `caption`, `specialty`, `videoUrl: string \| null`, `provider: string \| null` | `SampleView` |
