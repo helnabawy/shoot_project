@@ -26,8 +26,8 @@ export function PhoneStep({
   intent,
   lead,
 }: {
-  /** 021: sign-in that sends a kept brief. */
-  intent?: 'brief'
+  /** 021: sign-in that sends a kept brief, or (amendment) returns to accept a quotation. */
+  intent?: 'brief' | 'accept'
   /** Shown at the top of the panel (the kept brief). */
   lead?: ReactNode
   locale: string

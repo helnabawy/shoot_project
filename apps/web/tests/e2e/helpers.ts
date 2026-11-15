@@ -71,6 +71,24 @@ export async function signInIfAsked(page: Page) {
   await enterOutboxCode(page)
 }
 
+/**
+ * 021 amendment: Accept on a quotation. A guest is asked to sign in (`/login?…&for=accept`); a fresh
+ * number signs in by the console outbox, the person is back on the quotation, and one more tap accepts.
+ */
+export async function acceptQuote(page: Page) {
+  const quoteUrl = page.url().split('?')[0]!
+  await page.getByTestId('quote-accept').click()
+  await page.waitForURL(/\/q\/Q-|\/login\?/, { timeout: 20_000 })
+  if (/\/login\?/.test(page.url())) {
+    expect(page.url()).toContain('for=accept')
+    await page.getByLabel(/Mobile number|رقم الهاتف المتحرك/).fill(e2ePhone().slice(4))
+    await page.getByTestId('send-code').click()
+    await enterOutboxCode(page)
+    await page.waitForURL((url) => url.toString().startsWith(quoteUrl), { timeout: 20_000 })
+    await page.getByTestId('quote-accept').click()
+  }
+}
+
 /** Answers the brief step by step with defaults (first option, skip optional steps). */
 export async function finishBriefSteps(page: Page) {
   for (let i = 0; i < 12; i += 1) {

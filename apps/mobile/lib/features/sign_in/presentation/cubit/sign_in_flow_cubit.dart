@@ -91,9 +91,12 @@ class SignInFlowCubit extends Cubit<SignInFlowState> {
   }
 
   /// Opening screen 20 ("Log in" from screen 23) is the standalone sign-in again. [forBrief]
-  /// (021, `?for=brief`): this sign-in sends the person's brief.
-  void startSignIn({bool forBrief = false}) {
-    if (forBrief != state.forBrief) emit(state.copyWith(forBrief: forBrief));
+  /// (021, `?for=brief`): this sign-in sends the person's brief. [forAccept] (021 amendment,
+  /// `?for=accept`): it comes from a quotation's Accept.
+  void startSignIn({bool forBrief = false, bool forAccept = false}) {
+    if (forBrief != state.forBrief || forAccept != state.forAccept) {
+      emit(state.copyWith(forBrief: forBrief, forAccept: forAccept));
+    }
     if (state.mode == SignInMode.signIn || state.challenge != null) return;
     emit(state.copyWith(mode: SignInMode.signIn, fieldError: () => null));
   }
@@ -181,8 +184,11 @@ class SignInFlowCubit extends Cubit<SignInFlowState> {
       return;
     }
     if (state.mode == SignInMode.join) return _verify(_providerSignup());
-    // 021 (BS-US4-S3): sending a brief, a new number becomes a client without the role question.
-    if (state.forBrief) return _verify(const SignupChoice.seeker());
+    // 021 (BS-US4-S3, BS-US8-S3): sending a brief or accepting a quotation, a new number becomes a
+    // client without the role question.
+    if (state.forBrief || state.forAccept) {
+      return _verify(const SignupChoice.seeker());
+    }
     // Before the role is known, a returning member signs straight in; a new number comes back
     // with `roleNeeded` and the code kept.
     await _verify(

@@ -111,6 +111,16 @@ describe('021 the brief builder and sign-in', () => {
     expect(screen.queryByTestId('brief-sign-in-next')).toBeNull()
   })
 
+  it('BS-US6-S1 by default (switch off) a guest’s complete brief shows no sign-in line, only its action', async () => {
+    const user = userEvent.setup()
+    session(null)
+    setup({ signInRequired: false })
+    await walk(user)
+    await act(async () => {})
+    expect(topHit()).toBeVisible()
+    expect(screen.queryByTestId('brief-sign-in-next')).toBeNull()
+  })
+
   it('BS-US5-S2 in Arabic the line is the Arabic one', async () => {
     const user = userEvent.setup()
     setup({ locale: 'ar' })

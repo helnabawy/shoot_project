@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { ADMIN, adminToken, auth, briefToStep2, inDays } from './helpers'
+import { acceptQuote, ADMIN, adminToken, auth, briefToStep2, inDays } from './helpers'
 
 test.describe('QM-US3 the creator confirms and the booking proceeds', () => {
   test('QM-US3-S1 QM-US3-S4 accept → creator confirms → payment recorded → scheduled → delivered → client confirms', async ({ page, browser, request }, info) => {
@@ -16,7 +16,7 @@ test.describe('QM-US3 the creator confirms and the booking proceeds', () => {
     await expect(page).toHaveURL(/\/q\/Q-/)
     const quoteUrl = page.url()
     const reference = quoteUrl.match(/Q-[0-9A-Z]{5}/)![0]
-    await page.getByTestId('quote-accept').click()
+    await acceptQuote(page)
     await expect(page.getByTestId('booking-status')).toHaveAttribute('data-state', 'accepted')
 
     // The creator answers in their own account (demo creators sign in with the seed admin password).

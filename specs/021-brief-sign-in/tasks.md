@@ -56,6 +56,30 @@ Format: `[ID] [P?] [Story] Description` — `[P]` can run in parallel (different
 - [x] T028 Run `pnpm typecheck && pnpm lint && pnpm test`, `pnpm check:scenarios`, and in `apps/mobile` `dart format`, `flutter analyze`, `flutter test`
 - [ ] T029 Owner gates (open): confirm the Clarifications answers; edit the live CMS copy that says "No account needed"; device walkthrough of the app flow (iPhone, Android)
 
+## Amendment 2026-11-15: sign in to accept the quotation (US6–US8)
+
+Owner: *"I meant to list the available creators and ask the user to login before accepting the
+quotation in guest mode"* (spec Clarifications, session 2026-11-15).
+
+- [x] T030 Amend spec.md (Clarifications 2026-11-15, US6–US8, FR-018–FR-027, SC-007–SC-008), plan.md, contracts, data-model.md, quickstart.md
+- [x] T031 [P] Tests first: `packages/domain/src/booking/claim.test.ts` (BS-US7-S4, BS-US7-S5, BS-US8-S1): no member → signIn; unowned → claim booking (and brief when unowned); own → no claim; another's → otherAccount
+- [x] T032 Implement `packages/domain/src/booking/claim.ts` and export it; 100 % coverage
+- [x] T033 `briefNeedsSignIn` default false, rule `=== true`, the three pages use the rule; migration `brief_sign_in_off` (default false, live value off); regenerate types
+- [x] T034 [P] Problem codes `booking.errors.signInRequired`, `booking.errors.otherAccount` (domain problems, messages en/ar); auth/quote message keys (contracts/web-flow.md)
+- [x] T035 Tests first: `apps/web/tests/integration/accept-sign-in.int.test.ts` — BS-US6-S1, BS-US6-S3, BS-US6-S4 (defaults: guest brief → step 2, guest quotation, switch off), BS-US7-S2 (guest accept → login URL, booking unchanged), BS-US7-S3 (code with the accept intent: new number is a client, back on the quotation), BS-US7-S4 (accept claims booking and brief), BS-US7-S5 (another member's booking refused), BS-US7-S6 (member accepts at once), BS-US8-S1 and BS-US8-S4 (API 401 / 409, nothing changed)
+- [x] T036 `acceptQuotation` command: sign-in check and claim; website action redirect; API mapping
+- [x] T037 Existing accept tests sign in a client first (`booking-transitions`, `booking-match-acceptors`, `inbox-queries`, `mobile-api-creator-account`, `mobile-api-booking`)
+- [x] T038 Tests first: `BookingStatus.test.tsx` (BS-US7-S1 guest line, none for members) and `forms.brief.test.tsx` (BS-US7-S3 the accept intent: no role rows, "change number" keeps `for=accept`)
+- [x] T039 Guest line on the quotation page; `accept` intent in `pending.ts`, `actions.ts`, `PhoneStep`, `CodeStep`, `/login` (title and intro), `/login/code`
+- [x] T040 Tests first (app): `booking_view_cubit_sign_in_test.dart` (BS-US8-S2: 401 → signInNeeded, no error; BS-US8-S4: otherAccount shows its message), `sign_in_flow_accept_test.dart` (BS-US8-S3: `for=accept` signs up a client, no role question), `booking_page_sign_in_test.dart` (BS-US8-S2: opens `/login?next=/q/…&for=accept`), `number_page_accept_test.dart` (BS-US8-S2 line)
+- [x] T041 App: `ProblemCode` values and messages, `BookingViewCubit.signInNeeded`, booking page listener, sign-in `for=accept` (state, `withNext`, number screen line), ARB en/ar
+- [x] T042 [P] Default content: chip, "Why book this way" item and FAQ say no account to brief; a code when accepting (`seed/content.ts`); regenerate the API snapshot
+- [x] T043 Docs: CLAUDE.md 021 entry, ROADMAP row; live CMS copy notes
+- [ ] T044 Run `pnpm typecheck && pnpm lint && pnpm test`, the touched integration suites, `pnpm check:scenarios`; in `apps/mobile` `dart format`, `flutter analyze`, `flutter test`, `tool/goldens.sh` for the touched screens
+- [ ] T045 Owner gates (open): confirm the 2026-11-15 answers; decide whether the app's number and code (boards 10–11) move from before the quotation to Accept; edit the live hero chip, "Why book this way" item and FAQ; device walkthrough
+
+Dependencies: T030 → T031–T034 → T035–T037 → T038–T039; T034 → T040–T041; T042–T045 last.
+
 ## Dependencies
 
 - T001–T002 first; T003–T007 block all stories.

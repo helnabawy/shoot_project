@@ -1,5 +1,5 @@
 import 'server-only'
-import { allConfirmed, formatPicks, preconfirm, reassign, reportSchema, startAssignments, type Assignment, type Pick } from '@shoot/domain/booking'
+import { allConfirmed, claimFor, formatPicks, preconfirm, reassign, reportSchema, startAssignments, type Assignment, type Pick } from '@shoot/domain/booking'
 import type { Payload } from 'payload'
 import type { Locale } from '@/shared/lib/locale'
 import { blockDateFor, releaseDates } from '../effects'
@@ -32,15 +32,21 @@ function finish(result: ApplyResult, alreadyIn?: string): CommandResult {
   return { ok: false, reason: result.reason }
 }
 
-/** Accept the current quotation: the creators' confirmation window starts (US2-S3). */
+/**
+ * Accept the current quotation: the creators' confirmation window starts (US2-S3). 021 amendment
+ * (BS-US7, BS-US8): only a signed-in member accepts, and a guest's quotation (and its guest brief)
+ * becomes theirs in the same step; another member's booking is never taken over.
+ */
 export async function acceptQuotation(payload: Payload, access: QuotationAccess, who: Who & { locale: Locale }): Promise<CommandResult> {
   const { booking, quotation, current } = access
   if (quotation.id !== current.id) return { ok: false, reason: 'not-allowed' }
   const { now, user, locale } = who
+  const brief = await payload.findByID({ collection: 'briefs', id: Number(idOf(booking.brief)), depth: 0, overrideAccess: true })
+  const claim = claimFor({ bookingMember: booking.member ? idOf(booking.member) : null, briefMember: brief.member ? idOf(brief.member) : null, userId: user?.id })
+  if (!claim.ok) return { ok: false, reason: claim.reason }
   const settings = await readQuickMatch(payload)
 
   // Every chosen creator must still be listed and free that day (edge case: unlisted after the quotation).
-  const brief = await payload.findByID({ collection: 'briefs', id: Number(idOf(booking.brief)), depth: 0, overrideAccess: true })
   const page = await getMatchPage(brief, locale, now, { date: booking.date ?? null })
   const assignments = toAssignments(booking.assignments)
   const gone = assignments.filter((a) => a.creatorId && !page.sections.some((s) => s.persona.id === a.personaId && s.creators.some((c) => c.id === a.creatorId)))
@@ -68,8 +74,11 @@ export async function acceptQuotation(payload: Payload, access: QuotationAccess,
     actor: 'client',
     actorUser: user?.id ?? null,
     now,
-    data: { assignments: toRows(final) },
+    data: { assignments: toRows(final), ...(claim.claimBooking ? { member: user!.id } : {}) },
   })
+  if (result.ok && claim.claimBrief) {
+    await payload.update({ collection: 'briefs', id: brief.id, data: { member: user!.id } as never, overrideAccess: true, context: { disableRevalidate: true } })
+  }
   if (!result.ok) {
     for (const creatorId of held) await releaseDates(payload, booking.id, undefined, creatorId)
   } else if (held.length && allConfirmed(final)) {

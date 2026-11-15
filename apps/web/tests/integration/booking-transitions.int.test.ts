@@ -1,5 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { bookingByRef, bookingWorld, briefFor, eventsOf, notificationsOf, quoteFor, type BookingWorld } from './setup/booking'
+import { asClient, bookingByRef, bookingWorld, briefFor, eventsOf, notificationsOf, quoteFor, type BookingWorld } from './setup/booking'
 import { listingOf } from './setup/creators'
 import { asVisitor, form, jar, redirectOf, signIn } from './setup/next-mocks'
 import { getTestPayload, quiet } from './setup/payload'
@@ -24,7 +24,11 @@ describe('QM-US2-S3 / QM-US3 booking transitions', () => {
     return quoteFor(actions.requestQuotation as never, b, { pick, ...over })
   }
   const access = (q: { ref: string; key: string }) => form({ locale: 'en', ref: q.ref, key: q.key })
-  const accept = (q: { ref: string; key: string }) => redirectOf(() => actions.acceptQuotation(access(q)))
+  // 021 amendment: a client signs in to accept (the guest quotation becomes theirs).
+  const accept = async (q: { ref: string; key: string }) => {
+    if (!jar.has('payload-token')) await asClient()
+    return redirectOf(() => actions.acceptQuotation(access(q)))
+  }
   const asCreator = async (key: string) => signIn((await getTestPayload()) as never, world.creators[key]!.user.email!)
   const respond = (bookingId: number, personaId: number, decision: 'confirm' | 'decline', reason?: string) =>
     redirectOf(() => actions.respondToAssignment(form({ locale: 'en', booking: bookingId, persona: personaId, decision, reason })))

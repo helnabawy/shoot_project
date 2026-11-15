@@ -80,9 +80,17 @@ module `apps/web/src/modules/payments/` (collection `payment-sessions`, endpoint
 providers in `apps/web/src/shared/payments/`, rules in `packages/domain/src/payments/`; `PAYMENT_PROVIDER` =
 `stripe` | `off` (unset: stripe when `STRIPE_SECRET_KEY` is set) with `STRIPE_WEBHOOK_SECRET`. Open in its
 `tasks.md`: the owner's Stripe account, keys and webhook endpoint, a real test-mode payment, Apple Pay domain.
-Feature 021 (`specs/021-brief-sign-in/`, test-id prefix `BS-`) is implemented:
-a guest builds a brief freely, but while the site-settings switch `briefNeedsSignIn` ("Briefs need
-sign-in", default on) is on, sending needs a signed-in member. Web: `submitBrief` keeps the validated
+Feature 021 (`specs/021-brief-sign-in/`, test-id prefix `BS-`) is implemented, **amended 2026-11-15**
+(the owner: list the available creators, ask for sign-in before accepting the quotation): by default a
+guest briefs, sees step 2 and gets a quotation without an account, and **accepting** needs a signed-in
+member on every channel (`acceptQuotation` in `modules/booking/commands/client-actions.ts`, rule
+`claimFor` in `packages/domain/src/booking/claim.ts`: an unowned booking and brief become the accepting
+member's, another member's booking is refused `booking.errors.otherAccount`; signed out →
+`/login?next=/q/{ref}/{key}&for=accept`, pending-sign-in `intent: 'accept'`, API `401
+booking.errors.signInRequired`; the app opens sign-in with `for=accept` and comes back to the
+quotation). The original gate below still exists behind the site-settings switch `briefNeedsSignIn`
+("Briefs need sign-in", **default off** since migration `brief_sign_in_off`): while it is on, sending
+needs a signed-in member. Web: `submitBrief` keeps the validated
 brief in the readable cookie `shoot-brief` (one hour, answers only; rules in
 `packages/domain/src/brief/kept.ts`) and returns `signIn` → `/login?next=/brief/send&for=brief`
 (the kept sentence shows, the pending sign-in carries `intent: 'brief'`, a new number becomes a client
@@ -91,7 +99,9 @@ with no role question); `GET /brief/send` (`modules/brief/send-route.ts`) record
 brief (`modules/brief/restore.ts`). App: `GET brief-builder` carries `signInRequired`, `POST briefs`
 answers `401 brief.errors.signInRequired` for a guest; `BriefCubit` asks for sign-in and the app route
 `/brief/send` sends the draft. Constitution 1.5.0 amended Principle IX for it. Open in its `tasks.md`:
-the owner's confirmation of the clarifications, the live "No account needed" copy, the device walkthrough.
+the owner's confirmation of the clarifications (both sessions), whether the app's number and code screens
+(boards 10–11) move from before the quotation to Accept, the live hero chip, "Why book this way" item and
+FAQ copy, the device walkthrough.
 `specs/ROADMAP.md` has the screens per feature:
 
 | # | Feature (test-id prefix) | What |

@@ -4,13 +4,63 @@
 
 **Created**: 2026-11-14
 
-**Status**: Draft, decisions taken on the owner's behalf are listed under Clarifications for the owner to confirm
+**Status**: Implemented 2026-11-15; **amended 2026-11-16** (session 2026-11-15 below): the switch is off by default and sign-in moves to accepting the quotation. Decisions taken on the owner's behalf are listed under Clarifications for the owner to confirm
 
 **Input**: User description: "add new feature for guests to allow send brief but before submitting the system should make the user sign in or register to submit the brief"
 
 Test-id prefix for this feature: `BS-` (for example `BS-US1-S2`).
 
 ## Clarifications
+
+### Session 2026-11-15 (amendment: sign in to accept, not to brief)
+
+The owner, after trying the app: *"the app asks user for login before listing all available creators;
+I meant to list the available creators and ask the user to login before accepting the quotation in
+guest mode"*. So a guest sends the brief and sees the matching creators (Quick Match step 2) with no
+account, and is asked to sign in only when they accept the quotation. User Stories 1–5 below still
+describe what happens **while the switch is on**; User Stories 6–8 and FR-018 onwards are the
+behaviour by default.
+
+- Q: What happens to the "Briefs need sign-in" switch (`briefNeedsSignIn`)? → A: It stays, with the
+  same meaning, but is **off by default**, and a migration turns it off on the live site (it was on
+  only because the first reading of the request was wrong). Off: a guest's brief is recorded at once
+  and continues to step 2, exactly as before feature 021. The owner can still turn it on to ask for
+  sign-in before the brief, as User Stories 1–5 describe. A missing value counts as off.
+- Q: Is accepting a quotation behind a switch too? → A: No. Accepting always needs a signed-in member,
+  on every channel: it starts the creators' confirmation window and leads to payment, so the booking
+  must belong to an account (account bookings, payment, notifications). A member who is already
+  signed in accepts in one tap, as today.
+- Q: What does step 3 (details, `/match/{ref}/{key}/details`) ask of a guest? → A: On the website,
+  what it asks today (name and WhatsApp number, date, add-ons, promo code) and no sign-in: the guest
+  gets the quotation page (`/q/{ref}/{key}`) without an account. In the app, steps 3 and 4 are the
+  approved canvas boards 09 (details), 10 (number) and 11 (code) and the quotation is issued to the
+  signed-in member (012 FR-015, research R5), so the app's sign-in comes right before its quotation:
+  after the creators and still before accepting. A quotation opened in the app while signed out (a
+  link from WhatsApp or the website) asks for sign-in at Accept, as the website does. **Owner
+  decision open:** moving the app's number and code screens from before the quotation to Accept would
+  change the approved boards 09–12 and the app's quotation request; it is not part of this amendment.
+- Q: How does a guest's quotation become theirs? → A: At acceptance, through the private link: when a
+  signed-in member accepts a quotation whose booking has no member, the booking (and its brief, when
+  that has no member either) becomes theirs in the same step, the same way a kept brief is claimed by
+  whoever signs in to send it. A booking that already belongs to another member is not accepted: the
+  person is told the quotation belongs to another account and to log in with the number it was made
+  with. The name and WhatsApp number given at step 3 stay on the booking as given.
+- Q: Where does the person land after signing in? → A: Back on the same quotation, with Accept as its
+  one action: one tap accepts. Accepting is not done for them automatically, because it starts the
+  creators' clock and the person should see the price again; it is still one tap. A new number becomes
+  a client without the client-or-creator question (someone accepting a quotation is hiring).
+- Q: What does the guest see before tapping Accept? → A: On the website, one short line under Accept
+  says the next step sends a code to their mobile number; members never see it. In the app the board
+  has no such line; the number screen says that signing in accepts the quotation.
+- Q: What about older app versions? → A: The accept endpoint keeps its declared authentication
+  (optional) and answers a signed-out caller `401 booking.errors.signInRequired`; older versions show
+  their generic error. The app is not in the stores yet.
+- Q: The hourly brief allowance for anonymous visitors (001 FR-050) was moot while every brief came
+  from a member. → A: With the switch off it applies again to guests, unchanged; members are not
+  limited. Step 3's hourly quotation limit (003) applies to guests as before.
+- Q: Content that says "No account needed" / "Sign in with your number"? → A: The default content now
+  says what is true: no account to brief and see who is free; a code to the mobile number when
+  accepting. The owner edits the live site's copy (see Assumptions).
 
 ### Session 2026-11-14
 
@@ -60,7 +110,9 @@ Related specs: `specs/001-landing-auth-cms/` (the brief builder and briefs), `sp
 3. With Quick Match on, the visitor continues to step 2 (matching creators); with it off, they are
    handed to WhatsApp with the brief written out and a reference.
 
-This feature inserts sign-in between steps 1 and 2 for guests only.
+This feature inserts sign-in between steps 1 and 2 for guests only, while the switch is on. Since the
+2026-11-15 amendment the switch is off by default and a guest signs in at accepting the quotation
+instead (User Stories 6–8).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -201,8 +253,107 @@ guest: recorded at once, no sign-in.
    (an older app, a script), **Then** it is refused with the "sign in to send your brief" message and
    nothing is recorded.
 
+---
+
+### User Story 6 - A guest sees the matching creators without an account (Priority: P1)
+
+A guest builds a brief on the website or in the app and taps the primary action. With the switch off
+(the default), the brief is recorded at once and they are on Quick Match step 2 with the creators who
+are free that day, exactly as a member would be. No sign-in screen comes in between. On the website
+they can go on to step 3, give their name and number, and see their quotation, still without an
+account.
+
+**Why this priority**: This is the owner's correction: the creators must be visible to guests.
+
+**Independent Test**: Signed out, with default settings, send a brief on the website and in the app:
+step 2 lists the creators; on the website, step 3 issues a quotation with no sign-in.
+
+**Acceptance Scenarios**:
+
+1. **Given** a guest with a complete brief and default settings, **When** they tap the primary action
+   on the website, **Then** the brief is recorded at once (with no member) and they are on step 2 for
+   it, and no sign-in line shows under the action.
+2. **Given** the same guest in the app, **When** they send the brief, **Then** it is recorded and step
+   2 opens with the matching creators, with no sign-in screen.
+3. **Given** a guest on the website's step 3, **When** they give their details and ask for the
+   quotation, **Then** the quotation page opens for them with no sign-in, and its booking has no
+   member yet.
+4. **Given** fresh content settings, **When** the site settings are read, **Then** "Briefs need
+   sign-in" is off.
+
+---
+
+### User Story 7 - A guest signs in to accept the quotation (website) (Priority: P1)
+
+A guest on their quotation page sees Accept as the one action, with a line saying the next step sends
+a code to their mobile number. Tapping Accept takes them to sign-in, which says they are logging in to
+accept their quotation. Once the code is right (a new number becomes a client, no role question) they
+are back on the same quotation, which is now theirs, and one tap on Accept accepts it.
+
+**Why this priority**: It is the second half of the owner's correction: sign-in moves here.
+
+**Independent Test**: As a guest, get a quotation, tap Accept, sign in with a new number, land on the
+quotation, tap Accept: the booking is accepted and belongs to the new client.
+
+**Acceptance Scenarios**:
+
+1. **Given** a guest on a quotation that can be accepted, **When** the page shows, **Then** Accept is
+   its one action and a line under it says the next step sends a code; a signed-in member sees no line.
+2. **Given** that guest, **When** they tap Accept, **Then** nothing changes on the booking and they
+   are on the sign-in screen, which says signing in accepts the quotation (this works without
+   JavaScript).
+3. **Given** that guest entering the right code, **When** sign-in completes, **Then** they are back on
+   the same quotation with Accept as its one action; a new number became a client with no role
+   question.
+4. **Given** that person back on the quotation, **When** they tap Accept, **Then** the booking is
+   accepted, and the booking and its brief now belong to their account (the booking shows in their
+   account bookings).
+5. **Given** a signed-in member whose quotation belongs to another member, **When** they tap Accept
+   through the private link, **Then** nothing is accepted and they see that the quotation belongs to
+   another account.
+6. **Given** a signed-in member on their own quotation, **When** they tap Accept, **Then** it is
+   accepted at once, as today.
+
+---
+
+### User Story 8 - Accepting asks for sign-in on every channel (Priority: P1)
+
+The server never accepts a quotation for someone who is not signed in. In the app, a person who opens
+a quotation while signed out (a link from WhatsApp or from the website) and taps Accept is taken to
+the sign-in screens, which say they are logging in to accept; once signed in they are back on the
+quotation and one tap accepts it.
+
+**Why this priority**: The rule must hold for every caller, and the app must turn the refusal into a
+sign-in, not an error.
+
+**Independent Test**: Call the accept endpoint without a token: 401 `booking.errors.signInRequired`,
+the booking unchanged. In the app, signed out on a quotation, tap Accept: the number screen opens;
+sign in: back on the quotation; tap Accept: accepted.
+
+**Acceptance Scenarios**:
+
+1. **Given** a request to accept without a signed-in member (website action, app, script), **When** it
+   reaches the server, **Then** nothing is accepted and it is refused with `booking.errors.signInRequired`
+   (`401` on the app's API).
+2. **Given** a signed-out person on a quotation in the app, **When** they tap Accept, **Then** the
+   sign-in number screen opens with a line saying signing in accepts the quotation.
+3. **Given** that person entering the right code, **When** sign-in completes, **Then** they are back
+   on the quotation (a new number became a client with no role question) and one tap on Accept
+   accepts it and makes the booking theirs.
+4. **Given** a signed-in app member whose booking belongs to another member, **When** they accept
+   through its link, **Then** it is refused with `booking.errors.otherAccount` and nothing changes.
+
 ### Edge Cases
 
+- Amendment (2026-11-15): a guest who signs in at Accept and then leaves without accepting keeps an
+  unowned quotation; it becomes theirs when they accept. Cancelling a quotation before accepting stays
+  open to whoever holds the private link, as today.
+- Amendment: a guest who gives one WhatsApp number at step 3 and signs in with another: the booking
+  keeps the step 3 number for WhatsApp and belongs to the account they signed in with.
+- Amendment: a quotation that expired while the guest was signing in: back on the quotation they see
+  the expired state and "Get a fresh quotation", as today.
+- Amendment: with the switch off the brief allowance per anonymous visitor (001 FR-050) applies again
+  to guests; a guest over it sees today's "too many briefs" message.
 - A guest who builds a brief in two tabs: the last one sent is the one kept; sign-in sends that one.
 - A guest who signs in from the header instead of the brief's action, with a kept brief: the brief is
   not sent on their behalf (they did not ask to send it); it is still on the page for them to send
@@ -265,13 +416,43 @@ guest: recorded at once, no sign-in.
   the source page and the language; it MUST NOT hold a number, a code or a session, and the server MUST
   re-check everything when it is sent.
 
+#### Amendment 2026-11-15: sign in to accept
+
+- **FR-018**: "Briefs need sign-in" MUST be off by default (a missing value counts as off) and the
+  live site's value MUST be turned off by a migration; FR-001 to FR-013 apply only while it is on.
+- **FR-019**: With the switch off, a guest's brief MUST be recorded at once and continue to step 2
+  (website and app) with no sign-in screen and no sign-in line, as before this feature.
+- **FR-020**: The website's step 3 MUST stay open to guests (name, WhatsApp number, date, add-ons,
+  promo) and issue the quotation with no sign-in; the booking has no member until it is accepted.
+- **FR-021**: Accepting a quotation MUST require a signed-in member on every channel; a request
+  without one MUST change nothing and be refused with `booking.errors.signInRequired` (`401` problem
+  on `POST /api/mobile/v1/quotations/{ref}/{key}/accept`, whose declared authentication stays
+  `optional`).
+- **FR-022**: When a signed-in member accepts through the private link a booking with no member, the
+  booking, and its brief when that has no member, MUST become theirs in the same step; a booking that
+  belongs to another member MUST NOT be accepted (`booking.errors.otherAccount`, `409` on the API).
+- **FR-023**: On the website, Accept for a guest MUST lead to `/login?next=/q/{ref}/{key}&for=accept`
+  (locale-prefixed), with JavaScript or without; that sign-in screen MUST say signing in accepts the
+  quotation, and a new number MUST become a client without the client-or-creator question.
+- **FR-024**: After that sign-in the person MUST land on the same quotation with Accept as its one
+  action; one tap MUST accept it. Accepting MUST NOT happen without that tap.
+- **FR-025**: On the website a guest MUST see one short line under Accept saying the next step sends a
+  code to their mobile number; members MUST NOT see it.
+- **FR-026**: In the app, a `401 booking.errors.signInRequired` answer to Accept MUST open the sign-in
+  screens (`?for=accept`, with a line saying signing in accepts the quotation, a new number becomes a
+  client) and return to the quotation afterwards; it MUST NOT show as an error.
+- **FR-027**: The default content MUST NOT say that sending a brief needs sign-in; it says that no
+  account is needed to brief and see who is free, and that accepting a quotation sends a code to the
+  mobile number. Every new message exists in English and Arabic.
+
 ### Key Entities
 
 - **Kept brief**: the answers of a guest's validated brief, its creator code and pick, source page,
   language, sentence and when it was kept; lives on the visitor's device for one hour (website) or in
   the app's memory while it runs; never a server record.
 - **Brief** (existing, 001): now always linked to its member while the switch is on.
-- **Site settings** (existing): gains the switch "Briefs need sign-in".
+- **Site settings** (existing): gains the switch "Briefs need sign-in" (off by default since the 2026-11-15 amendment).
+- **Booking** (existing, 003): `member` is set when a signed-in member accepts an unowned booking (amendment).
 
 ## Success Criteria *(mandatory)*
 
@@ -288,6 +469,11 @@ guest: recorded at once, no sign-in.
   release.
 - **SC-006**: Every acceptance scenario has an automated test named with its `BS-` id.
 
+- **SC-007** (amendment): with default settings, a guest reaches step 2 from the primary action with
+  no sign-in screen, on the website and in the app.
+- **SC-008** (amendment): 100 % of accepted bookings belong to a member; a guest who taps Accept goes
+  from the quotation back to it with one number entry and one code, and accepts with one more tap.
+
 ## Assumptions
 
 - Sign-in by number and code (009) is the only sign-in for clients; no email path is added.
@@ -295,8 +481,12 @@ guest: recorded at once, no sign-in.
   stale brief is not sent unexpectedly.
 - The home page stays static for speed: whether the visitor is signed in is learned in the browser, as
   the header already does, so the guest line (FR-013) may appear a moment after the page.
+- Amendment: the live site's hero chip ("Sign in with your number"), the "Why book this way" item and the
+  FAQ "Do I need an account?" were written for the brief gate; the default content is updated (chip "No
+  account to brief", item "Brief first, account later", FAQ answer about accepting) and the owner edits the
+  live copy in the content area (seed is never run against production).
 - CMS copy that promises "No account needed" (the hero trust chip and the "Why book this way" item in
   the default content) is content: the default content is updated, and the owner edits the live site's
   copy in the content area.
-- Quick Match steps 2 onwards are unchanged; prefilling step 3's name and number from the member is a
+- Quick Match steps 2 and 3 are unchanged (the amendment changes only accepting); prefilling step 3's name and number from the member is a
   possible follow-up, not part of this feature.

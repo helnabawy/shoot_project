@@ -3,8 +3,8 @@ import type { Payload } from 'payload'
 import { seedDemoPrices } from '@/shared/payload/seed/quick-match'
 import type { Booking } from '@/payload-types'
 import { createDraft, creatorWorld, listingOf, makeProvider, publish, type CreatorUser, type CreatorWorld } from './creators'
-import { form, redirectOf } from './next-mocks'
-import { quiet } from './payload'
+import { form, redirectOf, signIn } from './next-mocks'
+import { createUser, getTestPayload, quiet } from './payload'
 
 export interface BookingWorld extends CreatorWorld {
   creators: Record<string, { id: number; code: string; user: CreatorUser }>
@@ -71,4 +71,14 @@ export async function eventsOf(payload: Payload, bookingId: number) {
 
 export async function notificationsOf(payload: Payload, bookingId: number) {
   return (await payload.find({ collection: 'notifications', where: { booking: { equals: bookingId } }, depth: 0, pagination: false, overrideAccess: true })).docs
+}
+
+/**
+ * 021 amendment (2026-11-15): accepting a quotation needs a signed-in member. A fresh client signs in
+ * (the next-mocks cookie jar), as a guest does at Accept; their first accept claims the guest booking.
+ */
+export async function asClient() {
+  const user = await createUser()
+  await signIn((await getTestPayload()) as never, user.email!)
+  return user
 }

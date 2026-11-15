@@ -3069,7 +3069,7 @@ export interface SiteSetting {
    */
   directoryPageSize?: number | null;
   /**
-   * When on, a visitor builds the brief freely but signs in with their mobile number and a code to send it; the brief they built is kept and sent for them. WhatsApp stays open to everyone.
+   * Off (recommended): a visitor sends the brief and sees the creators who are free without an account, and signs in with their mobile number and a code when they accept the quotation. On: they also sign in before the brief is sent (the brief they built is kept and sent for them). WhatsApp stays open to everyone.
    */
   briefNeedsSignIn?: boolean | null;
   /**

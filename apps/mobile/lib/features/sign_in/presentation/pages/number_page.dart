@@ -38,7 +38,10 @@ class _NumberPageState extends State<NumberPage> {
     // Once, and here rather than in initState: reading the route's query depends on the route.
     if (_started) return;
     _started = true;
-    context.read<SignInFlowCubit>().startSignIn(forBrief: forBrief(context));
+    context.read<SignInFlowCubit>().startSignIn(
+      forBrief: forBrief(context),
+      forAccept: forAccept(context),
+    );
   }
 
   @override
@@ -80,13 +83,18 @@ class _NumberPageState extends State<NumberPage> {
                   child: SignInForm(
                     items: [
                       SignInTitle(
-                        // 021: from the brief, the screen says what signing in does.
+                        // 021: from the brief or a quotation's Accept, the screen says what
+                        // signing in does.
                         title: state.forBrief
                             ? l10n.signInBriefTitle
+                            : state.forAccept
+                            ? l10n.signInAcceptTitle
                             : l10n.signInNumberTitle,
                         body: Text(
                           state.forBrief
                               ? l10n.signInBriefBody
+                              : state.forAccept
+                              ? l10n.signInAcceptBody
                               : l10n.signInNumberBody,
                           style: signInBody(context),
                         ),

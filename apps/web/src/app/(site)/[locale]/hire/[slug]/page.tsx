@@ -80,7 +80,7 @@ export default async function IntentPage(props: Props) {
         context={context}
         whatsappHref={whatsappHref(settings.whatsappNumber, settings.whatsappDefaultMessage) ?? '#'}
         quickMatch={settings.quickMatch?.enabled === true}
-        signInRequired={settings.briefNeedsSignIn !== false}
+        signInRequired={settings.briefNeedsSignIn === true}
         sourcePath={path}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />

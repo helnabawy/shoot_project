@@ -1,6 +1,6 @@
 import { addDays, dubaiToday } from '@shoot/domain/booking'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import { bookingWorld, briefFor, quoteFor, setMatchValues, type BookingWorld } from './setup/booking'
+import { asClient, bookingWorld, briefFor, quoteFor, setMatchValues, type BookingWorld } from './setup/booking'
 import { listingOf } from './setup/creators'
 import { asVisitor, form, jar, redirectOf } from './setup/next-mocks'
 import { getTestPayload, quiet } from './setup/payload'
@@ -103,6 +103,7 @@ describe('BI-US1 a creator sees the open briefs that match them', () => {
     await payload.create({ collection: 'brief-answers', data: { brief: briefId, creator: world.creators.sara!.id, persona: world.personas.photographer, decision: 'accepted', answeredAt: new Date().toISOString() }, overrideAccess: true })
     const quote = await quoteFor(requestQuotation as never, b, { pick: `photographer:${world.creators.omar!.code}` })
     expect((await creatorInbox(await ctx(), world.creators.sara!.user.id))!.accepted.find((i) => i.ref === b.ref)!.outcome).toBe('open')
+    await asClient()
     await redirectOf(() => acceptQuotation(form({ locale: 'en', ref: quote.ref, key: quote.key })))
     const item = (await creatorInbox(await ctx(), world.creators.sara!.user.id))!.accepted.find((i) => i.ref === b.ref)!
     expect(item.outcome).toBe('other-creator')

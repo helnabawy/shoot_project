@@ -77,3 +77,27 @@ describe('021 sign-in from a brief', () => {
     expect(screen.getByRole('link', { name: 'Change number' })).toHaveAttribute('href', '/login')
   })
 })
+
+describe('021 amendment: sign-in from a quotation\'s Accept', () => {
+  beforeEach(() => verifyCodeAction.mockClear())
+
+  it('BS-US7-S3 the number step posts the accept intent and the quotation as next', async () => {
+    renderWithLocale(<PhoneStep locale="en" next="/q/Q-2026-0142/k3y" intent="accept" />)
+    await userEvent.type(screen.getByLabelText(/mobile number/i), '501234567')
+    await userEvent.click(screen.getByTestId('send-code'))
+    const form = (requestCodeAction.mock.calls.at(-1) as unknown as [unknown, FormData])[1]
+    expect(form.get('intent')).toBe('accept')
+    expect(form.get('next')).toBe('/q/Q-2026-0142/k3y')
+  })
+
+  it('BS-US7-S3 the code step never asks the role, and "change number" keeps the quotation', async () => {
+    code({ intent: 'accept', next: '/q/Q-2026-0142/k3y' })
+    await userEvent.type(screen.getByLabelText('Six-digit code'), '482713')
+    await userEvent.click(screen.getByTestId('verify-code'))
+    const form = (verifyCodeAction.mock.calls[0] as unknown as [unknown, FormData])[1]
+    expect(form.has('askRole')).toBe(false)
+    expect(screen.queryByRole('radio')).toBeNull()
+    const href = screen.getByRole('link', { name: 'Change number' }).getAttribute('href')!
+    expect(JSON.parse(href)).toEqual({ pathname: '/login', query: { next: '/q/Q-2026-0142/k3y', for: 'accept' } })
+  })
+})

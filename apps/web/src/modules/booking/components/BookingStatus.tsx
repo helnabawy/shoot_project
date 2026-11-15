@@ -24,6 +24,8 @@ export interface BookingStatusProps {
   history: { label: string; at: string }[]
   /** Back from the payment page (feature 020): `done` paid there, `cancelled` left it. */
   paymentReturn?: 'done' | 'cancelled' | null
+  /** 021 amendment: nobody is signed in, so Accept goes through sign-in first (BS-US7-S1). */
+  guest?: boolean
 }
 
 function Hidden({ access }: { access: BookingStatusProps['access'] }) {
@@ -37,7 +39,7 @@ function Hidden({ access }: { access: BookingStatusProps['access'] }) {
 }
 
 /** The one action per state (surface brief quotation): accept, pay and send the receipt, confirm delivery… */
-export function BookingStatus({ state, access, sentence, canAccept, payment, replacements, history, paymentReturn }: BookingStatusProps) {
+export function BookingStatus({ state, access, sentence, canAccept, payment, replacements, history, paymentReturn, guest = false }: BookingStatusProps) {
   const t = useTranslations('quote')
   const waitingForPayment = Boolean(payment?.online) && paymentReturn === 'done'
   return (
@@ -61,6 +63,11 @@ export function BookingStatus({ state, access, sentence, canAccept, payment, rep
         <form action={acceptQuotation} className="pb-2">
           <Hidden access={access} />
           <TopHit label={t('accept')} testId="quote-accept" />
+          {guest ? (
+            <p data-testid="quote-sign-in-next" className="px-4 pt-1 text-[13px] text-mute">
+              {t('signInNext')}
+            </p>
+          ) : null}
         </form>
       ) : null}
 

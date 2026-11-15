@@ -53,3 +53,40 @@ Under the Top Hit of a complete brief, when `signInRequired` and `useSignedIn() 
 ## New message keys (`messages/{en,ar}.json`)
 
 `brief.errors.signInRequired`, `brief.signInNext`, `brief.signingIn`, `auth.otp.briefTitle`, `auth.otp.briefIntro`, `auth.otp.briefChange`, `auth.otp.briefLabel`.
+
+## Amendment 2026-11-15: sign in to accept
+
+### Defaults
+
+`briefNeedsSignIn` defaults to `false` (`briefNeedsSignIn(settings)` is `settings.briefNeedsSignIn === true`); with it off
+`submitBrief` records a guest's brief and returns `{ status: 'ok', matchUrl }` as before 021; no guest line under the brief.
+
+### `acceptQuotation` server action (`modules/booking/actions.ts`)
+
+| Situation | Result |
+|---|---|
+| wrong key / unknown reference | back to the page with `booking.errors.not-found` (as today) |
+| no member, private-link page | 303 → `/login?next=%2Fq%2F{ref}%2F{key}&for=accept` (`/ar/login?…` in Arabic); nothing changes |
+| member, booking without a member | accepted; `booking.member` = the member; the brief's `member` too when empty; back to the quotation |
+| member, booking of another member | back to the quotation with `booking.errors.otherAccount` |
+| member, own booking | accepted as today |
+
+### `/login?for=accept`
+
+- When `next` is a quotation path (`/q/{ref}/{key}`): heading `auth.otp.acceptTitle` ("Log in to accept your quotation"),
+  intro `auth.otp.acceptIntro`; `PhoneStep` posts `intent=accept` and `next` = that path. Otherwise the ordinary sign-in.
+- Signed in already: redirect to `next` (the quotation) as today.
+
+### `/login/code` with `intent: 'accept'`
+
+No role rows; Continue verifies with `signup: seeker`; a returning number signs in whatever its type; success → `next`
+(the quotation). "Change number" links to `/login?next={next}&for=accept`.
+
+### Quotation page
+
+For a guest (no member) with `canAccept`: under the Accept Top Hit, `quote.signInNext` ("Next, we'll send a code to your
+mobile number to log you in."). Members never see it.
+
+### New message keys
+
+`booking.errors.signInRequired`, `booking.errors.otherAccount`, `quote.signInNext`, `auth.otp.acceptTitle`, `auth.otp.acceptIntro`.

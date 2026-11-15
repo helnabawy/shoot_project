@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { briefToStep2, expectNoSeriousA11yIssues, inTenDays, uniqueEmail, createAccount } from './helpers'
+import { acceptQuote, briefToStep2, expectNoSeriousA11yIssues, inTenDays, uniqueEmail, createAccount } from './helpers'
 
 async function details(page: Page, code?: string) {
   await page.getByTestId('match-any').click()
@@ -29,7 +29,7 @@ test.describe('QM-US2 leave details and receive a quotation', () => {
       await expect(page.getByTestId('quote-accept')).toBeHidden()
       await page.emulateMedia({ media: 'screen' })
     }
-    await page.getByTestId('quote-accept').click()
+    await acceptQuote(page)
     await expect(page.getByTestId('booking-status')).toHaveAttribute('data-state', 'accepted')
   })
 

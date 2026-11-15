@@ -59,6 +59,9 @@ enum ProblemCode {
   bookingCreatorUnavailable('booking.errors.creatorUnavailable'),
   bookingTerminal('booking.errors.terminal'),
   bookingExpiredQuotation('booking.errors.expired-quotation'),
+  // 021 amendment: accepting a quotation needs a signed-in member who may own it.
+  bookingSignInRequired('booking.errors.signInRequired'),
+  bookingOtherAccount('booking.errors.otherAccount'),
   // 020: online payment.
   paymentUnavailable('payment.errors.unavailable'),
   paymentProvider('payment.errors.provider'),
@@ -148,6 +151,8 @@ enum ProblemCode {
       bookingUnavailable || bookingCreatorUnavailable => l10n.qmErrUnavailable,
       bookingTerminal => l10n.qmErrNotAllowed,
       bookingExpiredQuotation => l10n.qmErrExpired,
+      bookingSignInRequired => l10n.problemAcceptSignIn,
+      bookingOtherAccount => l10n.problemOtherAccount,
       paymentUnavailable => l10n.problemPaymentUnavailable,
       paymentProvider => l10n.problemPaymentProvider,
       inboxBriefClosed => l10n.problemBriefClosed,

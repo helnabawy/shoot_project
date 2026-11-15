@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
+import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
@@ -103,6 +104,23 @@ void main() {
         expect(c.state.signInNeeded, isFalse);
       },
     );
+
+    test('BS-US6-S2 by default (the 2026-11-15 amendment) a signed-out brief is recorded and its step 2 link comes back', () async {
+      const receipt = BriefReceipt(
+        reference: 'B-2',
+        sentence: 'I need a photographer.',
+        whatsappUrl: null,
+        matchPath: '/match/B-2/k',
+      );
+      final repo = FakeBriefRepository(const Ok(receipt));
+      final c = await ready(repo, required: false);
+      expect(c.state.signInRequired, isFalse);
+      await c.submit();
+      expect(repo.recorded, hasLength(1));
+      expect(c.state.signInNeeded, isFalse);
+      expect(c.state.awaitingSignIn, isFalse);
+      expect(c.state.receipt?.matchPath, '/match/B-2/k');
+    });
 
     test('BS-US5-S4 a "sign in required" answer (the switch turned on since) asks for sign-in, not an error', () async {
       final repo = FakeBriefRepository(

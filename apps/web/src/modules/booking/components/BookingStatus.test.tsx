@@ -65,3 +65,25 @@ describe('020 paying a confirmed booking on the quotation page', () => {
     expect(screen.getByTestId('quote-pay')).not.toHaveTextContent('Pay')
   })
 })
+
+describe('021 amendment: accepting asks a guest to sign in', () => {
+  const quoted = (over: Partial<BookingStatusProps> = {}) => confirmed(null, { state: 'quoted', canAccept: true, canCancel: true, sentence: 'Your quotation is ready.', ...over })
+
+  it('BS-US7-S1 a guest sees one line under Accept saying a code comes next', () => {
+    renderWithLocale(<BookingStatus {...quoted({ guest: true })} />)
+    const accept = screen.getByTestId('quote-accept')
+    expect(accept).toHaveTextContent('Accept quotation')
+    expect(screen.getByTestId('quote-sign-in-next')).toHaveTextContent("Next, we'll send a code to your mobile number to log you in.")
+  })
+
+  it('BS-US7-S1 a member sees no line, and nothing shows once the quotation cannot be accepted', () => {
+    renderWithLocale(<BookingStatus {...quoted({ guest: false })} />)
+    expect(screen.getByTestId('quote-accept')).toBeInTheDocument()
+    expect(screen.queryByTestId('quote-sign-in-next')).toBeNull()
+  })
+
+  it('BS-US7-S1 a guest on a quotation that cannot be accepted sees no line', () => {
+    renderWithLocale(<BookingStatus {...quoted({ guest: true, canAccept: false, state: 'accepted' })} />)
+    expect(screen.queryByTestId('quote-sign-in-next')).toBeNull()
+  })
+})

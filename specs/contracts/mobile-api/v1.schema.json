@@ -23496,6 +23496,8 @@
     "booking.errors.not-allowed",
     "booking.errors.not-found",
     "booking.errors.notYours",
+    "booking.errors.otherAccount",
+    "booking.errors.signInRequired",
     "booking.errors.terminal",
     "booking.errors.unavailable",
     "brief.errors.generic",

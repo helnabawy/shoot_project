@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
+import 'package:shoot_mobile/core/routing/app_routes.dart';
 import 'package:shoot_mobile/core/routing/error_page.dart';
 import 'package:shoot_mobile/core/routing/not_found_page.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
@@ -24,6 +25,11 @@ import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/quick_match/domain/entities/quick_match.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/booking_view_cubit.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/widgets/qm_parts.dart';
+
+/// 021 amendment: where a signed-out Accept goes: the sign-in screens, which come back to the
+/// quotation (`next`) with `for=accept` (no role question, a new number becomes a client).
+String acceptSignInPath(String ref, String key) =>
+    '${AppRoutes.login}?next=${Uri.encodeComponent('/q/$ref/$key')}&for=accept';
 
 /// Screens 12, 13, 14, 40 and the states without a board, at `/q/{ref}/{key}`
 /// (boards `S04a-quote-accept`, `S04-quotation`, `S04b-delivered`, `S04c-expired`). One layout, read
@@ -102,8 +108,16 @@ class _BookingPageState extends State<BookingPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<BookingViewCubit, BookingViewState>(
-      listenWhen: (a, b) => a.fresh != b.fresh && b.fresh != null,
+      listenWhen: (a, b) =>
+          (a.fresh != b.fresh && b.fresh != null) ||
+          (!a.signInNeeded && b.signInNeeded),
       listener: (context, state) {
+        // 021 amendment (BS-US8-S2): sign in, then back on this quotation to accept it in one tap.
+        if (state.signInNeeded) {
+          context.read<BookingViewCubit>().signInOpened();
+          context.go(acceptSignInPath(widget.ref, widget.accessKey));
+          return;
+        }
         final fresh = state.fresh!;
         context.go('/match/${fresh.briefReference}/${fresh.briefKey}');
       },

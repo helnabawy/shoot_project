@@ -3459,5 +3459,21 @@
   "problemSignInRequired": "Sign in to send your brief.",
   "@problemSignInRequired": {
     "description": "021: brief.errors.signInRequired (HTTP 401): sending a brief needs a signed-in member."
+  },
+  "signInAcceptTitle": "Sign in to accept your quotation",
+  "@signInAcceptTitle": {
+    "description": "021 amendment: screen 20 heading when sign-in comes from a quotation's Accept (?for=accept)."
+  },
+  "signInAcceptBody": "Enter your UAE mobile number and we'll text you a six-digit code; then you're back on your quotation to accept it.",
+  "@signInAcceptBody": {
+    "description": "021 amendment: screen 20 body when sign-in comes from a quotation's Accept."
+  },
+  "problemAcceptSignIn": "Sign in to accept your quotation.",
+  "@problemAcceptSignIn": {
+    "description": "021 amendment: booking.errors.signInRequired (HTTP 401): accepting a quotation needs a signed-in member."
+  },
+  "problemOtherAccount": "This quotation belongs to another account. Sign in with the number it was made with.",
+  "@problemOtherAccount": {
+    "description": "021 amendment: booking.errors.otherAccount (HTTP 409): the booking belongs to another member."
   }
 }

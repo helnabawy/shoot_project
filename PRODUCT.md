@@ -59,7 +59,7 @@ None yet (confirmed 2026-11-06): no portfolio photos or videos, no logo, no clie
 
 ## Product Principles
 
-1. **One sentence, one tap.** The brief is the interface; every extra field, screen or decision must justify itself against "under 60 seconds on a phone". Since 2026-11-14 (feature 021, at the owner's request) sending a brief asks a guest to sign in with their mobile number and a code, behind a switch in the content area; the brief they built is kept and sent for them, and WhatsApp stays open to everyone.
+1. **One sentence, one tap.** The brief is the interface; every extra field, screen or decision must justify itself against "under 60 seconds on a phone". Since 2026-11-15 (feature 021 as amended, at the owner's request) a guest sends the brief and sees who is free with no account, and signs in with their mobile number and a code only when they accept the quotation, then accepts with one tap. A switch in the content area (off by default) can also ask for sign-in before the brief is sent, keeping the brief they built; WhatsApp stays open to everyone.
 2. **Price and next step are never hidden.** The client always knows what happens next and how to reach a person.
 3. **Both languages are first-class.** Arabic is designed, not translated after the fact.
 4. **Honest by default.** Show only real proof; an empty state is better than an invented number.

@@ -20,8 +20,11 @@ const pendingSchema = z.object({
   next: z.string(),
   /** Join as a creator: the professions chosen on the join page (acceptance was given there). */
   personas: z.array(z.string()).default([]),
-  /** 021: `brief` when sign-in sends a kept brief: no role question, a new number becomes a client. */
-  intent: z.enum(['none', 'brief']).default('none'),
+  /**
+   * 021: `brief` when sign-in sends a kept brief; `accept` (amendment 2026-11-15) when it comes from
+   * accepting a quotation and returns to it. Both: no role question, a new number becomes a client.
+   */
+  intent: z.enum(['none', 'brief', 'accept']).default('none'),
 })
 export type PendingChallenge = z.infer<typeof pendingSchema>
 export type PendingInput = z.input<typeof pendingSchema>

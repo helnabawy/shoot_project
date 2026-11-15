@@ -118,6 +118,11 @@ const finish = (path: string, result: CommandResult): never => (result.ok ? back
 export async function acceptQuotation(form: FormData): Promise<void> {
   const { access, user, path, locale } = await clientAccess(form)
   if (!access) back(path, 'booking.errors.not-found')
+  // 021 amendment (BS-US7-S2): a guest signs in first and comes back to this quotation to accept it.
+  if (!user) {
+    const next = quotePath(access.quotation.reference, str(form, 'key'), 'en')
+    redirect(`${localizeHref('/login', locale)}?next=${encodeURIComponent(next)}&for=accept`)
+  }
   finish(path, await accept(await getPayloadClient(), access, { user, now: new Date(), locale }))
 }
 

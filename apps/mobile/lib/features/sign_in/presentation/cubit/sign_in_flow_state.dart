@@ -46,6 +46,7 @@ final class SignInFlowState extends Equatable {
     this.isNew = false,
     this.roleNeeded = false,
     this.forBrief = false,
+    this.forAccept = false,
   });
 
   final SignInStatus status;
@@ -86,11 +87,16 @@ final class SignInFlowState extends Equatable {
   /// number becomes a client.
   final bool forBrief;
 
+  /// 021 amendment: this sign-in comes from a quotation's Accept (`/login?for=accept`) and goes back
+  /// to it: no role question, a new number becomes a client.
+  final bool forAccept;
+
   /// The role question shows only on the standalone sign-in, when the personas loaded, and only
   /// once a correct code proved a new number: a returning member signs straight in.
   bool get asksRole =>
       mode == SignInMode.signIn &&
       !forBrief &&
+      !forAccept &&
       personas.isNotEmpty &&
       roleNeeded;
 
@@ -130,6 +136,7 @@ final class SignInFlowState extends Equatable {
     bool? isNew,
     bool? roleNeeded,
     bool? forBrief,
+    bool? forAccept,
   }) {
     return SignInFlowState(
       status: status ?? this.status,
@@ -148,6 +155,7 @@ final class SignInFlowState extends Equatable {
       isNew: isNew ?? this.isNew,
       roleNeeded: roleNeeded ?? this.roleNeeded,
       forBrief: forBrief ?? this.forBrief,
+      forAccept: forAccept ?? this.forAccept,
     );
   }
 
@@ -169,6 +177,7 @@ final class SignInFlowState extends Equatable {
     isNew,
     roleNeeded,
     forBrief,
+    forAccept,
   ];
 
   // The state holds the typed number and code: never print them.

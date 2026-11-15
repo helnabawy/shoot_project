@@ -16,6 +16,7 @@ final class BookingViewState extends Equatable {
     this.fresh,
     this.paying = false,
     this.notPaidYet = false,
+    this.signInNeeded = false,
   });
 
   final BookingViewStatus status;
@@ -37,6 +38,10 @@ final class BookingViewState extends Equatable {
   /// Back from the payment page, the booking is still waiting for payment (left the page, or slow).
   final bool notPaidYet;
 
+  /// 021 amendment (BS-US8-S2): Accept was refused because nobody is signed in. One-shot: the screen
+  /// opens the sign-in screens for this quotation and calls [BookingViewCubit.signInOpened].
+  final bool signInNeeded;
+
   BookingViewState copyWith({
     BookingViewStatus? status,
     BookingView? view,
@@ -45,6 +50,7 @@ final class BookingViewState extends Equatable {
     FreshQuotation? Function()? fresh,
     bool? paying,
     bool? notPaidYet,
+    bool? signInNeeded,
   }) => BookingViewState(
     status: status ?? this.status,
     view: view ?? this.view,
@@ -55,6 +61,7 @@ final class BookingViewState extends Equatable {
     fresh: fresh == null ? this.fresh : fresh(),
     paying: paying ?? this.paying,
     notPaidYet: notPaidYet ?? this.notPaidYet,
+    signInNeeded: signInNeeded ?? this.signInNeeded,
   );
 
   @override
@@ -66,6 +73,7 @@ final class BookingViewState extends Equatable {
     fresh,
     paying,
     notPaidYet,
+    signInNeeded,
   ];
 }
 
@@ -156,6 +164,9 @@ final class BookingViewCubit extends Cubit<BookingViewState> {
     }
   }
 
+  /// The screen opened the sign-in screens after [BookingViewState.signInNeeded].
+  void signInOpened() => emit(state.copyWith(signInNeeded: false));
+
   Future<void> _command(Future<Result<BookingView>> Function() run) async {
     if (state.busy) return;
     emit(state.copyWith(busy: true, commandFailure: () => null));
@@ -171,6 +182,12 @@ final class BookingViewCubit extends Cubit<BookingViewState> {
           ),
         );
       case Err(:final failure):
+        // 021 amendment: accepting needs a signed-in member; that is a sign-in, not an error.
+        if (failure is ServerFailure &&
+            failure.code == 'booking.errors.signInRequired') {
+          emit(state.copyWith(busy: false, signInNeeded: true));
+          return;
+        }
         emit(state.copyWith(busy: false, commandFailure: () => failure));
         // A change someone else made (a refusal from state) shows the state as it stands.
         if (failure is ServerFailure && failure.statusCode == 409) await load();

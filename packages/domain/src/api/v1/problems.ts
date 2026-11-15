@@ -63,6 +63,9 @@ export const PROBLEM_CODES = [
   'booking.errors.creatorUnavailable',
   'booking.errors.terminal',
   'booking.errors.expired-quotation',
+  // 021 amendment (2026-11-15): accepting a quotation needs a signed-in member who may own it.
+  'booking.errors.signInRequired',
+  'booking.errors.otherAccount',
   // Feature 020: online payment switched off, or the provider refused / could not be reached.
   'payment.errors.unavailable',
   'payment.errors.provider',

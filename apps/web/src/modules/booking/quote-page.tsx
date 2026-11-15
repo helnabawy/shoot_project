@@ -19,7 +19,10 @@ export async function QuotationPage({
   error,
   promo,
   payment,
+  guest = false,
 }: {
+  /** 021 amendment: nobody is signed in (Accept asks for sign-in first). */
+  guest?: boolean
   access: QuotationAccess
   locale: Locale
   keyParam: string
@@ -90,7 +93,7 @@ export async function QuotationPage({
         error={
           error && /^(booking|availability|payment)\.errors\.[\w-]+$/.test(error) ? known(error) : null
         }
-        status={<BookingStatus {...status} paymentReturn={payment === 'done' || payment === 'cancelled' ? payment : null} />}
+        status={<BookingStatus {...status} guest={guest} paymentReturn={payment === 'done' || payment === 'cancelled' ? payment : null} />}
         endActions={
           status.canCancel ? (
             <CancelBooking access={status.access} label={all('quote.cancel')} />

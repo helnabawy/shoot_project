@@ -4,7 +4,7 @@
 
 | Field | Type | Default | Notes |
 |---|---|---|---|
-| `briefNeedsSignIn` | checkbox | `true` | "Briefs need sign-in". On: recording a brief needs a signed-in member on every channel. Off: today's behaviour. Not localized. Migration `<ts>_brief_sign_in` adds `brief_needs_sign_in boolean default true`. |
+| `briefNeedsSignIn` | checkbox | `false` (was `true` until the 2026-11-15 amendment; migration `brief_sign_in_off` sets the default and the live value to false) | "Briefs need sign-in". On: recording a brief needs a signed-in member on every channel. Off: today's behaviour. Not localized. Migration `<ts>_brief_sign_in` adds `brief_needs_sign_in boolean default true`. |
 
 ## Kept brief (website cookie `shoot-brief`; app memory) — not a record
 
@@ -36,3 +36,13 @@ No schema change. While the switch is on every new brief has `member` set (the h
 
 - `briefBuilderV1.signInRequired?: boolean` (always sent by the server).
 - Problem code `brief.errors.signInRequired` (401) on `POST briefs`.
+
+## Booking (collection `bookings`, existing, 003) — amendment, no schema change
+
+`member` is set by the accept transition when a signed-in member accepts a booking that has none; the
+brief's `member` is set at the same time when it has none. A booking with another member is never
+re-assigned. The client's step 3 name and WhatsApp number (`client`) are unchanged by the claim.
+
+Rule (`packages/domain/src/booking/claim.ts`): `claimFor({ bookingMember, briefMember, userId })` →
+`{ ok: false, reason: 'signInRequired' }` (no user) | `{ ok: false, reason: 'otherAccount' }` (booking
+of another member) | `{ ok: true, claimBooking: boolean, claimBrief: boolean }`.

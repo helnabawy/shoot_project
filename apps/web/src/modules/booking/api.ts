@@ -39,6 +39,11 @@ function refused(result: Extract<CommandResult, { ok: false }>): Problem {
       return problem(409, 'booking.errors.terminal')
     case 'expired-quotation':
       return problem(409, 'booking.errors.expired-quotation')
+    // 021 amendment: accepting needs a member, who may own the booking (BS-US8-S1, BS-US8-S4).
+    case 'signInRequired':
+      return problem(401, 'booking.errors.signInRequired')
+    case 'otherAccount':
+      return problem(409, 'booking.errors.otherAccount')
     case 'reason':
       return problem(422, 'api.errors.invalidInput', { fields: [{ path: 'body.reason', code: 'booking.errors.reason' }] })
     default:

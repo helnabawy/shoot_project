@@ -114,10 +114,15 @@ export async function requestCodeAction(_prev: AuthState, form: FormData): Promi
     mode,
     next: safeNext(form.get('next')),
     personas: mode === 'join' ? personas : [],
-    // 021: only a standalone sign-in can carry a brief.
-    intent: mode === 'login' && form.get('intent') === 'brief' ? 'brief' : 'none',
+    // 021: only a standalone sign-in can carry a brief, or (amendment) an acceptance.
+    intent: mode === 'login' ? signInIntent(form.get('intent')) : 'none',
   })
   redirect({ href: '/login/code', locale })
+}
+
+/** The reason a standalone sign-in was started from the brief or from a quotation's Accept (021). */
+function signInIntent(value: FormDataEntryValue | null): PendingChallenge['intent'] {
+  return value === 'brief' || value === 'accept' ? value : 'none'
 }
 
 /** "Send it again" / "send it on WhatsApp" on the code step, once the countdown allows it. */
@@ -171,6 +176,16 @@ export async function verifyCodeAction(_prev: AuthState, form: FormData): Promis
     const outcome = await sendKept(member, locale)
     await applyKept(outcome.cookie)
     nextRedirect(outcome.location)
+  }
+
+  // 021 amendment (BS-US7-S3): from a quotation's Accept, a new number becomes a client without the role
+  // question, and the person goes back to the quotation (`next`) to accept it with one tap.
+  if (p.mode === 'login' && p.intent === 'accept') {
+    const result = await verifyCode(await webActor(locale), { challengeId: p.challengeId, phone: p.phone, code, signup: { accountType: 'seeker', personas: [] } })
+    if (isProblemValue(result)) return stateOf(result, values, other)
+    await setSessionCookie(result.token, result.exp)
+    await clearPending()
+    redirect({ href: p.next, locale })
   }
 
   // Standalone sign-in, before the role was asked: a known number signs straight in; a new one

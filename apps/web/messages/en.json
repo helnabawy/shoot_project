@@ -172,7 +172,9 @@
       "briefTitle": "Log in to send your brief",
       "briefIntro": "We'll send a code to your UAE mobile number; your brief goes out as soon as you're in. New here? The same steps create your account.",
       "briefLabel": "Your brief",
-      "briefChange": "Change it"
+      "briefChange": "Change it",
+      "acceptTitle": "Log in to accept your quotation",
+      "acceptIntro": "We'll send a code to your UAE mobile number, then bring you back to your quotation to accept it. New here? The same steps create your account."
     }
   },
   "account": {
@@ -735,7 +737,8 @@
     "pay": "Pay {total}",
     "paySecure": "Secure payment by card, Apple Pay or Google Pay. You come back here when it's done.",
     "paymentPending": "Payment received. We're confirming it, this takes a few seconds.",
-    "paymentCancelled": "Payment not completed. Nothing was charged; you can try again."
+    "paymentCancelled": "Payment not completed. Nothing was charged; you can try again.",
+    "signInNext": "Next, we'll send a code to your mobile number to log you in."
   },
   "booking": {
     "metaTitle": "Bookings",
@@ -792,7 +795,9 @@
       "not-assigned": "This booking is not assigned to you.",
       "not-pending": "You have already answered this request.",
       "startTime": "Enter the start time as hours and minutes, like 18:30.",
-      "venue": "Tell us where the shoot will be."
+      "venue": "Tell us where the shoot will be.",
+      "signInRequired": "Log in to accept your quotation.",
+      "otherAccount": "This quotation belongs to another account. Log in with the number it was made with."
     }
   },
   "availability": {

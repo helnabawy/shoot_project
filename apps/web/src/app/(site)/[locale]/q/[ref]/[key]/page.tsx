@@ -24,5 +24,5 @@ export default async function QuotePage({ params, searchParams }: Props) {
   const user = await getCurrentUser()
   const access = await getQuotationAccess(ref, key, user?.id, raw === 'ar' ? 'ar' : 'en')
   if (!access) notFound()
-  return <QuotationPage access={access} locale={raw as Locale} keyParam={key} error={error} promo={promo} payment={payment} />
+  return <QuotationPage access={access} locale={raw as Locale} keyParam={key} error={error} promo={promo} payment={payment} guest={!user} />
 }

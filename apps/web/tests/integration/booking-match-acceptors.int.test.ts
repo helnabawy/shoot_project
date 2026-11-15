@@ -1,6 +1,6 @@
 import { addDays } from '@shoot/domain/booking'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import { bookingByRef, bookingWorld, briefFor, quoteFor, type BookingWorld } from './setup/booking'
+import { asClient, bookingByRef, bookingWorld, briefFor, quoteFor, type BookingWorld } from './setup/booking'
 import { asVisitor, form, jar, redirectOf } from './setup/next-mocks'
 import { getTestPayload, quiet } from './setup/payload'
 
@@ -57,6 +57,7 @@ describe('BI-US2 creators who said yes, at Quick Match step 2 and in the booking
     const b = await brief()
     await accept('omar', b.ref)
     const quote = await quoteFor(requestQuotation as never, b, { pick: `photographer:${world.creators.omar!.code}` })
+    await asClient()
     await redirectOf(() => acceptQuotation(form({ locale: 'en', ref: quote.ref, key: quote.key })))
     const booking = await bookingByRef(await getTestPayload(), quote.ref)
     expect(booking.state).toBe('confirmed')
@@ -71,6 +72,7 @@ describe('BI-US2 creators who said yes, at Quick Match step 2 and in the booking
     const b = await brief()
     await accept('omar', b.ref)
     const quote = await quoteFor(requestQuotation as never, b, { pick: `photographer:${world.creators.sara!.code}` })
+    await asClient()
     await redirectOf(() => acceptQuotation(form({ locale: 'en', ref: quote.ref, key: quote.key })))
     const booking = await bookingByRef(await getTestPayload(), quote.ref)
     expect(booking.state).toBe('accepted')
@@ -79,6 +81,7 @@ describe('BI-US2 creators who said yes, at Quick Match step 2 and in the booking
     const any = await brief()
     await accept('sara', any.ref)
     const q2 = await quoteFor(requestQuotation as never, any, { pick: 'photographer:any' })
+    await asClient()
     await redirectOf(() => acceptQuotation(form({ locale: 'en', ref: q2.ref, key: q2.key })))
     expect((await bookingByRef(await getTestPayload(), q2.ref)).assignments![0]).toMatchObject({ status: 'open' })
     jar.clear()

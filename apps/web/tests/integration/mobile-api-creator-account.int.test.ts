@@ -12,7 +12,7 @@ import { GET as profileRoute, PATCH as patchRoute } from '@/app/(payload)/api/mo
 import { POST as submitRoute } from '@/app/(payload)/api/mobile/v1/me/creator/profile/submit/route'
 import { PUT as visibilityRoute } from '@/app/(payload)/api/mobile/v1/me/creator/profile/visibility/route'
 import type { RouteHandler } from '@/shared/api/handler'
-import { bookingByRef, bookingWorld, briefFor, quoteFor, type BookingWorld } from './setup/booking'
+import { asClient, bookingByRef, bookingWorld, briefFor, quoteFor, type BookingWorld } from './setup/booking'
 import { createUser, getTestPayload } from './setup/payload'
 import { asVisitor, form, jar } from './setup/next-mocks'
 
@@ -142,6 +142,7 @@ describe('MW-US2 / MW-US4 bookings and availability in the app', () => {
     asVisitor()
     const b = await briefFor(submitBrief as never, world, { occasion: occasions[seq++ % occasions.length]! })
     const q = await quoteFor(actions.requestQuotation as never, b, { pick: `photographer:${world.creators[key]!.code}` })
+    await asClient()
     await actions.acceptQuotation(form({ locale: 'en', ref: q.ref, key: q.key })).catch(() => undefined)
     return q.ref
   }

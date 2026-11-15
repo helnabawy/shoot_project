@@ -62,7 +62,8 @@ describe('MQ mobile Quick Match and booking', () => {
   }
   const at = (path: string, q: { reference: string; key: string }) => ({ path: `quotations/${q.reference}/${q.key}${path}`, params: { ref: q.reference, key: q.key } })
   const view = async (q: { reference: string; key: string }) => read(await call(viewRoute, at('', q).path, at('', q).params), bookingViewV1)
-  const post = (route: RouteHandler, sub: string, q: { reference: string; key: string }, body?: unknown) => call(route, at(`/${sub}`, q).path, at('', q).params, { method: 'POST', body })
+  // 021 amendment: the app sends its member's token (accepting needs a signed-in member).
+  const post = (route: RouteHandler, sub: string, q: { reference: string; key: string }, body?: unknown) => call(route, at(`/${sub}`, q).path, at('', q).params, { method: 'POST', body, token })
   const block = async (key: 'sara' | 'omar', date = world.date) => {
     const payload = await getTestPayload()
     await payload.create({ collection: 'availability-blocks', data: { creator: world.creators[key]!.id, user: world.creators[key]!.user.id, date, kind: 'blocked' }, overrideAccess: true, context: quiet })

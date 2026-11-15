@@ -11,6 +11,9 @@ import { getCurrentUser } from '@/modules/auth/session'
 import type { Locale } from '@/shared/lib/locale'
 import { alternates } from '@/shared/lib/seo'
 
+/** A quotation's private page (`/q/{ref}/{key}`), the only place an `accept` sign-in returns to. */
+const QUOTE_PATH = /^\/q\/[\w-]+\/[\w-]+$/
+
 type Props = { params: Promise<{ locale: string }>; searchParams: Promise<{ next?: string; add?: string; for?: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -33,9 +36,11 @@ export default async function LoginPage({ params, searchParams }: Props) {
   if (user && !linking) redirect({ href: destination, locale })
   // 021: from a guest's brief, with the brief still kept, this sign-in sends it.
   const kept = !linking && purpose === 'brief' ? await readKept(new Date()) : null
+  // 021 amendment (BS-US7-S2): from a quotation's Accept, this sign-in returns to the quotation.
+  const accepting = !linking && !kept && purpose === 'accept' && QUOTE_PATH.test(destination)
   const t = await getTranslations('auth')
-  const title = linking ? t('otp.linkTitle') : kept ? t('otp.briefTitle') : t('loginTitle')
-  const intro = linking ? t('otp.linkIntro') : kept ? t('otp.briefIntro') : t('otp.loginIntro')
+  const title = linking ? t('otp.linkTitle') : kept ? t('otp.briefTitle') : accepting ? t('otp.acceptTitle') : t('loginTitle')
+  const intro = linking ? t('otp.linkIntro') : kept ? t('otp.briefIntro') : accepting ? t('otp.acceptIntro') : t('otp.loginIntro')
   return (
     <section className="mx-auto max-w-[480px] px-3 pt-8 sm:pt-14">
       <h1 className="px-1 text-[34px] font-bold leading-tight tracking-[-0.03em] text-balance text-ink">{title}</h1>
@@ -45,7 +50,7 @@ export default async function LoginPage({ params, searchParams }: Props) {
           locale={locale}
           next={linking ? '/account' : kept ? BRIEF_SEND_PATH : destination}
           mode={linking ? 'link' : 'login'}
-          intent={kept ? 'brief' : undefined}
+          intent={kept ? 'brief' : accepting ? 'accept' : undefined}
           lead={
             kept ? (
               <KeptBrief sentence={kept.sentence} sentenceLocale={kept.locale} href={kept.path} label={t('otp.briefLabel')} changeLabel={t('otp.briefChange')} />
