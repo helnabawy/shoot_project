@@ -13,7 +13,11 @@ export function cachedQuery<T>(
   options: { bypass?: boolean; revalidate?: number } = {},
 ): Promise<T> {
   if (options.bypass) return fn()
-  return unstable_cache(fn, ['q', ...tags, JSON.stringify(key)], {
+  // Vercel's data cache outlives deployments, and a migration can change data without a Payload
+  // hook (021's brief_sign_in_off turned a site setting off in SQL and the old value stayed
+  // cached). Each deployment therefore keys its own entries; hooks still revalidate within it.
+  const deployment = process.env.VERCEL_DEPLOYMENT_ID
+  return unstable_cache(fn, ['q', ...(deployment ? [deployment] : []), ...tags, JSON.stringify(key)], {
     tags,
     revalidate: options.revalidate ?? (process.env.NODE_ENV === 'development' ? DEV_REVALIDATE_SECONDS : false),
   })()

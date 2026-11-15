@@ -27,6 +27,17 @@ describe('cachedQuery', () => {
     }
   })
 
+  it('a new deployment reads afresh: the deployment id is part of the key (a migration may have changed the data)', async () => {
+    vi.mocked(unstable_cache).mockClear()
+    vi.stubEnv('VERCEL_DEPLOYMENT_ID', 'dpl_new')
+    try {
+      await cachedQuery(['site-settings'], ['site-settings', 'en'], async () => 'fresh')
+      expect(vi.mocked(unstable_cache).mock.calls[0]?.[1]).toEqual(['q', 'dpl_new', 'site-settings', '["site-settings","en"]'])
+    } finally {
+      vi.unstubAllEnvs()
+    }
+  })
+
   it('bypasses the cache in draft mode', async () => {
     vi.mocked(unstable_cache).mockClear()
     const fn = vi.fn(async () => 'draft')
