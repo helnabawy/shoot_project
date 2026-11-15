@@ -425,6 +425,9 @@ export interface CreatorProfile {
    * Assigned once. Shown with the brand prefix from Site settings.
    */
   code?: string | null;
+  /**
+   * Required in English. Arabic is optional: the English name shows where it is empty.
+   */
   displayName: string;
   bio?: string | null;
   /**

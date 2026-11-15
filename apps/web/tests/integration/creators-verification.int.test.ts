@@ -62,6 +62,27 @@ describe('CP-US3-S2 / S3 verification is publishing', () => {
     await payload.updateGlobal({ slug: 'site-settings', data: { autoPublishEdits: false }, context: quiet })
   })
 
+  it('CP-US3-S3 a live profile with no Arabic name saves in Arabic too, where the English name shows; the English name stays required', async () => {
+    const provider = await makeProvider(world)
+    const profile = await createDraft(world, provider)
+    await publish(world, profile.id)
+    const live = (locale: 'en' | 'ar', data: Record<string, unknown>) =>
+      world.payload.update({ collection: 'creator-profiles', id: profile.id, locale, data: { ...data, _status: 'published' } as never, draft: false, user: world.admin, overrideAccess: false, context: quiet })
+
+    // The Arabic half of a live save, with nothing written for the name.
+    await live('ar', { bio: 'أعراس وبورتريه.' })
+    await live('ar', { displayName: null })
+    const shown = (await publicProfiles(world, 'ar')).docs.find((d) => d.id === profile.id)
+    expect(shown?.displayName).toBe('Sara Khan')
+    expect(shown?.bio).toBe('أعراس وبورتريه.')
+
+    // A name that is written still follows the length rule, and English cannot be emptied.
+    await expect(live('ar', { displayName: 'س' })).rejects.toThrow(/Display Name/)
+    await expect(live('en', { displayName: '' })).rejects.toThrow(/Display Name/)
+    await live('ar', { displayName: 'سارة خان' })
+    expect((await publicProfiles(world, 'ar')).docs.find((d) => d.id === profile.id)?.displayName).toBe('سارة خان')
+  })
+
   it('CP-US3-S3 with the setting off, a verified provider\'s attempt to write live is refused and the live profile is untouched', async () => {
     const payload = await getTestPayload()
     await payload.updateGlobal({ slug: 'site-settings', data: { autoPublishEdits: false }, context: quiet })

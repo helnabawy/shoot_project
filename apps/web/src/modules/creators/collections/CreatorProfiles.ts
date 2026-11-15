@@ -1,6 +1,7 @@
 import { COUNTRIES, isAllowedSocialUrl, isAllowedVideoUrl, isCountryCode, isSpokenLanguage, MAX_SAMPLES, MAX_YEARS_EXPERIENCE, SOCIAL_PLATFORMS, SPOKEN_LANGUAGES, type SocialPlatform } from '@shoot/domain/creators'
 import { MAX_PROVIDER_PERSONAS } from '@shoot/domain/auth'
-import { APIError, type Access, type CollectionConfig, type Where } from 'payload'
+import { APIError, type Access, type CollectionConfig, type TextFieldSingleValidation, type Where } from 'payload'
+import { text } from 'payload/shared'
 import { isAdmin, isEditorUser, noOne } from '@/shared/payload/access'
 import { relId } from '../references'
 import { guardProviderPublish, prepareProfile, removeListing, revalidateAfterDelete, syncListing } from '../hooks'
@@ -35,6 +36,17 @@ const readProfiles: Access = async ({ req }) => {
 const ownOrEditor: Access = ({ req }) => {
   if (isEditorUser(req.user)) return true
   return req.user ? { user: { equals: req.user.id } } : false
+}
+
+/**
+ * The name is required in English only. Arabic is optional and shows the English name while it is empty,
+ * so a save in Arabic (the second half of every profile save) is not refused for a creator without one.
+ */
+const nameRequiredInEnglish: TextFieldSingleValidation = (value, options) => {
+  const { locale, payload } = options.req
+  const main = payload.config.localization ? payload.config.localization.defaultLocale : null
+  if (!value && locale && locale !== 'all' && locale !== main) return true
+  return text(value, options)
 }
 
 export const CreatorProfiles: CollectionConfig = {
@@ -105,7 +117,16 @@ export const CreatorProfiles: CollectionConfig = {
       access: { update: noOne },
       admin: { position: 'sidebar', readOnly: true, description: 'Assigned once. Shown with the brand prefix from Site settings.' },
     },
-    { name: 'displayName', type: 'text', required: true, localized: true, minLength: 2, maxLength: 60 },
+    {
+      name: 'displayName',
+      type: 'text',
+      required: true,
+      localized: true,
+      minLength: 2,
+      maxLength: 60,
+      validate: nameRequiredInEnglish,
+      admin: { description: 'Required in English. Arabic is optional: the English name shows where it is empty.' },
+    },
     { name: 'bio', type: 'textarea', localized: true, maxLength: 600 },
     {
       name: 'personas',

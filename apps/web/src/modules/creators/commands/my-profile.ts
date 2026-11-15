@@ -255,7 +255,7 @@ async function persist(ctx: ActorContext, user: User, patch: ProfilePatchV1, ext
       ...common,
       id,
       locale: 'ar',
-      data: { ...status, ...(input.displayName.ar || !publish ? { displayName: input.displayName.ar || null } : {}), bio: input.bio.ar || null } as never,
+      data: { ...status, displayName: input.displayName.ar || null, bio: input.bio.ar || null } as never,
     })
     return null
   } catch (error) {

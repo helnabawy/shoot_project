@@ -338,6 +338,10 @@ describe('CP-US3-S1 provider actions', () => {
       expect((await publicProfiles(world)).docs.find((d) => d.id === id)?.bio).toBe('Live now')
       expect((await publicProfiles(world, 'ar')).docs.find((d) => d.id === id)?.bio).toBe('الآن')
 
+      // The Arabic name is optional: emptying it on a live profile saves, and Arabic readers see the English one.
+      expect(await actions.saveMyProfile(idle, profileForm({ displayName_ar: '' }))).toMatchObject({ status: 'saved', published: true })
+      expect((await publicProfiles(world, 'ar')).docs.find((d) => d.id === id)?.displayName).toBe('Sara Khan')
+
       const newcomer = await makeProvider(world)
       await signIn(newcomer)
       expect(await actions.saveMyProfile(idle, profileForm())).toMatchObject({ status: 'saved', published: false })

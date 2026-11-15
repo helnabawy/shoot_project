@@ -216,12 +216,12 @@ async function saveProfile(payload: Payload, user: User, form: FormData): Promis
     if (existing) {
       await payload.update({ ...common, id, locale: 'en', data: { ...shared, ...status, displayName: input.displayName.en, bio: input.bio.en } as never })
     }
-    // A blank Arabic name is left alone when publishing (the field is required there); drafts may clear it.
+    // A blank Arabic name is stored as empty: the name is required in English only, and English shows in its place.
     await payload.update({
       ...common,
       id,
       locale: 'ar',
-      data: { ...status, ...(input.displayName.ar || !publish ? { displayName: input.displayName.ar || null } : {}), bio: input.bio.ar || null } as never,
+      data: { ...status, displayName: input.displayName.ar || null, bio: input.bio.ar || null } as never,
     })
     if (edits && 'rows' in edits && edits.changed) await writeRows(payload, user, id, edits.rows, publish)
     return { id, published: publish }
