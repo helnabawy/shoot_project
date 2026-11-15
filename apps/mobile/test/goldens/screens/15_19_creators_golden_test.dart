@@ -32,6 +32,7 @@ Widget _directory() {
     ),
     onSelect: (_, _) {},
     onShowMore: () {},
+    onRefresh: () async {},
     onRetry: () {},
     onOpen: (_) {},
     onBrief: () {},

@@ -30,10 +30,12 @@ Widget _directory(
   VoidCallback? onShowMore,
   void Function(dynamic)? onOpen,
   VoidCallback? onBrief,
+  Future<void> Function()? onRefresh,
 }) => DirectoryView(
   state: state,
   onSelect: onSelect ?? (_, _) {},
   onShowMore: onShowMore ?? () {},
+  onRefresh: onRefresh ?? () async {},
   onRetry: () {},
   onOpen: (card) => onOpen?.call(card),
   onBrief: onBrief ?? () {},
@@ -111,6 +113,39 @@ void main() {
       await tester.tap(find.text('Show more'));
       expect(more, 1);
     });
+
+    testWidgets('MC-FR-035 pulling the list down refreshes it', (tester) async {
+      var refreshed = 0;
+      await pumpScreen(
+        tester,
+        _directory(_ready(), onRefresh: () async => refreshed++),
+        // Phone height: the pull needed is a quarter of the list's height.
+        height: 800,
+      );
+      await tester.fling(find.text('Creators'), const Offset(0, 400), 1000);
+      await tester.pumpAndSettle();
+      expect(refreshed, 1);
+    });
+
+    testWidgets(
+      'MC-FR-035 a short list and the empty state can be pulled too',
+      (tester) async {
+        var refreshed = 0;
+        final empty = DirectoryState(
+          status: DirectoryStatus.ready,
+          filters: exampleCreatorList().filters,
+        );
+        await pumpScreen(
+          tester,
+          _directory(empty, onRefresh: () async => refreshed++),
+          height: 800,
+        );
+        expect(find.text('No creators match these filters'), findsOneWidget);
+        await tester.fling(find.text('Creators'), const Offset(0, 400), 1000);
+        await tester.pumpAndSettle();
+        expect(refreshed, 1);
+      },
+    );
 
     testWidgets('MC-US3-S4 no next page means no "Show more"', (tester) async {
       final list = exampleCreatorList(

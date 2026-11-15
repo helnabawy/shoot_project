@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:shoot_mobile/core/content/creator_card.dart';
 import 'package:shoot_mobile/core/content/pagination.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
@@ -32,6 +35,21 @@ CreatorProfile get _profile =>
     CreatorProfileModel.fromJson(loadExample('creator-profile')).toEntity();
 SpecialtyPage get _specialty =>
     SpecialtyPageModel.fromJson(loadExample('specialty')).toEntity();
+CreatorCard _renamed(CreatorCard c, String name) => CreatorCard(
+  code: c.code,
+  displayCode: c.displayCode,
+  name: name,
+  initials: c.initials,
+  photo: c.photo,
+  types: c.types,
+  places: c.places,
+  specialties: c.specialties,
+  languages: c.languages,
+  yearsExperience: c.yearsExperience,
+  sampleCount: c.sampleCount,
+  featured: c.featured,
+  samplePreviews: c.samplePreviews,
+);
 HirePage get _hire =>
     HirePageModel.fromJson(loadExample('hire-page')).toEntity();
 
@@ -218,6 +236,114 @@ void main() {
       await cubit.load();
       expect(cubit.state.status, DirectoryStatus.failed);
       expect(cubit.state.failure, const NetworkFailure());
+    });
+
+    group('MC-FR-035 pull to refresh', () {
+      CreatorList pageOf(int page, {String first = 'Omar K.', int total = 6}) {
+        final items = [
+          for (final (i, c) in _list.items.indexed)
+            i == 0 ? _renamed(c, first) : c,
+        ];
+        return CreatorList(
+          locale: 'en',
+          items: items,
+          filters: _list.filters,
+          pagination: Pagination(
+            page: page,
+            pageCount: 2,
+            total: total,
+            pageSize: 3,
+          ),
+        );
+      }
+
+      test('reloads page 1 with the same filters and keeps the cards on '
+          'screen until the answer arrives', () async {
+        var answer = pageOf(1);
+        when(() => repo.getCreators(any())).thenAnswer((inv) async {
+          final q = inv.positionalArguments.first as CreatorQuery;
+          return Ok(q.page == 2 ? pageOf(2) : answer);
+        });
+        final cubit = make();
+        await cubit.select(FilterKey.place, 'dubai');
+        await cubit.showMore();
+        expect(cubit.state.shown, _list.items.length * 2);
+
+        answer = pageOf(1, first: 'Omar K. (new)', total: 7);
+        final seen = <DirectoryState>[];
+        final sub = cubit.stream.listen(seen.add);
+        await cubit.refresh();
+        await sub.cancel();
+
+        // No spinner state and no empty list in between: the cards stay.
+        expect(seen.every((s) => s.items.isNotEmpty), isTrue);
+        expect(
+          seen.map((s) => s.status),
+          isNot(contains(DirectoryStatus.loading)),
+        );
+        final query =
+            verify(() => repo.getCreators(captureAny())).captured.last
+                as CreatorQuery;
+        expect(query.place, 'dubai');
+        expect(query.page, 1);
+        // The fresh first page replaces what was shown, "Show more" starts over.
+        expect(cubit.state.status, DirectoryStatus.ready);
+        expect(cubit.state.items.first.name, 'Omar K. (new)');
+        expect(cubit.state.shown, _list.items.length);
+        expect(cubit.state.pagination!.page, 1);
+        expect(cubit.state.total, 7);
+      });
+
+      test(
+        'a failed refresh keeps the cards and reports the failure',
+        () async {
+          when(() => repo.getCreators(any()))
+              .thenAnswer((_) async => Ok(pageOf(1)));
+          final cubit = make();
+          await cubit.load();
+          when(() => repo.getCreators(any()))
+              .thenAnswer((_) async => const Err(NetworkFailure()));
+          await cubit.refresh();
+          expect(cubit.state.status, DirectoryStatus.ready);
+          expect(cubit.state.items, pageOf(1).items);
+          expect(cubit.state.failure, const NetworkFailure());
+        },
+      );
+
+      test('with nothing shown yet it is the first load', () async {
+        when(() => repo.getCreators(any()))
+            .thenAnswer((_) async => const Err(NetworkFailure()));
+        final cubit = make();
+        await cubit.load();
+        when(() => repo.getCreators(any()))
+            .thenAnswer((_) async => Ok(pageOf(1)));
+        await cubit.refresh();
+        expect(cubit.state.status, DirectoryStatus.ready);
+        expect(cubit.state.items.first.name, 'Omar K.');
+        expect(cubit.state.failure, isNull);
+      });
+
+      test(
+        'a filter chosen while refreshing wins over the late refresh',
+        () async {
+          final pending = Completer<Result<CreatorList>>();
+          when(() => repo.getCreators(any()))
+              .thenAnswer((_) async => Ok(pageOf(1)));
+          final cubit = make();
+          await cubit.load();
+          when(() => repo.getCreators(any())).thenAnswer((inv) {
+            final q = inv.positionalArguments.first as CreatorQuery;
+            return q.place == 'dubai'
+                ? Future.value(Ok(pageOf(1, first: 'In Dubai')))
+                : pending.future;
+          });
+          final refreshing = cubit.refresh();
+          await cubit.select(FilterKey.place, 'dubai');
+          pending.complete(Ok(pageOf(1, first: 'Stale')));
+          await refreshing;
+          expect(cubit.state.items.first.name, 'In Dubai');
+        },
+      );
     });
   });
 

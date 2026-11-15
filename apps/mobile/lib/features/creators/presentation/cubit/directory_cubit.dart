@@ -101,6 +101,29 @@ class DirectoryCubit extends Cubit<DirectoryState> {
     }
   }
 
+  /// Pull to refresh (MC FR-035): page 1 again with the same filters. The cards on screen stay
+  /// until the answer arrives and are then replaced, so "Show more" starts over; a failure keeps
+  /// them. With nothing shown yet it is the first load. A filter chosen meanwhile wins.
+  Future<void> refresh() async {
+    if (state.items.isEmpty) return load();
+    final generation = ++_generation;
+    final result = await _getCreators(_withPage(state.query, 1));
+    if (generation != _generation || isClosed) return;
+    switch (result) {
+      case Ok(:final value):
+        emit(
+          state.copyWith(
+            status: DirectoryStatus.ready,
+            items: value.items,
+            filters: value.filters,
+            pagination: value.pagination,
+          ),
+        );
+      case Err(:final failure):
+        emit(state.copyWith(status: DirectoryStatus.ready, failure: failure));
+    }
+  }
+
   Future<void> select(FilterKey key, String slug) {
     final q = state.query;
     String? pick(String? current) => current == slug ? null : slug;

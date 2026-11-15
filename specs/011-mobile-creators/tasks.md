@@ -85,6 +85,12 @@ test is named with its scenario id (`MC-US1-S1 ...`). `[P]` = different files, n
 - [x] T042 App: `CreatorCard.samplePreviews`, the card's work row shows the pictures over the designed tile; screen 15 goldens unchanged
 - [ ] T043 A real device check of the directory against the deployed API (pictures load, Arabic, dark)
 
+## Phase 10: Pull to refresh on the directory (FR-035, added 2026-11-15)
+
+- [x] T044 [P] Tests `MC-FR-035`: `DirectoryCubit.refresh` (same filters, page 1, cards kept until the answer, a failure keeps them, a filter chosen meanwhile wins) in `test/features/creators/presentation/cubit/creators_cubits_test.dart`; pulling a full list and the empty state in `test/features/creators/presentation/pages/directory_specialty_hire_pages_test.dart`
+- [x] T045 `DirectoryCubit.refresh`; `DirectoryView` in a `RefreshIndicator.adaptive` with always-scrollable physics; screen 15 goldens unchanged
+- [ ] T046 Pull to refresh on a real iPhone and Android phone, including VoiceOver and TalkBack (manual)
+
 ## Dependencies
 
 Phase 1 then 2 then stories. US2 reuses US1's profile reads; US5 reuses US2's brief. US3 and US4

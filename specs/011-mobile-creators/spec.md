@@ -292,6 +292,10 @@ and see the brief recorded with the changed place; the questions expand and coll
   a picture still loading and one that fails to load MUST show the designed scene tile in its
   place; a creator with no samples MUST have no work row. Only the directory's cards carry the
   pictures (`samplePreviews` on `creatorCardV1`, read for the page of cards shown).
+- **FR-035** (added 2026-11-15, owner request): Pulling the directory list down MUST reload it
+  with the filters kept, starting again at the first page. The cards on screen MUST stay until the
+  new answer arrives; if it fails they MUST stay as they were. The pull MUST work on a short list
+  and on the empty state.
 
 **Work by specialty (18)**
 

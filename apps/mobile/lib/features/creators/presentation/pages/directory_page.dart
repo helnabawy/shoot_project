@@ -24,7 +24,8 @@ import 'package:shoot_mobile/features/creators/presentation/widgets/creator_part
 import 'package:shoot_mobile/features/creators/presentation/widgets/more_chip.dart';
 
 /// Screen 15, built to board `S05-directory`: the listed creators as cards with filters, a count
-/// line, "Show more" and the one primary action that sends the person to the brief.
+/// line, "Show more" and the one primary action that sends the person to the brief. Pulling the
+/// list down reloads it with the same filters (MC FR-035).
 ///
 /// The [DirectoryCubit] comes from the `/creators` shell route, so the filters and the pages
 /// loaded stay while a profile is open on top. With [choosing] (from "Change" on screen 17) a card
@@ -43,6 +44,7 @@ class DirectoryPage extends StatelessWidget {
         onSelect: (key, slug) =>
             unawaited(context.read<DirectoryCubit>().select(key, slug)),
         onShowMore: () => unawaited(context.read<DirectoryCubit>().showMore()),
+        onRefresh: () => context.read<DirectoryCubit>().refresh(),
         onRetry: () => unawaited(context.read<DirectoryCubit>().load()),
         onOpen: (card) => choosing
             ? context.go('/book/${Uri.encodeComponent(card.code)}')
@@ -62,6 +64,7 @@ class DirectoryView extends StatefulWidget {
     required this.state,
     required this.onSelect,
     required this.onShowMore,
+    required this.onRefresh,
     required this.onRetry,
     required this.onOpen,
     required this.onBrief,
@@ -72,6 +75,9 @@ class DirectoryView extends StatefulWidget {
   final bool choosing;
   final void Function(FilterKey key, String slug) onSelect;
   final VoidCallback onShowMore;
+
+  /// Pull to refresh; the indicator spins until the returned future completes.
+  final Future<void> Function() onRefresh;
   final VoidCallback onRetry;
   final void Function(CreatorCard card) onOpen;
   final VoidCallback onBrief;
@@ -105,138 +111,154 @@ class _DirectoryViewState extends State<DirectoryView> {
         children: [
           const BrowseHeader(),
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(20, 12, 20, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    spacing: 16,
-                    children: [
-                      Semantics(
-                        header: true,
-                        child: CssLineBox(
-                          key: const ValueKey('fidelity:h1'),
-                          fontSize: 34,
-                          height: 1.25,
-                          child: Text(
-                            l10n.mcDirectoryTitle,
-                            style: ShootType.display.copyWith(
-                              height: 1.25,
-                              color: c.ink,
+            child: RefreshIndicator.adaptive(
+              onRefresh: widget.onRefresh,
+              child: ListView(
+                // A short list and the empty state can be pulled too.
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                children: [
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                      20,
+                      12,
+                      20,
+                      0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      spacing: 16,
+                      children: [
+                        Semantics(
+                          header: true,
+                          child: CssLineBox(
+                            key: const ValueKey('fidelity:h1'),
+                            fontSize: 34,
+                            height: 1.25,
+                            child: Text(
+                              l10n.mcDirectoryTitle,
+                              style: ShootType.display.copyWith(
+                                height: 1.25,
+                                color: c.ink,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      if (typeFilter != null && typeFilter.options.length > 1)
-                        Semantics(
-                          container: true,
-                          label: l10n.mcTypeGroup,
-                          child: ChipGroup(
-                            children: [
-                              for (final o in typeFilter.options)
-                                ShootChip(
-                                  label: o.name,
-                                  on: o.selected,
-                                  onTap: () =>
-                                      widget.onSelect(FilterKey.type, o.slug),
-                                ),
-                            ],
-                          ),
-                        ),
-                      if (secondary.isNotEmpty)
-                        Semantics(
-                          container: true,
-                          label: l10n.mcFilterGroup,
-                          child: ChipGroup(
-                            children: [
-                              for (final (key, o) in shownChips)
-                                ShootChip(
-                                  label: o.name,
-                                  on: o.selected,
-                                  onTap: () => widget.onSelect(key, o.slug),
-                                ),
-                              if (secondary.length > shownChips.length || _more)
-                                MoreChip(
-                                  label: _more ? l10n.mcLess : l10n.mcMore,
-                                  onTap: () => setState(() => _more = !_more),
-                                ),
-                            ],
-                          ),
-                        ),
-                      if (state.total > 0)
-                        CssLineBox(
-                          fontSize: 13,
-                          height: 1.4,
-                          child: Text(
-                            l10n.mcCountLine(state.total),
-                            style: meta,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(12, 16, 12, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    spacing: 16,
-                    children: [
-                      if (state.status == DirectoryStatus.loading)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 48),
-                          child: Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          ),
-                        ),
-                      if (state.isEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 24),
-                          child: EmptyState(
-                            mark: const IconTile.large(
-                              ShootIcons.searchQuestion,
+                        if (typeFilter != null && typeFilter.options.length > 1)
+                          Semantics(
+                            container: true,
+                            label: l10n.mcTypeGroup,
+                            child: ChipGroup(
+                              children: [
+                                for (final o in typeFilter.options)
+                                  ShootChip(
+                                    label: o.name,
+                                    on: o.selected,
+                                    onTap: () =>
+                                        widget.onSelect(FilterKey.type, o.slug),
+                                  ),
+                              ],
                             ),
-                            title: l10n.mcEmptyTitle,
                           ),
-                        ),
-                      for (var i = 0; i < state.items.length; i++)
-                        CreatorDirectoryCard(
-                          creator: state.items[i],
-                          position: i,
-                          onTap: () => widget.onOpen(state.items[i]),
-                        ),
-                      if (state.items.isNotEmpty)
-                        _ShowMore(
-                          state: state,
-                          onShowMore: widget.onShowMore,
-                          meta: meta,
-                        ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        spacing: 10,
-                        children: [
-                          TopHit(
-                            label: l10n.mcMatchYou,
-                            chevron: true,
-                            onPressed: widget.onBrief,
+                        if (secondary.isNotEmpty)
+                          Semantics(
+                            container: true,
+                            label: l10n.mcFilterGroup,
+                            child: ChipGroup(
+                              children: [
+                                for (final (key, o) in shownChips)
+                                  ShootChip(
+                                    label: o.name,
+                                    on: o.selected,
+                                    onTap: () => widget.onSelect(key, o.slug),
+                                  ),
+                                if (secondary.length > shownChips.length ||
+                                    _more)
+                                  MoreChip(
+                                    label: _more ? l10n.mcLess : l10n.mcMore,
+                                    onTap: () => setState(() => _more = !_more),
+                                  ),
+                              ],
+                            ),
                           ),
+                        if (state.total > 0)
                           CssLineBox(
                             fontSize: 13,
                             height: 1.4,
                             child: Text(
-                              l10n.mcMatchHint,
-                              textAlign: TextAlign.center,
+                              l10n.mcCountLine(state.total),
                               style: meta,
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 2),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                      12,
+                      16,
+                      12,
+                      0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      spacing: 16,
+                      children: [
+                        if (state.status == DirectoryStatus.loading)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 48),
+                            child: Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            ),
+                          ),
+                        if (state.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 24),
+                            child: EmptyState(
+                              mark: const IconTile.large(
+                                ShootIcons.searchQuestion,
+                              ),
+                              title: l10n.mcEmptyTitle,
+                            ),
+                          ),
+                        for (var i = 0; i < state.items.length; i++)
+                          CreatorDirectoryCard(
+                            creator: state.items[i],
+                            position: i,
+                            onTap: () => widget.onOpen(state.items[i]),
+                          ),
+                        if (state.items.isNotEmpty)
+                          _ShowMore(
+                            state: state,
+                            onShowMore: widget.onShowMore,
+                            meta: meta,
+                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          spacing: 10,
+                          children: [
+                            TopHit(
+                              label: l10n.mcMatchYou,
+                              chevron: true,
+                              onPressed: widget.onBrief,
+                            ),
+                            CssLineBox(
+                              fontSize: 13,
+                              height: 1.4,
+                              child: Text(
+                                l10n.mcMatchHint,
+                                textAlign: TextAlign.center,
+                                style: meta,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
