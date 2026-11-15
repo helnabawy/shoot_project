@@ -24,36 +24,71 @@ void main() {
     late ContentRemoteDataSourceImpl source;
 
     setUp(() {
-      adapter = ScriptedAdapter((options) => jsonBody(loadExample(_exampleFor(options.path))));
-      source = ContentRemoteDataSourceImpl(Dio(BaseOptions(baseUrl: 'http://api.test'))..httpClientAdapter = adapter);
+      adapter = ScriptedAdapter(
+        (options) => jsonBody(loadExample(_exampleFor(options.path))),
+      );
+      source = ContentRemoteDataSourceImpl(
+        Dio(BaseOptions(baseUrl: 'http://api.test'))
+          ..httpClientAdapter = adapter,
+      );
     });
 
     test('each read calls its v1 path with its params and decodes', () async {
       expect((await source.fetchGuides()).toEntity().items, isNotEmpty);
       await source.fetchGuides(page: 2, category: 'weddings', author: 'sara');
-      expect((await source.fetchGuide('brief a/b')).toEntity().summary.slug, 'brief-a-wedding-photographer');
-      expect((await source.fetchPage('how-it-works')).toEntity().title, 'How it works');
-      expect((await source.fetchLegal(LegalKind.professionalTerms)).toEntity().version, 2);
-      expect((await source.fetchLegalVersions(LegalKind.terms)).toEntity().versions, hasLength(2));
-      expect((await source.fetchLegalVersion(LegalKind.privacy, 1)).toEntity().version, 1);
+      expect(
+        (await source.fetchGuide('brief a/b')).toEntity().summary.slug,
+        'brief-a-wedding-photographer',
+      );
+      expect(
+        (await source.fetchPage('how-it-works')).toEntity().title,
+        'How it works',
+      );
+      expect(
+        (await source.fetchLegal(LegalKind.professionalTerms))
+            .toEntity()
+            .version,
+        2,
+      );
+      expect(
+        (await source.fetchLegalVersions(LegalKind.terms)).toEntity().versions,
+        hasLength(2),
+      );
+      expect(
+        (await source.fetchLegalVersion(
+          LegalKind.privacy,
+          1,
+        )).toEntity().version,
+        1,
+      );
 
       expect(adapter.requests.map((r) => r.path), [
         '/api/mobile/v1/guides',
         '/api/mobile/v1/guides',
         '/api/mobile/v1/guides/brief%20a%2Fb',
+        // The data source still reads editor pages; only the menu row went (2026-11-15).
+        '/api/mobile/v1/pages/how-it-works',
         '/api/mobile/v1/legal/professional-terms',
         '/api/mobile/v1/legal/terms/versions',
         '/api/mobile/v1/legal/privacy/versions/1',
       ]);
       expect(adapter.requests.first.queryParameters, isEmpty);
-      expect(adapter.requests[1].queryParameters, {'page': '2', 'category': 'weddings', 'author': 'sara'});
+      expect(adapter.requests[1].queryParameters, {
+        'page': '2',
+        'category': 'weddings',
+        'author': 'sara',
+      });
     });
 
     test('a 404 problem throws ServerException with its code', () {
       final failing = ContentRemoteDataSourceImpl(
         Dio(BaseOptions(baseUrl: 'http://api.test'))
           ..httpClientAdapter = ScriptedAdapter(
-            (_) => jsonBody(loadExample('problem-404'), status: 404, contentType: 'application/problem+json'),
+            (_) => jsonBody(
+              loadExample('problem-404'),
+              status: 404,
+              contentType: 'application/problem+json',
+            ),
           ),
       );
 

@@ -95,7 +95,6 @@ void main() {
         'BROWSE',
         'Creators',
         'Guides',
-        'How it works',
         'Language',
         'Theme',
         'Ask us on WhatsApp',
@@ -111,8 +110,9 @@ void main() {
         find.textContaining('Sign in with email', findRichText: true),
         findsNothing,
       );
-      // The owner removed Start a brief from the menu.
+      // The owner removed Start a brief, and on 2026-11-15 How it works, from the menu.
       expect(find.text('Start a brief'), findsNothing);
+      expect(find.text('How it works'), findsNothing);
     },
   );
 
