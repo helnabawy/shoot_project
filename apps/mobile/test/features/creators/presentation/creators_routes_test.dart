@@ -60,7 +60,12 @@ void main() {
         .thenAnswer((_) async => Ok(exampleHire()));
   });
 
-  Future<GoRouter> pumpRouter(WidgetTester tester, String location) async {
+  Future<GoRouter> pumpRouter(
+    WidgetTester tester,
+    String location, {
+    BriefDraft? draft,
+    RecordedCreatorBriefs? record,
+  }) async {
     await tester.binding.setSurfaceSize(const Size(360, 2600));
     addTearDown(() => tester.binding.setSurfaceSize(null));
     final getCreators = GetCreators(repo);
@@ -88,12 +93,13 @@ void main() {
           getWhatsappNumber: GetWhatsappNumber(site),
           slug: slug,
         ),
-        draft: BriefDraft(),
+        draft: draft ?? BriefDraft(),
         clock: FixedClock(DateTime.utc(2026, 11, 12)),
         links: const WebsiteLinks(
           AppConfig(apiBaseUrl: 'https://shoot.test', environment: 'test'),
         ),
         open: (_) async => true,
+        recordBrief: (record ?? RecordedCreatorBriefs()).call,
         share: (_) async {},
       ),
     );
@@ -136,6 +142,31 @@ void main() {
     await pumpRouter(tester, '/book/SH-0087');
     expect(find.text('Book Omar K.'), findsOneWidget);
   });
+
+  testWidgets(
+    'MC-US2-S4 a complete brief is recorded with the creator and opens their details step, not WhatsApp',
+    (tester) async {
+      final record = RecordedCreatorBriefs();
+      final draft = BriefDraft()
+        ..values = {'persona': 'photographer', 'occasion': 'wedding'};
+      final router = await pumpRouter(
+        tester,
+        '/book/SH-0087',
+        draft: draft,
+        record: record,
+      );
+      await tester.tap(find.text('Dubai'));
+      await tester.pump();
+      await tester.tap(find.text('Book with Omar'));
+      await tester.pumpAndSettle();
+      expect(record.calls, hasLength(1));
+      expect(
+        router.routerDelegate.currentConfiguration.uri.toString(),
+        bookReceipt.matchPath,
+      );
+      expect(draft.values, isEmpty);
+    },
+  );
 
   testWidgets('MC FR-067 /work/:specialty opens the specialty page', (
     tester,

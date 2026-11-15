@@ -18,6 +18,7 @@ final class BriefCreator extends Equatable {
     required this.types,
     required this.personaSlugs,
     required this.places,
+    this.presets = const {},
   });
 
   factory BriefCreator.fromProfile(CreatorProfile profile) => BriefCreator(
@@ -27,6 +28,7 @@ final class BriefCreator extends Equatable {
     types: profile.types,
     personaSlugs: profile.personaSlugs,
     places: profile.places,
+    presets: profile.briefPresets,
   );
 
   final String code;
@@ -39,6 +41,9 @@ final class BriefCreator extends Equatable {
 
   /// Emirate names in the answer's language.
   final List<String> places;
+
+  /// 011 FR-036: the option a step that filters creators starts on (today "shot by").
+  final Map<String, String> presets;
 
   /// "Omar" from "Omar K.".
   String get firstName {
@@ -54,6 +59,7 @@ final class BriefCreator extends Equatable {
     types,
     personaSlugs,
     places,
+    presets,
   ];
 }
 
@@ -168,6 +174,16 @@ final class BriefRules {
       final restricted = slot.kind == SlotKind.persona || isPlaceSlot(slot);
       if (restricted && slot.required && offered.length == 1) {
         next[slot.token] = offered.single.value;
+        continue;
+      }
+      // 011 FR-036: a step that filters creators starts on the creator's option, unless an answer
+      // was already given (the kept draft wins); a preset that is not an option is ignored.
+      final preset = creator!.presets[slot.token];
+      final given = next[slot.token];
+      if (preset != null &&
+          (given == null || given.isEmpty) &&
+          offered.any((o) => o.value == preset)) {
+        next[slot.token] = preset;
       }
     }
     return next;

@@ -159,6 +159,24 @@ final class Pick extends Equatable {
   List<Object?> get props => [persona, code];
 }
 
+/// The website's `pick` query (`photographer:SH-0087,videographer:any`, 003 `formatPicks`), as on
+/// `/match/{ref}/{key}/details?pick=…` (011 FR-021). `null` when absent or malformed.
+List<Pick>? parsePicks(String? raw) {
+  if (raw == null || raw.trim().isEmpty) return null;
+  final slug = RegExp(r'^[a-z0-9-]+$');
+  final picks = <Pick>[];
+  for (final part in raw.split(',')) {
+    final pieces = part.trim().split(':');
+    if (pieces.length != 2) return null;
+    final persona = pieces[0];
+    final code = pieces[1].toUpperCase();
+    if (!slug.hasMatch(persona) || code.isEmpty) return null;
+    if (picks.any((p) => p.persona == persona)) return null;
+    picks.add(Pick(persona: persona, code: code == 'ANY' ? null : code));
+  }
+  return picks.isEmpty || picks.length > 8 ? null : picks;
+}
+
 /// Screen 09's details (`detailsV1`).
 final class BookingDetails extends Equatable {
   const BookingDetails({

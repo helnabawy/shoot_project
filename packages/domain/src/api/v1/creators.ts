@@ -115,6 +115,11 @@ export const creatorProfileV1 = z.object({
   canBook: z.boolean(),
   /** The creator's professional types that the site offers (the booking's allowed types). */
   personaSlugs: z.array(z.string()),
+  /**
+   * 011 FR-036 (2026-11-15, additive): brief step token → the option a booking for this creator
+   * starts on, for steps that filter creators (today "shot by"); `{}` when none. Never the data behind it.
+   */
+  briefPresets: z.record(z.string(), z.string()),
 })
 export type CreatorProfileV1 = z.infer<typeof creatorProfileV1>
 

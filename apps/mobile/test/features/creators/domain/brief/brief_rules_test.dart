@@ -30,6 +30,46 @@ BriefCreator _creator({List<String>? personas, List<String>? places}) {
 void main() {
   final config = _config();
 
+  group('MC-US2-S7 a step that filters creators starts on the creator\'s option (FR-036)', () {
+    final withShotBy = _withShotBy();
+
+    test(
+      'MC-US2-S7 "shot by" starts on the creator\'s option from the profile',
+      () {
+        final rules = BriefRules(
+          withShotBy,
+          creator: _withPresets({'shotBy': 'man'}),
+        );
+        expect(rules.withFixed(const {})['shotBy'], 'man');
+      },
+    );
+
+    test('MC-US2-S7 a kept answer wins, and a preset that is not an option is ignored', () {
+      final rules = BriefRules(
+        withShotBy,
+        creator: _withPresets({'shotBy': 'man'}),
+      );
+      expect(rules.withFixed(const {'shotBy': 'anyone'})['shotBy'], 'anyone');
+      final odd = BriefRules(
+        withShotBy,
+        creator: _withPresets({'shotBy': 'robot'}),
+      );
+      expect(odd.withFixed(const {}).containsKey('shotBy'), isFalse);
+    });
+
+    test('MC-US2-S7 the profile model reads briefPresets, and none from an older server', () {
+      final json = loadExample('creator-profile');
+      expect(CreatorProfileModel.fromJson(json).toEntity().briefPresets, {
+        'shotBy': 'man',
+      });
+      json.remove('briefPresets');
+      expect(
+        CreatorProfileModel.fromJson(json).toEntity().briefPresets,
+        isEmpty,
+      );
+    });
+  });
+
   group('options', () {
     test('MC-US2-S1 persona options are limited to the creator types', () {
       final rules = BriefRules(
@@ -196,4 +236,48 @@ void main() {
   test('firstName is the first word of the name', () {
     expect(_omar().firstName, 'Omar');
   });
+}
+
+/// The example builder with a "shot by" step, as the seeded site has (011 FR-036).
+BriefBuilderConfig _withShotBy() {
+  final json = loadExample('brief-builder');
+  final builder = json['builder'] as Map<String, Object?>;
+  final slots = [...builder['slots']! as List<Object?>];
+  Map<String, Object?> option(String value, String label) => {
+    'value': value,
+    'label': label,
+    'sentenceLabel': label,
+    'glyph': '',
+    'personaSlugs': <String>[],
+  };
+  slots.add({
+    'token': 'shotBy',
+    'kind': 'options',
+    'groupLabel': 'shot by',
+    'placeholder': 'anyone',
+    'defaultValue': '',
+    'required': false,
+    'allowCustom': false,
+    'multiple': false,
+    'options': [
+      option('anyone', 'anyone'),
+      option('woman', 'a woman'),
+      option('man', 'a man'),
+    ],
+  });
+  builder['slots'] = slots;
+  return BriefBuilderModel.fromJson(json).toEntity().builder!;
+}
+
+BriefCreator _withPresets(Map<String, String> presets) {
+  final omar = _omar();
+  return BriefCreator(
+    code: omar.code,
+    displayCode: omar.displayCode,
+    name: omar.name,
+    types: omar.types,
+    personaSlugs: omar.personaSlugs,
+    places: omar.places,
+    presets: presets,
+  );
 }

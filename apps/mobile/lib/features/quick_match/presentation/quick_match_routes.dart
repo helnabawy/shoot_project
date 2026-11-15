@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
+import 'package:shoot_mobile/features/quick_match/domain/entities/quick_match.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/book_flow_cubit.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/booking_view_cubit.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/match_cubit.dart';
@@ -23,9 +24,11 @@ final class QuickMatchFlow {
   final BookFlowCubit book;
 
   /// A deep link to 09, 10 or 11 has no step 2 behind it: load it, and carry the brief's choices
-  /// over so the person can carry on.
-  Future<void> prime() async {
-    if (book.state.picks.isNotEmpty) return;
+  /// over so the person can carry on. [wanted] (`?pick=`, 011 FR-021): the creators a "Book with …"
+  /// brief chose, which win over step 2's first cards.
+  Future<void> prime({List<Pick>? wanted}) async {
+    if (wanted != null) match.preselect(wanted);
+    if (wanted == null && book.state.picks.isNotEmpty) return;
     if (match.state.page == null) await match.load();
     final page = match.state.page;
     final picks = match.state.picks;
@@ -76,7 +79,12 @@ List<RouteBase> quickMatchRoutes({
     final ref = state.pathParameters['ref']!;
     final key = state.pathParameters['key']!;
     final flow = flows.open(ref, key);
-    if (prime) unawaited(flow.prime());
+    final wanted = parsePicks(state.uri.queryParameters['pick']);
+    if (prime) {
+      unawaited(flow.prime(wanted: wanted));
+    } else if (wanted != null) {
+      flow.match.preselect(wanted);
+    }
     return MultiBlocProvider(
       providers: [
         BlocProvider<MatchCubit>.value(value: flow.match),

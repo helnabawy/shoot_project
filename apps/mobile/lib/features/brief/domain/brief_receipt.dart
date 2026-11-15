@@ -16,17 +16,21 @@ final class BriefReceipt extends Equatable {
   final String sentence;
   final String? whatsappUrl;
 
-  /// Quick Match step 2 (`/match/{ref}/{key}`), or `null` when Quick Match is off.
+  /// Quick Match step 2 (`/match/{ref}/{key}`; for a creator's brief their details step with
+  /// `?pick=`), or `null` when Quick Match is off.
   final String? matchPath;
 
   @override
   List<Object?> get props => [reference, sentence, whatsappUrl, matchPath];
 }
 
-/// Records a finished brief (feature 008's `POST briefs`, added by 010).
+/// Records a finished brief (feature 008's `POST briefs`, added by 010). [creator] (011 FR-021):
+/// the code of the creator a "Book with …" brief is for; [BriefReceipt.matchPath] then opens their
+/// details step.
 abstract interface class BriefRepository {
   Future<Result<BriefReceipt>> record(
     BriefBuilderConfig config,
-    BriefDraft draft,
-  );
+    BriefDraft draft, {
+    String? creator,
+  });
 }

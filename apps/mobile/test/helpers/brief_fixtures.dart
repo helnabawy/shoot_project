@@ -78,12 +78,17 @@ final class FakeBriefRepository implements BriefRepository {
   Result<BriefReceipt> result;
   final List<BriefDraft> recorded = [];
 
+  /// The creator code of each recorded brief (011 FR-021), `null` for a landing brief.
+  final List<String?> creators = [];
+
   @override
   Future<Result<BriefReceipt>> record(
     BriefBuilderConfig config,
-    BriefDraft draft,
-  ) async {
+    BriefDraft draft, {
+    String? creator,
+  }) async {
     recorded.add(draft);
+    creators.add(creator);
     return result;
   }
 }

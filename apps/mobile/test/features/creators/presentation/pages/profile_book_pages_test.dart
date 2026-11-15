@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
+import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
 import 'package:shoot_mobile/features/creators/domain/usecases/get_brief_context.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/book_hire_cubits.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/brief_cubit.dart';
@@ -222,11 +224,13 @@ void main() {
       BriefDraft? draft,
       Future<bool> Function(Uri)? open,
       VoidCallback? onChange,
+      RecordedCreatorBriefs? record,
     }) => BookView(
       data: data,
       draft: draft ?? BriefDraft(),
       today: '2026-11-12',
       open: open ?? (_) async => true,
+      record: (record ?? RecordedCreatorBriefs()).call,
       onBack: () {},
       onChange: onChange ?? () {},
     );
@@ -284,16 +288,27 @@ void main() {
     });
 
     testWidgets(
-      'MC-US2-S4 a complete brief opens WhatsApp with the message naming the creator and clears the draft',
+      'MC-US2-S4 with Quick Match off, the recorded brief opens WhatsApp naming the creator and clears the draft',
       (tester) async {
         Uri? opened;
         final draft = BriefDraft()
           ..values = {'persona': 'photographer', 'occasion': 'wedding'};
+        final record = RecordedCreatorBriefs(
+          const Ok(
+            BriefReceipt(
+              reference: 'B-7K2M9',
+              sentence: 'I need a photographer.',
+              whatsappUrl: null,
+              matchPath: null,
+            ),
+          ),
+        );
         await pumpScreen(
           tester,
           view(
             book(),
             draft: draft,
+            record: record,
             open: (uri) async {
               opened = uri;
               return true;
@@ -304,6 +319,12 @@ void main() {
         await tester.pump();
         await tester.tap(find.text('Book with Omar'));
         await tester.pump();
+        expect(record.calls.single.code, exampleProfile().code);
+        expect(record.calls.single.values, {
+          'persona': 'photographer',
+          'occasion': 'wedding',
+          'location': 'dubai',
+        });
         expect(opened?.host, 'wa.me');
         expect(opened?.path, '/971501234567');
         final text = opened!.queryParameters['text']!;

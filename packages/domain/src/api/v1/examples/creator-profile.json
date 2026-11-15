@@ -194,5 +194,8 @@
   "personaSlugs": [
     "photographer",
     "videographer"
-  ]
+  ],
+  "briefPresets": {
+    "shotBy": "man"
+  }
 }

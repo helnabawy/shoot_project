@@ -179,6 +179,7 @@ describe('toWireCreatorProfile', () => {
     displayCode: 'SH-0087',
     canBook: true,
     personaSlugs: ['photographer'],
+    matchValues: ['man'],
     view: {
       id: '7',
       code: '0087',

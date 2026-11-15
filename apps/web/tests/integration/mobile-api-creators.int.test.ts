@@ -155,6 +155,12 @@ describe('MR-US3 creators in the app', () => {
       expect(raw).not.toMatch(/"gender"|matchValues|accessSalt/)
     })
 
+    it('MC-US2-S7 the profile carries the "shot by" answer the creator implies, never the gender (011 FR-036)', async () => {
+      const code = codes['Basma Dubai']!
+      const profile = await read(await call(profileRoute, `creators/${code}`, { code }), creatorProfileV1)
+      expect(profile.briefPresets).toEqual({ shotBy: 'man' })
+    })
+
     it('a reachable creator outside the audience answers with canBook false', async () => {
       const code = codes['Vera Videographer']!
       expect((await read(await call(profileRoute, `creators/${code}`, { code }), creatorProfileV1)).canBook).toBe(false)

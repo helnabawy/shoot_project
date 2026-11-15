@@ -91,6 +91,17 @@ test is named with its scenario id (`MC-US1-S1 ...`). `[P]` = different files, n
 - [x] T045 `DirectoryCubit.refresh`; `DirectoryView` in a `RefreshIndicator.adaptive` with always-scrollable physics; screen 15 goldens unchanged
 - [ ] T046 Pull to refresh on a real iPhone and Android phone, including VoiceOver and TalkBack (manual)
 
+## Phase 11: Book this creator into Quick Match, shot-by preset (FR-021 in force, FR-036, added 2026-11-15)
+
+Owner: *"the gender should be selected by default from creator data and the Book with Hosam should go
+to the flow of creating brief, not navigating him to whatsapp"*.
+
+- [x] T047 [P] Tests `MC-US2-S7`: `briefPresets` rule (`packages/domain/src/creators/presets.test.ts`), profile endpoint carries it and never the gender (`mobile-api-creators.int.test.ts`), `BriefRules` starts on it (`test/features/creators/domain/brief_rules_test.dart`)
+- [x] T048 [P] Tests `MC-US2-S4`: `POST briefs` with `creator` records the creator and answers the details path with the pick (`mobile-api-brief.int.test.ts`); 17 records and opens the details step, WhatsApp only with Quick Match off (`profile_book_pages_test.dart`); the details route takes `?pick=` (`quick_match_pages_test.dart`)
+- [x] T049 API (additive): `briefRecordV1.creator`, `creatorProfileV1.briefPresets`; `recordBrief` resolves the creator like the website's `/book/{code}`; snapshot regenerated
+- [x] T050 App: `CreatorProfile.briefPresets`, `BriefCreator.presets` in `BriefRules.withFixed`; 17 records through `BriefRepository` and goes to the receipt's step; `QuickMatchFlow.prime` and `MatchCubit` take `?pick=`
+- [ ] T051 Device check of 17 → 09 against the deployed API (manual)
+
 ## Dependencies
 
 Phase 1 then 2 then stories. US2 reuses US1's profile reads; US5 reuses US2's brief. US3 and US4

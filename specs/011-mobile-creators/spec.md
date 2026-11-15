@@ -17,6 +17,25 @@ listed, profile content, codes, specialty pages, counts) and `specs/005-marketin
 User Story 4 (intent pages at `/hire/{slug}`); the brief on 17 and 19 follows feature 001's brief
 builder. Screen numbers below are canvas numbers.
 
+## Clarifications
+
+### Session 2026-11-15 (owner, after trying 17 on a phone)
+
+The owner: *"in this screen i opened the creator profile and click on book button: the gender should
+be selected by default from creator data, and the Book with Hosam should go to the flow of creating
+brief, not navigating him to whatsapp"*.
+
+- Q: What happens on "Book with {first name}" now that Quick Match (012) is built? → A: What FR-021
+  always said: the brief is recorded with the creator fixed and Quick Match continues at the details
+  step (09) with that creator chosen (a brief with several types opens step 2 with the creator chosen
+  where they offer the type). WhatsApp opens only when Quick Match is switched off, as on the website.
+- Q: Where does "shot by" come from? → A: A brief step that filters creators (today "shot by") starts
+  on the one option this creator matches, from the creator's data on the server; the person can still
+  change it. The creator's gender itself stays off the API (002 FR-011): the profile carries only the
+  brief answer it implies (`briefPresets`), which step 2's filtering already reveals.
+- Q: Signed-out people? → A: As on the landing: no sign-in to send it (021 as amended); if the owner's
+  "Briefs need sign-in" switch is on, the server's refusal opens sign-in and the brief stays filled in.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - See a creator's profile (Priority: P1)
@@ -86,8 +105,11 @@ with that creator.
    cannot be chosen.
 4. **Given** a complete brief, **When** the person taps the primary action, **Then** the brief is
    recorded with the creator fixed and Quick Match continues at the details step (09, feature 012)
-   with that creator chosen; until 012 is built, WhatsApp opens with the brief instead (001
-   FR-049).
+   with that creator chosen (2026-11-15: 012 is built, so WhatsApp opens only when Quick Match is
+   switched off).
+7. **Given** a creator whose data answers a brief step that filters creators (for example "shot by"),
+   **When** 17 opens, **Then** that step already holds the option the creator matches, and the person
+   can change it (FR-036).
 5. **Given** 17, **When** the person taps "Change" next to the creator, **Then** the directory (15)
    opens and the answers given so far are kept for the next creator chosen.
 6. **Given** 17, **When** it shows, **Then** a hint says no account is needed and the number is
@@ -267,8 +289,10 @@ and see the brief recorded with the changed place; the questions expand and coll
   are free, using the same step-by-step brief as the landing (001 FR-067).
 - **FR-021**: The primary action "Book with {first name} · date next" MUST lead the person through
   the remaining steps; with a complete brief it MUST record the brief with the creator fixed and open
-  Quick Match at the details step (09, feature 012) with that creator chosen. Until feature 012 is
-  built, it MUST record the brief and open WhatsApp with the configured message.
+  Quick Match at the details step (09, feature 012) with that creator chosen (step 2 with the creator
+  chosen when the brief has several types). Only when Quick Match is switched off MUST it open
+  WhatsApp with the configured message (2026-11-15: 012 is built; `POST briefs` takes the creator's
+  code and answers the step to open).
 - **FR-022**: "Change" MUST open the directory with the answers kept; choosing another creator
   there MUST return to 17 for them, dropping answers they cannot offer.
 
@@ -296,6 +320,11 @@ and see the brief recorded with the changed place; the questions expand and coll
   with the filters kept, starting again at the first page. The cards on screen MUST stay until the
   new answer arrives; if it fails they MUST stay as they were. The pull MUST work on a short list
   and on the empty state.
+
+- **FR-036** (added 2026-11-15, owner request): On 17, every brief step that filters creators MUST
+  start on the one option the creator matches when there is exactly one (from `briefPresets` on the
+  profile, computed on the server from the creator's data; the gender itself is never sent). The
+  person MAY change it; a kept answer from the draft wins over the preset.
 
 **Work by specialty (18)**
 

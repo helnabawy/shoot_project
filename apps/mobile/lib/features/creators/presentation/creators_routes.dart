@@ -7,6 +7,7 @@ import 'package:shoot_mobile/core/routing/app_routes.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/core/web/share_link.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
+import 'package:shoot_mobile/features/creators/domain/brief/brief_record.dart';
 import 'package:shoot_mobile/features/creators/domain/entities/creators.dart'
     show CreatorQuery;
 import 'package:shoot_mobile/features/creators/presentation/cubit/book_hire_cubits.dart';
@@ -36,6 +37,7 @@ List<RouteBase> creatorsRoutes({
   required Clock clock,
   required WebsiteLinks links,
   required UrlOpener open,
+  required RecordCreatorBrief recordBrief,
   ShareLink share = shareWithSystemSheet,
 }) {
   final directory = _DirectoryHolder(createDirectory);
@@ -72,7 +74,12 @@ List<RouteBase> creatorsRoutes({
           key: ValueKey('book:$code'),
           create: () => createBook(code),
           start: (c) => c.load(),
-          child: BookPage(draft: draft, clock: clock, open: open),
+          child: BookPage(
+            draft: draft,
+            clock: clock,
+            open: open,
+            record: recordBrief,
+          ),
         );
       },
     ),

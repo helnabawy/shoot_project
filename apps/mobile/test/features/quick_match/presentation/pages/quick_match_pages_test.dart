@@ -10,6 +10,7 @@ import 'package:shoot_mobile/core/widgets/snap_carousel.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/quick_match/domain/entities/quick_match.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/book_flow_cubit.dart';
+import 'package:shoot_mobile/features/quick_match/presentation/cubit/match_cubit.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/pages/details_page.dart';
 
 import '../../../../helpers/quick_match_fixtures.dart';
@@ -131,6 +132,23 @@ void main() {
   });
 
   group('MQ-US2 screens 09, 10, 11', () {
+    testWidgets(
+      'MC-US2-S4 a "Book with …" link opens the details step with that creator chosen (?pick=)',
+      (tester) async {
+        await pumpQuickMatch(
+          tester,
+          repository: repository,
+          location: '$match/details?pick=photographer%3A0421',
+        );
+        await tester.pumpAndSettle();
+        final context = tester.element(find.byType(DetailsPage));
+        expect(context.read<BookFlowCubit>().state.picks, const [
+          Pick(persona: 'photographer', code: '0421'),
+        ]);
+        expect(context.read<MatchCubit>().state.chosenIn(0)?.code, '0421');
+      },
+    );
+
     testWidgets('MQ-US2-S1 MQ-FR-011 details ask no number, name or email', (
       tester,
     ) async {

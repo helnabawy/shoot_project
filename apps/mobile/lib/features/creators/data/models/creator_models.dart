@@ -103,9 +103,19 @@ final class CreatorProfileModel {
         social: ExternalLinkModel.readAll(json, 'social'),
         canBook: readBool(json, 'canBook'),
         personaSlugs: List.unmodifiable(readStringList(json, 'personaSlugs')),
+        briefPresets: _presets(json['briefPresets']),
       ),
     );
   }
+
+  /// `briefPresets` (011 FR-036, additive): a missing or malformed value is no preset.
+  static Map<String, String> _presets(Object? raw) => raw is Map
+      ? Map.unmodifiable({
+          for (final e in raw.entries)
+            if (e.key is String && e.value is String)
+              e.key as String: e.value as String,
+        })
+      : const {};
 
   final CreatorProfile _entity;
 

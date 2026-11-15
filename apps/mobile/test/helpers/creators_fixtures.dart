@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shoot_mobile/core/error/result.dart';
+import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
 import 'package:shoot_mobile/features/creators/data/models/creator_models.dart';
 import 'package:shoot_mobile/features/creators/domain/entities/creators.dart';
 import 'package:shoot_mobile/features/creators/presentation/cubit/profile_cubit.dart';
@@ -58,3 +60,28 @@ Future<void> pumpScreen(
   await tester.pumpApp(widget, locale: locale);
   await tester.pump(const Duration(seconds: 1));
 }
+
+/// Records "Book with …" briefs (011 FR-021): remembers each call and answers [result].
+final class RecordedCreatorBriefs {
+  RecordedCreatorBriefs([this.result = const Ok(bookReceipt)]);
+
+  Result<BriefReceipt> result;
+  final List<({Map<String, String> values, String code})> calls = [];
+
+  Future<Result<BriefReceipt>> call(
+    BriefBuilderConfig config,
+    Map<String, String> values,
+    String code,
+  ) async {
+    calls.add((values: values, code: code));
+    return result;
+  }
+}
+
+/// A receipt whose next step is the creator's details step (Quick Match on).
+const bookReceipt = BriefReceipt(
+  reference: 'B-7K2M9',
+  sentence: 'I need a photographer.',
+  whatsappUrl: 'https://wa.me/971501234567?text=Hi',
+  matchPath: '/match/B-7K2M9/k/details?pick=photographer%3A0087',
+);

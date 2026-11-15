@@ -1,5 +1,6 @@
 import 'server-only'
 import { briefFingerprint } from '@shoot/domain/brief'
+import { formatPicks } from '@shoot/domain/booking'
 import { buildWhatsAppLink } from '@shoot/domain/contact'
 import type { BriefReceiptV1, BriefRecordV1 } from '@shoot/domain/api/v1'
 import { getTranslations } from 'next-intl/server'
@@ -7,7 +8,10 @@ import type { ActorContext } from '@/shared/api/actor'
 import { problem, type Problem } from '@/shared/api/problem'
 import { errorStatus } from '@/shared/payload/errors'
 import { accessKey, newSalt } from '../../booking/keys'
+import { getCreatorByCode } from '../../creators'
+import { getActivePersonas } from '../../personas/queries'
 import { getSiteSettings } from '../../site-settings/queries'
+import { personasOutside } from '../creator'
 import { getBriefBuilderConfig } from '../queries'
 import { composeMessage, composeSentence, resolveBrief } from '../submit'
 import { PROBLEM_FOR, toAnswers } from './brief-answers'
@@ -43,6 +47,18 @@ export async function recordBrief(ctx: ActorContext, input: BriefRecordV1): Prom
   }
   const { brief } = parsed
 
+  // 011 FR-021: a brief for a creator ("Book with …"), resolved like the website's /book/{code}: one who
+  // cannot be booked is ignored and the brief goes out as a normal one.
+  const found = input.creator ? await getCreatorByCode(input.creator, locale) : null
+  const creator = found?.canBook ? found.creator : null
+  if (creator) {
+    const allowed = (await getActivePersonas(locale)).filter((p) => creator.personaIds.includes(p.id)).map((p) => p.slug)
+    if (personasOutside(brief.personaSlugs, allowed).length) {
+      const token = config.slots.find((s) => s.kind === 'persona')?.token ?? 'persona'
+      return problem(422, 'brief.errors.optionGone', { fields: [{ path: `body.selections.${token}`, code: 'brief.errors.optionGone' }] })
+    }
+  }
+
   const selections = config.slots.map((slot) => ({
     token: slot.token,
     value: brief.values[slot.token] ?? '',
@@ -50,7 +66,8 @@ export async function recordBrief(ctx: ActorContext, input: BriefRecordV1): Prom
     custom: brief.custom[slot.token] ?? false,
   }))
   const sentence = composeSentence(config, brief.labels, brief.values)
-  const fingerprint = briefFingerprint(selections, ctx.visitorKey)
+  // Two briefs to different creators are not duplicates, even with the same selections.
+  const fingerprint = briefFingerprint(creator ? [...selections, { token: 'creator', value: creator.code }] : selections, ctx.visitorKey)
 
   try {
     const recent = await payload.find({
@@ -78,10 +95,11 @@ export async function recordBrief(ctx: ActorContext, input: BriefRecordV1): Prom
       }
       const created = await payload.create({
         collection: 'briefs',
-        data: { persona: personaIds, selections, date: brief.date, sentence, locale, sourcePath: APP_SOURCE_PATH, website: '' },
+        data: { persona: personaIds, selections, date: brief.date, sentence, locale, creator: creator ? Number(creator.id) : undefined, sourcePath: APP_SOURCE_PATH, website: '' },
         overrideAccess: false,
         user: ctx.user ?? undefined,
-        context: { visitorId: ctx.visitorKey, ...(salt ? { accessSalt: salt } : {}) },
+        // `creatorResolved` lets the briefs hook keep the creator; REST callers cannot set it.
+        context: { visitorId: ctx.visitorKey, ...(creator ? { creatorResolved: true } : {}), ...(salt ? { accessSalt: salt } : {}) },
       })
       reference = created.reference ?? ''
       // 019 (US5): matching creators hear about a new brief, after the response.
@@ -94,11 +112,21 @@ export async function recordBrief(ctx: ActorContext, input: BriefRecordV1): Prom
       reference: reference ?? '',
       sentence,
       whatsappUrl: buildWhatsAppLink(settings.whatsappNumber, message) || null,
-      matchPath: salt && reference ? `/match/${reference}/${accessKey(salt, 'brief')}` : null,
+      matchPath: salt && reference ? appMatchPath(`/match/${reference}/${accessKey(salt, 'brief')}`, creator?.code ?? null, brief.personaSlugs) : null,
     }
   } catch (error) {
     if (errorStatus(error) === 429) return problem(429, 'brief.errors.tooMany')
     if (errorStatus(error) === 400) return problem(503, 'brief.errors.generic')
     throw error
   }
+}
+
+/**
+ * Where the app goes after a brief (011 FR-021): step 2, or for a creator's brief their details step
+ * (one type) or step 2 with them chosen (several), with the website's `pick` query.
+ */
+export function appMatchPath(step2: string, creatorCode: string | null, personaSlugs: readonly string[]): string {
+  if (!creatorCode || !personaSlugs.length) return step2
+  const pick = encodeURIComponent(formatPicks(personaSlugs.map((persona) => ({ persona, code: creatorCode }))))
+  return personaSlugs.length === 1 ? `${step2}/details?pick=${pick}` : `${step2}?pick=${pick}`
 }

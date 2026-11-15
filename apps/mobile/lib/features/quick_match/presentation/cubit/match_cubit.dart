@@ -91,6 +91,40 @@ final class MatchCubit extends Cubit<MatchState> {
   final String ref;
   final String key;
 
+  /// Creators asked for by the link (`?pick=`, 011 FR-021): chosen when their card is listed.
+  List<Pick> _wanted = const [];
+
+  /// Chooses the creators of [picks] once step 2 has them (now, or when it loads).
+  void preselect(List<Pick> picks) {
+    _wanted = picks;
+    _applyWanted();
+  }
+
+  void _applyWanted() {
+    final page = state.page;
+    if (page == null || _wanted.isEmpty) return;
+    final chosen = {...state.chosen};
+    final letUsPick = {...state.letUsPick};
+    for (final pick in _wanted) {
+      final section = page.sections.where(
+        (s) => s.persona.slug == pick.persona,
+      );
+      if (section.isEmpty) continue;
+      if (pick.code == null) {
+        letUsPick.add(pick.persona);
+        continue;
+      }
+      final index = section.first.creators.indexWhere(
+        (c) => c.code == pick.code,
+      );
+      if (index >= 0) {
+        chosen[pick.persona] = index;
+        letUsPick.remove(pick.persona);
+      }
+    }
+    emit(state.copyWith(chosen: chosen, letUsPick: letUsPick));
+  }
+
   Future<void> load() async {
     emit(state.copyWith(status: MatchStatus.loading, failure: () => null));
     final result = await _repository.getMatch(
@@ -103,6 +137,7 @@ final class MatchCubit extends Cubit<MatchState> {
     switch (result) {
       case Ok(:final value):
         emit(state.copyWith(status: MatchStatus.ready, page: value));
+        _applyWanted();
       case Err(:final failure):
         emit(
           state.copyWith(

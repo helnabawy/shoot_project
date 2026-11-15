@@ -50,6 +50,7 @@ Widget _profile() => ProfileView(
 );
 
 Widget _book() => BookView(
+  record: RecordedCreatorBriefs().call,
   data: BookData(
     profile: exampleProfile(),
     context: BriefContext(

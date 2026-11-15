@@ -11,8 +11,9 @@ import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 /// the slots appear and the values were picked. Labels are never sent; the server re-derives them.
 Map<String, Object?> briefRecordBody(
   BriefBuilderConfig config,
-  BriefDraft draft,
-) {
+  BriefDraft draft, {
+  String? creator,
+}) {
   return {
     'selections': [
       for (final slot in config.slots)
@@ -21,6 +22,7 @@ Map<String, Object?> briefRecordBody(
             {'token': slot.token, 'value': value},
     ],
     'date': draft.date,
+    'creator': ?creator,
   };
 }
 
@@ -40,12 +42,13 @@ final class BriefRepositoryImpl implements BriefRepository {
   @override
   Future<Result<BriefReceipt>> record(
     BriefBuilderConfig config,
-    BriefDraft draft,
-  ) => apiResult(() async {
+    BriefDraft draft, {
+    String? creator,
+  }) => apiResult(() async {
     final answer = await apiPost(
       _dio,
       'briefs',
-      body: briefRecordBody(config, draft),
+      body: briefRecordBody(config, draft, creator: creator),
     );
     return briefReceiptFromJson(answer.body ?? const {});
   });

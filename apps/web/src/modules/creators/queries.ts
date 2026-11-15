@@ -164,6 +164,8 @@ export interface CreatorProfilePage {
   personaSlugs: string[]
   /** The published document the view was built from; the mobile API reads every stored image size from it (008). */
   doc: RawProfileDoc
+  /** Option values the creator satisfies for brief steps that filter creators; server-only (002 FR-011). */
+  matchValues: string[]
 }
 
 /** A public creator's full profile for the profile and booking pages; null unless they are public. */
@@ -186,6 +188,7 @@ export async function getCreatorProfile(rawCode: string, locale: Locale): Promis
     displayCode: formatCreatorCode(context.prefix, creator.code),
     canBook,
     personaSlugs: personas.filter((p) => creator.personaIds.includes(p.id)).map((p) => p.slug),
+    matchValues: creator.matchValues ?? [],
   }
 }
 

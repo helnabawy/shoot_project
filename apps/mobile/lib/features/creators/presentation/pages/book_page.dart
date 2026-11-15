@@ -3,7 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shoot_mobile/core/error/failures.dart';
+import 'package:shoot_mobile/core/error/result.dart';
+import 'package:shoot_mobile/core/l10n/failure_message.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
+import 'package:shoot_mobile/core/routing/app_routes.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
@@ -14,6 +18,7 @@ import 'package:shoot_mobile/core/widgets/message_banner.dart';
 import 'package:shoot_mobile/core/widgets/shoot_scaffold.dart';
 import 'package:shoot_mobile/core/widgets/text_link.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
+import 'package:shoot_mobile/features/creators/domain/brief/brief_record.dart';
 import 'package:shoot_mobile/features/creators/domain/brief/brief_rules.dart';
 import 'package:shoot_mobile/features/creators/domain/entities/creators.dart';
 import 'package:shoot_mobile/features/creators/domain/whatsapp_link.dart';
@@ -26,20 +31,23 @@ import 'package:shoot_mobile/features/creators/presentation/widgets/creator_part
 import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
 /// Screen 17, built to board `S06b-book`: a short brief with the creator fixed. The persona is
-/// limited to the creator's types, the place to the emirates they work in. A complete brief opens
-/// WhatsApp with the message (the fallback until Quick Match, feature 012, replaces [open]'s use);
-/// no account is asked for.
+/// limited to the creator's types, the place to the emirates they work in, and a step that filters
+/// creators ("shot by") starts on the creator's option (FR-036). A complete brief is recorded with
+/// the creator and Quick Match opens at their details step (FR-021); WhatsApp opens only when Quick
+/// Match is off. No account is asked for here.
 class BookPage extends StatelessWidget {
   const BookPage({
     super.key,
     required this.draft,
     required this.clock,
     required this.open,
+    required this.record,
   });
 
   final BriefDraft draft;
   final Clock clock;
   final UrlOpener open;
+  final RecordCreatorBrief record;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +60,7 @@ class BookPage extends StatelessWidget {
           draft: draft,
           today: briefToday(clock.now()),
           open: open,
+          record: record,
           onBack: () => context.canPop()
               ? context.pop()
               : context.go(
@@ -72,6 +81,7 @@ class BookView extends StatefulWidget {
     required this.draft,
     required this.today,
     required this.open,
+    required this.record,
     required this.onBack,
     required this.onChange,
   });
@@ -80,6 +90,7 @@ class BookView extends StatefulWidget {
   final BriefDraft draft;
   final String today;
   final UrlOpener open;
+  final RecordCreatorBrief record;
   final VoidCallback onBack;
   final VoidCallback onChange;
 
@@ -136,6 +147,50 @@ class _BookViewState extends State<BookView> {
       return;
     }
     if (await widget.open(link)) cubit?.sent();
+  }
+
+  bool _sending = false;
+
+  /// FR-021: the complete brief is recorded with the creator, then Quick Match opens where the
+  /// receipt says (their details step). With Quick Match off, WhatsApp opens with the brief.
+  Future<void> _book() async {
+    final cubit = _cubit;
+    final config = widget.data.context.builder;
+    if (cubit == null || config == null || _sending) return;
+    _sending = true;
+    final result = await widget.record(
+      config,
+      cubit.state.values,
+      widget.data.profile.code,
+    );
+    _sending = false;
+    if (!mounted) return;
+    switch (result) {
+      case Ok(:final value):
+        final path = value.matchPath;
+        if (path != null) {
+          cubit.sent();
+          context.go(path);
+        } else {
+          await _send(plain: false);
+        }
+      case Err(:final failure):
+        // 021: while the owner's "Briefs need sign-in" switch is on, sign in and come back here;
+        // the answers stay in the draft.
+        if (failure is ServerFailure &&
+            failure.code == 'brief.errors.signInRequired') {
+          final back = '/book/${Uri.encodeComponent(widget.data.profile.code)}';
+          unawaited(
+            context.push(
+              '${AppRoutes.login}?next=${Uri.encodeComponent(back)}',
+            ),
+          );
+          return;
+        }
+        ScaffoldMessenger.maybeOf(
+          context,
+        )?.showSnackBar(SnackBar(content: Text(failure.message(context.l10n))));
+    }
   }
 
   Future<void> _pickDate(BuildContext context, BuilderSlot slot) async {
@@ -274,7 +329,7 @@ class _BookViewState extends State<BookView> {
                                           ? l10n.mcStepsLeft(state.openCount)
                                           : null,
                                       onPressed: state.isComplete
-                                          ? () => unawaited(_send(plain: false))
+                                          ? () => unawaited(_book())
                                           : () {
                                               final next = state.nextSlot;
                                               if (next != null) {

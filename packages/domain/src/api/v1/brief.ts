@@ -18,6 +18,12 @@ export const briefRecordV1 = z.object({
   selections: z.array(briefSelectionV1).min(1, 'brief.errors.required').max(40),
   /** `YYYY-MM-DD` in the business time zone, or null for "any date". */
   date: isoDate.nullable().default(null),
+  /**
+   * 011 FR-021 (2026-11-15, additive): the code of the creator the brief is for ("Book with …").
+   * The server resolves it like the website's `/book/{code}`: a creator who cannot be booked is
+   * ignored and the brief goes out as a normal one; `matchPath` then opens their details step.
+   */
+  creator: z.string().min(1).max(20).optional(),
 })
 export type BriefRecordV1 = z.infer<typeof briefRecordV1>
 

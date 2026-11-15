@@ -3,8 +3,10 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
+import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
 import 'package:shoot_mobile/features/creators/data/datasources/creators_remote_data_source.dart';
 import 'package:shoot_mobile/features/creators/data/repositories/creators_repository_impl.dart';
+import 'package:shoot_mobile/features/creators/domain/brief/brief_record.dart';
 import 'package:shoot_mobile/features/creators/domain/repositories/creators_repository.dart';
 import 'package:shoot_mobile/features/creators/domain/usecases/creator_use_cases.dart';
 import 'package:shoot_mobile/features/creators/domain/usecases/get_brief_context.dart';
@@ -69,4 +71,6 @@ List<RouteBase> creatorsRoutesFrom(
   clock: getIt<Clock>(),
   links: getIt<WebsiteLinks>(),
   open: openInBrowser,
+  // 011 FR-021: "Book with …" records the brief through the app's `POST briefs` client.
+  recordBrief: recordCreatorBriefWith(getIt<BriefRepository>()),
 );

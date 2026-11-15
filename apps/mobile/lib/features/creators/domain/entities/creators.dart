@@ -146,6 +146,7 @@ final class CreatorProfile extends Equatable {
     required this.social,
     required this.canBook,
     required this.personaSlugs,
+    this.briefPresets = const {},
   });
 
   final String locale;
@@ -172,6 +173,10 @@ final class CreatorProfile extends Equatable {
   /// The creator's types the site offers (the booking's allowed types).
   final List<String> personaSlugs;
 
+  /// 011 FR-036: brief step token → the option a booking for this creator starts on (today
+  /// "shot by"); empty from an older server.
+  final Map<String, String> briefPresets;
+
   @override
   List<Object?> get props => [
     locale,
@@ -191,6 +196,7 @@ final class CreatorProfile extends Equatable {
     social,
     canBook,
     personaSlugs,
+    briefPresets,
   ];
 }
 

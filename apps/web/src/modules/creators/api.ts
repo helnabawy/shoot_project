@@ -1,4 +1,5 @@
 import 'server-only'
+import { briefPresets } from '@shoot/domain/creators'
 import { endpoints } from '@shoot/domain/api/v1'
 import ar from '../../../messages/ar.json'
 import en from '../../../messages/en.json'
@@ -7,6 +8,7 @@ import { wireContext } from '@/shared/api/wire'
 import type { Locale } from '@/shared/lib/locale'
 import { buildDirectory, type FilterKey } from './directory'
 import { getCardSamples, getCreatorProfile, getDirectoryContext, getPublicCreators, getSpecialtyPage } from './queries'
+import { getLandingPage } from '@/modules/landing/queries'
 import { directoryItems, toWireCreatorList, toWireCreatorProfile, toWireSpecialtyPage } from './wire'
 
 /** The directory's filter group names, the words the website's filter field shows. */
@@ -30,9 +32,15 @@ export const getCreatorsV1 = defineHandler({
 export const getCreatorProfileV1 = defineHandler({
   ...endpoints.creatorProfile,
   run: async ({ locale }, { params }) => {
-    const [page, context] = await Promise.all([getCreatorProfile(params.code, locale), getDirectoryContext(locale)])
+    const [page, context, landing] = await Promise.all([getCreatorProfile(params.code, locale), getDirectoryContext(locale), getLandingPage({ locale })])
     if (!page) return problem(404, 'api.errors.notFound')
-    return toWireCreatorProfile(page, context.lookups, wireContext(locale))
+    // 011 FR-036: the brief answers this creator implies (never the data behind them).
+    const slots = (landing.briefBuilder?.slots ?? []).map((slot) => ({
+      token: slot.token,
+      filtersCreators: slot.filtersCreators,
+      options: typeof slot.optionSet === 'object' && slot.optionSet ? (slot.optionSet.options ?? []) : [],
+    }))
+    return toWireCreatorProfile(page, context.lookups, wireContext(locale), briefPresets(slots, page.matchValues))
   },
 })
 

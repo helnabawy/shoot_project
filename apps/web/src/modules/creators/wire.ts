@@ -79,7 +79,13 @@ export function toWireCreatorList(
 }
 
 /** A profile with every stored size of the photo and samples; samples the website drops are dropped too. */
-export function toWireCreatorProfile(page: CreatorProfilePage, lookups: Lookups, ctx: WireContext): CreatorProfileV1 {
+export function toWireCreatorProfile(
+  page: CreatorProfilePage,
+  lookups: Lookups,
+  ctx: WireContext,
+  /** 011 FR-036: the brief answers this creator implies (`briefPresets` from `@shoot/domain/creators`). */
+  presets: Record<string, string> = {},
+): CreatorProfileV1 {
   const { view, doc } = page
   const samples: SampleV1[] = []
   for (const [i, raw] of (doc.samples ?? []).entries()) {
@@ -116,6 +122,7 @@ export function toWireCreatorProfile(page: CreatorProfilePage, lookups: Lookups,
     social: view.social.map((s) => ({ label: s.platform, url: s.url })),
     canBook: page.canBook,
     personaSlugs: [...page.personaSlugs],
+    briefPresets: { ...presets },
   }
 }
 
