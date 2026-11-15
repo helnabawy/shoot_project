@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shoot_mobile/core/auth/session_cubit.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/features/brief/data/brief_data.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
@@ -18,6 +19,8 @@ void registerBriefFeature(GetIt getIt) {
         loadBuilder: getIt<SiteRepository>().getBriefBuilder,
         repository: getIt<BriefRepository>(),
         clock: getIt<Clock>(),
+        // 021: the brief asks a signed-out person to sign in before it is sent.
+        isSignedIn: () => getIt<SessionCubit>().state is SignedIn,
       ),
     );
 }

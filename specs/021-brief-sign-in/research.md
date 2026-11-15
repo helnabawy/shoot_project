@@ -14,6 +14,11 @@
 ## R3 — Recording on arrival: `GET /brief/send`
 
 - **Decision**: a route handler under `app/(site)/[locale]/brief/send/route.ts` that re-exports `sendKeptBrief` from `modules/brief`. Signed out → `/login?next=/brief/send&for=brief`. No or stale kept brief → `/account`. Otherwise it rebuilds the form from `entries`, runs the same recording core as `submitBrief` (`commands/send-brief.ts`) with the member, then: success → clear the cookie, redirect to the match URL (or WhatsApp when Quick Match is off, as the no-JS path does today); failure → rewrite the cookie with `error` (field errors or form error key) and redirect to the brief's `path`. Responses are `Cache-Control: no-store`.
+- **Amended during implementation (2026-11-15)**: the code step's action sends the kept brief itself and redirects
+  straight to step 2. Going through `/brief/send` left that address in the browser bar (the client router followed
+  the redirect without updating it), so a reload re-ran the route; and cookies changed before `redirect()` in a
+  route handler were not sent, so the brief was sent twice in the browser check. The route stays for a member
+  who is already signed in, and sets its cookie change on the 303 response.
 - **Rationale**: sign-in ends with a GET redirect; only a route handler or an action may change cookies. The side effect is limited to the caller's own kept brief; the duplicate window (60 s, fingerprint) makes repeats harmless.
 - **Alternatives**: record in `verifyCodeAction` (auth would import the brief module and the app path would differ); a client page that posts on load (needs JS).
 

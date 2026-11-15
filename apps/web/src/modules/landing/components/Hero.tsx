@@ -96,6 +96,7 @@ export function Hero({
       providerLabel={providerLabel}
       labels={briefLabels}
       quickMatch={settings.quickMatch?.enabled === true}
+      signInRequired={settings.briefNeedsSignIn !== false}
     />
   ) : null
   const photo = asMedia(hero?.image)

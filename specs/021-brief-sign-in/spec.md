@@ -211,8 +211,10 @@ guest: recorded at once, no sign-in.
   sign-in succeeds.
 - The same brief sent twice within a minute (double tap after sign-in, back and forward): recorded
   once, as today's duplicate rule.
-- The hourly brief allowance applies per member and device as today; over it, the person is back on
-  the brief with today's "too many briefs" message and the brief still filled in.
+- The hourly brief allowance limits anonymous visitors only (001 FR-050); members are not limited,
+  as today. With the switch on every brief comes from a member, so the allowance stops applying and
+  the one-time-code limits (009) become the guard against floods. Any other refusal after sign-in
+  brings the person back to the brief with today's message and the brief still filled in.
 - A creator whose profile was hidden between building and sign-in: the brief goes out as a normal
   brief, as today.
 - Arabic: the sign-in screens, the kept-brief sentence and every new message are in Arabic and right

@@ -3,7 +3,7 @@
 import { combinedPersonaValue, MAX_PROVIDER_PERSONAS } from '@shoot/domain/auth'
 import { joinList } from '@shoot/domain/personas'
 import { useTranslations } from 'next-intl'
-import { useActionState, useId } from 'react'
+import { useActionState, useId, type ReactNode } from 'react'
 import { Link } from '@/i18n/navigation'
 import { BriefBar, TopHit } from '@/shared/ui/bar'
 import { Field, FormError } from '@/shared/ui/Field'
@@ -23,7 +23,13 @@ export function PhoneStep({
   personas = [],
   initialPersona,
   legal,
+  intent,
+  lead,
 }: {
+  /** 021: sign-in that sends a kept brief. */
+  intent?: 'brief'
+  /** Shown at the top of the panel (the kept brief). */
+  lead?: ReactNode
   locale: string
   next?: string
   mode?: 'login' | 'join' | 'link'
@@ -49,6 +55,8 @@ export function PhoneStep({
         <input type="hidden" name="locale" value={locale} />
         <input type="hidden" name="mode" value={mode} />
         <input type="hidden" name="next" value={next ?? '/account'} />
+        {intent ? <input type="hidden" name="intent" value={intent} /> : null}
+        {lead}
         {mode === 'join' ? (
           <PersonaSelect
             id={`${id}-persona`}

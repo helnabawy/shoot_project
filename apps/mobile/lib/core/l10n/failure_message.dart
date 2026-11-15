@@ -65,6 +65,8 @@ enum ProblemCode {
   briefPastDate('brief.errors.pastDate'),
   briefTooMany('brief.errors.tooMany'),
   briefGeneric('brief.errors.generic'),
+  // 021: sending a brief needs a signed-in member.
+  briefSignInRequired('brief.errors.signInRequired'),
   // 019: the creator brief inbox and push.
   inboxBriefClosed('inbox.errors.briefClosed'),
   inboxNotMatching('inbox.errors.notMatching'),
@@ -153,6 +155,7 @@ enum ProblemCode {
       briefPastDate => l10n.mlBriefPastDate,
       briefTooMany => l10n.mlBriefRateLimited,
       briefGeneric => l10n.mlBriefGeneric,
+      briefSignInRequired => l10n.problemSignInRequired,
     };
   }
 }

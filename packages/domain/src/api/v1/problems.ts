@@ -69,6 +69,8 @@ export const PROBLEM_CODES = [
   'brief.errors.pastDate',
   'brief.errors.tooMany',
   'brief.errors.generic',
+  // 021: sending a brief needs a signed-in member while the owner's switch is on.
+  'brief.errors.signInRequired',
   // 019: the creator brief inbox and push.
   'inbox.errors.briefClosed',
   'inbox.errors.notMatching',

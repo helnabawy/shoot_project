@@ -44,6 +44,23 @@ function useSession(): SessionUser | null {
   return user
 }
 
+/**
+ * Feature 021: whether the visitor is signed in, from the header's one session request per page;
+ * `null` until it is known. The brief builder shows its guest line only on `false`.
+ */
+export function useSignedIn(): boolean | null {
+  const [signedIn, setSignedIn] = useState<boolean | null>(null)
+  const pathname = usePathname()
+  useEffect(() => {
+    let live = true
+    loadSession(pathname).then((u) => live && setSignedIn(u !== null))
+    return () => {
+      live = false
+    }
+  }, [pathname])
+  return signedIn
+}
+
 function initialOf(name: string) {
   return Array.from(name.trim())[0]?.toUpperCase() ?? ''
 }

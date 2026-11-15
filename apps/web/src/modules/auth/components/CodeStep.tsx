@@ -38,7 +38,10 @@ export function CodeStep({
   mode,
   personas = [],
   legal,
+  intent = 'none',
 }: {
+  /** 021: `brief` when this sign-in sends a kept brief (no role question; "change number" keeps the brief). */
+  intent?: 'none' | 'brief'
   locale: string
   /** The person's own number, already grouped for display (`+971 50 123 4567`). */
   phone: string
@@ -59,7 +62,7 @@ export function CodeStep({
   const other = current.channel === 'sms' ? 'whatsapp' : 'sms'
   // The role rows show only once a correct code turned out to be a new number; a returning member
   // signs straight in.
-  const askRole = mode === 'login' && personas.length > 0
+  const askRole = mode === 'login' && intent !== 'brief' && personas.length > 0
   const showRoles = askRole && state?.needsRole === true
   const list = (kind: 'or' | 'and') => joinList(personas.map((p) => p.label), kind, locale)
   const combined =
@@ -72,7 +75,7 @@ export function CodeStep({
     <div className="grid gap-3">
       <p className="px-1 text-[15px] text-mute" data-testid="sent-to">
         {t.rich('auth.otp.sentTo', { channel: t(`auth.otp.channels.${current.channel}`), phone, num: (chunks) => <Bidi>{chunks}</Bidi> })}{' '}
-        <Link href="/login" className="font-medium text-ink underline">
+        <Link href={intent === 'brief' ? { pathname: '/login', query: { next: '/brief/send', for: 'brief' } } : '/login'} className="font-medium text-ink underline">
           {t('auth.otp.changeNumber')}
         </Link>
       </p>

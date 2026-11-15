@@ -44,7 +44,7 @@ cd apps/mobile && dart format --set-exit-if-changed lib test && flutter analyze 
 
 | Id | Scenario | Tests |
 |---|---|---|
-| BS-US1-S1 | Guest's complete brief: nothing recorded, kept, sign-in screen with the sentence | `brief-sign-in.int.test.ts`, `BriefBuilder.signin.test.tsx`, `KeptBrief.test.tsx`, `bs-brief-sign-in.spec.ts` |
+| BS-US1-S1 | Guest's complete brief: nothing recorded, kept, sign-in screen with the sentence | `brief-sign-in.int.test.ts`, `BriefBuilder.signin.test.tsx`, `forms.brief.test.tsx`, `bs-brief-sign-in.spec.ts` |
 | BS-US1-S2 | Right code: brief recorded once for the member, step 2 (WhatsApp with Quick Match off) | `brief-sign-in.int.test.ts`, `bs-brief-sign-in.spec.ts` |
 | BS-US1-S3 | Creator, pick and source page survive the round trip | `brief-sign-in.int.test.ts` |
 | BS-US1-S4 | Invalid brief: today's messages, no sign-in | `brief-sign-in.int.test.ts` |
@@ -55,12 +55,12 @@ cd apps/mobile && dart format --set-exit-if-changed lib test && flutter analyze 
 | BS-US3-S2 | Kept brief invalid after sign-in: nothing recorded, back to the brief with the message | `brief-sign-in.int.test.ts`, `BriefBuilder.signin.test.tsx` |
 | BS-US3-S3 | Kept brief older than an hour: ordinary sign-in, not sent | `kept.test.ts`, `brief-sign-in.int.test.ts` |
 | BS-US3-S4 | Sent brief is no longer kept | `brief-sign-in.int.test.ts`, `BriefBuilder.signin.test.tsx` |
-| BS-US4-S1 | App: signed-out send opens sign-in, nothing recorded | `brief_cubit_sign_in_test.dart`, `landing_sign_in_test.dart`, `brief_builder_sign_in_test.dart` |
+| BS-US4-S1 | App: signed-out send opens sign-in, nothing recorded | `brief_cubit_sign_in_test.dart`, `landing_sign_in_test.dart`, `brief_builder_sign_in_test.dart`, `number_page_brief_test.dart` |
 | BS-US4-S2 | App: after sign-in the brief is sent and step 2 opens | `brief_cubit_sign_in_test.dart`, `landing_sign_in_test.dart` |
 | BS-US4-S3 | App: new number from the brief becomes a client, no role question | `sign_in_flow_brief_test.dart` |
 | BS-US4-S4 | App: leaving sign-in keeps the brief and sends nothing later | `brief_cubit_sign_in_test.dart`, `landing_sign_in_test.dart` |
 | BS-US4-S5 | App: signed-in member records at once | `brief_cubit_sign_in_test.dart` |
 | BS-US5-S1 | Website: signed-in member records at once | `brief-sign-in.int.test.ts` |
-| BS-US5-S2 | Guest line under the action, never for members; WhatsApp stays open | `BriefBuilder.signin.test.tsx`, `brief_bar_sign_in_test.dart` |
+| BS-US5-S2 | Guest line under the action, never for members; WhatsApp stays open | `BriefBuilder.signin.test.tsx`, `landing_sign_in_test.dart` |
 | BS-US5-S3 | Switch off: guests record as before (web and app) | `brief-sign-in.int.test.ts`, `mobile-api-brief.int.test.ts`, `brief_cubit_sign_in_test.dart` |
 | BS-US5-S4 | Switch on: a request with no member is refused, nothing recorded | `mobile-api-brief.int.test.ts`, `brief-sign-in.int.test.ts` |

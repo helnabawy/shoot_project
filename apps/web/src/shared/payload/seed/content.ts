@@ -171,7 +171,8 @@ export const landingPage = {
       ar: 'صِف التصوير في سطر واحد. نجد لك محترفاً متاحاً في ذلك اليوم ونردّ عليك عبر واتساب.',
     },
     trustChips: [
-      { text: { en: 'No account needed', ar: 'لا حاجة لحساب' } },
+      // 021: sending a brief asks for a number and a code; the chip says so instead of "No account needed".
+      { text: { en: 'Sign in with your number', ar: 'ادخل برقم هاتفك' } },
       { text: { en: 'Reply on WhatsApp', ar: 'نردّ عبر واتساب' } },
       { text: { en: 'English & العربية', ar: 'العربية و English' } },
     ],
@@ -234,7 +235,7 @@ export const landingPage = {
         { pointsAt: 'sentence', glyph: { en: 'Aa', ar: 'أب' }, title: { en: 'One sentence, no forms', ar: 'جملة واحدة بلا نماذج' }, body: { en: 'Pick the words that fit. Nothing else to fill in.', ar: 'اختر الكلمات المناسبة. لا شيء آخر لتعبئته.' } },
         { pointsAt: 'whatsapp', glyph: { en: 'WA', ar: 'و' }, title: { en: 'A person replies', ar: 'يردّ عليك شخص حقيقي' }, body: { en: 'Your brief reaches our team on WhatsApp.', ar: 'يصل طلبك إلى فريقنا عبر واتساب.' } },
         { pointsAt: 'language', glyph: { en: 'ع', ar: 'En' }, title: { en: 'Arabic and English', ar: 'العربية والإنجليزية' }, body: { en: 'Use the site and talk to us in either language.', ar: 'استخدم الموقع وتحدّث معنا بأي من اللغتين.' } },
-        { pointsAt: 'send', glyph: '✓', title: { en: 'No account needed', ar: 'لا حاجة لحساب' }, body: { en: 'Create one later if you want your briefs in one place.', ar: 'أنشئ حساباً لاحقاً إن أردت جمع طلباتك في مكان واحد.' } },
+        { pointsAt: 'send', glyph: '✓', title: { en: 'Your number is your account', ar: 'رقمك هو حسابك' }, body: { en: 'One code to your mobile sends the brief and keeps all your briefs in one place.', ar: 'رمز واحد إلى هاتفك يرسل الطلب ويجمع كل طلباتك في مكان واحد.' } },
       ],
     },
     {
@@ -257,7 +258,7 @@ export const landingPage = {
       anchor: 'faq',
       heading: { en: 'Questions', ar: 'أسئلة' },
       items: [
-        { question: { en: 'Do I need an account?', ar: 'هل أحتاج إلى حساب؟' }, answer: rt('No. Send a brief and we reply on WhatsApp. An account only keeps your briefs in one place.', 'لا. أرسل طلبك ونردّ عليك عبر واتساب. الحساب يحفظ طلباتك في مكان واحد فقط.') },
+        { question: { en: 'Do I need an account?', ar: 'هل أحتاج إلى حساب؟' }, answer: rt('Your mobile number is your account. Build the brief first; when you send it we text you a code, and new numbers are set up in the same step. To just ask a question, message us on WhatsApp.', 'رقم هاتفك المتحرك هو حسابك. أنشئ طلبك أولاً، وعند إرساله نرسل إليك رمزاً، والأرقام الجديدة تُسجَّل في الخطوة نفسها. ولطرح سؤال فقط، راسلنا على واتساب.') },
         { question: { en: 'What happens after I send a brief?', ar: 'ماذا يحدث بعد إرسال الطلب؟' }, answer: rt('You get a reference, and our team messages you on WhatsApp to confirm the details.', 'تحصل على رقم مرجع، ويتواصل معك فريقنا عبر واتساب لتأكيد التفاصيل.') },
         { question: { en: 'Which emirates do you cover?', ar: 'ما الإمارات التي تغطّونها؟' }, answer: rt('Pick any emirate in the brief. If we cannot cover it, we will tell you straight away.', 'اختر أي إمارة في الطلب. وإن لم نتمكن من تغطيتها سنخبرك فوراً.') },
         { question: { en: "Can I describe something that isn't in the list?", ar: 'هل يمكنني وصف شيء غير موجود في القائمة؟' }, answer: rt('Yes. Type your own words in the occasion, or choose "something else" and tell us on WhatsApp.', 'نعم. اكتب كلماتك في خانة المناسبة، أو اختر «شيء آخر» وأخبرنا عبر واتساب.') },

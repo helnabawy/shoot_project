@@ -12,12 +12,14 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type FormEvent,
   type KeyboardEvent,
   type ReactNode,
 } from 'react'
 import { useRouter } from 'next/navigation'
 import { PhotoTile } from '@/modules/creators/client'
+import { useSignedIn } from '@/shared/components/SessionNav'
 import { useHydrated } from '@/shared/ui/useHydrated'
 import {
   CalendarIcon,
@@ -35,6 +37,7 @@ import { briefWhatsAppMessage, chosenPersonas, CUSTOM_SUFFIX, CUSTOM_VALUE, read
 import type { BriefBuilderConfig, BriefState, BuilderOption, BuilderSlot } from '../types'
 import { fill, type BriefLabels } from '../labels'
 import { BriefSuccess } from './BriefSuccess'
+import { freshKeptCookie, keptForBuilder, restoreAnswers } from '../restore'
 
 /** Rows a step lists before "Show N more". */
 const STEP_ROWS = 6
@@ -62,6 +65,8 @@ export interface BriefBuilderProps {
   preset?: Record<string, string>
   /** Quick Match is on (feature 003): a saved brief continues to step 2 instead of WhatsApp. */
   quickMatch?: boolean
+  /** Feature 021: sending needs sign-in ("Briefs need sign-in" is on); a guest is told before they send. */
+  signInRequired?: boolean
 }
 
 /** Slots in the order the sentence asks them; slots missing from the sentence come last. */
@@ -89,6 +94,11 @@ function visibleOptions(slot: BuilderSlot, personas: readonly string[]): Builder
   return suggested ? [suggested, ...list.filter((o) => o !== suggested)] : list
 }
 
+// The kept brief's cookie (021) has no change event: it is read on each render after hydration.
+const noSubscribe = () => () => {}
+const readKeptCookie = () => freshKeptCookie(document.cookie)
+const noKeptOnServer = () => null
+
 /** A step that waits for "Continue": several choices, or a typed number. */
 const needsContinue = (slot: BuilderSlot) => slot.multiple || slot.kind === 'number'
 
@@ -110,6 +120,7 @@ export function BriefBuilder({
   locked = null,
   preset,
   quickMatch = false,
+  signInRequired = false,
 }: BriefBuilderProps) {
   const router = useRouter()
   const errorText = (key: string) => labels.errors[key] ?? labels.errors['brief.errors.generic'] ?? key
@@ -135,6 +146,9 @@ export function BriefBuilder({
   const [focusTarget, setFocusTarget] = useState<'next' | 'checked' | null>(null)
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({})
   const [dismissed, setDismissed] = useState(false)
+  /** 021: why a kept brief could not be sent after sign-in (shown like the server's answer). */
+  const [keptError, setKeptError] = useState<{ errors: Record<string, string>; formError?: string } | null>(null)
+  const signedIn = useSignedIn()
   const popup = useRef<Window | null>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -142,6 +156,27 @@ export function BriefBuilder({
 
   const order = useMemo(() => orderSlots(config), [config])
   const allParts = useMemo(() => parseSentence(config.sentence, config.slots.map((s) => s.token)), [config])
+
+  // 021 (FR-008, FR-009): a guest back from sign-in (or a brief that could not be sent after it) finds
+  // the brief they built on the page it came from. The cookie is read after hydration (null on the
+  // server), and each kept brief fills the builder once.
+  const keptRaw = useSyncExternalStore(noSubscribe, readKeptCookie, noKeptOnServer)
+  const [restoredRaw, setRestoredRaw] = useState<string | null>(null)
+  if (keptRaw && keptRaw !== restoredRaw) {
+    setRestoredRaw(keptRaw)
+    const kept = keptForBuilder(keptRaw, { path: sourcePath, locale: config.locale, creator: creator?.code ?? null })
+    if (kept) {
+      const restored = restoreAnswers(order, kept, locked?.token ?? null)
+      setValues({ ...restored.values, ...lockedValues })
+      setCustom(restored.custom)
+      setSkipped(restored.skipped)
+      setConfirmed({ ...restored.confirmed, ...initialConfirmed })
+      if (kept.error) {
+        setKeptError(kept.error)
+        setEditing(order.find((s) => kept.error?.errors[s.token])?.token ?? null)
+      }
+    }
+  }
 
   // A new answer from the server shows its errors again and reopens the first step they concern.
   const [seenState, setSeenState] = useState(state)
@@ -199,7 +234,11 @@ export function BriefBuilder({
 
   // After the server answers: send the pre-opened tab to WhatsApp, or close it on failure.
   useEffect(() => {
-    if (state.status === 'ok' && state.matchUrl) {
+    if (state.status === 'signIn') {
+      // 021: the brief is kept; signing in sends it (BS-US1-S1).
+      popup.current?.close()
+      router.push(state.loginUrl)
+    } else if (state.status === 'ok' && state.matchUrl) {
       popup.current?.close()
       router.push(state.matchUrl)
     } else if (state.status === 'ok') {
@@ -242,8 +281,10 @@ export function BriefBuilder({
     return () => document.removeEventListener('keydown', onKey)
   }, [success])
 
-  const errors = state.status === 'error' && !dismissed ? { ...state.errors, ...clientErrors } : clientErrors
-  const formError = state.status === 'error' && !dismissed ? state.formError : undefined
+  const shown = state.status === 'error' && !dismissed ? state : keptError && !dismissed ? { errors: keptError.errors, formError: keptError.formError } : null
+  const errors = shown ? { ...shown.errors, ...clientErrors } : clientErrors
+  const formError = shown?.formError
+  const leaving = state.status === 'signIn'
 
   const labelFor = (slot: BuilderSlot): string => {
     const value = values[slot.token] ?? ''
@@ -344,6 +385,7 @@ export function BriefBuilder({
       return
     }
     setClientErrors({})
+    setKeptError(null)
     setDismissed(false)
     // Opened inside the tap so browsers allow it; pointed at WhatsApp once the brief is saved.
     // With Quick Match the brief continues on this page instead (step 2).
@@ -831,7 +873,17 @@ export function BriefBuilder({
 
         <div className={cx('pt-1.5 pb-2', !showTopHit && 'js-hidden')} hidden={hydrated && !showTopHit}>
           <span className="group-label block px-4 pt-1 pb-1">{labels.topHit}</span>
-          <TopHit label={pending ? labels.submitting : config.submitLabel} pending={pending} testId="brief-submit" />
+          <TopHit
+            label={leaving ? labels.signingIn : pending ? labels.submitting : config.submitLabel}
+            pending={pending || leaving}
+            testId="brief-submit"
+          />
+          {/* Shown until the session says otherwise: guests (most visitors) get it at first paint. */}
+          {signInRequired && signedIn !== true ? (
+            <p data-testid="brief-sign-in-next" className="px-4 pt-2 pb-0.5 text-[13px] leading-snug text-mute [&:lang(ar)]:text-[14px]">
+              {labels.signInNext}
+            </p>
+          ) : null}
           {formError ? (
             <p role="alert" className="mx-4 mt-2 rounded-md bg-attention px-3 py-2 text-[14px] text-on-attention">
               {errorText(formError)}

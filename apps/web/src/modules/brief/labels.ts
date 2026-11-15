@@ -36,6 +36,10 @@ export interface BriefLabels {
   successAnother: string
   /** Matches in the bar (003 US1-S7). */
   preview: { group: string; groupNoPrice: string; loading: string; none: string; more: string }
+  /** 021: under a guest's Top Hit while sending needs sign-in. */
+  signInNext: string
+  /** 021: the Top Hit while the guest is taken to sign in. */
+  signingIn: string
   /** Error key → sentence. */
   errors: Record<string, string>
 }
@@ -88,6 +92,8 @@ export function briefLabelsFrom(t: Translate, raw: Translate = t): BriefLabels {
     },
     successOpenWhatsapp: t('brief.successOpenWhatsapp'),
     successAnother: t('brief.successAnother'),
+    signInNext: t('brief.signInNext'),
+    signingIn: t('brief.signingIn'),
     errors: Object.fromEntries(BRIEF_ERROR_KEYS.map((k) => [k, t(k)])),
   }
 }

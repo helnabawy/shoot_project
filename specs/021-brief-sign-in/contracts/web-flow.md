@@ -16,16 +16,22 @@ Unchanged input (the builder's form). New behaviour when `briefNeedsSignIn` is o
 
 ## `/login?for=brief` (page)
 
-- With a fresh kept brief: heading `auth.otp.briefTitle` ("Sign in to send your brief"), intro `auth.otp.briefIntro`, the kept sentence in a set row with `auth.otp.briefChange` linking to the kept `path`. `PhoneStep` posts `intent=brief` and `next=/brief/send`.
+- With a fresh kept brief: heading `auth.otp.briefTitle` ("Log in to send your brief", the header's verb), intro `auth.otp.briefIntro`, the kept sentence in a set row with `auth.otp.briefChange` linking to the kept `path`. `PhoneStep` posts `intent=brief` and `next=/brief/send`.
 - Without a fresh kept brief: the ordinary sign-in page (the `for` parameter is ignored).
 - Signed in already: redirects to `next` as today (so a member lands on `/brief/send`, which sends their kept brief).
 
 ## `/login/code` with `intent: 'brief'`
 
 - No role rows, no `askRole`; Continue verifies with `signup: seeker`; a returning number signs in whatever its type.
-- Success → redirect to `next` (`/brief/send`).
+- Success → the action sends the kept brief itself (`sendKept`, the same core as `GET /brief/send`) and redirects
+  straight to step 2 (or WhatsApp, or back to the brief with its error). It does not go through `/brief/send`:
+  the client router would keep that address in the bar, and a reload would find the brief already sent.
 
 ## `GET /brief/send` (`app/(site)/[locale]/brief/send/route.ts`)
+
+For a member who is already signed in when they reach `/login?for=brief` (the login page sends them on here).
+The cookie change is set on the 303 response itself (cookies changed before `redirect()` in a route handler are
+not sent).
 
 | Situation | Result |
 |---|---|
@@ -42,7 +48,7 @@ After hydration, reads `shoot-brief`; restores when `path === sourcePath`, `loca
 
 ## Guest line
 
-Under the Top Hit of a complete brief, when `signInRequired` and `useSignedIn() === false`: `brief.signInNext` ("Next, we'll send a code to your mobile number.").
+Under the Top Hit of a complete brief, when `signInRequired` and `useSignedIn() === false`: `brief.signInNext` ("Next, we'll send a code to your mobile number to log you in.").
 
 ## New message keys (`messages/{en,ar}.json`)
 

@@ -41,9 +41,13 @@ abstract final class AppRoutes {
   /// 019: the creator brief inbox.
   static const accountInbox = '/account/inbox';
 
+  /// 021: sign-in for a brief ends here; the kept brief is sent and the landing shows.
+  static const briefSend = '/brief/send';
+
   /// Every path the app knows, built or not (contracts/routes.md).
   static const table = <AppRoute>[
     AppRoute(home, owner: '010', example: '/', built: true),
+    AppRoute(briefSend, owner: '021', example: '/brief/send', built: true),
     AppRoute(welcome, owner: '010', example: '/welcome/1', built: true),
     AppRoute('/menu', owner: '010', example: '/menu', built: true),
     AppRoute(creators, owner: '011', example: '/creators', built: true),

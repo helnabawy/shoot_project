@@ -842,5 +842,9 @@
   "inboxSent": "أُرسل {date}",
   "caBriefsTitle": "{count, plural, =1{طلب جديد يناسبك} =2{طلبان جديدان يناسبانك} few{{count} طلبات جديدة تناسبك} other{{count} طلبًا جديدًا يناسبك}}",
   "caBriefsAction": "{count, plural, =1{اطّلع على الطلب} other{اطّلع على الطلبات}}",
-  "accountSaidYes": "{count, plural, =1{وافق محترف واحد} =2{وافق محترفان} few{وافق {count} محترفين} other{وافق {count} محترفًا}}"
+  "accountSaidYes": "{count, plural, =1{وافق محترف واحد} =2{وافق محترفان} few{وافق {count} محترفين} other{وافق {count} محترفًا}}",
+  "briefSignInNext": "بعدها نرسل رمزاً إلى رقم هاتفك المتحرك لتسجيل دخولك.",
+  "signInBriefTitle": "سجّل الدخول لإرسال طلبك",
+  "signInBriefBody": "طلبك محفوظ. أدخل رقم هاتفك المتحرك الإماراتي وسنرسل إليك رمزاً من ستة أرقام، ويُرسل طلبك فور دخولك.",
+  "problemSignInRequired": "سجّل الدخول لإرسال طلبك."
 }

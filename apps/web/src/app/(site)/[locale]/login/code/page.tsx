@@ -24,10 +24,12 @@ export default async function CodePage({ params }: Props) {
   const pending = await readPending()
   if (!pending) redirect({ href: '/login', locale })
   const p = pending!
+  // The role question needs the professions; a sign-in that sends a kept brief (021) never asks it.
+  const asksRole = p.mode === 'login' && p.intent !== 'brief'
   const [t, personas, legal] = await Promise.all([
     getTranslations('auth.otp'),
-    p.mode === 'login' ? getActivePersonas(locale as Locale) : Promise.resolve([]),
-    p.mode === 'login' ? getLegalForRegistration(locale as Locale) : Promise.resolve(undefined),
+    asksRole ? getActivePersonas(locale as Locale) : Promise.resolve([]),
+    asksRole ? getLegalForRegistration(locale as Locale) : Promise.resolve(undefined),
   ])
   return (
     <section className="mx-auto max-w-[480px] px-3 pt-8 sm:pt-14">
@@ -41,6 +43,7 @@ export default async function CodePage({ params }: Props) {
           mode={p.mode}
           personas={personas.map((x) => ({ slug: x.slug, label: x.singular }))}
           legal={legal}
+          intent={p.intent}
         />
       </NextIntlClientProvider>
     </section>

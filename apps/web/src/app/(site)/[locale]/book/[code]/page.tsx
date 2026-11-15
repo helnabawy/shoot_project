@@ -64,6 +64,7 @@ export default async function BookPage({ params }: Props) {
           }
           providerHref={localizeHref('/register?type=provider', locale)}
           quickMatch={settings.quickMatch?.enabled === true}
+          signInRequired={settings.briefNeedsSignIn !== false}
           sourcePath={localizeHref(`/book/${view.code.toLowerCase()}`, locale)}
           labels={labels}
         />

@@ -2,13 +2,16 @@ import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server'
 import { redirect } from '@/i18n/navigation'
+import { KeptBrief } from '@/modules/auth/components/KeptBrief'
 import { PhoneStep } from '@/modules/auth/components/PhoneStep'
+import { readKept } from '@/modules/brief/kept-cookie'
+import { BRIEF_SEND_PATH } from '@/modules/brief/paths'
 import { safeNext } from '@/modules/auth/safe-next'
 import { getCurrentUser } from '@/modules/auth/session'
 import type { Locale } from '@/shared/lib/locale'
 import { alternates } from '@/shared/lib/seo'
 
-type Props = { params: Promise<{ locale: string }>; searchParams: Promise<{ next?: string; add?: string }> }
+type Props = { params: Promise<{ locale: string }>; searchParams: Promise<{ next?: string; add?: string; for?: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
@@ -23,18 +26,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function LoginPage({ params, searchParams }: Props) {
   const { locale } = await params
   setRequestLocale(locale)
-  const { next, add } = await searchParams
+  const { next, add, for: purpose } = await searchParams
   const destination = safeNext(next)
   const user = await getCurrentUser()
   const linking = add === 'number' && user !== null && !user.username
   if (user && !linking) redirect({ href: destination, locale })
+  // 021: from a guest's brief, with the brief still kept, this sign-in sends it.
+  const kept = !linking && purpose === 'brief' ? await readKept(new Date()) : null
   const t = await getTranslations('auth')
+  const title = linking ? t('otp.linkTitle') : kept ? t('otp.briefTitle') : t('loginTitle')
+  const intro = linking ? t('otp.linkIntro') : kept ? t('otp.briefIntro') : t('otp.loginIntro')
   return (
     <section className="mx-auto max-w-[480px] px-3 pt-8 sm:pt-14">
-      <h1 className="px-1 text-[34px] font-bold leading-tight tracking-[-0.03em] text-ink">{linking ? t('otp.linkTitle') : t('loginTitle')}</h1>
-      <p className="mt-2 mb-5 px-1 text-[15px] text-mute">{linking ? t('otp.linkIntro') : t('otp.loginIntro')}</p>
+      <h1 className="px-1 text-[34px] font-bold leading-tight tracking-[-0.03em] text-balance text-ink">{title}</h1>
+      <p className="mt-2 mb-5 px-1 text-[15px] text-mute">{intro}</p>
       <NextIntlClientProvider locale={locale} messages={await formMessages()}>
-        <PhoneStep locale={locale} next={linking ? '/account' : destination} mode={linking ? 'link' : 'login'} />
+        <PhoneStep
+          locale={locale}
+          next={linking ? '/account' : kept ? BRIEF_SEND_PATH : destination}
+          mode={linking ? 'link' : 'login'}
+          intent={kept ? 'brief' : undefined}
+          lead={
+            kept ? (
+              <KeptBrief sentence={kept.sentence} sentenceLocale={kept.locale} href={kept.path} label={t('otp.briefLabel')} changeLabel={t('otp.briefChange')} />
+            ) : undefined
+          }
+        />
       </NextIntlClientProvider>
     </section>
   )

@@ -72,7 +72,18 @@ clients and creators get app push (modules `apps/web/src/modules/{inbox,push}/`,
 `brief-answers` and `push-devices`, `PUSH_PROVIDER` = `fcm` | `console` | `off` with `FCM_SERVICE_ACCOUNT`;
 the app's `core/push/`, Firebase values from `--dart-define-from-file=firebase.env.json`). Open in its
 `tasks.md`: the APNs key and service account from the owner, the device walkthrough, goldens and the
-design finish review.
+design finish review. Feature 021 (`specs/021-brief-sign-in/`, test-id prefix `BS-`) is implemented:
+a guest builds a brief freely, but while the site-settings switch `briefNeedsSignIn` ("Briefs need
+sign-in", default on) is on, sending needs a signed-in member. Web: `submitBrief` keeps the validated
+brief in the readable cookie `shoot-brief` (one hour, answers only; rules in
+`packages/domain/src/brief/kept.ts`) and returns `signIn` → `/login?next=/brief/send&for=brief`
+(the kept sentence shows, the pending sign-in carries `intent: 'brief'`, a new number becomes a client
+with no role question); `GET /brief/send` (`modules/brief/send-route.ts`) records it through
+`commands/send-brief.ts` (shared with the action) and continues to step 2; the builder restores a kept
+brief (`modules/brief/restore.ts`). App: `GET brief-builder` carries `signInRequired`, `POST briefs`
+answers `401 brief.errors.signInRequired` for a guest; `BriefCubit` asks for sign-in and the app route
+`/brief/send` sends the draft. Constitution 1.5.0 amended Principle IX for it. Open in its `tasks.md`:
+the owner's confirmation of the clarifications, the live "No account needed" copy, the device walkthrough.
 `specs/ROADMAP.md` has the screens per feature:
 
 | # | Feature (test-id prefix) | What |

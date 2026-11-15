@@ -564,6 +564,9 @@
               "ar"
             ],
             "type": "string"
+          },
+          "signInRequired": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -22734,6 +22737,7 @@
     "brief.errors.optionGone",
     "brief.errors.pastDate",
     "brief.errors.required",
+    "brief.errors.signInRequired",
     "brief.errors.tooMany",
     "creators.errors.generic",
     "creators.errors.noProfile",

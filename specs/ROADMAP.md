@@ -25,6 +25,7 @@ next), *implemented* = built on its branch, *idea* = not yet specified.
 | 016 | Introducer / referral programme | 10% / 15% agency commission, referral links, payouts | 003 | idea |
 | 017 | Google (and Apple) sign-in | "Continue with Google", Sign in with Apple (required on iOS once Google is offered) | 009 | idea |
 | 018 | Notifications & messaging | WhatsApp / email notifications (app push for briefs comes with 019) for briefs, quotations, confirmations, creator requests; admin alerts | 003, 009 | idea |
+| 021 | Sign in to send a brief (`specs/021-brief-sign-in/`, `BS-`): guests build the brief freely; sending asks for the mobile number and a code (new numbers become clients, no role question), the brief is kept and sent automatically; CMS switch "Briefs need sign-in" (default on); constitution 1.5.0 | Brief builder (home, `/book`, `/hire`), `/login`, `/brief/send`, app brief bar and screens 20–21, `POST briefs` | 009, 010 | implemented (open: owner confirms the clarifications, edits live "No account needed" copy, device walkthrough) |
 | 019 | Creator brief inbox (`specs/019-creator-brief-inbox/`, `BI-`): matching creators see open briefs in Up next (web and app), accept or reject; acceptors listed first at step 2 and assigned confirmed; app push both ways | Creator account home, Quick Match step 2, app creator account | 003, 012, 014 | implemented (open: owner's APNs key and service account, device walkthrough, goldens, finish review) |
 
 Renumbered 2026-11-11: the ideas once listed as 006 (Introducer), 007 (one-time-code sign-in) and

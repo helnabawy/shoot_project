@@ -17,6 +17,9 @@ const cases: [string, z.ZodType, string][] = [
   ['briefBuilderV1', briefBuilderV1, 'brief-builder'],
 ]
 
+/** Fields added later as optional (v1 grows additively): an older server leaves them out. */
+const OPTIONAL: Record<string, string[]> = { 'brief-builder': ['signInRequired'] }
+
 describe.each(cases)('%s', (_name, schema, file) => {
   it('accepts its English and Arabic examples', () => {
     expect(schema.safeParse(example(file)).success).toBe(true)
@@ -27,7 +30,17 @@ describe.each(cases)('%s', (_name, schema, file) => {
 
   it('refuses a missing required field', () => {
     const value = example(file)
-    for (const key of Object.keys(value)) expect(schema.safeParse(without(value, key)).success, key).toBe(false)
+    for (const key of Object.keys(value)) {
+      if (OPTIONAL[file]?.includes(key)) continue
+      expect(schema.safeParse(without(value, key)).success, key).toBe(false)
+    }
+  })
+})
+
+describe('briefBuilderV1 signInRequired (021)', () => {
+  it('BS-US4-S1 carries the switch, and an older server without it still parses', () => {
+    expect(briefBuilderV1.parse(example('brief-builder')).signInRequired).toBe(true)
+    expect(briefBuilderV1.parse(without(example('brief-builder'), 'signInRequired')).signInRequired).toBeUndefined()
   })
 })
 

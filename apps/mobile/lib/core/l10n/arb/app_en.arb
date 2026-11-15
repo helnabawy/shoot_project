@@ -3410,5 +3410,21 @@
         "type": "int"
       }
     }
+  },
+  "briefSignInNext": "Next, we'll text a code to your mobile number to sign you in.",
+  "@briefSignInNext": {
+    "description": "021: under the brief bar's Top Hit for a signed-out person while sending needs sign-in. Same words as the website."
+  },
+  "signInBriefTitle": "Sign in to send your brief",
+  "@signInBriefTitle": {
+    "description": "021: screen 20 heading when sign-in comes from the brief (?for=brief)."
+  },
+  "signInBriefBody": "Your brief is kept. Enter your UAE mobile number and we'll text you a six-digit code; your brief goes out as soon as you're in.",
+  "@signInBriefBody": {
+    "description": "021: screen 20 body when sign-in comes from the brief."
+  },
+  "problemSignInRequired": "Sign in to send your brief.",
+  "@problemSignInRequired": {
+    "description": "021: brief.errors.signInRequired (HTTP 401): sending a brief needs a signed-in member."
   }
 }

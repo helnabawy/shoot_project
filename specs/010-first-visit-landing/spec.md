@@ -257,7 +257,10 @@ creator"; tap "Start your brief" and return to the bar.
   brief for identical submissions within one minute and honour the per-visitor hourly limit from
   site settings with a plain message and a WhatsApp way out (001 FR-049, FR-050).
 - **FR-018**: Building and recording a brief MUST NOT require an account, a number or sign-in; the
-  number is asked at the end of Quick Match (screens 10 and 11, feature 012).
+  number is asked at the end of Quick Match (screens 10 and 11, feature 012). *Superseded 2026-11-14
+  by `specs/021-brief-sign-in/` (constitution 1.5.0): building needs no account, but while the
+  owner's "Briefs need sign-in" switch is on, recording needs a signed-in member; the draft is kept
+  through sign-in and sent automatically.*
 
 **Below the hero**
 

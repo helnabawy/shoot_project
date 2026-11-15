@@ -145,7 +145,9 @@ is not done. How to build it is in the `flutter-mobile` skill.
 
 - One primary action per screen; it is the Top Hit row, visible without
   scrolling on a 360 × 640 phone.
-- Brief first, account never required. Every slot has a default; the happy
+- Brief first. Building a brief never needs an account; sending one asks a guest for their number
+  and a code while the "Briefs need sign-in" switch is on (feature 021), and the brief they built
+  is kept and sent for them. Every slot has a default; the happy
   path is tap a line → pick → tap the action → WhatsApp.
 - Labels and errors are one plain sentence, next to the field, saying what
   to do. No placeholder-as-label.

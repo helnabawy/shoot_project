@@ -17,6 +17,7 @@ import * as migration_20261112_063030_booking_details from './20261112_063030_bo
 import * as migration_20261112_144241_account_finish_schema from './20261112_144241_account_finish_schema';
 import * as migration_20261113_201723_brief_inbox from './20261113_201723_brief_inbox';
 import * as migration_20261114_160000_brief_templates from './20261114_160000_brief_templates';
+import * as migration_20261114_202819_brief_sign_in from './20261114_202819_brief_sign_in';
 
 export const migrations = [
   {
@@ -107,11 +108,16 @@ export const migrations = [
   {
     up: migration_20261113_201723_brief_inbox.up,
     down: migration_20261113_201723_brief_inbox.down,
-    name: '20261113_201723_brief_inbox'
+    name: '20261113_201723_brief_inbox',
   },
   {
     up: migration_20261114_160000_brief_templates.up,
     down: migration_20261114_160000_brief_templates.down,
-    name: '20261114_160000_brief_templates'
+    name: '20261114_160000_brief_templates',
+  },
+  {
+    up: migration_20261114_202819_brief_sign_in.up,
+    down: migration_20261114_202819_brief_sign_in.down,
+    name: '20261114_202819_brief_sign_in'
   },
 ];

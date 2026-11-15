@@ -2,6 +2,7 @@
 
 import { otpRequestV1 } from '@shoot/domain/api/v1'
 import { cookies } from 'next/headers'
+import { redirect as nextRedirect } from 'next/navigation'
 import { redirect } from '@/i18n/navigation'
 import type { User } from '@/payload-types'
 import type { Problem } from '@/shared/api/problem'
@@ -113,6 +114,8 @@ export async function requestCodeAction(_prev: AuthState, form: FormData): Promi
     mode,
     next: safeNext(form.get('next')),
     personas: mode === 'join' ? personas : [],
+    // 021: only a standalone sign-in can carry a brief.
+    intent: mode === 'login' && form.get('intent') === 'brief' ? 'brief' : 'none',
   })
   redirect({ href: '/login/code', locale })
 }
@@ -152,6 +155,22 @@ export async function verifyCodeAction(_prev: AuthState, form: FormData): Promis
     if (isProblemValue(linked)) return stateOf(linked, values, other)
     await clearPending()
     redirect({ href: '/account', locale })
+  }
+
+  // 021 (BS-US2-S1): sign-in that sends a kept brief never asks the role; a new number becomes a client.
+  // The brief is sent here and the person goes straight on to step 2: a redirect through /brief/send would
+  // leave that address in the bar, and a reload would find the brief already gone.
+  if (p.mode === 'login' && p.intent === 'brief') {
+    const result = await verifyCode(await webActor(locale), { challengeId: p.challengeId, phone: p.phone, code, signup: { accountType: 'seeker', personas: [] } })
+    if (isProblemValue(result)) return stateOf(result, values, other)
+    await setSessionCookie(result.token, result.exp)
+    await clearPending()
+    const { sendKept, applyKept } = await import('@/modules/brief/sign-in')
+    const payload = await getPayloadClient()
+    const member = (await payload.findByID({ collection: 'users', id: Number(result.user.id), depth: 0, overrideAccess: true })) as User
+    const outcome = await sendKept(member, locale)
+    await applyKept(outcome.cookie)
+    nextRedirect(outcome.location)
   }
 
   // Standalone sign-in, before the role was asked: a known number signs straight in; a new one

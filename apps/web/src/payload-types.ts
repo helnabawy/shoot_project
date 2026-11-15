@@ -3015,6 +3015,10 @@ export interface SiteSetting {
    */
   directoryPageSize?: number | null;
   /**
+   * When on, a visitor builds the brief freely but signs in with their mobile number and a code to send it; the brief they built is kept and sent for them. WhatsApp stays open to everyone.
+   */
+  briefNeedsSignIn?: boolean | null;
+  /**
    * How many briefs one anonymous visitor may send per hour.
    */
   briefLimitPerHour?: number | null;
@@ -3269,6 +3273,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   creatorCodePrefix?: T;
   autoPublishEdits?: T;
   directoryPageSize?: T;
+  briefNeedsSignIn?: T;
   briefLimitPerHour?: T;
   quickMatch?:
     | T

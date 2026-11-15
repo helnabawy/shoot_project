@@ -39,4 +39,6 @@ export interface BriefBuilderConfig {
 export type BriefState =
   | { status: 'idle' }
   | { status: 'error'; errors: Record<string, string>; formError?: string }
+  /** Feature 021: a guest's valid brief was kept; sign in at `loginUrl` to send it. */
+  | { status: 'signIn'; loginUrl: string }
   | { status: 'ok'; reference: string; whatsappUrl: string; sentence: string; replyTime: string; /** Step 2 of Quick Match, when it is on (feature 003). */ matchUrl?: string }

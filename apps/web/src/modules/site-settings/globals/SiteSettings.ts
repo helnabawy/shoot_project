@@ -181,6 +181,17 @@ export const SiteSettings: GlobalConfig = {
           label: 'Brief limits',
           fields: [
             {
+              // Feature 021: sending a brief asks a guest to sign in by number and code; off restores guest briefs.
+              name: 'briefNeedsSignIn',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Briefs need sign-in',
+              admin: {
+                description:
+                  'When on, a visitor builds the brief freely but signs in with their mobile number and a code to send it; the brief they built is kept and sent for them. WhatsApp stays open to everyone.',
+              },
+            },
+            {
               name: 'briefLimitPerHour',
               type: 'number',
               defaultValue: 5,
