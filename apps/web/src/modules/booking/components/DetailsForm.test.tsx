@@ -52,6 +52,13 @@ describe('QM-US2-S1 step 3 details', () => {
   it('QM-US2-S6 pre-fills a member', () => {
     renderWithLocale(<DetailsForm {...props({ defaults: { name: 'Layla', whatsapp: '+971501234567' } })} />)
     expect(screen.getByLabelText('Your name')).toHaveValue('Layla')
-    expect(screen.getByLabelText('WhatsApp number')).toHaveValue('+971501234567')
+    expect(screen.getByLabelText('WhatsApp number')).toHaveValue('501234567')
+  })
+
+  it('shows a fixed +971 before the WhatsApp number and keeps another country whole', () => {
+    renderWithLocale(<DetailsForm {...props({ defaults: { name: 'Sam', whatsapp: '+442079460958' } })} />)
+    const whatsapp = screen.getByLabelText('WhatsApp number')
+    expect(whatsapp).toHaveAccessibleDescription(/\+971/)
+    expect(whatsapp).toHaveValue('+442079460958')
   })
 })

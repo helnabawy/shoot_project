@@ -36,7 +36,7 @@
     "call": "Call us",
     "rather": "Rather talk?",
     "errors": {
-      "whatsappFormat": "Use the international format with the country code, for example +971 58 123 4567."
+      "whatsappFormat": "Enter a mobile number, like 58 123 4567. For another country, start with + and its code."
     }
   },
   "brief": {

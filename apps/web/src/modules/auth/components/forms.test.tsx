@@ -49,6 +49,14 @@ describe('009 US5 the number step (/login, /register)', () => {
     expect(screen.queryByLabelText('Password')).toBeNull()
   })
 
+  it('shows a fixed +971 before the number, read with it, so only the national part is typed', () => {
+    renderWithLocale(<PhoneStep locale="en" next="/account" />)
+    const phone = screen.getByLabelText('Mobile number')
+    expect(screen.getByText('+971')).toBeInTheDocument()
+    expect(phone).toHaveAccessibleDescription(/\+971/)
+    expect(phone).toHaveAttribute('autocomplete', 'tel-national')
+  })
+
   it('shows the field error from its message key and keeps what was typed', async () => {
     renderWithLocale(<PhoneStep locale="en" />)
     await userEvent.click(screen.getByTestId('send-code'))

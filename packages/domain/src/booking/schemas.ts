@@ -1,12 +1,12 @@
 import { z } from 'zod'
-import { normaliseE164 } from '../contact/whatsapp'
+import { normaliseE164, withUaeCode } from '../contact/whatsapp'
 import { isIsoDay } from './dates'
 
 /** Step 3 "Your details" (FR-011, research §13). Errors are message keys. */
 export const detailsSchema = z.object({
   name: z.string().trim().min(2, 'booking.errors.name').max(80, 'booking.errors.name'),
   whatsapp: z.string().transform((value, ctx) => {
-    const n = normaliseE164(value)
+    const n = normaliseE164(withUaeCode(value))
     if (!n) {
       ctx.addIssue({ code: 'custom', message: 'contact.errors.whatsappFormat' })
       return z.NEVER

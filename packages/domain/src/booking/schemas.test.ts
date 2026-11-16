@@ -7,9 +7,16 @@ describe('QM-US2-S1 step 3 details', () => {
     expect(r).toEqual({ name: 'Sara', whatsapp: '+971501234567', date: undefined, addOnIds: [], promo: undefined })
   })
 
+  it('reads a number typed after the fixed +971 prefix as a UAE number', () => {
+    expect(detailsSchema.parse({ name: 'Sara', whatsapp: '50 123 4567' }).whatsapp).toBe('+971501234567')
+    expect(detailsSchema.parse({ name: 'Sara', whatsapp: '050 123 4567' }).whatsapp).toBe('+971501234567')
+    expect(detailsSchema.parse({ name: 'Sara', whatsapp: '+44 20 7946 0958' }).whatsapp).toBe('+442079460958')
+  })
+
   it.each([
     [{ name: 'S', whatsapp: '+971501234567' }, 'booking.errors.name'],
     [{ name: 'Sara', whatsapp: '0501' }, 'contact.errors.whatsappFormat'],
+    [{ name: 'Sara', whatsapp: '' }, 'contact.errors.whatsappFormat'],
     [{ name: 'Sara', whatsapp: '+971501234567', date: '2026-02-30' }, 'booking.errors.date'],
   ])('rejects %j', (input, message) => {
     const r = detailsSchema.safeParse(input)
