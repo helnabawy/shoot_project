@@ -10,25 +10,56 @@ export function Field({
   label,
   hint,
   error,
+  prefix,
   className,
   ...input
-}: InputHTMLAttributes<HTMLInputElement> & { id: string; label: ReactNode; hint?: ReactNode; error?: ReactNode }) {
-  const describedBy = [error ? `${id}-error` : null, hint ? `${id}-hint` : null].filter(Boolean).join(' ') || undefined
+}: Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix'> & {
+  id: string
+  label: ReactNode
+  hint?: ReactNode
+  error?: ReactNode
+  /** A fixed part shown before the value inside the same box (the phone fields' `+971`), read with the field. */
+  prefix?: string
+}) {
+  const describedBy =
+    [prefix ? `${id}-prefix` : null, error ? `${id}-error` : null, hint ? `${id}-hint` : null].filter(Boolean).join(' ') || undefined
+  const border = error ? 'border-on-attention/50' : 'border-hair'
   return (
     <div className={cx('px-4 py-2.5', className)}>
       <label htmlFor={id} className="block text-[13px] font-medium text-mute">
         {label}
       </label>
-      <input
-        id={id}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy}
-        className={cx(
-          'mt-1 block min-h-11 w-full rounded-[var(--radius-row)] border bg-transparent px-3 text-[16px] text-ink outline-none transition-colors placeholder:text-mute focus-visible:border-[var(--focus)] focus-visible:outline-none',
-          error ? 'border-on-attention/50' : 'border-hair',
-        )}
-        {...input}
-      />
+      {prefix ? (
+        <div
+          dir="ltr"
+          className={cx(
+            'mt-1 flex min-h-11 w-full items-stretch overflow-hidden rounded-[var(--radius-row)] border transition-colors focus-within:border-[var(--focus)]',
+            border,
+          )}
+        >
+          <span id={`${id}-prefix`} className="flex items-center border-e border-hair px-3 text-[16px] text-ink tabular-nums">
+            {prefix}
+          </span>
+          <input
+            id={id}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={describedBy}
+            className="block min-w-0 flex-1 bg-transparent px-3 text-[16px] text-ink outline-none placeholder:text-mute focus-visible:outline-none"
+            {...input}
+          />
+        </div>
+      ) : (
+        <input
+          id={id}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
+          className={cx(
+            'mt-1 block min-h-11 w-full rounded-[var(--radius-row)] border bg-transparent px-3 text-[16px] text-ink outline-none transition-colors placeholder:text-mute focus-visible:border-[var(--focus)] focus-visible:outline-none',
+            border,
+          )}
+          {...input}
+        />
+      )}
       {hint && !error ? (
         <p id={`${id}-hint`} className="mt-1 text-[13px] text-mute">
           {hint}

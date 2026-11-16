@@ -77,6 +77,7 @@ export function PhoneStep({
             dir="ltr"
             autoComplete="tel-national"
             inputMode="tel"
+            prefix="+971"
             required
             label={t('auth.otp.phone')}
             hint={t('auth.otp.phoneHint')}

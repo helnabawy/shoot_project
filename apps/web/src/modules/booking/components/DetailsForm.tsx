@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useId } from 'react'
+import { nationalUae } from '@shoot/domain/contact'
 import { Bidi } from '@/shared/ui/Bidi'
 import { BriefBar, ResultGroup, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
 import { Field, FieldError } from '@/shared/ui/Field'
@@ -86,10 +87,11 @@ export function DetailsForm(props: DetailsFormProps) {
         dir="ltr"
         inputMode="tel"
         autoComplete="tel"
+        prefix="+971"
         required
         label={l.whatsapp}
         hint={l.whatsappHint}
-        defaultValue={props.defaults.whatsapp}
+        defaultValue={props.defaults.whatsapp ? nationalUae(props.defaults.whatsapp) : undefined}
         error={message(errors.whatsapp)}
       />
       {props.needsDate ? (

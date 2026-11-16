@@ -109,6 +109,7 @@ class PhoneField extends StatelessWidget {
                   autofillHints: const [AutofillHints.telephoneNumberNational],
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9 ]')),
+                    const UaeNationalFormatter(),
                   ],
                   cursorColor: c.accent,
                   style: ShootType.num(
@@ -139,6 +140,43 @@ class PhoneField extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The field shows a fixed `+971`, so only the national part belongs in it: a pasted or autofilled
+/// `+971 50 …` or `00971 50 …` (the `+` already filtered out) and a leading `0` (`050 …`) are
+/// dropped, keeping the person's spacing. A `971` still being typed is left until it is a whole
+/// number (12 digits).
+class UaeNationalFormatter extends TextInputFormatter {
+  const UaeNationalFormatter();
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final digits = newValue.text.replaceAll(' ', '');
+    var drop = 0;
+    if (digits.startsWith('00971')) {
+      drop = 5;
+    } else if (digits.startsWith('971') && digits.length >= 12) {
+      drop = 3;
+    }
+    while (drop < digits.length && digits[drop] == '0') {
+      drop++;
+    }
+    if (drop == 0) return newValue;
+    var seen = 0;
+    var cut = 0;
+    while (cut < newValue.text.length && seen < drop) {
+      if (newValue.text[cut] != ' ') seen++;
+      cut++;
+    }
+    final text = newValue.text.substring(cut).trimLeft();
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
     );
   }
 }

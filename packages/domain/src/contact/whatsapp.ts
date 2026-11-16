@@ -13,6 +13,23 @@ export function normaliseE164(input: string): string | null {
   return E164.test(withPlus) ? withPlus : null
 }
 
+/**
+ * Phone fields show a fixed `+971` before the input, so a number typed there without its own
+ * country code is a UAE number: `50 123 4567` and `050 123 4567` become `+971501234567`, and so
+ * does `971501234567`. A number that starts with `+` or `00` keeps its own country code.
+ */
+export function withUaeCode(input: string): string {
+  const compact = input.trim().replace(/[\s\-().]/g, '')
+  if (!compact || compact.startsWith('+') || compact.startsWith('00')) return input
+  if (compact.startsWith('971') && compact.length >= 12) return `+${compact}`
+  return `+971${compact.replace(/^0+/, '')}`
+}
+
+/** The part of a stored number shown after the fixed `+971`; another country's number stays whole. */
+export function nationalUae(e164: string): string {
+  return e164.startsWith('+971') ? e164.slice(4) : e164
+}
+
 export function isE164(value: unknown): boolean {
   return typeof value === 'string' && normaliseE164(value) !== null
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildWhatsAppLink, isE164, normaliseE164, whatsappNumberSchema } from './whatsapp'
+import { buildWhatsAppLink, isE164, nationalUae, normaliseE164, whatsappNumberSchema, withUaeCode } from './whatsapp'
 
 describe('FR-012 WhatsApp number normalisation', () => {
   it.each([
@@ -57,5 +57,26 @@ describe('FR-010 WhatsApp link builder', () => {
 
   it('throws on an invalid number', () => {
     expect(() => buildWhatsAppLink('12345')).toThrow(/Invalid WhatsApp number/)
+  })
+})
+
+describe('fixed +971 prefix on phone fields', () => {
+  it.each([
+    ['50 123 4567', '+971501234567'],
+    ['050 123 4567', '+971501234567'],
+    ['971501234567', '+971501234567'],
+    ['+44 20 7946 0958', '+44 20 7946 0958'],
+    ['0044 20 7946 0958', '0044 20 7946 0958'],
+    ['  ', '  '],
+  ])('withUaeCode(%s) is %s', (input, expected) => {
+    expect(withUaeCode(input)).toBe(expected)
+  })
+
+  it.each([
+    ['+971501234567', '501234567'],
+    ['+442079460958', '+442079460958'],
+    ['', ''],
+  ])('nationalUae(%s) is %s', (input, expected) => {
+    expect(nationalUae(input)).toBe(expected)
   })
 })
