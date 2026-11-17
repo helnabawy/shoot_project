@@ -31,6 +31,11 @@ class PushService {
   bool _available = false;
   bool _allowed = false;
   final _subscriptions = <StreamSubscription<Object?>>[];
+  final _events = StreamController<PushEvent>.broadcast();
+
+  /// Feature 022 (FR-024): notifications that arrive while the app is open, so an open list
+  /// refreshes at once. Nothing is shown; the list updates instead.
+  Stream<PushEvent> get events => _events.stream;
 
   bool get available => _available;
 
@@ -50,6 +55,13 @@ class PushService {
 
       _subscriptions
         ..add(_messaging.opened.listen(route))
+        ..add(
+          _messaging.received.listen(
+            (data) => _events.add(
+              PushEvent(event: data['event'] ?? '', path: data['path'] ?? ''),
+            ),
+          ),
+        )
         ..add(_messaging.tokenRefreshes.listen((_) => unawaited(register())));
       route(await _messaging.initialOpen());
       if (_store.asked) {
@@ -109,5 +121,14 @@ class PushService {
     for (final s in _subscriptions) {
       await s.cancel();
     }
+    await _events.close();
   }
+}
+
+/// A notification's `event` and `path`, as the server sends them.
+final class PushEvent {
+  const PushEvent({required this.event, required this.path});
+
+  final String event;
+  final String path;
 }

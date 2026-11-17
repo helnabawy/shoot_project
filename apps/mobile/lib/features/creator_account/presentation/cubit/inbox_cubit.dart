@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
+import 'package:shoot_mobile/core/network/stamp_poller.dart';
+import 'package:shoot_mobile/core/push/push_service.dart';
 import 'package:shoot_mobile/features/creator_account/domain/entities/inbox.dart';
 import 'package:shoot_mobile/features/creator_account/domain/repositories/inbox_repository.dart';
 
@@ -52,10 +56,49 @@ final class InboxLoaded extends InboxState {
 }
 
 /// The creator brief inbox (feature 019): accept, reject with an optional reason, undo, withdraw.
+/// Feature 022: accept the client's price or offer another, and stay live while open: a matching
+/// push reloads at once, and the inbox re-checks its fingerprint every few seconds (FR-023, FR-024).
 class InboxCubit extends Cubit<InboxState> {
-  InboxCubit(this._repository) : super(const InboxLoading());
+  InboxCubit(this._repository, {Stream<PushEvent>? pushEvents})
+    : super(const InboxLoading()) {
+    _poller = StampPoller(
+      read: () async => switch (await _repository.stamp()) {
+        Ok(:final value) => value,
+        Err() => null,
+      },
+      onChanged: refresh,
+    );
+    _push = pushEvents
+        ?.where((e) => _liveEvents.contains(e.event))
+        .listen((_) => refresh());
+  }
 
   final InboxRepository _repository;
+  late final StampPoller _poller;
+  StreamSubscription<PushEvent>? _push;
+
+  static const _liveEvents = {'brief-new', 'offer-declined', 'offer-lost'};
+
+  /// Starts the live re-check (the page is visible and the app in front).
+  void startLive() => _poller.start();
+
+  void stopLive() => _poller.stop();
+
+  /// Reloads quietly, keeping the list on screen (no loading state).
+  Future<void> refresh() async {
+    final s = state;
+    if (s is InboxLoaded && s.busyKey != null) return;
+    if (await _repository.inbox() case Ok(:final value)) {
+      if (!isClosed) emit(InboxLoaded(value));
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    _poller.stop();
+    await _push?.cancel();
+    return super.close();
+  }
 
   Future<void> load() async {
     emit(const InboxLoading());
@@ -82,8 +125,9 @@ class InboxCubit extends Cubit<InboxState> {
     }
   }
 
-  Future<void> accept(BriefItem item) =>
-      _run(item, () => _repository.accept(item));
+  /// [amountFils]: an offer on an offers brief; `null` accepts the client's price (022).
+  Future<void> accept(BriefItem item, {int? amountFils}) =>
+      _run(item, () => _repository.accept(item, amountFils: amountFils));
 
   /// [reason] and [note] are optional.
   Future<void> reject(BriefItem item, {String? reason, String? note}) =>

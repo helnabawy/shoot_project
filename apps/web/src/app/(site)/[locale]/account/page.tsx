@@ -80,7 +80,10 @@ export default async function AccountPage({ params }: Props) {
   // 019: open client briefs that match a live creator (null when the profile is not live).
   const yes = await saidYesCounts((await inboxContext(locale, now)).payload, briefs)
   const inbox = provider ? await briefsSummary(await inboxContext(locale, now), user.id) : null
-  const openBriefs = inbox?.soonest ? { ...inbox, soonest: { ...inbox.soonest, dateLabel: inbox.soonest.date ? formatDay(inbox.soonest.date, locale) : '' } } : inbox
+  // 022: an offers brief shows the client's price in Up next (board 53).
+  const openBriefs = inbox?.soonest
+    ? { ...inbox, soonest: { ...inbox.soonest, dateLabel: inbox.soonest.date ? formatDay(inbox.soonest.date, locale) : '', ...(inbox.soonest.budgetFils ? { priceLabel: formatMoney(inbox.soonest.budgetFils, locale) } : {}) } }
+    : inbox
   const ts = await getTranslations('creators.status')
   // Every profession the member offers, primary first ("Photographer and Videographer").
   const personaLabel = joinList(

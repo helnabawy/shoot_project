@@ -25,6 +25,9 @@ abstract interface class PushMessaging {
   /// The `data` of the notification that launched the app, once.
   Future<Map<String, String>?> initialOpen();
 
+  /// Feature 022: the `data` of a notification that arrived while the app was open (no banner).
+  Stream<Map<String, String>> get received;
+
   /// `ios` or `android`, as the API names them.
   String get platform;
 }
@@ -50,6 +53,9 @@ final class NoPushMessaging implements PushMessaging {
 
   @override
   Future<Map<String, String>?> initialOpen() async => null;
+
+  @override
+  Stream<Map<String, String>> get received => const Stream.empty();
 
   @override
   String get platform => 'android';
@@ -117,6 +123,11 @@ final class FirebasePushMessaging implements PushMessaging {
     final m = await _messaging?.getInitialMessage();
     return m == null ? null : _data(m);
   }
+
+  @override
+  Stream<Map<String, String>> get received => _messaging == null
+      ? const Stream.empty()
+      : FirebaseMessaging.onMessage.map(_data);
 
   @override
   String get platform => Platform.isIOS ? 'ios' : 'android';

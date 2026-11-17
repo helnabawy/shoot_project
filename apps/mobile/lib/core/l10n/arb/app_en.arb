@@ -3475,5 +3475,231 @@
   "problemOtherAccount": "This quotation belongs to another account. Sign in with the number it was made with.",
   "@problemOtherAccount": {
     "description": "021 amendment: booking.errors.otherAccount (HTTP 409): the booking belongs to another member."
+  },
+  "inboxOfferAccept": "Accept {price}",
+  "@inboxOfferAccept": {
+    "description": "022: accept the client's price on a brief card.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "inboxOfferAnother": "Offer another price",
+  "@inboxOfferAnother": {
+    "description": "022: open the offer sheet."
+  },
+  "inboxOfferClientPrice": "Client's price",
+  "@inboxOfferClientPrice": {
+    "description": "022: label of the client's price on a brief card."
+  },
+  "inboxOfferClientPriceIs": "The client's price is {price}.",
+  "@inboxOfferClientPriceIs": {
+    "description": "022: the offer sheet's intro.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "inboxOfferYourPrice": "Your price",
+  "@inboxOfferYourPrice": {
+    "description": "022: title of the offer sheet."
+  },
+  "inboxOfferRange": "Between {min} and {max}. You can change it {left} more times until the client chooses.",
+  "@inboxOfferRange": {
+    "description": "022: the allowed range and changes left.",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "inboxOfferSend": "Send offer",
+  "@inboxOfferSend": {
+    "description": "022: send the offer."
+  },
+  "inboxOfferOutOfRange": "Choose a price within the range shown.",
+  "@inboxOfferOutOfRange": {
+    "description": "022: an offer outside the range."
+  },
+  "inboxOfferChange": "Change",
+  "@inboxOfferChange": {
+    "description": "022: change an offer already sent."
+  },
+  "inboxOfferDeclined": "Client declined",
+  "@inboxOfferDeclined": {
+    "description": "022: the client declined this offer."
+  },
+  "inboxOfferYouOffered": "You offered",
+  "@inboxOfferYouOffered": {
+    "description": "022: group of briefs the creator offered on."
+  },
+  "inboxOfferDistance": "About {km} km from you · exact place after booking",
+  "@inboxOfferDistance": {
+    "description": "022: distance to the brief's area.",
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "inboxOfferSetBase": "Set where you start from to see the distance",
+  "@inboxOfferSetBase": {
+    "description": "022: no starting point yet."
+  },
+  "inboxFactPrice": "Client's price",
+  "@inboxFactPrice": {
+    "description": "022: fact label for the client's price."
+  },
+  "qmOffersWaiting": "Waiting for offers",
+  "@qmOffersWaiting": {
+    "description": "022: step 2 before any offer."
+  },
+  "qmOffersCount": "{count, plural, =1{1 offer} other{{count} offers}}",
+  "@qmOffersCount": {
+    "description": "022: step 2 title with offers.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qmOffersSentTo": "Sent to {count} creators. They see the area, not your pin. Offers appear here as they answer.",
+  "@qmOffersSentTo": {
+    "description": "022: who the brief went to.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qmOffersGroup": "{type} · your price {price}",
+  "@qmOffersGroup": {
+    "description": "022: group label per type.",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "qmOffersNone": "No offers yet. This page updates by itself.",
+  "@qmOffersNone": {
+    "description": "022: a type still waiting."
+  },
+  "qmOfferAccept": "Accept {name}",
+  "@qmOfferAccept": {
+    "description": "022: accept one offer.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmOfferDecline": "Decline",
+  "@qmOfferDecline": {
+    "description": "022: decline one offer."
+  },
+  "qmOfferChosen": "Chosen",
+  "@qmOfferChosen": {
+    "description": "022: the chosen offer."
+  },
+  "qmOfferYourPrice": "Your price",
+  "@qmOfferYourPrice": {
+    "description": "022: the offer is the client's price."
+  },
+  "qmOfferTheirPrice": "Their price",
+  "@qmOfferTheirPrice": {
+    "description": "022: the creator offered another price."
+  },
+  "qmOfferBreakdown": "Offer {amount} + fee {fee}",
+  "@qmOfferBreakdown": {
+    "description": "022: what the total is made of.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "briefPriceLabel": "Your price for the {type}",
+  "@briefPriceLabel": {
+    "description": "022: price step label.",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "briefPriceRange": "Usual price {price}. You can offer {min} to {max}.",
+  "@briefPriceRange": {
+    "description": "022: usual price and range.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "briefPriceRangeOpen": "Any price from {min}.",
+  "@briefPriceRangeOpen": {
+    "description": "022: no usual price.",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "briefPriceLower": "Lower by AED 50",
+  "@briefPriceLower": {
+    "description": "022: lower the price."
+  },
+  "briefPriceRaise": "Raise by AED 50",
+  "@briefPriceRaise": {
+    "description": "022: raise the price."
+  },
+  "briefPriceOutOfRange": "Choose a price within the range shown.",
+  "@briefPriceOutOfRange": {
+    "description": "022: brief.errors.budgetRange."
+  },
+  "problemEmirateRequired": "Choose the emirate where the shoot is.",
+  "@problemEmirateRequired": {
+    "description": "022: brief.errors.emirateRequired."
+  },
+  "problemPlaceOutside": "Mark a place on land in the emirates we cover.",
+  "@problemPlaceOutside": {
+    "description": "022: brief.errors.placeOutside."
+  },
+  "problemOffersTooManyChanges": "You have changed this price three times. You can still withdraw it.",
+  "@problemOffersTooManyChanges": {
+    "description": "022: offers.errors.tooManyChanges."
+  },
+  "problemOffersDeclined": "The client chose another offer for this brief.",
+  "@problemOffersDeclined": {
+    "description": "022: offers.errors.declined."
+  },
+  "problemOffersAmountChanged": "This offer changed while you were choosing. Check the new price.",
+  "@problemOffersAmountChanged": {
+    "description": "022: offers.errors.amountChanged."
+  },
+  "problemOffersPickFromOffers": "Choose another offer from the offers list.",
+  "@problemOffersPickFromOffers": {
+    "description": "022: offers.errors.pickFromOffers."
   }
 }

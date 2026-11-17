@@ -5,9 +5,11 @@ import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/widgets/group_label.dart';
 import 'package:shoot_mobile/core/widgets/inline_error.dart';
+import 'package:shoot_mobile/core/widgets/money.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_draft.dart';
+import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
@@ -31,6 +33,7 @@ class BriefBar extends StatefulWidget {
     this.onWhatsapp,
     this.onProvider,
     this.guest = false,
+    this.onBudget,
   });
 
   /// 021: a signed-out person while sending needs sign-in: one line under the Top Hit says a
@@ -53,6 +56,9 @@ class BriefBar extends StatefulWidget {
 
   /// "I'm a {persona}" with the first persona's slug; the row is left out when `null`.
   final void Function(String personaSlug)? onProvider;
+
+  /// 022: the client changes their price for one type (persona slug, fils).
+  final void Function(String persona, int fils)? onBudget;
 
   @override
   State<BriefBar> createState() => _BriefBarState();
@@ -131,6 +137,16 @@ class _BriefBarState extends State<BriefBar> {
               child: InlineError(_messageText(context, state, engine)),
             ),
           if (complete && !searching) ...[
+            // 022: the price step (board 44), once the brief is complete and offers are on.
+            for (final price in state.prices)
+              _PriceRow(
+                price: price,
+                label: _personaLabel(config, price.persona),
+                amount: state.budgets[price.persona],
+                onChanged: widget.onBudget == null
+                    ? null
+                    : (fils) => widget.onBudget!(price.persona, fils),
+              ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
               child: GroupLabel(l10n.mlBriefTopHit),
@@ -241,7 +257,88 @@ class _BriefBarState extends State<BriefBar> {
       BriefMessage.rateLimited => l10n.mlBriefRateLimited,
       BriefMessage.network => l10n.mlBriefNetwork,
       BriefMessage.generic => l10n.mlBriefGeneric,
+      BriefMessage.budgetRange => l10n.briefPriceOutOfRange,
     };
+  }
+
+  /// The type's name as the builder lists it (content, never ARB).
+  static String _personaLabel(BriefBuilderConfig config, String slug) {
+    for (final slot in config.slots) {
+      for (final option in slot.options) {
+        if (option.value == slug) return option.label;
+      }
+    }
+    return slug;
+  }
+}
+
+/// 022 (board 44): the client's price for one professional type, pre-filled with the usual price
+/// and limited to the range; steps of AED 50.
+class _PriceRow extends StatelessWidget {
+  const _PriceRow({
+    required this.price,
+    required this.label,
+    required this.amount,
+    this.onChanged,
+  });
+
+  final BriefPrice price;
+  final String label;
+  final int? amount;
+  final ValueChanged<int>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final c = context.colors;
+    final value = amount ?? price.minFils;
+    final max = price.maxFils;
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 8,
+        children: [
+          GroupLabel(l10n.briefPriceLabel(label)),
+          Row(
+            spacing: 8,
+            children: [
+              IconButton.outlined(
+                tooltip: l10n.briefPriceLower,
+                onPressed: onChanged == null
+                    ? null
+                    : () => onChanged!(value - 5000),
+                icon: const Icon(Icons.remove),
+              ),
+              Expanded(
+                child: Text(
+                  Money.format(value / 100),
+                  textAlign: TextAlign.center,
+                  style: ShootType.title.copyWith(color: c.ink),
+                ),
+              ),
+              IconButton.outlined(
+                tooltip: l10n.briefPriceRaise,
+                onPressed: onChanged == null
+                    ? null
+                    : () => onChanged!(value + 5000),
+                icon: const Icon(Icons.add),
+              ),
+            ],
+          ),
+          Text(
+            price.suggestedFils == null
+                ? l10n.briefPriceRangeOpen(Money.format(price.minFils / 100))
+                : l10n.briefPriceRange(
+                    Money.format(price.suggestedFils! / 100),
+                    Money.format(price.minFils / 100),
+                    max == null ? '—' : Money.format(max / 100),
+                  ),
+            style: ShootType.meta.copyWith(color: c.mute),
+          ),
+        ],
+      ),
+    );
   }
 }
 

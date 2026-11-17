@@ -16,6 +16,7 @@ final class FakeMessaging implements PushMessaging {
   String? currentToken = 'device-token-1';
   int asked = 0;
   final taps = StreamController<Map<String, String>>.broadcast();
+  final arrivals = StreamController<Map<String, String>>.broadcast();
   final refreshes = StreamController<String>.broadcast();
 
   @override
@@ -38,6 +39,9 @@ final class FakeMessaging implements PushMessaging {
 
   @override
   Future<Map<String, String>?> initialOpen() async => initial;
+
+  @override
+  Stream<Map<String, String>> get received => arrivals.stream;
 
   @override
   String get platform => 'ios';

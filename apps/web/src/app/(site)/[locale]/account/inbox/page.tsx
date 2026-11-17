@@ -3,7 +3,9 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import { requireUser } from '@/modules/auth/session'
 import { formatDay } from '@/modules/booking/views'
-import { creatorInbox, inboxContext } from '@/modules/inbox'
+import { creatorInbox, inboxContext, inboxStamp } from '@/modules/inbox'
+import { liveInboxStamp } from '@/modules/inbox/live-actions'
+import { LiveRefresh } from '@/shared/components/LiveRefresh'
 import { InboxList, type InboxListView } from '@/modules/inbox/components/InboxList'
 import type { BriefCardView } from '@/modules/inbox/components/BriefCard'
 import { localizeHref } from '@/shared/i18n/href'
@@ -28,7 +30,8 @@ export default async function InboxPage({ params, searchParams }: Props) {
   const locale = raw as Locale
   const user = await requireUser(locale, '/account/inbox')
   if (user.accountType !== 'provider') redirect(localizeHref('/account', locale))
-  const [t, all, inbox] = await Promise.all([getTranslations({ locale, namespace: 'inbox' }), getTranslations({ locale }), creatorInbox(await inboxContext(locale), user.id)])
+  const ctx = await inboxContext(locale)
+  const [t, all, inbox, stamp] = await Promise.all([getTranslations({ locale, namespace: 'inbox' }), getTranslations({ locale }), creatorInbox(ctx, user.id), inboxStamp(ctx, user.id)])
   const view = (i: InboxListView['open'][number] | Omit<BriefCardView, 'dateLabel' | 'sentLabel'>): BriefCardView => ({
     ...i,
     dateLabel: i.date ? formatDay(i.date, locale) : '',
@@ -37,7 +40,7 @@ export default async function InboxPage({ params, searchParams }: Props) {
   const list: InboxListView = inbox
     ? { open: inbox.open.map(view), accepted: inbox.accepted.map(view), rejected: inbox.rejected.map(view), reasons: inbox.reasons }
     : { open: [], accepted: [], rejected: [], reasons: [] }
-  const errorText = error && /^inbox\.errors\.\w+$/.test(error) ? all(error as never) : null
+  const errorText = error && /^(inbox|offers)\.errors\.\w+$/.test(error) ? all(error as never) : null
   return (
     <section className="mx-auto max-w-[560px] px-3 pt-8 pb-24 sm:pt-14 sm:pb-10">
       <h1 className="px-1 text-[34px] font-bold leading-tight tracking-[-0.03em] text-ink">{t('title')}</h1>
@@ -47,6 +50,7 @@ export default async function InboxPage({ params, searchParams }: Props) {
           {errorText}
         </p>
       ) : null}
+      {inbox ? <LiveRefresh stamp={stamp} check={liveInboxStamp.bind(null, locale)} /> : null}
       <BriefBar as="div" data-floating-hide>
         <InboxList inbox={list} locale={locale} />
       </BriefBar>

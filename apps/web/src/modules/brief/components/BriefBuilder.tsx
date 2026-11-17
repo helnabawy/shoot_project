@@ -32,6 +32,7 @@ import {
 import { BarField, BriefBar, cx, GlyphTile, KeyHint, ResultGroup, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
 import { submitBrief } from '../actions'
 import { MatchPreview } from './MatchPreview'
+import { PriceStep } from './PriceStep'
 import type { CreatorBooking } from '../creator'
 import { briefWhatsAppMessage, chosenPersonas, CUSTOM_SUFFIX, CUSTOM_VALUE, readSlotValues, sentenceLabelFor, slotRules } from '../submit'
 import type { BriefBuilderConfig, BriefState, BuilderOption, BuilderSlot } from '../types'
@@ -67,6 +68,8 @@ export interface BriefBuilderProps {
   quickMatch?: boolean
   /** Feature 021: sending needs sign-in ("Briefs need sign-in" is on); a guest is told before they send. */
   signInRequired?: boolean
+  /** Feature 022: "Creators offer prices" is on: the bar ends with the client's price per type (board 44). */
+  offers?: { feePercent: number } | null
 }
 
 /** Slots in the order the sentence asks them; slots missing from the sentence come last. */
@@ -120,6 +123,7 @@ export function BriefBuilder({
   locked = null,
   preset,
   quickMatch = false,
+  offers = null,
   signInRequired = false,
 }: BriefBuilderProps) {
   const router = useRouter()
@@ -222,7 +226,9 @@ export function BriefBuilder({
     return result
   }, [complete, order, values, custom, skipped])
   // 003 US1-S7: the matches shown in the bar once complete.
-  const previewAnswers = quickMatch && !creator ? answers : null
+  // 022: with creator offers on, the price step replaces the preview of who is free (offers come later).
+  const previewAnswers = quickMatch && !creator && !offers ? answers : null
+  const priceAnswers = quickMatch && offers ? answers : null
   // FR-068: the WhatsApp alternative carries the finished brief instead of the default message.
   const secondaryWhatsappHref = useMemo(() => {
     const message = answers ? briefWhatsAppMessage(config, answers) : null
@@ -872,6 +878,15 @@ export function BriefBuilder({
         </BarField>
 
         <div className={cx('pt-1.5 pb-2', !showTopHit && 'js-hidden')} hidden={hydrated && !showTopHit}>
+          {showTopHit && priceAnswers && offers && labels.priceStep ? (
+            <PriceStep
+              locale={config.locale}
+              answers={priceAnswers}
+              labels={labels.priceStep}
+              feePercent={offers.feePercent}
+              errors={Object.fromEntries(Object.entries(errors).filter(([k]) => k.startsWith('budget.')).map(([k, v]) => [k, errorText(v)]))}
+            />
+          ) : null}
           <span className="group-label block px-4 pt-1 pb-1">{labels.topHit}</span>
           <TopHit
             label={leaving ? labels.signingIn : pending ? labels.submitting : config.submitLabel}

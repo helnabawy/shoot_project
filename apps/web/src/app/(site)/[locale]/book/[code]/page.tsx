@@ -9,6 +9,7 @@ import { whatsappHref } from '@/modules/contact/whatsapp'
 import { getCreatorProfile } from '@/modules/creators'
 import { getSiteSettings } from '@/modules/site-settings/queries'
 import { briefLabels } from '@/shared/i18n/server-labels'
+import { offersOf } from '@/modules/brief/offers-flag'
 import { localizeHref } from '@/shared/i18n/href'
 import type { Locale } from '@/shared/lib/locale'
 
@@ -65,6 +66,7 @@ export default async function BookPage({ params }: Props) {
           providerHref={localizeHref('/register?type=provider', locale)}
           quickMatch={settings.quickMatch?.enabled === true}
           signInRequired={settings.briefNeedsSignIn === true}
+          offers={offersOf(settings)}
           sourcePath={localizeHref(`/book/${view.code.toLowerCase()}`, locale)}
           labels={labels}
         />

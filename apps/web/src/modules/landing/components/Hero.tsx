@@ -2,6 +2,7 @@ import { interpolatePersonaCopy } from '@shoot/domain/personas'
 import { useTranslations } from 'next-intl'
 import type { LandingPage, SiteSetting } from '@/payload-types'
 import { BriefBuilder } from '@/modules/brief/components/BriefBuilder'
+import { offersOf } from '@/modules/brief/offers-flag'
 import type { BriefLabels } from '@/modules/brief/labels'
 import type { BriefBuilderConfig } from '@/modules/brief/types'
 import type { CreatorListItem } from '@/modules/creators'
@@ -97,6 +98,7 @@ export function Hero({
       labels={briefLabels}
       quickMatch={settings.quickMatch?.enabled === true}
       signInRequired={settings.briefNeedsSignIn === true}
+      offers={offersOf(settings)}
     />
   ) : null
   const photo = asMedia(hero?.image)

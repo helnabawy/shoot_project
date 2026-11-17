@@ -58,6 +58,7 @@ final class MatchPageModel {
         sections: List.unmodifiable(
           readList(json, 'sections', (item) {
             final s = asObject(item);
+            final offers = s['offers'];
             return MatchSection(
               persona: _persona(readObject(s, 'persona')),
               priceFils: readNullableInt(s, 'priceFils'),
@@ -65,10 +66,27 @@ final class MatchPageModel {
               creators: List.unmodifiable(
                 readList(s, 'creators', (c) => _creator(asObject(c))),
               ),
+              budgetFils: readNullableInt(s, 'budgetFils'),
+              offers: offers == null
+                  ? null
+                  : List.unmodifiable(
+                      readList(s, 'offers', (o) {
+                        final offer = asObject(o);
+                        return MatchOffer(
+                          creator: _creator(readObject(offer, 'creator')),
+                          amountFils: readInt(offer, 'amountFils'),
+                          feeFils: readInt(offer, 'feeFils'),
+                          totalFils: readInt(offer, 'totalFils'),
+                          atYourPrice: readBool(offer, 'atYourPrice'),
+                        );
+                      }),
+                    ),
             );
           }),
         ),
         whatsappUrl: readNullableString(json, 'whatsappUrl'),
+        offersMode: readNullableString(json, 'mode') == 'offers',
+        sentTo: readNullableInt(json, 'sentTo') ?? 0,
         nearby: List.unmodifiable(
           readList(json, 'nearby', (item) {
             final n = asObject(item);
@@ -216,4 +234,11 @@ Json quotationRequestJson(List<Pick> picks, BookingDetails details) => {
     'venue': details.venue,
     if (details.note.trim().isNotEmpty) 'note': details.note.trim(),
   },
+  // 022: the offer amounts the client saw.
+  if (picks.any((p) => p.expectFils != null))
+    'expect': [
+      for (final p in picks)
+        if (p.expectFils != null)
+          {'persona': p.persona, 'amountFils': p.expectFils},
+    ],
 };

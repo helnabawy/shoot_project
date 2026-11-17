@@ -74,7 +74,7 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
   log(`Categories: ${categories.length}`)
 
   for (const emirate of locations) {
-    const parent = await upsertBySlug(payload, 'locations', emirate.slug, { slug: emirate.slug, name: emirate.name, order: emirate.order * 10, active: true })
+    const parent = await upsertBySlug(payload, 'locations', emirate.slug, { slug: emirate.slug, name: emirate.name, order: emirate.order * 10, active: true, googleName: emirate.name.en })
     for (const [index, city] of emirate.cities.entries()) {
       await upsertBySlug(payload, 'locations', city.slug, { ...city, order: (index + 1) * 10, active: true, parent: parent.id })
     }

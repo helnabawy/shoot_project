@@ -74,7 +74,10 @@
       "creatorPersona": "هذا المحترف لا يقدّم ذلك. اختر أحد أنواعه.",
       "optionGone": "هذا الخيار لم يعد متاحاً. اختر خياراً آخر.",
       "pastDate": "اختر تاريخ اليوم أو تاريخاً لاحقاً.",
-      "signInRequired": "سجّل الدخول لإرسال طلبك."
+      "signInRequired": "سجّل الدخول لإرسال طلبك.",
+      "budgetRange": "اختر سعراً ضمن النطاق المعروض.",
+      "emirateRequired": "اختر الإمارة التي سيكون فيها التصوير.",
+      "placeOutside": "حدّد مكاناً على اليابسة في الإمارات التي نغطيها."
     },
     "showMore": "عرض {count} أخرى",
     "successNextTitle": "ما الذي يحدث بعد ذلك",
@@ -90,7 +93,18 @@
       "more": "+{count} آخرون في الخطوة التالية"
     },
     "signInNext": "بعدها نرسل رمزاً إلى رقم هاتفك المتحرك لتسجيل دخولك.",
-    "signingIn": "ننقلك إلى تسجيل الدخول…"
+    "signingIn": "ننقلك إلى تسجيل الدخول…",
+    "price": {
+      "label": "سعرك لـ{type}",
+      "range": "السعر المعتاد {price} درهم. يمكنك العرض من {min} إلى {max} درهم.",
+      "rangeOpen": "أي سعر من {min} درهم.",
+      "total": "إذا قبل {type} سعرك",
+      "totalHint": "يشمل رسوم الخدمة {percent}٪. شامل ضريبة القيمة المضافة.",
+      "lower": "إنقاص 50 درهماً",
+      "raise": "زيادة 50 درهماً",
+      "loading": "نحسب السعر المعتاد…",
+      "currency": "درهم"
+    }
   },
   "auth": {
     "loginTitle": "تسجيل الدخول",
@@ -224,7 +238,11 @@
       "briefAction": "ابدأ طلباً",
       "briefsTitle": "{count, plural, one {طلب جديد يناسبك} two {طلبان جديدان يناسبانك} few {# طلبات جديدة تناسبك} other {# طلبًا جديدًا يناسبك}}",
       "briefsAction": "{count, plural, one {اطّلع على الطلب} other {اطّلع على الطلبات}}",
-      "briefsAnyDate": "التاريخ بالاتفاق"
+      "briefsAnyDate": "التاريخ بالاتفاق",
+      "briefsPrice": "سعر العميل {price}. اقبله أو ردّ بسعرك.",
+      "offersTitle": "{count, plural, zero {لا عروض} one {عرض واحد} two {عرضان} few {# عروض} many {# عرضاً} other {# عرض}} لطلبك",
+      "offersAction": "شاهد العروض",
+      "briefsAndOffers": "الطلبات والعروض"
     },
     "saidYes": "{count, plural, one {وافق محترف واحد} two {وافق محترفان} few {وافق # محترفين} other {وافق # محترفًا}}"
   },
@@ -650,7 +668,11 @@
     "anyCreator": "{type}: سنختار لك",
     "total": "الإجمالي {price}",
     "change": "تغيير",
-    "summary": "اختيارك"
+    "summary": "اختيارك",
+    "fixedPlace": "{when} · {place}",
+    "fixedNote": "سعّر المحترفون هذا اليوم والمدة والمكان. لتغييرها، أرسل طلباً جديداً.",
+    "buildingLabel": "المبنى أو الطابق أو البوابة",
+    "buildingHint": "لا يرى الموقع الدقيق إلا المحترف الذي تحجزه."
   },
   "quote": {
     "metaTitle": "عرض السعر {reference}",
@@ -738,7 +760,10 @@
     "paySecure": "دفع آمن بالبطاقة أو Apple Pay أو Google Pay. تعود إلى هنا بعد الانتهاء.",
     "paymentPending": "استلمنا الدفعة ونؤكدها الآن، يستغرق ذلك بضع ثوانٍ.",
     "paymentCancelled": "لم يكتمل الدفع، ولم يُخصم أي مبلغ. يمكنك المحاولة مرة أخرى.",
-    "signInNext": "بعدها نرسل رمزاً إلى رقم هاتفك المتحرك لتسجيل دخولك."
+    "signInNext": "بعدها نرسل رمزاً إلى رقم هاتفك المتحرك لتسجيل دخولك.",
+    "feeLine": "رسوم الخدمة {percent}٪",
+    "offerLine": "عرض {creator}",
+    "chooseAnotherOffer": "اختر عرضاً آخر"
   },
   "booking": {
     "metaTitle": "الحجوزات",
@@ -864,6 +889,24 @@
       "other-creator": "ذهب لمحترف آخر",
       "booked-you": "حجزك",
       "closed": "مغلق"
+    },
+    "offer": {
+      "clientPrice": "سعر العميل",
+      "accept": "اقبل {price}",
+      "another": "اعرض سعراً آخر",
+      "yourPrice": "سعرك",
+      "rangeHint": "بين {min} و{max}. يمكنك تغييره {left} مرات أخرى حتى يختار العميل.",
+      "send": "أرسل العرض",
+      "cancel": "إلغاء",
+      "youOffered": "عروضك",
+      "offered": "{price}",
+      "change": "عدّل",
+      "changesLeft": "(بقي {left})",
+      "declined": "رفض العميل",
+      "distance": "حوالي {km} كم منك · الموقع الدقيق بعد الحجز",
+      "setBase": "حدّد نقطة انطلاقك",
+      "setBaseHint": "لرؤية المسافة",
+      "intro": "كل عميل يحدّد سعراً. اقبله أو ردّ بسعرك. لا يُحجز شيء قبل أن يختار العميل."
     }
   },
   "push": {
@@ -876,5 +919,40 @@
       "unavailable": "الدفع الإلكتروني غير متاح حالياً. حاول لاحقاً أو تواصل معنا عبر واتساب.",
       "provider": "تعذّر فتح صفحة الدفع. حاول مرة أخرى بعد قليل."
     }
+  },
+  "offers": {
+    "errors": {
+      "outOfRange": "اختر سعراً ضمن النطاق المعروض.",
+      "tooManyChanges": "غيّرت هذا السعر ثلاث مرات. ما زال بإمكانك سحبه.",
+      "declined": "اختار العميل عرضاً آخر لهذا الطلب.",
+      "amountChanged": "تغيّر هذا العرض أثناء اختيارك. راجع السعر الجديد.",
+      "pickFromOffers": "اختر عرضاً آخر من قائمة العروض."
+    },
+    "waitingTitle": "بانتظار العروض",
+    "waitingIntro": "أُرسل إلى {count} {types} يغطون {emirate}. يرون المنطقة لا موقعك الدقيق. تظهر العروض هنا عند ردهم.",
+    "waitingNone": "لا عروض بعد",
+    "waitingAuto": "تتحدّث هذه الصفحة تلقائياً",
+    "yourPrice": "سعرك",
+    "serviceFee": "رسوم الخدمة",
+    "serviceFeeHint": "{percent}٪ من العرض الذي تقبله",
+    "countTitle": "{count, plural, zero {لا عروض} one {عرض واحد} two {عرضان} few {# عروض} many {# عرضاً} other {# عرض}}",
+    "intro": "سعرك كان {price}. الأقل إجمالاً في الأعلى.",
+    "atYourPrice": "بسعرك",
+    "theirPrice": "بسعره",
+    "breakdown": "العرض {amount} + الرسوم {fee}",
+    "accept": "اقبل عرض {name}",
+    "decline": "ارفض",
+    "chosen": "تم الاختيار",
+    "choose": "اختر",
+    "notAnswered": "{count} لم يردّوا بعد.",
+    "groupLabel": "{type} · سعرك {price}",
+    "typeWaiting": "أُرسل إلى {count} {types}. لا عروض بعد.",
+    "continue": "متابعة",
+    "continueNeeds": "تتاح المتابعة بعد اختيار عرض لكل نوع.",
+    "closedTitle": "هذا الطلب مغلق",
+    "closedIntro": "مضى التاريخ أو أُغلق الطلب. أرسل طلباً جديداً لتصلك عروض جديدة.",
+    "newBrief": "أرسل طلباً جديداً",
+    "changedTitle": "غيّر {name} السعر",
+    "changedIntro": "تغيّر أثناء اختيارك، فلم يُقبل شيء. هذا هو العرض الآن."
   }
 }

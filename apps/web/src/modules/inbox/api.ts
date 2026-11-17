@@ -6,7 +6,7 @@ import { problem } from '@/shared/api/problem'
 import { answerBrief } from './commands/answer-brief'
 import { onAccepted } from './commands/notify-brief'
 import { withdrawAnswer } from './commands/withdraw-answer'
-import { creatorInbox } from './queries'
+import { creatorInbox, inboxStamp } from './queries'
 
 /** The creator brief inbox on `/api/mobile/v1/me/creator/briefs…` (feature 019, contracts/mobile-api.md). */
 
@@ -37,4 +37,13 @@ export const answerCreatorBriefV1 = defineHandler({
 export const withdrawCreatorBriefV1 = defineHandler({
   ...endpoints.withdrawCreatorBrief,
   run: (ctx, { params, query }) => withdrawAnswer(actorOf(ctx), params.ref, query.persona),
+})
+
+/** 022 (research R9): the inbox fingerprint the app polls while the inbox is open. */
+export const getCreatorBriefsStampV1 = defineHandler({
+  ...endpoints.creatorBriefsStamp,
+  run: async (ctx) => {
+    if (ctx.user?.accountType !== 'provider') return notProvider()
+    return { stamp: await inboxStamp({ payload: ctx.payload, locale: ctx.locale, now: ctx.now() }, ctx.user.id) }
+  },
 })

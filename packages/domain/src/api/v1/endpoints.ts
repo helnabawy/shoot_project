@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { accountHomeV1, accountPageRequestV1, bookingListV1, briefListV1, meUpdateV1 } from './account'
-import { briefReceiptV1, briefRecordV1 } from './brief'
+import { briefPricesRequestV1, briefPricesV1, briefReceiptV1, briefRecordV1 } from './brief'
 import { authRefreshV1, authTokenV1, meV1, otpChallengeV1, otpRequestV1, otpVerifyV1 } from './auth'
 import {
   answerV1,
@@ -25,6 +25,8 @@ import {
   freshQuotationV1,
   matchRequestV1,
   matchV1,
+  offerDeclineRequestV1,
+  stampV1,
   pickAnotherRequestV1,
   quotationAddressV1,
   quotationIssuedV1,
@@ -76,6 +78,18 @@ export const endpoints = {
     path: '/api/mobile/v1/brief-builder',
     output: briefBuilderV1,
     examples: ['brief-builder', 'brief-builder.ar'],
+  }),
+  // 022: the suggested price and range per type for the answers so far.
+  briefPrices: defineEndpoint({
+    id: 'briefPrices',
+    method: 'POST',
+    path: '/api/mobile/v1/brief-builder/prices',
+    auth: 'none',
+    cache: 'no-store',
+    input: z.object({ body: briefPricesRequestV1 }),
+    output: briefPricesV1,
+    examples: ['brief-prices'],
+    requestExamples: ['brief-prices-request'],
   }),
   landing: defineEndpoint({ ...publicRead, id: 'landing', path: '/api/mobile/v1/landing', output: landingV1, examples: ['landing'] }),
   // 010: recording a brief from the app (specs/010-first-visit-landing/contracts/briefs-api.md).
@@ -197,6 +211,28 @@ export const endpoints = {
     input: matchRequestV1,
     output: matchV1,
     examples: ['match', 'match-none-free'],
+  }),
+  // 022: the client declines one offer; the step-2 change stamp (research R9).
+  offerDecline: defineEndpoint({
+    id: 'offerDecline',
+    method: 'POST',
+    path: '/api/mobile/v1/match/{ref}/{key}/offers/decline',
+    auth: 'optional',
+    cache: 'no-store',
+    input: offerDeclineRequestV1,
+    output: matchV1,
+    examples: ['match-offers-declined'],
+    requestExamples: ['offer-decline'],
+  }),
+  matchStamp: defineEndpoint({
+    id: 'matchStamp',
+    method: 'GET',
+    path: '/api/mobile/v1/match/{ref}/{key}/stamp',
+    auth: 'none',
+    cache: 'no-store',
+    input: matchRequestV1,
+    output: stampV1,
+    examples: ['match-stamp'],
   }),
   quotationIssue: defineEndpoint({
     id: 'quotationIssue',
@@ -340,8 +376,9 @@ export const endpoints = {
   creatorBookingDeliver: defineEndpoint({ ...mine, id: 'creatorBookingDeliver', method: 'POST', path: '/api/mobile/v1/me/creator/bookings/{ref}/deliver', input: z.object({ params: creatorRefParamV1 }), output: creatorBookingsV1, examples: ['creator-bookings-delivered'] }),
   creatorUpdateRead: defineEndpoint({ ...mine, id: 'creatorUpdateRead', method: 'POST', path: '/api/mobile/v1/me/creator/updates/{id}/read', input: z.object({ params: creatorIdParamV1 }), output: creatorBookingsV1, examples: ['creator-bookings-read'] }),
   // 019: the creator brief inbox and app push (specs/019-creator-brief-inbox/contracts/mobile-api.md).
-  creatorBriefs: defineEndpoint({ ...mineRead, id: 'creatorBriefs', path: '/api/mobile/v1/me/creator/briefs', output: creatorBriefsV1, examples: ['creator-briefs'] }),
+  creatorBriefs: defineEndpoint({ ...mineRead, id: 'creatorBriefs', path: '/api/mobile/v1/me/creator/briefs', output: creatorBriefsV1, examples: ['creator-briefs', 'creator-briefs-offers'] }),
   answerCreatorBrief: defineEndpoint({ ...mine, id: 'answerCreatorBrief', method: 'POST', path: '/api/mobile/v1/me/creator/briefs/{ref}/answer', input: z.object({ params: briefRefParamV1, body: briefAnswerRequestV1 }), output: creatorBriefsV1, examples: ['creator-briefs-answered'], requestExamples: ['creator-brief-answer', 'creator-brief-reject'] }),
+  creatorBriefsStamp: defineEndpoint({ ...mineRead, id: 'creatorBriefsStamp', path: '/api/mobile/v1/me/creator/briefs/stamp', output: stampV1, examples: ['creator-briefs-stamp'] }),
   withdrawCreatorBrief: defineEndpoint({ ...mine, id: 'withdrawCreatorBrief', method: 'DELETE', path: '/api/mobile/v1/me/creator/briefs/{ref}/answer', input: z.object({ params: briefRefParamV1, query: briefPersonaQueryV1 }), output: creatorBriefsV1, examples: ['creator-briefs-withdrawn'] }),
   registerPushDevice: defineEndpoint({ ...mine, id: 'registerPushDevice', method: 'POST', path: '/api/mobile/v1/me/push/devices', status: 204, input: z.object({ body: pushDeviceRequestV1 }), output: noContentV1, examples: [], requestExamples: ['push-device'] }),
   removePushDevice: defineEndpoint({ ...mine, id: 'removePushDevice', method: 'DELETE', path: '/api/mobile/v1/me/push/devices/{token}', status: 204, input: z.object({ params: pushTokenParamV1 }), output: noContentV1, examples: [] }),

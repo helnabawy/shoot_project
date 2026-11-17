@@ -1,6 +1,8 @@
 export {
   acceptQuotationV1,
   confirmDeliveryV1,
+  declineOfferV1,
+  getMatchStampV1,
   freshQuotationV1,
   getMatchV1,
   getQuotationV1,
@@ -20,3 +22,6 @@ export { acceptedFor } from './match'
 export { getQuotationAccess, type QuotationAccess } from './queries'
 export { quotePath } from './paths'
 export { notify } from './notify'
+// 022: creator offers.
+export { briefFromAnswers, matchStamp, type MatchOffer } from './match'
+export { offerFieldsFromForm, offerTerms, placeOfPin, saveOfferTerms, suggestedPrices } from './offers'

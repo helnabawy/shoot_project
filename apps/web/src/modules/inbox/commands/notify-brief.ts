@@ -2,6 +2,7 @@ import 'server-only'
 import { briefDedupeKey, notificationsFor, renderTemplate, type Audience, type Channel, type NotificationEvent } from '@shoot/domain/booking'
 import { formatBriefDate } from '@shoot/domain/brief/message'
 import { buildWhatsAppLink, normaliseE164 } from '@shoot/domain/contact'
+import { formatMoney } from '@shoot/domain/pricing'
 import { after } from 'next/server'
 import type { Payload } from 'payload'
 import { absolute, accessKey, matchPath } from '@/modules/booking'
@@ -129,5 +130,81 @@ export const onAccepted: OnAccepted = async (actor, { briefId, creatorId, person
     await later(() =>
       pushToUser(payload, member, (locale) => ({ title: PUSH_TITLES[event][locale], body: render('client', locale, ''), data: { event, path: clientPath } })),
     )
+  }
+}
+
+/** 022: fixed titles of the offer notifications (static interface strings). */
+export const OFFER_TITLES: Record<'offer-new' | 'offer-declined' | 'offer-lost', Record<Lang, string>> = {
+  'offer-new': { en: 'New offer for your brief', ar: 'عرض جديد لطلبك' },
+  'offer-declined': { en: 'The client chose another offer', ar: 'اختار العميل عرضاً آخر' },
+  'offer-lost': { en: 'Brief went to another creator', ar: 'ذهب الطلب إلى محترف آخر' },
+}
+
+export const OFFERS_INBOX_PATH = '/account/inbox'
+
+/**
+ * 022 (US4-S9, FR-022): a creator made or changed an offer. The member client hears in the account and by
+ * push, once per offer and change; the text names the creator and the amount, never the fee or the pin.
+ */
+export async function onOffer(
+  actor: { payload: Payload },
+  input: { briefId: number; creatorId: string; personaId: string; answerId: number | string; revisions: number; amountFils: number },
+): Promise<void> {
+  const { payload } = actor
+  const [brief, profile, persona, settings] = await Promise.all([
+    payload.findByID({ collection: 'briefs', id: input.briefId, depth: 0, overrideAccess: true, showHiddenFields: true }) as Promise<Brief & { accessSalt?: string | null }>,
+    payload.findByID({ collection: 'creator-profiles', id: Number(input.creatorId), depth: 0, locale: 'all' as never, overrideAccess: true, draft: false }),
+    payload.findByID({ collection: 'personas', id: Number(input.personaId), depth: 0, locale: 'all' as never, overrideAccess: true }),
+    settingsOf(payload),
+  ])
+  const member = relId(brief.member)
+  if (!member) return
+  const event: NotificationEvent = 'offer-new'
+  const locale: Lang = brief.locale === 'ar' ? 'ar' : 'en'
+  const key = brief.accessSalt ? accessKey(brief.accessSalt, 'brief') : null
+  const path = key ? `/match/${brief.reference}/${key}` : '/account'
+  const render = (l: Lang) =>
+    renderTemplate(templateText(settings.quickMatch?.templates ?? [], event, 'client', l), {
+      ...briefVars(brief, l),
+      creator: pick(profile.displayName as Localized, l),
+      type: pick((persona as { singular?: Localized }).singular, l),
+      price: formatMoney(input.amountFils, l),
+      link: '',
+    }).replace(/[:：]\s*$/, '.')
+  const offer = { answerId: input.answerId, revisions: input.revisions }
+  await writeOfferRow(payload, { brief: brief.id, event, audience: 'client', channel: 'in-app', locale, user: member, text: render(locale), link: absolute(path) }, offer)
+  if (!(await writeOfferRow(payload, { brief: brief.id, event, audience: 'client', channel: 'push', locale, user: member, text: render(locale), link: path }, offer))) return
+  await later(() => pushToUser(payload, member, (l) => ({ title: OFFER_TITLES[event][l], body: render(l), data: { event, path } })))
+}
+
+/** 022 (FR-014, FR-022): the client declined this creator's offer, or chose another creator for the type. */
+export async function onOfferClosed(payload: Payload, input: { briefId: number; creatorId: string; event: 'offer-declined' | 'offer-lost' }): Promise<void> {
+  const [brief, owner, settings] = await Promise.all([
+    payload.findByID({ collection: 'briefs', id: input.briefId, depth: 0, overrideAccess: true }) as Promise<Brief>,
+    payload.findByID({ collection: 'creator-profiles', id: Number(input.creatorId), depth: 0, overrideAccess: true, draft: true, select: { user: true } }),
+    settingsOf(payload),
+  ])
+  const user = relId((owner as { user?: unknown }).user)
+  if (!user) return
+  const render = (l: Lang) => renderTemplate(templateText(settings.quickMatch?.templates ?? [], input.event, 'creator', l), briefVars(brief, l))
+  await writeRow(payload, { brief: brief.id, event: input.event, audience: 'creator', channel: 'in-app', locale: 'en', user, text: render('en'), link: OFFERS_INBOX_PATH })
+  if (!(await writeRow(payload, { brief: brief.id, event: input.event, audience: 'creator', channel: 'push', locale: 'en', user, text: render('en'), link: OFFERS_INBOX_PATH }))) return
+  await later(() => pushToUser(payload, user, (l) => ({ title: OFFER_TITLES[input.event][l], body: render(l), data: { event: input.event, path: OFFERS_INBOX_PATH } })))
+}
+
+/** Like `writeRow`, keyed by the offer and its change so each change notifies once. */
+async function writeOfferRow(
+  payload: Payload,
+  row: { brief: number; event: NotificationEvent; audience: Audience; channel: Channel; locale: Lang; user: number; text: string; link: string },
+  offer: { answerId: number | string; revisions: number },
+): Promise<boolean> {
+  const dedupeKey = briefDedupeKey(row.brief, row.event, row.audience, row.channel, String(row.user), offer)
+  if ((await payload.count({ collection: 'notifications', where: { dedupeKey: { equals: dedupeKey } }, overrideAccess: true })).totalDocs) return false
+  try {
+    await payload.create({ collection: 'notifications', data: { ...row, text: row.text.slice(0, 1000), dedupeKey }, overrideAccess: true })
+    return true
+  } catch (error) {
+    if ((error as Error).name === 'ValidationError') return false
+    throw error
   }
 }

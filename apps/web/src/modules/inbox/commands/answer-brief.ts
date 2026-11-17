@@ -1,9 +1,11 @@
 import 'server-only'
 import type { BriefAnswerRequestV1, CreatorBriefsV1 } from '@shoot/domain/api/v1'
+import { canChange, inRange } from '@shoot/domain/booking'
 import { problem, type Problem } from '@/shared/api/problem'
 import { creatorInbox, rejectReasons } from '../queries'
 import { stillOpen } from './shared'
-import { answerRow, briefByRef, briefClosed, inboxOf, notProvider, profileFor, type InboxActor } from './shared'
+import { answerRow, briefByRef, briefClosed, inboxOf, notProvider, offerLocked, offerStateOf, offerTermsOf, profileFor, type InboxActor } from './shared'
+import { onOffer } from './notify-brief'
 
 /** Runs after a new acceptance is recorded (notifications, US4); set by the inbox module at start-up. */
 export type OnAccepted = (actor: InboxActor, input: { briefId: number; creatorId: string; personaId: string }) => void | Promise<void>
@@ -29,15 +31,41 @@ export async function answerBrief(actor: InboxActor, ref: string, body: BriefAns
   }
 
   const decision = body.decision === 'accept' ? 'accepted' : 'rejected'
+  const row = await answerRow(payload, brief.id, profile.id, body.persona)
+
+  // 022: in an offers brief an acceptance is an offer: an amount within the range (default the client's
+  // price, FR-011), at most three changes, final once the client declined, locked while quoted (FR-009, FR-010).
+  const terms = offerTermsOf(brief)
+  let amountFils: number | null = null
+  let revisions = (row as { revisions?: number | null } | null)?.revisions ?? 0
+  if (terms) {
+    const state = offerStateOf(row, await offerLocked(payload, brief.id, profile.id, body.persona))
+    const current = state && !state.withdrawn && state.decision === 'accepted' ? ((row as { amountFils?: number | null }).amountFils ?? null) : null
+    if (decision === 'accepted') {
+      amountFils = body.amountFils ?? terms.budgetFor(body.persona)?.amountFils ?? null
+      if (amountFils === null || !inRange(amountFils, terms.rangeFor(body.persona))) {
+        return problem(422, 'offers.errors.outOfRange', { fields: [{ path: 'body.amountFils', code: 'offers.errors.outOfRange' }] })
+      }
+      if (current === amountFils) return inboxOf(actor)
+      const verdict = canChange(state)
+      if (verdict === 'declined') return problem(409, 'offers.errors.declined')
+      if (verdict === 'picked') return problem(409, 'inbox.errors.alreadyPicked')
+      if (verdict === 'tooManyChanges') return problem(409, 'offers.errors.tooManyChanges')
+      revisions = current !== null ? revisions + 1 : state?.withdrawn || state?.decision === 'rejected' ? revisions : 0
+    } else if (state?.locked) {
+      return problem(409, 'inbox.errors.alreadyPicked')
+    }
+  }
+
   const data = {
     decision,
     reason: decision === 'rejected' ? (body.reason ?? null) : null,
     note: decision === 'rejected' ? (body.note?.trim() || null) : null,
     answeredAt: actor.now.toISOString(),
     withdrawnAt: null,
+    ...(terms ? { amountFils, revisions } : {}),
   } as const
-  const row = await answerRow(payload, brief.id, profile.id, body.persona)
-  const same = row && !row.withdrawnAt && row.decision === decision && (row.reason ?? null) === data.reason && (row.note ?? null) === data.note
+  const same = !terms && row && !row.withdrawnAt && row.decision === decision && (row.reason ?? null) === data.reason && (row.note ?? null) === data.note
   if (!same) {
     if (row) {
       await payload.update({ collection: 'brief-answers', id: row.id, data, overrideAccess: true })
@@ -52,7 +80,13 @@ export async function answerBrief(actor: InboxActor, ref: string, body: BriefAns
       }
     }
     const newlyAccepted = decision === 'accepted' && !(row && !row.withdrawnAt && row.decision === 'accepted')
-    if (newlyAccepted && onAccepted) await onAccepted(actor, { briefId: brief.id, creatorId: profile.id, personaId: body.persona })
+    if (terms && decision === 'accepted' && amountFils !== null) {
+      // 022: the client hears about every new or changed offer, once each (US4-S9).
+      const saved = await answerRow(payload, brief.id, profile.id, body.persona)
+      if (saved) await onOffer(actor, { briefId: brief.id, creatorId: profile.id, personaId: body.persona, answerId: saved.id, revisions, amountFils })
+    } else if (newlyAccepted && onAccepted) {
+      await onAccepted(actor, { briefId: brief.id, creatorId: profile.id, personaId: body.persona })
+    }
   }
   return inboxOf(actor)
 }

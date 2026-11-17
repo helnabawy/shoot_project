@@ -51,6 +51,12 @@ export const Locations: CollectionConfig = {
       validate: validateParent,
       admin: { description: 'Leave empty for an emirate. Choose an emirate to make this a city.' },
     },
+    {
+      // 022: the emirate's name as the map provider returns it, so a pin finds its emirate (research R15).
+      name: 'googleName',
+      type: 'text',
+      admin: { position: 'sidebar', description: 'Emirates only: the name Google Maps uses (for example "Abu Dhabi").' },
+    },
     { name: 'order', type: 'number', defaultValue: 100, admin: { position: 'sidebar' } },
     { name: 'active', type: 'checkbox', defaultValue: true, admin: { position: 'sidebar' } },
   ],

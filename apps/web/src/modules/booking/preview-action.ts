@@ -68,3 +68,33 @@ export async function previewMatches(input: { locale: string; values: Record<str
     }),
   }
 }
+
+export interface PricePreview {
+  prices: { persona: string; label: string; suggestedFils: number | null; minFils: number; maxFils: number | null }[]
+}
+
+/**
+ * 022: the price step of the brief bar (US1-S1): per professional type the suggested price and the range, from
+ * today's price rules. Read-only; the server checks the price again when the brief is sent (FR-006).
+ */
+export async function previewPrices(input: { locale: string; values: Record<string, string>; custom: Record<string, boolean> }): Promise<PricePreview | null> {
+  const locale: Locale = isLocale(input.locale) ? input.locale : 'en'
+  const values = Object.fromEntries(Object.entries(input.values ?? {}).slice(0, 20).map(([k, v]) => [String(k).slice(0, 40), String(v ?? '')]))
+  const custom = Object.fromEntries(Object.entries(input.custom ?? {}).slice(0, 20).map(([k, v]) => [String(k).slice(0, 40), Boolean(v)]))
+  const payload = await getPayloadClient()
+  const qm = await readQuickMatch(payload)
+  if (!qm.enabled || !qm.offers.enabled) return null
+  const brief = await briefFromAnswers({ values, custom }, locale)
+  if (!brief) return null
+  const [{ suggestedPrices }, { getActivePersonas }] = await Promise.all([import('./offers'), import('@/modules/personas/queries')])
+  const [prices, personas] = await Promise.all([suggestedPrices(brief, locale, null, qm.offers), getActivePersonas(locale)])
+  return {
+    prices: prices.map((p) => ({
+      persona: p.personaSlug,
+      label: personas.find((x) => x.id === p.personaId)?.singular ?? p.personaSlug,
+      suggestedFils: p.suggestedFils,
+      minFils: p.range.min,
+      maxFils: p.range.max,
+    })),
+  }
+}

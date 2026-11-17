@@ -2,6 +2,7 @@ import { dedupeKey, notificationsFor, renderTemplate, type Audience, type Channe
 import { buildWhatsAppLink, normaliseE164 } from '@shoot/domain/contact'
 import { formatBriefDate } from '@shoot/domain/brief/message'
 import { formatMoney } from '@shoot/domain/pricing'
+import { creatorAmountFils } from './rows'
 import type { Payload, PayloadRequest } from 'payload'
 import type { Booking } from '@/payload-types'
 import { accessKey } from './keys'
@@ -13,6 +14,8 @@ interface Recipient {
   locale: Lang
   phone: string | null
   userId: number | null
+  /** 022: the creator profile, so their own offer replaces the client's total (FR-012). */
+  creatorId?: number
 }
 
 const DEFAULT_CHANNELS: Record<Audience, Channel[]> = { client: ['whatsapp'], creator: ['in-app', 'whatsapp'], admin: ['in-app'] }
@@ -38,7 +41,7 @@ async function creatorRecipients(payload: Payload, booking: Booking, only: numbe
   const { docs } = await payload.find({ collection: 'creator-profiles', where: { id: { in: ids } }, depth: 1, pagination: false, draft: true, overrideAccess: true, select: { user: true }, req })
   return docs.map((p) => {
     const user = typeof p.user === 'object' && p.user ? p.user : null
-    return { audience: 'creator' as const, locale: 'en' as const, phone: user?.phone ?? null, userId: relId(p.user) }
+    return { audience: 'creator' as const, locale: 'en' as const, phone: user?.phone ?? null, userId: relId(p.user), creatorId: p.id }
   })
 }
 
@@ -89,13 +92,23 @@ export async function notify(
           ? await creatorRecipients(payload, booking, options.creatorIds, options.req)
           : [{ audience, locale: 'en', phone: settings.whatsappNumber ?? null, userId: null }]
     const channels = qm.channels?.[audience]?.length ? (qm.channels[audience] as Channel[]) : DEFAULT_CHANNELS[audience]
+    // 022 (FR-012): creators hear their own offer, never the client's total with the service fee.
+    const quotationDoc =
+      booking.quotation && typeof booking.quotation !== 'object'
+        ? await payload.findByID({ collection: 'quotations', id: booking.quotation as number, depth: 0, overrideAccess: true, req: options.req }).catch(() => null)
+        : booking.quotation
+    const totalFor = (recipient: Recipient, locale: Lang) => {
+      const own = recipient.creatorId != null ? creatorAmountFils({ ...booking, quotation: quotationDoc }, recipient.creatorId) : null
+      const fils = own ?? booking.totalFils
+      return fils != null ? formatMoney(fils, locale) : ''
+    }
     for (const recipient of recipients) {
       const link = audience === 'client' ? clientLink : audience === 'creator' ? absolute('/account/bookings') : absolute(`/admin/collections/bookings/${booking.id}`)
       const vars = {
         reference,
         name: (booking.client?.name ?? '').split(' ')[0] ?? '',
         date: booking.date ? formatBriefDate(booking.date, recipient.locale) : '',
-        total: booking.totalFils != null ? formatMoney(booking.totalFils, recipient.locale) : '',
+        total: totalFor(recipient, recipient.locale),
         link,
         ...options.vars,
       }
@@ -141,7 +154,7 @@ export async function notify(
         const key = dedupeKey(booking.id, booking.revision ?? 0, event, audience, 'push', String(recipient.userId))
         const path = audience === 'creator' ? `/account/bookings/${booking.reference}` : salt ? quotePath(reference, accessKey(salt, 'booking'), 'en') : '/account/bookings'
         const text = (locale: Lang) =>
-          renderTemplate(templateText(qm.templates ?? [], event, audience, locale), { ...vars, date: booking.date ? formatBriefDate(booking.date, locale) : '', total: booking.totalFils != null ? formatMoney(booking.totalFils, locale) : '', link: '' })
+          renderTemplate(templateText(qm.templates ?? [], event, audience, locale), { ...vars, date: booking.date ? formatBriefDate(booking.date, locale) : '', total: totalFor(recipient, locale), link: '' })
             .replace(/[:：]\s*$/, '.')
             .slice(0, 1000)
         const exists = await payload.count({ collection: 'notifications', where: { dedupeKey: { equals: key } }, overrideAccess: true, req: options.req })

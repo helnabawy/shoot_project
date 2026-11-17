@@ -4,6 +4,15 @@ import { hasRole, isAdmin } from '@/shared/payload/access'
 import { exportBriefsCsv } from '../export'
 import { consumeBriefAllowance, visitorKey } from '../limits'
 
+/** 022: the exact pin and address are read only by the brief's member and admins (FR-005b). */
+const readPinIfOwnOrAdmin = ({ req, doc }: { req: { user?: unknown }; doc?: { member?: unknown } }) => {
+  const user = req.user as { id?: number } | undefined
+  if (hasRole(req.user as never, 'admin')) return true
+  const member = doc?.member && typeof doc.member === 'object' ? (doc.member as { id: number }).id : doc?.member
+  return Boolean(user?.id && member === user.id)
+}
+const serverOnly = { create: () => false, update: () => false }
+
 const readOwnOrAll: Access = ({ req }) => {
   if (hasRole(req.user as never, 'admin')) return true
   return req.user ? { member: { equals: req.user.id } } : false
@@ -108,7 +117,73 @@ export const Briefs: CollectionConfig = {
     // The creator this brief was sent to, set by the server action only (feature 002).
     { name: 'creator', type: 'relationship', relationTo: 'creator-profiles', index: true, admin: { readOnly: true, position: 'sidebar' } },
     // Feature 019: the creators who said yes or no to this brief (FR-011).
-    { name: 'answers', type: 'join', collection: 'brief-answers', on: 'brief', admin: { defaultColumns: ['creator', 'persona', 'decision', 'reason', 'answeredAt', 'withdrawnAt'] } },
+    { name: 'answers', type: 'join', collection: 'brief-answers', on: 'brief', admin: { defaultColumns: ['creator', 'persona', 'decision', 'amountFils', 'revisions', 'clientDecision', 'reason', 'answeredAt', 'withdrawnAt'] } },
+    // Feature 022: creator offers. Set once by the server at sending; never by a client.
+    {
+      name: 'offers',
+      type: 'group',
+      admin: { description: 'Creator offers (feature 022): the mode and the fee and range this brief was sent with.' },
+      fields: [
+        { type: 'row', fields: [
+          {
+            name: 'mode',
+            type: 'select',
+            defaultValue: 'fixed',
+            options: [
+              { label: 'Fixed price', value: 'fixed' },
+              { label: 'Creator offers', value: 'offers' },
+            ],
+            access: serverOnly,
+            admin: { readOnly: true, width: '25%' },
+          },
+          { name: 'feePercent', type: 'number', access: serverOnly, admin: { readOnly: true, width: '25%' } },
+          { name: 'minPercent', type: 'number', access: serverOnly, admin: { readOnly: true, width: '25%' } },
+          { name: 'maxPercent', type: 'number', access: serverOnly, admin: { readOnly: true, width: '25%' } },
+        ] },
+        { name: 'sentTo', type: 'number', access: serverOnly, admin: { readOnly: true, description: 'Creators the brief was announced to.' } },
+      ],
+    },
+    {
+      name: 'budgets',
+      type: 'array',
+      access: serverOnly,
+      admin: { readOnly: true, description: "The client's price per professional type (whole fils)." },
+      fields: [
+        { type: 'row', fields: [
+          { name: 'persona', type: 'relationship', relationTo: 'personas', required: true },
+          { name: 'suggestedFils', type: 'number' },
+          { name: 'amountFils', type: 'number', required: true },
+        ] },
+      ],
+    },
+    {
+      name: 'place',
+      type: 'group',
+      admin: { description: 'The pinned place (feature 022). Creators only ever get the area and the public point until booked.' },
+      fields: [
+        { type: 'row', fields: [
+          { name: 'lat', type: 'number', access: { ...serverOnly, read: readPinIfOwnOrAdmin as never }, admin: { readOnly: true, width: '25%' } },
+          { name: 'lng', type: 'number', access: { ...serverOnly, read: readPinIfOwnOrAdmin as never }, admin: { readOnly: true, width: '25%' } },
+          { name: 'publicLat', type: 'number', access: serverOnly, admin: { readOnly: true, width: '25%' } },
+          { name: 'publicLng', type: 'number', access: serverOnly, admin: { readOnly: true, width: '25%' } },
+        ] },
+        { name: 'address', type: 'text', access: { ...serverOnly, read: readPinIfOwnOrAdmin as never }, admin: { readOnly: true } },
+        { type: 'row', fields: [
+          { name: 'area', type: 'text', access: serverOnly, admin: { readOnly: true, width: '50%' } },
+          { name: 'emirate', type: 'relationship', relationTo: 'locations', access: serverOnly, admin: { readOnly: true, width: '50%' } },
+        ] },
+        { type: 'row', fields: [
+          { name: 'placeId', type: 'text', access: serverOnly, admin: { readOnly: true, width: '50%' } },
+          {
+            name: 'source',
+            type: 'select',
+            options: ['search', 'drag', 'device', 'fallback'].map((value) => ({ label: value, value })),
+            access: serverOnly,
+            admin: { readOnly: true, width: '50%' },
+          },
+        ] },
+      ],
+    },
     { name: 'sourcePath', type: 'text', admin: { readOnly: true } },
     { name: 'fingerprint', type: 'text', index: true, admin: { hidden: true } },
     // Quick Match private link (research §2): set by the server action only, never readable through the API.

@@ -407,6 +407,10 @@ export interface Location {
    * Leave empty for an emirate. Choose an emirate to make this a city.
    */
   parent?: (number | null) | Location;
+  /**
+   * Emirates only: the name Google Maps uses (for example "Abu Dhabi").
+   */
+  googleName?: string | null;
   order?: number | null;
   active?: boolean | null;
   updatedAt: string;
@@ -439,6 +443,14 @@ export interface CreatorProfile {
    * The emirates this creator works in.
    */
   cities?: (number | Location)[] | null;
+  /**
+   * Optional. Only the creator and the team see it.
+   */
+  base?: {
+    lat?: number | null;
+    lng?: number | null;
+    area?: string | null;
+  };
   languages?:
     | ('en' | 'ar' | 'hi' | 'ur' | 'fr' | 'ru' | 'tl' | 'fa' | 'es' | 'de' | 'zh' | 'bn' | 'ml' | 'ta')[]
     | null;
@@ -615,6 +627,44 @@ export interface Brief {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  /**
+   * Creator offers (feature 022): the mode and the fee and range this brief was sent with.
+   */
+  offers?: {
+    mode?: ('fixed' | 'offers') | null;
+    feePercent?: number | null;
+    minPercent?: number | null;
+    maxPercent?: number | null;
+    /**
+     * Creators the brief was announced to.
+     */
+    sentTo?: number | null;
+  };
+  /**
+   * The client's price per professional type (whole fils).
+   */
+  budgets?:
+    | {
+        persona: number | Persona;
+        suggestedFils?: number | null;
+        amountFils: number;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * The pinned place (feature 022). Creators only ever get the area and the public point until booked.
+   */
+  place?: {
+    lat?: number | null;
+    lng?: number | null;
+    publicLat?: number | null;
+    publicLng?: number | null;
+    address?: string | null;
+    area?: string | null;
+    emirate?: (number | null) | Location;
+    placeId?: string | null;
+    source?: ('search' | 'drag' | 'device' | 'fallback') | null;
+  };
   sourcePath?: string | null;
   fingerprint?: string | null;
   accessSalt?: string | null;
@@ -636,6 +686,10 @@ export interface BriefAnswer {
   decision: 'accepted' | 'rejected';
   reason?: string | null;
   note?: string | null;
+  amountFils?: number | null;
+  revisions?: number | null;
+  clientDecision?: 'declined' | null;
+  clientDecidedAt?: string | null;
   answeredAt: string;
   withdrawnAt?: string | null;
   statusNow?: string | null;
@@ -768,7 +822,7 @@ export interface Quotation {
   supersededBy?: (number | null) | Quotation;
   lines?:
     | {
-        kind: 'tier' | 'travel' | 'addon' | 'discount' | 'adjustment';
+        kind: 'tier' | 'travel' | 'addon' | 'discount' | 'adjustment' | 'offer' | 'fee';
         labelEn: string;
         labelAr: string;
         amountFils: number;
@@ -899,7 +953,10 @@ export interface Notification {
     | 'delivery-overdue'
     | 'brief-accepted'
     | 'brief-new'
-    | 'payment-attention';
+    | 'payment-attention'
+    | 'offer-new'
+    | 'offer-declined'
+    | 'offer-lost';
   audience: 'client' | 'creator' | 'admin';
   channel: 'whatsapp' | 'email' | 'in-app' | 'push';
   locale?: ('en' | 'ar') | null;
@@ -1970,6 +2027,7 @@ export interface LocationsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   parent?: T;
+  googleName?: T;
   order?: T;
   active?: T;
   updatedAt?: T;
@@ -1987,6 +2045,13 @@ export interface CreatorProfilesSelect<T extends boolean = true> {
   personas?: T;
   specialties?: T;
   cities?: T;
+  base?:
+    | T
+    | {
+        lat?: T;
+        lng?: T;
+        area?: T;
+      };
   languages?: T;
   gender?: T;
   nationality?: T;
@@ -2105,6 +2170,36 @@ export interface BriefsSelect<T extends boolean = true> {
       };
   creator?: T;
   answers?: T;
+  offers?:
+    | T
+    | {
+        mode?: T;
+        feePercent?: T;
+        minPercent?: T;
+        maxPercent?: T;
+        sentTo?: T;
+      };
+  budgets?:
+    | T
+    | {
+        persona?: T;
+        suggestedFils?: T;
+        amountFils?: T;
+        id?: T;
+      };
+  place?:
+    | T
+    | {
+        lat?: T;
+        lng?: T;
+        publicLat?: T;
+        publicLng?: T;
+        address?: T;
+        area?: T;
+        emirate?: T;
+        placeId?: T;
+        source?: T;
+      };
   sourcePath?: T;
   fingerprint?: T;
   accessSalt?: T;
@@ -2305,6 +2400,10 @@ export interface BriefAnswersSelect<T extends boolean = true> {
   decision?: T;
   reason?: T;
   note?: T;
+  amountFils?: T;
+  revisions?: T;
+  clientDecision?: T;
+  clientDecidedAt?: T;
   answeredAt?: T;
   withdrawnAt?: T;
   statusNow?: T;
@@ -3102,6 +3201,24 @@ export interface SiteSetting {
      */
     inboxDays?: number | null;
     /**
+     * Feature 022. On: the client names a price per professional type with the brief, matching creators accept it or offer their own, and the client pays the chosen offers plus the service fee. Needs Quick Match on. Briefs already sent keep the settings they were sent with.
+     */
+    offers?: {
+      enabled?: boolean | null;
+      /**
+       * Service fee on each offer (%)
+       */
+      feePercent?: number | null;
+      /**
+       * Lowest price (% of the usual price)
+       */
+      minPercent?: number | null;
+      /**
+       * Highest price (% of the usual price)
+       */
+      maxPercent?: number | null;
+    };
+    /**
      * Quotations one visitor may request per hour.
      */
     quoteLimitPerHour?: number | null;
@@ -3150,7 +3267,7 @@ export interface SiteSetting {
       admin?: ('whatsapp' | 'email' | 'in-app')[] | null;
     };
     /**
-     * Placeholders: {name} {reference} {date} {total} {link}; for brief messages {occasion} {type} {emirate} {creator}. Brief messages also go out as app notifications. A missing Arabic text falls back to English.
+     * Placeholders: {name} {reference} {date} {total} {link}; for brief messages {occasion} {type} {emirate} {creator}; for offers {price} {area}. Brief messages also go out as app notifications. A missing Arabic text falls back to English.
      */
     templates?:
       | {
@@ -3172,7 +3289,10 @@ export interface SiteSetting {
             | 'delivery-overdue'
             | 'brief-accepted'
             | 'brief-new'
-            | 'payment-attention';
+            | 'payment-attention'
+            | 'offer-new'
+            | 'offer-declined'
+            | 'offer-lost';
           audience: 'client' | 'creator' | 'admin';
           text: string;
           id?: string | null;
@@ -3339,6 +3459,14 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         deliveryConfirmDays?: T;
         payoutDays?: T;
         inboxDays?: T;
+        offers?:
+          | T
+          | {
+              enabled?: T;
+              feePercent?: T;
+              minPercent?: T;
+              maxPercent?: T;
+            };
         quoteLimitPerHour?: T;
         paymentInstructions?: T;
         quotationTerms?: T;

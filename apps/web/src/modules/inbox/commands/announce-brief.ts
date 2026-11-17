@@ -1,5 +1,6 @@
 import 'server-only'
 import { briefMatchesCreator, renderTemplate } from '@shoot/domain/booking'
+import { formatMoney } from '@shoot/domain/pricing'
 import { formatBriefDate } from '@shoot/domain/brief/message'
 import type { Payload } from 'payload'
 import { briefFacts, unavailableOn } from '@/modules/booking'
@@ -39,11 +40,22 @@ export async function announceBrief(payload: Payload, briefId: number): Promise<
     const matched = creators
       .map((c) => ({ creator: c, personas: briefMatchesCreator(c, input, blocks.has(c.id) && facts.date ? new Set([facts.date]) : new Set()) }))
       .filter((m) => m.personas.length)
-    if (!matched.length) return 0
+    if (!matched.length) {
+      if ((brief as { offers?: { mode?: string | null } | null }).offers?.mode === 'offers') await recordSentTo(payload, brief.id, 0)
+      return 0
+    }
 
     const owners = await payload.find({ collection: 'creator-profiles', where: { id: { in: matched.map((m) => Number(m.creator.id)) } }, depth: 0, pagination: false, draft: true, overrideAccess: true, select: { user: true } })
     const ownerOf = new Map(owners.docs.map((d) => [String(d.id), relId(d.user)]))
     const templates = settings.quickMatch?.templates ?? []
+    const offers = (brief as { offers?: { mode?: string | null } | null }).offers
+    const place = (brief as { place?: { area?: string | null } | null }).place
+    const budgets = (brief as { budgets?: { persona: unknown; amountFils: number }[] | null }).budgets ?? []
+    const priceFor = (personaId: string, locale: Lang) => {
+      if (offers?.mode !== 'offers') return ''
+      const budget = budgets.find((b) => String(relId(b.persona)) === personaId)
+      return budget ? formatMoney(budget.amountFils, locale) : ''
+    }
     const label = (token: string) => (brief.selections ?? []).find((s) => s.token === token)
     const occasion = (brief.selections ?? []).find((s) => !['persona', 'date', 'duration', 'location', 'shotBy'].includes(s.token))
     const text = (locale: Lang, personaId: string) =>
@@ -53,6 +65,9 @@ export async function announceBrief(payload: Payload, briefId: number): Promise<
         emirate: label('location')?.label ?? label('location')?.value ?? '',
         date: facts.date ? formatBriefDate(facts.date, locale) : '',
         reference: brief.reference ?? '',
+        // 022: the client's price for this type and the area (never the pin).
+        price: priceFor(personaId, locale),
+        area: offers?.mode === 'offers' ? (place?.area ?? '') : '',
       })
 
     let told = 0
@@ -66,11 +81,18 @@ export async function announceBrief(payload: Payload, briefId: number): Promise<
       told += 1
       await pushToUser(payload, user, (locale) => ({ title: PUSH_TITLES['brief-new'][locale], body: text(locale, personaId), data: { event: 'brief-new', path: INBOX_PATH } }))
     }
+    // 022: the client's waiting screen says how many creators the brief went to (FR-016).
+    if (offers?.mode === 'offers') await recordSentTo(payload, brief.id, matched.length)
     return told
   } catch (error) {
     console.warn(`[inbox] announce skipped: ${(error as Error).message.slice(0, 80)}`)
     return 0
   }
+}
+
+async function recordSentTo(payload: Payload, briefId: number, count: number) {
+  const brief = (await payload.findByID({ collection: 'briefs', id: briefId, depth: 0, overrideAccess: true })) as { offers?: Record<string, unknown> | null }
+  await payload.update({ collection: 'briefs', id: briefId, data: { offers: { ...(brief.offers ?? {}), sentTo: count } } as never, overrideAccess: true, context: { disableRevalidate: true } })
 }
 
 /** For the two brief writers: announce after the response, never delaying or failing the brief. */

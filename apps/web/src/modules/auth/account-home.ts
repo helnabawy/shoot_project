@@ -4,7 +4,7 @@ import type { ProfileStatus } from '@shoot/domain/creators'
 /** Feature 019: open client briefs that match the creator, and the soonest one. */
 export interface AccountBriefs {
   count: number
-  soonest: { ref: string; profession: string; occasion: string; emirate: string; date: string | null; dateLabel?: string } | null
+  soonest: { ref: string; profession: string; occasion: string; emirate: string; date: string | null; dateLabel?: string; budgetFils?: number; priceLabel?: string } | null
 }
 
 /** A client's booking, with its effective state (an expired quotation already reads `expired`). */

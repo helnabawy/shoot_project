@@ -40,7 +40,11 @@ export const quickMatchTemplates: T[] = [
   // Feature 019: the creator brief inbox. Never {phone}, {name} of the client or an email (FR-019).
   t('brief-accepted', 'client', '{creator} said yes to your brief for {occasion}. Choose your creator: {link}', 'وافق {creator} على طلبك لـ{occasion}. اختر المحترف: {link}'),
   t('brief-accepted', 'admin', '{creator} said yes to brief {reference} ({type}, {emirate}, {date}). Send the client the link: {link}', 'وافق {creator} على الطلب {reference} ({type}، {emirate}، {date}). أرسل الرابط للعميل: {link}'),
-  t('brief-new', 'creator', 'New brief: {type} for {occasion} in {emirate}, {date}.', 'طلب جديد: {type} لـ{occasion} في {emirate}، {date}.'),
+  t('brief-new', 'creator', 'New brief: {type} for {occasion} in {area} {emirate}, {date}. {price}', 'طلب جديد: {type} لـ{occasion} في {area} {emirate}، {date}. {price}'),
+  // Feature 022: creator offers. {price} is the client's price or the creator's offer; never the client's name or pin.
+  t('offer-new', 'client', '{creator} offered {price} for your {type}. See the offers: {link}', 'قدّم {creator} عرضاً بقيمة {price} لـ{type}. شاهد العروض: {link}'),
+  t('offer-declined', 'creator', 'The client chose another offer for {occasion} on {date}.', 'اختار العميل عرضاً آخر لـ{occasion} بتاريخ {date}.'),
+  t('offer-lost', 'creator', '{occasion} on {date} went to another creator.', 'ذهب طلب {occasion} بتاريخ {date} إلى محترف آخر.'),
   // Feature 020: an online payment the booking did not expect (cancelled, already paid, other amount).
   t('payment-attention', 'admin', 'Online payment for {reference} ({total}) needs a check: {reason}. Refund it or record it in Payments.', 'دفعة إلكترونية للحجز {reference} ({total}) تحتاج مراجعة: {reason}. أعدها أو سجّلها في المدفوعات.'),
   t('delivery-overdue', 'admin', 'The client has not confirmed delivery of {reference}. You may complete it.', 'لم يؤكد العميل استلام {reference}. يمكنك إكماله.'),
@@ -54,6 +58,8 @@ export const quickMatchSettings = {
   payoutDays: 10,
   quoteLimitPerHour: 5,
   inboxDays: 30,
+  // Feature 022: off until the owner switches it on.
+  offers: { enabled: false, feePercent: 10, minPercent: 70, maxPercent: 200 },
   paymentInstructions: rt(
     'Pay by bank transfer to the account we share on WhatsApp, then send us the receipt with your reference.',
     'ادفع بتحويل بنكي إلى الحساب الذي نرسله عبر واتساب، ثم أرسل لنا الإيصال مع رقم المرجع.',

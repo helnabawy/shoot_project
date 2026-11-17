@@ -15,6 +15,8 @@ final class BriefBuilderModel {
         builder: builder == null ? null : _config(builder),
         // 021, additive: an older server leaves it out (false).
         signInRequired: json['signInRequired'] == true,
+        // 022, additive: an older server leaves it out (no price step).
+        offersEnabled: (json['offers'] as Map?)?['enabled'] == true,
       ),
     );
   }

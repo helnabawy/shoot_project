@@ -21,6 +21,8 @@ export const siteV1 = z.object({
   labels: z.object({ seeker: z.string().nullable(), provider: z.string().nullable() }),
   creatorCodePrefix: z.string(),
   quickMatchEnabled: z.boolean(),
+  /** 022 (additive): "Creators offer prices" is on; briefs carry the client's price and creators answer with offers. */
+  offersEnabled: z.boolean().optional(),
 })
 export type SiteV1 = z.infer<typeof siteV1>
 
@@ -99,5 +101,9 @@ export const briefBuilderV1 = z.object({
   builder: briefBuilderConfigV1.nullable(),
   /** 021: sending a brief needs a signed-in member (the owner's switch); missing means false (older servers). */
   signInRequired: z.boolean().optional(),
+  /** 022 (additive): briefs end with the client's price per type, within this range of the suggestion. */
+  offers: z.object({ enabled: z.boolean(), minPercent: z.int().positive(), maxPercent: z.int().positive() }).optional(),
+  /** 022 (additive): the place is a map pin; `false` (or missing) keeps the emirate question. */
+  maps: z.object({ enabled: z.boolean() }).optional(),
 })
 export type BriefBuilderV1 = z.infer<typeof briefBuilderV1>

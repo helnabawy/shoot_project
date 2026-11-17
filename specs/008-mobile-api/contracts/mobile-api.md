@@ -39,6 +39,7 @@ Cache:
 | `navigation` | `GET /navigation` | none | public | — | `navigationV1` | `pages` `getNavigation` | — |
 | `personas` | `GET /personas` | none | public | — | `personasV1` | `personas` `getActivePersonas`, `getCategoriesForAudience` | — |
 | `briefBuilder` | `GET /brief-builder` | none | public | — | `briefBuilderV1` | `brief` `getBriefBuilderConfig` | — (`builder: null` when off) |
+| `briefPrices` | `POST /brief-builder/prices` | none | no-store | `briefPricesRequestV1` | `briefPricesV1` | `booking` `suggestedPrices` (022) | — |
 | `landing` | `GET /landing` | none | public | — | `landingV1` | `landing` `getLandingPage` + `getBlockContext` | — |
 | `creators` | `GET /creators?type&specialty&place&page` | none | public | `creatorsRequestV1` | `creatorListV1` | `creators` `getPublicCreators`, `getDirectoryContext`, `buildDirectory` | — (unknown filter slugs are ignored, as on the website) |
 | `creatorProfile` | `GET /creators/{code}` | none | public | `params.code` (1–16 chars) | `creatorProfileV1` | `creators` `getCreatorProfile` | unknown, unpublished, suspended |
@@ -76,6 +77,7 @@ Cache:
 | `creatorBookingDeliver` | `POST /me/creator/bookings/{ref}/deliver` | req | no-store | — | `creatorBookingsV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
 | `creatorUpdateRead` | `POST /me/creator/updates/{id}/read` | req | no-store | — | `creatorBookingsV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
 | `creatorBriefs` | `GET /me/creator/briefs` | req | no-store | — | `creatorBriefsV1` | `inbox` queries (019) | not a creator (403) |
+| `creatorBriefsStamp` | `GET /me/creator/briefs/stamp` | req | no-store | — | `stampV1` | `inbox` `inboxStamp` (022) | not a creator (403) |
 | `answerCreatorBrief` | `POST /me/creator/briefs/{ref}/answer` | req | no-store | `briefAnswerRequestV1` | `creatorBriefsV1` | `inbox` `answer-brief` (019) | not a creator (403), brief closed or not matching (409) |
 | `withdrawCreatorBrief` | `DELETE /me/creator/briefs/{ref}/answer?persona=` | req | no-store | `briefPersonaQueryV1` | `creatorBriefsV1` | `inbox` `withdraw-answer` (019) | not a creator (403), closed or already picked (409) |
 | `registerPushDevice` | `POST /me/push/devices` | req | no-store | `pushDeviceRequestV1` | 204 | `push` devices (019) | — |
@@ -83,6 +85,8 @@ Cache:
 | `pushPreference` | `GET /me/push` | req | no-store | — | `pushPreferenceV1` | `push` preference (019) | — |
 | `setPushPreference` | `PUT /me/push` | req | no-store | `pushPreferenceV1` | `pushPreferenceV1` | `push` preference (019) | — |
 | `match` | `GET /match/{ref}/{key}` | none | no-store | `matchRequestV1` | `matchV1` | `booking` `getMatchPage` (012) | unknown reference, wrong key |
+| `offerDecline` | `POST /match/{ref}/{key}/offers/decline` | opt | no-store | `offerDeclineRequestV1` | `matchV1` | `inbox` `decline-offer` (022) | unknown reference, wrong key, brief closed (409) |
+| `matchStamp` | `GET /match/{ref}/{key}/stamp` | none | no-store | — | `stampV1` | `booking` `matchStamp` (022) | unknown reference, wrong key |
 | `quotationIssue` | `POST /match/{ref}/{key}/quotation` | req | no-store | `quotationRequestV1` | `quotationIssuedV1` | `booking` `issue-quotation` (012) | unknown reference, wrong key |
 | `quotationView` | `GET /quotations/{ref}/{key}` | opt | no-store | `quotationAddressV1` | `bookingViewV1` | `booking` `quotation-view` (012) | unknown, wrong key |
 | `quotationAccept` | `POST /quotations/{ref}/{key}/accept` | opt | no-store | `quotationAddressV1` | `bookingViewV1` | `booking` `accept-quotation` (012) | unknown, wrong key |

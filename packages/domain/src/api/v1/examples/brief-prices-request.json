@@ -1,0 +1,12 @@
+{
+  "values": {
+    "persona": "photographer",
+    "occasion": "birthday",
+    "duration": "2h"
+  },
+  "custom": {},
+  "place": {
+    "lat": 24.4672,
+    "lng": 54.6031
+  }
+}

@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
+import 'package:shoot_mobile/core/network/stamp_poller.dart';
+import 'package:shoot_mobile/core/push/push_service.dart';
 import 'package:shoot_mobile/features/quick_match/domain/entities/quick_match.dart';
 import 'package:shoot_mobile/features/quick_match/domain/repositories/quick_match_repository.dart';
 
@@ -49,8 +53,20 @@ final class MatchState extends Equatable {
     if (p == null || p.noneFree) return null;
     return [
       for (var i = 0; i < p.sections.length; i++)
-        Pick(persona: p.sections[i].persona.slug, code: chosenIn(i)?.code),
+        Pick(
+          persona: p.sections[i].persona.slug,
+          code: chosenIn(i)?.code,
+          expectFils: _offerIn(p.sections[i], chosenIn(i))?.amountFils,
+        ),
     ];
+  }
+
+  static MatchOffer? _offerIn(MatchSection section, MatchCreator? creator) {
+    if (creator == null) return null;
+    for (final o in section.offers ?? const <MatchOffer>[]) {
+      if (o.creator.code == creator.code) return o;
+    }
+    return null;
   }
 
   MatchState copyWith({
@@ -84,12 +100,84 @@ final class MatchState extends Equatable {
 }
 
 final class MatchCubit extends Cubit<MatchState> {
-  MatchCubit({required this._repository, required this.ref, required this.key})
-    : super(const MatchState());
+  MatchCubit({
+    required this._repository,
+    required this.ref,
+    required this.key,
+    Stream<PushEvent>? pushEvents,
+  }) : super(const MatchState()) {
+    _poller = StampPoller(
+      read: () async => switch (await _repository.matchStamp(ref, key)) {
+        Ok(:final value) => value,
+        Err() => null,
+      },
+      onChanged: refresh,
+    );
+    // 022 (FR-024): a new or changed offer for this brief reloads at once.
+    _push = pushEvents
+        ?.where(
+          (e) => e.event == 'offer-new' && e.path.contains('/match/$ref/'),
+        )
+        .listen((_) => refresh());
+  }
 
   final QuickMatchRepository _repository;
   final String ref;
   final String key;
+  late final StampPoller _poller;
+  StreamSubscription<PushEvent>? _push;
+
+  /// 022: keeps the offers list live while it is open (FR-023); a no-op in the fixed flow.
+  void startLive() {
+    if (state.page?.offersMode ?? false) _poller.start();
+  }
+
+  void stopLive() => _poller.stop();
+
+  /// Reloads quietly, keeping the choices; the list stays on screen.
+  Future<void> refresh() async {
+    final result = await _repository.getMatch(
+      ref,
+      key,
+      date: state.date,
+      duration: state.duration,
+    );
+    if (isClosed) return;
+    if (result case Ok(:final value)) {
+      emit(state.copyWith(page: value));
+      _applyWanted();
+    }
+  }
+
+  /// 022 (US4-S5): declines one offer; the list answers again without it.
+  Future<void> decline(int section, int index) async {
+    final page = state.page;
+    final offers = page?.sections[section].offers;
+    if (page == null || offers == null || index >= offers.length) return;
+    final slug = page.sections[section].persona.slug;
+    final result = await _repository.declineOffer(
+      ref,
+      key,
+      persona: slug,
+      creator: offers[index].creator.code,
+    );
+    if (isClosed) return;
+    switch (result) {
+      case Ok(:final value):
+        emit(
+          state.copyWith(page: value, chosen: {...state.chosen}..remove(slug)),
+        );
+      case Err(:final failure):
+        emit(state.copyWith(failure: () => failure));
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    _poller.stop();
+    await _push?.cancel();
+    return super.close();
+  }
 
   /// Creators asked for by the link (`?pick=`, 011 FR-021): chosen when their card is listed.
   List<Pick> _wanted = const [];

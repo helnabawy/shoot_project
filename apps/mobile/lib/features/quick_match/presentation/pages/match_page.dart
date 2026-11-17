@@ -13,6 +13,7 @@ import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
 import 'package:shoot_mobile/core/widgets/creator_card.dart';
 import 'package:shoot_mobile/core/widgets/money.dart';
+import 'package:shoot_mobile/core/widgets/secondary_button.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/shoot_image.dart';
 import 'package:shoot_mobile/core/widgets/shoot_scaffold.dart';
@@ -47,11 +48,24 @@ class MatchScreen extends StatefulWidget {
 }
 
 class _MatchScreenState extends State<MatchScreen> {
+  late final MatchCubit _cubit;
+
   @override
   void initState() {
     super.initState();
-    final cubit = context.read<MatchCubit>();
-    if (cubit.state.page == null) unawaited(cubit.load());
+    final cubit = _cubit = context.read<MatchCubit>();
+    if (cubit.state.page == null) {
+      unawaited(cubit.load().then((_) => cubit.startLive()));
+    } else {
+      cubit.startLive();
+    }
+  }
+
+  @override
+  void dispose() {
+    // 022: the offers list stops re-checking once it is off screen.
+    _cubit.stopLive();
+    super.dispose();
   }
 
   void _continue(MatchState state) {
@@ -93,7 +107,22 @@ class _MatchScreenState extends State<MatchScreen> {
                 children: [
                   QmHeader(onBack: () => qmBack(context)),
                   Expanded(
-                    child: page.noneFree
+                    child: page.offersMode
+                        ? _Offers(
+                            state: state,
+                            onAccept: (s, i) {
+                              final cubit = context.read<MatchCubit>()
+                                ..choose(s, i);
+                              final next = cubit.state;
+                              if (_allChosen(next)) _continue(next);
+                            },
+                            onDecline: (s, i) => unawaited(
+                              context.read<MatchCubit>().decline(s, i),
+                            ),
+                            onChat: () => _chat(page),
+                            onEdit: () => context.go(AppRoutes.home),
+                          )
+                        : page.noneFree
                         ? _NoneFree(
                             page: page,
                             onDay: (day) => unawaited(
@@ -119,6 +148,215 @@ class _MatchScreenState extends State<MatchScreen> {
             );
         }
       },
+    );
+  }
+}
+
+/// 022: every type has an explicitly chosen offer.
+bool _allChosen(MatchState state) {
+  final page = state.page;
+  if (page == null) return false;
+  return page.sections.every(
+    (s) =>
+        (s.offers?.isNotEmpty ?? false) &&
+        state.chosen.containsKey(s.persona.slug),
+  );
+}
+
+/// Boards 45–47 (feature 022): the offers for each type, lowest total first, each with Accept and
+/// Decline visible (FR-016a); only the first offer's Accept is the primary action. Before any offer,
+/// how many creators the brief went to.
+class _Offers extends StatelessWidget {
+  const _Offers({
+    required this.state,
+    required this.onAccept,
+    required this.onDecline,
+    required this.onChat,
+    required this.onEdit,
+  });
+
+  final MatchState state;
+  final void Function(int section, int index) onAccept;
+  final void Function(int section, int index) onDecline;
+  final VoidCallback onChat;
+  final VoidCallback onEdit;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final c = context.colors;
+    final page = state.page!;
+    final count = page.sections.fold<int>(
+      0,
+      (n, s) => n + (s.offers?.length ?? 0),
+    );
+    return QmBody(
+      content: [
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(20, 4, 20, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 6,
+            children: [
+              QmStepLine(step: 2, summary: page.sentence, onEdit: onEdit),
+              Text(
+                count == 0 ? l10n.qmOffersWaiting : l10n.qmOffersCount(count),
+                style: ShootType.title.copyWith(color: c.ink, fontSize: 28),
+              ),
+              if (count == 0)
+                Text(
+                  l10n.qmOffersSentTo(page.sentTo),
+                  style: ShootType.body.copyWith(color: c.mute),
+                ),
+            ],
+          ),
+        ),
+        for (var s = 0; s < page.sections.length; s++) ...[
+          if (page.sections.length > 1 || page.sections[s].budgetFils != null)
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(20, 16, 20, 6),
+              child: Text(
+                l10n.qmOffersGroup(
+                  page.sections[s].persona.singular,
+                  Money.format((page.sections[s].budgetFils ?? 0) / 100),
+                ),
+                style: ShootType.meta.copyWith(color: c.mute),
+              ),
+            ),
+          if ((page.sections[s].offers ?? const []).isEmpty)
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(20, 4, 20, 4),
+              child: Text(
+                l10n.qmOffersNone,
+                style: ShootType.body.copyWith(color: c.mute),
+              ),
+            ),
+          for (final (i, offer)
+              in (page.sections[s].offers ?? const <MatchOffer>[]).indexed)
+            _OfferCard(
+              offer: offer,
+              primary: s == 0 && i == 0,
+              chosen: state.chosen[page.sections[s].persona.slug] == i,
+              onAccept: () => onAccept(s, i),
+              onDecline: () => onDecline(s, i),
+            ),
+        ],
+      ],
+      bottom: TextLink(label: l10n.qmAskWhatsApp, onTap: onChat),
+    );
+  }
+}
+
+class _OfferCard extends StatelessWidget {
+  const _OfferCard({
+    required this.offer,
+    required this.primary,
+    required this.chosen,
+    required this.onAccept,
+    required this.onDecline,
+  });
+
+  final MatchOffer offer;
+  final bool primary;
+  final bool chosen;
+  final VoidCallback onAccept;
+  final VoidCallback onDecline;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final c = context.colors;
+    final card = offer.creator.card;
+    final accept = l10n.qmOfferAccept(offer.creator.firstName);
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: c.panelSolid,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: c.hair),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 12,
+            children: [
+              Row(
+                spacing: 10,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          card.name,
+                          style: ShootType.row.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: c.ink,
+                          ),
+                        ),
+                        Text(
+                          card.displayCode,
+                          style: ShootType.meta.copyWith(color: c.mute),
+                        ),
+                      ],
+                    ),
+                  ),
+                  StatusBadge(
+                    label: chosen
+                        ? l10n.qmOfferChosen
+                        : offer.atYourPrice
+                        ? l10n.qmOfferYourPrice
+                        : l10n.qmOfferTheirPrice,
+                    tone: offer.atYourPrice || chosen
+                        ? BadgeTone.success
+                        : BadgeTone.neutral,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.qmOfferBreakdown(
+                        Money.format(offer.amountFils / 100),
+                        Money.format(offer.feeFils / 100),
+                      ),
+                      style: ShootType.meta.copyWith(color: c.mute),
+                    ),
+                  ),
+                  Text(
+                    Money.format(offer.totalFils / 100),
+                    style: ShootType.heading.copyWith(color: c.ink),
+                  ),
+                ],
+              ),
+              Row(
+                spacing: 8,
+                children: [
+                  Expanded(
+                    flex: 8,
+                    child: primary && !chosen
+                        ? TopHit(label: accept, onPressed: onAccept)
+                        : SecondaryButton(
+                            label: chosen ? l10n.qmOfferChosen : accept,
+                            onPressed: onAccept,
+                          ),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: SecondaryButton(
+                      label: l10n.qmOfferDecline,
+                      onPressed: onDecline,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

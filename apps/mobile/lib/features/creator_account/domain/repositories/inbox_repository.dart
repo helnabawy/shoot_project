@@ -5,7 +5,8 @@ import 'package:shoot_mobile/features/creator_account/domain/entities/inbox.dart
 abstract interface class InboxRepository {
   Future<Result<CreatorInbox>> inbox();
 
-  Future<Result<CreatorInbox>> accept(BriefItem item);
+  /// [amountFils]: an offer on an offers brief; `null` accepts the client's price.
+  Future<Result<CreatorInbox>> accept(BriefItem item, {int? amountFils});
 
   Future<Result<CreatorInbox>> reject(
     BriefItem item, {
@@ -15,4 +16,7 @@ abstract interface class InboxRepository {
 
   /// Undo a rejection or take back a yes.
   Future<Result<CreatorInbox>> withdraw(BriefItem item);
+
+  /// 022: a fingerprint that changes when the inbox does.
+  Future<Result<String>> stamp();
 }

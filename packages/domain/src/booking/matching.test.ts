@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { matchCreators, nearbyDates, type MatchCandidate } from './matching'
+import { emirateOf, matchCreators, nearbyDates, type MatchCandidate } from './matching'
 
 const c = (id: string, over: Partial<MatchCandidate> = {}): MatchCandidate => ({ id, personaIds: ['p'], emirateIds: ['dxb'], specialtyIds: [], matchValues: [], ...over })
 const creators = [
@@ -48,5 +48,23 @@ describe('QM-US1-S2 nearby dates when nobody is free', () => {
 
   it('respects max', () => {
     expect(nearbyDates('2026-12-10', () => true, { today: '2026-12-01', max: 2 })).toEqual(['2026-12-11', '2026-12-09'])
+  })
+})
+
+describe('emirateOf (022 research R4)', () => {
+  const rows = [
+    { id: 'auh', slug: 'abu-dhabi', parentId: null },
+    { id: 'yas', slug: 'yas-island', parentId: 'auh' },
+  ]
+  it('an emirate slug gives its id; a city only with cityToEmirate', () => {
+    expect(emirateOf('abu-dhabi', false, rows, { cityToEmirate: false })).toBe('auh')
+    expect(emirateOf('yas-island', false, rows, { cityToEmirate: true })).toBe('auh')
+    expect(emirateOf('yas-island', false, rows, { cityToEmirate: false })).toBeNull()
+  })
+  it('custom, empty or unknown values give null', () => {
+    expect(emirateOf('abu-dhabi', true, rows, { cityToEmirate: true })).toBeNull()
+    expect(emirateOf('', false, rows, { cityToEmirate: true })).toBeNull()
+    expect(emirateOf(null, false, rows, { cityToEmirate: true })).toBeNull()
+    expect(emirateOf('nowhere', false, rows, { cityToEmirate: true })).toBeNull()
   })
 })

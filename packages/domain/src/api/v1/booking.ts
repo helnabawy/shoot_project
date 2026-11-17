@@ -21,6 +21,18 @@ export const matchCreatorV1 = creatorCardV1.extend({
   /** 019: this creator already said yes to the brief; listed first. */
   saidYes: z.boolean().optional(),
 })
+
+/** 022: one creator's offer for one type, as the client sees it (FR-013). */
+export const matchOfferV1 = z.object({
+  creator: matchCreatorV1,
+  amountFils: z.int().positive(),
+  feeFils: z.int().nonnegative(),
+  totalFils: z.int().positive(),
+  /** The creator accepted the client's own price. */
+  atYourPrice: z.boolean(),
+  answeredAt: isoDateTime,
+})
+export type MatchOfferV1 = z.infer<typeof matchOfferV1>
 export type MatchCreatorV1 = z.infer<typeof matchCreatorV1>
 
 export const matchSectionV1 = z.object({
@@ -30,6 +42,10 @@ export const matchSectionV1 = z.object({
   /** What the price includes, in CMS words. */
   includes: z.array(z.string()),
   creators: z.array(matchCreatorV1),
+  /** 022 (additive): the client's price for this type. */
+  budgetFils: z.int().positive().optional(),
+  /** 022 (additive): current offers, lowest total first. */
+  offers: z.array(matchOfferV1).optional(),
 })
 
 export const matchV1 = z.object({
@@ -53,6 +69,10 @@ export const matchV1 = z.object({
   nearby: z.array(z.object({ date: isoDay, free: z.int().nonnegative() })),
   /** The business WhatsApp chat with the brief written in: for "price on request" and "Ask on WhatsApp". */
   whatsappUrl: z.string().regex(/^https:\/\/\S+$/).nullable(),
+  /** 022 (additive): `offers` when the brief was sent with "Creators offer prices" on. */
+  mode: z.enum(['fixed', 'offers']).optional(),
+  /** 022 (additive): how many creators the brief went to. */
+  sentTo: z.int().nonnegative().optional(),
 })
 export type MatchV1 = z.infer<typeof matchV1>
 
@@ -82,7 +102,12 @@ export type DetailsV1 = z.infer<typeof detailsV1>
 
 export const quotationRequestV1 = z.object({
   params: z.object({ ref: linkPart, key: linkPart }),
-  body: z.object({ picks: z.array(pickV1).min(1).max(8), details: detailsV1 }),
+  body: z.object({
+    picks: z.array(pickV1).min(1).max(8),
+    details: detailsV1,
+    /** 022 (additive): the offer amounts the client saw; a moved one is `offers.errors.amountChanged`. */
+    expect: z.array(z.object({ persona: z.string().min(1).max(100), amountFils: z.int().positive() })).max(8).optional(),
+  }),
 })
 
 export const quotationIssuedV1 = z.object({
@@ -124,7 +149,7 @@ export const bookingViewV1 = z.object({
   totalFils: z.int().nonnegative(),
   lines: z.array(
     z.object({
-      kind: z.enum(['tier', 'travel', 'addon', 'discount', 'adjustment']),
+      kind: z.enum(['tier', 'travel', 'addon', 'discount', 'adjustment', 'offer', 'fee']),
       label: z.string(),
       /** Negative for a discount. */
       amountFils: z.int(),
@@ -156,3 +181,13 @@ export const freshQuotationV1 = z.object({
   picks: z.array(pickV1),
 })
 export type FreshQuotationV1 = z.infer<typeof freshQuotationV1>
+
+/** 022: the client declines one offer (authorised by the brief's private key). */
+export const offerDeclineRequestV1 = z.object({
+  params: z.object({ ref: linkPart, key: linkPart }),
+  body: z.object({ persona: z.string().min(1).max(100), creator: z.string().min(1).max(16) }),
+})
+
+/** 022: a short fingerprint of a live list; a different value means "reload" (research R9). */
+export const stampV1 = z.object({ stamp: z.string().min(1).max(32) })
+export type StampV1 = z.infer<typeof stampV1>

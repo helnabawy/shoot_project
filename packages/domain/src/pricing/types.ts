@@ -56,7 +56,8 @@ export interface PriceRules {
   addOns: AddOn[]
 }
 
-export type LineKind = 'tier' | 'travel' | 'addon' | 'discount' | 'adjustment'
+/** `offer` and `fee`: feature 022, a creator's offer and the platform fee. */
+export type LineKind = 'tier' | 'travel' | 'addon' | 'discount' | 'adjustment' | 'offer' | 'fee'
 
 export interface PriceLine {
   kind: LineKind

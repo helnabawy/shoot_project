@@ -52,6 +52,34 @@ final class MatchPersona extends Equatable {
   List<Object?> get props => [slug, singular, plural];
 }
 
+/// Feature 022: one creator's offer for one type, as the client sees it (whole fils).
+final class MatchOffer extends Equatable {
+  const MatchOffer({
+    required this.creator,
+    required this.amountFils,
+    required this.feeFils,
+    required this.totalFils,
+    required this.atYourPrice,
+  });
+
+  final MatchCreator creator;
+  final int amountFils;
+  final int feeFils;
+  final int totalFils;
+
+  /// The creator accepted the client's own price.
+  final bool atYourPrice;
+
+  @override
+  List<Object?> get props => [
+    creator,
+    amountFils,
+    feeFils,
+    totalFils,
+    atYourPrice,
+  ];
+}
+
 /// The creators free for one professional type, at one fixed price.
 final class MatchSection extends Equatable {
   const MatchSection({
@@ -59,6 +87,8 @@ final class MatchSection extends Equatable {
     required this.priceFils,
     required this.includes,
     required this.creators,
+    this.budgetFils,
+    this.offers,
   });
 
   final MatchPersona persona;
@@ -68,8 +98,21 @@ final class MatchSection extends Equatable {
   final List<String> includes;
   final List<MatchCreator> creators;
 
+  /// 022: the client's price for this type (offers mode).
+  final int? budgetFils;
+
+  /// 022: current offers, lowest total first, in the same order as [creators]; `null` in the fixed flow.
+  final List<MatchOffer>? offers;
+
   @override
-  List<Object?> get props => [persona, priceFils, includes, creators];
+  List<Object?> get props => [
+    persona,
+    priceFils,
+    includes,
+    creators,
+    budgetFils,
+    offers,
+  ];
 }
 
 /// Another day with someone free (screen 08).
@@ -109,6 +152,8 @@ final class MatchPage extends Equatable {
     required this.sections,
     required this.nearby,
     required this.whatsappUrl,
+    this.offersMode = false,
+    this.sentTo = 0,
   });
 
   final String reference;
@@ -129,6 +174,12 @@ final class MatchPage extends Equatable {
   /// The business chat with the brief written in; `null` when no number is set.
   final String? whatsappUrl;
 
+  /// 022: the brief went out with creator offers; step 2 is the offers list.
+  final bool offersMode;
+
+  /// 022: how many creators the brief was announced to.
+  final int sentTo;
+
   /// Nobody is free in at least one type (screen 08).
   bool get noneFree => sections.any((s) => s.creators.isEmpty);
 
@@ -145,18 +196,23 @@ final class MatchPage extends Equatable {
     sections,
     nearby,
     whatsappUrl,
+    offersMode,
+    sentTo,
   ];
 }
 
 /// A choice for one professional type; `code == null` is "let us pick".
 final class Pick extends Equatable {
-  const Pick({required this.persona, required this.code});
+  const Pick({required this.persona, required this.code, this.expectFils});
 
   final String persona;
   final String? code;
 
+  /// 022: the offer amount the client saw; a moved offer refuses the quotation.
+  final int? expectFils;
+
   @override
-  List<Object?> get props => [persona, code];
+  List<Object?> get props => [persona, code, expectFils];
 }
 
 /// The website's `pick` query (`photographer:SH-0087,videographer:any`, 003 `formatPicks`), as on

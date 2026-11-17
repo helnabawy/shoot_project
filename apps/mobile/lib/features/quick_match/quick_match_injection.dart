@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shoot_mobile/core/auth/session_cubit.dart';
+import 'package:shoot_mobile/core/push/push_service.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/features/quick_match/data/datasources/quick_match_remote_data_source.dart';
 import 'package:shoot_mobile/features/quick_match/data/repositories/quick_match_repository_impl.dart';
@@ -29,6 +30,9 @@ void registerQuickMatchFeature(GetIt getIt) {
             repository: getIt<QuickMatchRepository>(),
             ref: ref,
             key: key,
+            pushEvents: getIt.isRegistered<PushService>()
+                ? getIt<PushService>().events
+                : null,
           ),
           book: BookFlowCubit(
             repository: getIt<QuickMatchRepository>(),

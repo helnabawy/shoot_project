@@ -36,8 +36,8 @@ describe('MW-CONTRACT the creator account shapes', () => {
 
   it('every creator endpoint needs a signed-in member and is never cached', () => {
     const mine = ENDPOINTS.filter((e) => e.path.includes('/me/creator/'))
-    // 14 from 014, 3 from 019 (the brief inbox).
-    expect(mine).toHaveLength(18)
+    // 14 from 014, 3 from 019 (the brief inbox), 1 from 022 (the inbox change stamp).
+    expect(mine).toHaveLength(19)
     for (const e of mine) {
       expect(e.auth).toBe('required')
       expect(e.cache).toBe('no-store')

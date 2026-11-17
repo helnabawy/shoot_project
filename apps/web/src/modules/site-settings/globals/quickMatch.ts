@@ -43,6 +43,34 @@ export const quickMatchTab: Tab = {
           max: 365,
           admin: { description: 'Creator inbox (feature 019): a brief without a date stays open for this many days after it was sent.' },
         },
+        {
+          name: 'offers',
+          type: 'group',
+          label: 'Creators offer prices',
+          admin: { description: 'Feature 022. On: the client names a price per professional type with the brief, matching creators accept it or offer their own, and the client pays the chosen offers plus the service fee. Needs Quick Match on. Briefs already sent keep the settings they were sent with.' },
+          fields: [
+            { name: 'enabled', type: 'checkbox', defaultValue: false, label: 'Creators offer prices' },
+            { type: 'row', fields: [
+              { name: 'feePercent', type: 'number', defaultValue: 10, min: 0, max: 50, admin: { width: '33%', description: 'Service fee on each offer (%)' } },
+              {
+                name: 'minPercent',
+                type: 'number',
+                defaultValue: 70,
+                min: 10,
+                max: 100,
+                admin: { width: '33%', description: 'Lowest price (% of the usual price)' },
+              },
+              {
+                name: 'maxPercent',
+                type: 'number',
+                defaultValue: 200,
+                min: 100,
+                max: 500,
+                admin: { width: '33%', description: 'Highest price (% of the usual price)' },
+              },
+            ] },
+          ],
+        },
         { name: 'quoteLimitPerHour', type: 'number', defaultValue: 5, min: 1, max: 100, admin: { description: 'Quotations one visitor may request per hour.' } },
         { name: 'paymentInstructions', type: 'richText', localized: true, admin: { description: 'Shown once the creator confirms: how to pay and to send the receipt on WhatsApp.' } },
         { name: 'quotationTerms', type: 'richText', localized: true, admin: { description: 'Printed at the end of every quotation.' } },
@@ -56,7 +84,7 @@ export const quickMatchTab: Tab = {
           name: 'templates',
           type: 'array',
           labels: { singular: 'Message', plural: 'Messages' },
-          admin: { description: 'Placeholders: {name} {reference} {date} {total} {link}; for brief messages {occasion} {type} {emirate} {creator}. Brief messages also go out as app notifications. A missing Arabic text falls back to English.', initCollapsed: true },
+          admin: { description: 'Placeholders: {name} {reference} {date} {total} {link}; for brief messages {occasion} {type} {emirate} {creator}; for offers {price} {area}. Brief messages also go out as app notifications. A missing Arabic text falls back to English.', initCollapsed: true },
           fields: [
             { type: 'row', fields: [
               { name: 'event', type: 'select', required: true, options: NOTIFICATION_EVENTS.map((value) => ({ label: value, value })), admin: { width: '50%' } },

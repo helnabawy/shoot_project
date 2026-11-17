@@ -8,6 +8,7 @@ import type { ActorContext } from '@/shared/api/actor'
 import { problem, type Problem } from '@/shared/api/problem'
 import { errorStatus } from '@/shared/payload/errors'
 import { accessKey, newSalt } from '../../booking/keys'
+import { offerTerms, saveOfferTerms } from '../../booking/offers'
 import { getCreatorByCode } from '../../creators'
 import { getActivePersonas } from '../../personas/queries'
 import { getSiteSettings } from '../../site-settings/queries'
@@ -93,6 +94,13 @@ export async function recordBrief(ctx: ActorContext, input: BriefRecordV1): Prom
         const token = config.slots.find((s) => s.kind === 'persona')?.token ?? 'persona'
         return problem(422, 'brief.errors.optionGone', { fields: [{ path: `body.selections.${token}`, code: 'brief.errors.optionGone' }] })
       }
+      // 022: the client's price per type and the place, checked on the server; a missing price is the suggestion (FR-025).
+      const budgets = Object.fromEntries((input.budgets ?? []).map((b) => [b.persona, b.amountFils]))
+      const terms = await offerTerms(payload, { persona: personaIds as number[], selections, date: brief.date }, locale, { budgets, place: input.place ?? null })
+      if ('error' in terms) {
+        const path = terms.field.startsWith('budget.') ? 'body.budgets' : 'body.place'
+        return problem(422, terms.error, { fields: [{ path, code: terms.error }] })
+      }
       const created = await payload.create({
         collection: 'briefs',
         data: { persona: personaIds, selections, date: brief.date, sentence, locale, creator: creator ? Number(creator.id) : undefined, sourcePath: APP_SOURCE_PATH, website: '' },
@@ -102,6 +110,7 @@ export async function recordBrief(ctx: ActorContext, input: BriefRecordV1): Prom
         context: { visitorId: ctx.visitorKey, ...(creator ? { creatorResolved: true } : {}), ...(salt ? { accessSalt: salt } : {}) },
       })
       reference = created.reference ?? ''
+      if (terms.mode === 'offers') await saveOfferTerms(payload, created.id, terms, selections)
       // 019 (US5): matching creators hear about a new brief, after the response.
       await (await import('@/modules/inbox')).announceLater(payload, created.id)
     }

@@ -19,7 +19,7 @@ import type { MatchSectionView, PickRowView } from './components/types'
 import type { MatchPage } from './match'
 import { detailsPath, matchPath, memberBookingPath, quotePath } from './paths'
 import type { QuotationAccess } from './queries'
-import { idOf, toAssignments } from './rows'
+import { idOf, toAssignments, creatorAmountFils } from './rows'
 
 const DATE_TIME = (locale: Locale) =>
   new Intl.DateTimeFormat(locale === 'ar' ? 'ar-AE-u-nu-latn' : 'en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Dubai' })
@@ -180,7 +180,11 @@ export function creatorBookingViews(bookings: Booking[], profileIds: number[], l
         dateLabel: b.date ? formatDay(b.date, locale) : '',
         place: b.location ? locationName(b.location) : '',
         sentence: brief?.sentence ?? '',
-        price: b.totalFils != null ? formatMoney(b.totalFils, locale) : '',
+        // 022 (FR-012): a creator sees their own offer, never the client's total with the fee.
+        price: (() => {
+          const own = creatorAmountFils(b, a.creatorId)
+          return own !== null ? formatMoney(own, locale) : b.totalFils != null ? formatMoney(b.totalFils, locale) : ''
+        })(),
         clientFirstName: (b.client?.name ?? '').split(' ')[0] ?? '',
         respondBy: a.respondBy ? formatDateTime(a.respondBy, locale) : null,
       })

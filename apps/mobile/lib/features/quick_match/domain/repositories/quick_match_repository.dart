@@ -22,6 +22,17 @@ abstract interface class QuickMatchRepository {
 
   Future<Result<BookingView>> getBooking(String ref, String key);
 
+  /// 022: decline one offer (by persona slug and creator code); answers step 2 again.
+  Future<Result<MatchPage>> declineOffer(
+    String ref,
+    String key, {
+    required String persona,
+    required String creator,
+  });
+
+  /// 022: a fingerprint that changes when step 2's offers do.
+  Future<Result<String>> matchStamp(String ref, String key);
+
   Future<Result<BookingView>> accept(String ref, String key);
 
   Future<Result<BookingView>> confirmDelivery(String ref, String key);

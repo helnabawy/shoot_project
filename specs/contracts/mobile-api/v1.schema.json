@@ -9,6 +9,11 @@
         "properties": {
           "body": {
             "properties": {
+              "amountFils": {
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991,
+                "type": "integer"
+              },
               "decision": {
                 "enum": [
                   "accept",
@@ -79,6 +84,11 @@
                     }
                   ]
                 },
+                "budgetFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
                 "date": {
                   "anyOf": [
                     {
@@ -90,11 +100,26 @@
                     }
                   ]
                 },
+                "declined": {
+                  "type": "boolean"
+                },
                 "emirate": {
                   "type": "string"
                 },
                 "occasion": {
                   "type": "string"
+                },
+                "offerFils": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "outcome": {
                   "enum": [
@@ -109,8 +134,71 @@
                   "minLength": 1,
                   "type": "string"
                 },
+                "place": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "area": {
+                      "type": "string"
+                    },
+                    "distanceKm": {
+                      "anyOf": [
+                        {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "emirate": {
+                      "type": "string"
+                    },
+                    "mapUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "area",
+                    "emirate",
+                    "mapUrl",
+                    "distanceKm"
+                  ],
+                  "type": "object"
+                },
                 "profession": {
                   "type": "string"
+                },
+                "range": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxFils": {
+                      "anyOf": [
+                        {
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "minFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "minFils",
+                    "maxFils"
+                  ],
+                  "type": "object"
                 },
                 "reason": {
                   "type": [
@@ -121,6 +209,11 @@
                 "ref": {
                   "minLength": 1,
                   "type": "string"
+                },
+                "revisionsLeft": {
+                  "maximum": 3,
+                  "minimum": 0,
+                  "type": "integer"
                 },
                 "sentAt": {
                   "format": "date-time",
@@ -166,6 +259,11 @@
                     }
                   ]
                 },
+                "budgetFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
                 "date": {
                   "anyOf": [
                     {
@@ -177,11 +275,26 @@
                     }
                   ]
                 },
+                "declined": {
+                  "type": "boolean"
+                },
                 "emirate": {
                   "type": "string"
                 },
                 "occasion": {
                   "type": "string"
+                },
+                "offerFils": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "outcome": {
                   "enum": [
@@ -196,8 +309,71 @@
                   "minLength": 1,
                   "type": "string"
                 },
+                "place": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "area": {
+                      "type": "string"
+                    },
+                    "distanceKm": {
+                      "anyOf": [
+                        {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "emirate": {
+                      "type": "string"
+                    },
+                    "mapUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "area",
+                    "emirate",
+                    "mapUrl",
+                    "distanceKm"
+                  ],
+                  "type": "object"
+                },
                 "profession": {
                   "type": "string"
+                },
+                "range": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxFils": {
+                      "anyOf": [
+                        {
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "minFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "minFils",
+                    "maxFils"
+                  ],
+                  "type": "object"
                 },
                 "reason": {
                   "type": [
@@ -208,6 +384,11 @@
                 "ref": {
                   "minLength": 1,
                   "type": "string"
+                },
+                "revisionsLeft": {
+                  "maximum": 3,
+                  "minimum": 0,
+                  "type": "integer"
                 },
                 "sentAt": {
                   "format": "date-time",
@@ -273,6 +454,11 @@
                     }
                   ]
                 },
+                "budgetFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
                 "date": {
                   "anyOf": [
                     {
@@ -284,11 +470,26 @@
                     }
                   ]
                 },
+                "declined": {
+                  "type": "boolean"
+                },
                 "emirate": {
                   "type": "string"
                 },
                 "occasion": {
                   "type": "string"
+                },
+                "offerFils": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "outcome": {
                   "enum": [
@@ -303,8 +504,71 @@
                   "minLength": 1,
                   "type": "string"
                 },
+                "place": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "area": {
+                      "type": "string"
+                    },
+                    "distanceKm": {
+                      "anyOf": [
+                        {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "emirate": {
+                      "type": "string"
+                    },
+                    "mapUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "area",
+                    "emirate",
+                    "mapUrl",
+                    "distanceKm"
+                  ],
+                  "type": "object"
+                },
                 "profession": {
                   "type": "string"
+                },
+                "range": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxFils": {
+                      "anyOf": [
+                        {
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "minFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "minFils",
+                    "maxFils"
+                  ],
+                  "type": "object"
                 },
                 "reason": {
                   "type": [
@@ -315,6 +579,11 @@
                 "ref": {
                   "minLength": 1,
                   "type": "string"
+                },
+                "revisionsLeft": {
+                  "maximum": 3,
+                  "minimum": 0,
+                  "type": "integer"
                 },
                 "sentAt": {
                   "format": "date-time",
@@ -565,6 +834,42 @@
             ],
             "type": "string"
           },
+          "maps": {
+            "additionalProperties": false,
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "enabled"
+            ],
+            "type": "object"
+          },
+          "offers": {
+            "additionalProperties": false,
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "maxPercent": {
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991,
+                "type": "integer"
+              },
+              "minPercent": {
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "enabled",
+              "minPercent",
+              "maxPercent"
+            ],
+            "type": "object"
+          },
           "signInRequired": {
             "type": "boolean"
           }
@@ -577,6 +882,134 @@
       },
       "path": "/api/mobile/v1/brief-builder"
     },
+    "briefPrices": {
+      "auth": "none",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "body": {
+            "properties": {
+              "custom": {
+                "additionalProperties": {
+                  "type": "boolean"
+                },
+                "propertyNames": {
+                  "maxLength": 40,
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "place": {
+                "properties": {
+                  "lat": {
+                    "maximum": 90,
+                    "minimum": -90,
+                    "type": "number"
+                  },
+                  "lng": {
+                    "maximum": 180,
+                    "minimum": -180,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "lat",
+                  "lng"
+                ],
+                "type": "object"
+              },
+              "values": {
+                "additionalProperties": {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                "propertyNames": {
+                  "maxLength": 40,
+                  "type": "string"
+                },
+                "type": "object"
+              }
+            },
+            "required": [
+              "values"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "emirate": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "prices": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "maxFils": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "minFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
+                "persona": {
+                  "type": "string"
+                },
+                "suggestedFils": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "persona",
+                "suggestedFils",
+                "minFils",
+                "maxFils"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "prices",
+          "emirate"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/brief-builder/prices"
+    },
     "briefRecord": {
       "auth": "optional",
       "cache": "no-store",
@@ -586,6 +1019,29 @@
         "properties": {
           "body": {
             "properties": {
+              "budgets": {
+                "items": {
+                  "properties": {
+                    "amountFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    "persona": {
+                      "maxLength": 100,
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "persona",
+                    "amountFils"
+                  ],
+                  "type": "object"
+                },
+                "maxItems": 8,
+                "type": "array"
+              },
               "creator": {
                 "maxLength": 20,
                 "minLength": 1,
@@ -602,6 +1058,39 @@
                   }
                 ],
                 "default": null
+              },
+              "place": {
+                "properties": {
+                  "lat": {
+                    "maximum": 90,
+                    "minimum": -90,
+                    "type": "number"
+                  },
+                  "lng": {
+                    "maximum": 180,
+                    "minimum": -180,
+                    "type": "number"
+                  },
+                  "placeId": {
+                    "maxLength": 300,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "source": {
+                    "enum": [
+                      "search",
+                      "drag",
+                      "device"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "lat",
+                  "lng",
+                  "source"
+                ],
+                "type": "object"
               },
               "selections": {
                 "items": {
@@ -701,6 +1190,11 @@
                   {
                     "additionalProperties": false,
                     "properties": {
+                      "budgetFils": {
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991,
+                        "type": "integer"
+                      },
                       "date": {
                         "anyOf": [
                           {
@@ -2147,6 +2641,11 @@
                     }
                   ]
                 },
+                "budgetFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
                 "date": {
                   "anyOf": [
                     {
@@ -2158,11 +2657,26 @@
                     }
                   ]
                 },
+                "declined": {
+                  "type": "boolean"
+                },
                 "emirate": {
                   "type": "string"
                 },
                 "occasion": {
                   "type": "string"
+                },
+                "offerFils": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "outcome": {
                   "enum": [
@@ -2177,8 +2691,71 @@
                   "minLength": 1,
                   "type": "string"
                 },
+                "place": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "area": {
+                      "type": "string"
+                    },
+                    "distanceKm": {
+                      "anyOf": [
+                        {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "emirate": {
+                      "type": "string"
+                    },
+                    "mapUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "area",
+                    "emirate",
+                    "mapUrl",
+                    "distanceKm"
+                  ],
+                  "type": "object"
+                },
                 "profession": {
                   "type": "string"
+                },
+                "range": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxFils": {
+                      "anyOf": [
+                        {
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "minFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "minFils",
+                    "maxFils"
+                  ],
+                  "type": "object"
                 },
                 "reason": {
                   "type": [
@@ -2189,6 +2766,11 @@
                 "ref": {
                   "minLength": 1,
                   "type": "string"
+                },
+                "revisionsLeft": {
+                  "maximum": 3,
+                  "minimum": 0,
+                  "type": "integer"
                 },
                 "sentAt": {
                   "format": "date-time",
@@ -2234,6 +2816,11 @@
                     }
                   ]
                 },
+                "budgetFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
                 "date": {
                   "anyOf": [
                     {
@@ -2245,11 +2832,26 @@
                     }
                   ]
                 },
+                "declined": {
+                  "type": "boolean"
+                },
                 "emirate": {
                   "type": "string"
                 },
                 "occasion": {
                   "type": "string"
+                },
+                "offerFils": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "outcome": {
                   "enum": [
@@ -2264,8 +2866,71 @@
                   "minLength": 1,
                   "type": "string"
                 },
+                "place": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "area": {
+                      "type": "string"
+                    },
+                    "distanceKm": {
+                      "anyOf": [
+                        {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "emirate": {
+                      "type": "string"
+                    },
+                    "mapUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "area",
+                    "emirate",
+                    "mapUrl",
+                    "distanceKm"
+                  ],
+                  "type": "object"
+                },
                 "profession": {
                   "type": "string"
+                },
+                "range": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxFils": {
+                      "anyOf": [
+                        {
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "minFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "minFils",
+                    "maxFils"
+                  ],
+                  "type": "object"
                 },
                 "reason": {
                   "type": [
@@ -2276,6 +2941,11 @@
                 "ref": {
                   "minLength": 1,
                   "type": "string"
+                },
+                "revisionsLeft": {
+                  "maximum": 3,
+                  "minimum": 0,
+                  "type": "integer"
                 },
                 "sentAt": {
                   "format": "date-time",
@@ -2341,6 +3011,11 @@
                     }
                   ]
                 },
+                "budgetFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
                 "date": {
                   "anyOf": [
                     {
@@ -2352,11 +3027,26 @@
                     }
                   ]
                 },
+                "declined": {
+                  "type": "boolean"
+                },
                 "emirate": {
                   "type": "string"
                 },
                 "occasion": {
                   "type": "string"
+                },
+                "offerFils": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "outcome": {
                   "enum": [
@@ -2371,8 +3061,71 @@
                   "minLength": 1,
                   "type": "string"
                 },
+                "place": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "area": {
+                      "type": "string"
+                    },
+                    "distanceKm": {
+                      "anyOf": [
+                        {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "emirate": {
+                      "type": "string"
+                    },
+                    "mapUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "area",
+                    "emirate",
+                    "mapUrl",
+                    "distanceKm"
+                  ],
+                  "type": "object"
+                },
                 "profession": {
                   "type": "string"
+                },
+                "range": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxFils": {
+                      "anyOf": [
+                        {
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "minFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "minFils",
+                    "maxFils"
+                  ],
+                  "type": "object"
                 },
                 "reason": {
                   "type": [
@@ -2383,6 +3136,11 @@
                 "ref": {
                   "minLength": 1,
                   "type": "string"
+                },
+                "revisionsLeft": {
+                  "maximum": 3,
+                  "minimum": 0,
+                  "type": "integer"
                 },
                 "sentAt": {
                   "format": "date-time",
@@ -2420,6 +3178,33 @@
         "type": "object"
       },
       "path": "/api/mobile/v1/me/creator/briefs"
+    },
+    "creatorBriefsStamp": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {},
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "stamp": {
+            "maxLength": 32,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "stamp"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/creator/briefs/stamp"
     },
     "creatorIdentityUpload": {
       "auth": "required",
@@ -15265,6 +16050,13 @@
             ],
             "type": "string"
           },
+          "mode": {
+            "enum": [
+              "fixed",
+              "offers"
+            ],
+            "type": "string"
+          },
           "nearby": {
             "items": {
               "additionalProperties": false,
@@ -15294,6 +16086,11 @@
             "items": {
               "additionalProperties": false,
               "properties": {
+                "budgetFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
                 "creators": {
                   "items": {
                     "additionalProperties": false,
@@ -15574,6 +16371,317 @@
                   },
                   "type": "array"
                 },
+                "offers": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "amountFils": {
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991,
+                        "type": "integer"
+                      },
+                      "answeredAt": {
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                        "type": "string"
+                      },
+                      "atYourPrice": {
+                        "type": "boolean"
+                      },
+                      "creator": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "displayCode": {
+                            "type": "string"
+                          },
+                          "featured": {
+                            "type": "boolean"
+                          },
+                          "gallery": {
+                            "items": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "kind": {
+                                  "enum": [
+                                    "image",
+                                    "video"
+                                  ],
+                                  "type": "string"
+                                },
+                                "thumb": {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "alt": {
+                                      "type": "string"
+                                    },
+                                    "height": {
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991,
+                                      "type": "integer"
+                                    },
+                                    "sizes": {
+                                      "items": {
+                                        "additionalProperties": false,
+                                        "properties": {
+                                          "height": {
+                                            "exclusiveMinimum": 0,
+                                            "maximum": 9007199254740991,
+                                            "type": "integer"
+                                          },
+                                          "url": {
+                                            "pattern": "^https?:\\/\\/\\S+$",
+                                            "type": "string"
+                                          },
+                                          "width": {
+                                            "exclusiveMinimum": 0,
+                                            "maximum": 9007199254740991,
+                                            "type": "integer"
+                                          }
+                                        },
+                                        "required": [
+                                          "url",
+                                          "width",
+                                          "height"
+                                        ],
+                                        "type": "object"
+                                      },
+                                      "minItems": 1,
+                                      "type": "array"
+                                    },
+                                    "width": {
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "alt",
+                                    "width",
+                                    "height",
+                                    "sizes"
+                                  ],
+                                  "type": "object"
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "thumb"
+                              ],
+                              "type": "object"
+                            },
+                            "maxItems": 3,
+                            "type": "array"
+                          },
+                          "initials": {
+                            "type": "string"
+                          },
+                          "languages": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "photo": {
+                            "anyOf": [
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "alt": {
+                                    "type": "string"
+                                  },
+                                  "height": {
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 9007199254740991,
+                                    "type": "integer"
+                                  },
+                                  "sizes": {
+                                    "items": {
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "height": {
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 9007199254740991,
+                                          "type": "integer"
+                                        },
+                                        "url": {
+                                          "pattern": "^https?:\\/\\/\\S+$",
+                                          "type": "string"
+                                        },
+                                        "width": {
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 9007199254740991,
+                                          "type": "integer"
+                                        }
+                                      },
+                                      "required": [
+                                        "url",
+                                        "width",
+                                        "height"
+                                      ],
+                                      "type": "object"
+                                    },
+                                    "minItems": 1,
+                                    "type": "array"
+                                  },
+                                  "width": {
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 9007199254740991,
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "alt",
+                                  "width",
+                                  "height",
+                                  "sizes"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "places": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "saidYes": {
+                            "type": "boolean"
+                          },
+                          "sampleCount": {
+                            "maximum": 9007199254740991,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "samplePreviews": {
+                            "items": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "alt": {
+                                  "type": "string"
+                                },
+                                "height": {
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991,
+                                  "type": "integer"
+                                },
+                                "sizes": {
+                                  "items": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "height": {
+                                        "exclusiveMinimum": 0,
+                                        "maximum": 9007199254740991,
+                                        "type": "integer"
+                                      },
+                                      "url": {
+                                        "pattern": "^https?:\\/\\/\\S+$",
+                                        "type": "string"
+                                      },
+                                      "width": {
+                                        "exclusiveMinimum": 0,
+                                        "maximum": 9007199254740991,
+                                        "type": "integer"
+                                      }
+                                    },
+                                    "required": [
+                                      "url",
+                                      "width",
+                                      "height"
+                                    ],
+                                    "type": "object"
+                                  },
+                                  "minItems": 1,
+                                  "type": "array"
+                                },
+                                "width": {
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991,
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "alt",
+                                "width",
+                                "height",
+                                "sizes"
+                              ],
+                              "type": "object"
+                            },
+                            "maxItems": 3,
+                            "type": "array"
+                          },
+                          "specialties": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "types": {
+                            "type": "string"
+                          },
+                          "yearsExperience": {
+                            "anyOf": [
+                              {
+                                "maximum": 9007199254740991,
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "code",
+                          "displayCode",
+                          "name",
+                          "initials",
+                          "photo",
+                          "types",
+                          "places",
+                          "specialties",
+                          "languages",
+                          "yearsExperience",
+                          "sampleCount",
+                          "featured",
+                          "gallery"
+                        ],
+                        "type": "object"
+                      },
+                      "feeFils": {
+                        "maximum": 9007199254740991,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "totalFils": {
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "creator",
+                      "amountFils",
+                      "feeFils",
+                      "totalFils",
+                      "atYourPrice",
+                      "answeredAt"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
                 "persona": {
                   "additionalProperties": false,
                   "properties": {
@@ -15617,6 +16725,11 @@
             },
             "type": "array"
           },
+          "sentTo": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
           "totalFils": {
             "anyOf": [
               {
@@ -15655,6 +16768,71 @@
         "type": "object"
       },
       "path": "/api/mobile/v1/match/{ref}/{key}"
+    },
+    "matchStamp": {
+      "auth": "none",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "params": {
+            "properties": {
+              "key": {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              "ref": {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "ref",
+              "key"
+            ],
+            "type": "object"
+          },
+          "query": {
+            "properties": {
+              "date": {
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                "type": "string"
+              },
+              "duration": {
+                "maxLength": 40,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "params",
+          "query"
+        ],
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "stamp": {
+            "maxLength": 32,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "stamp"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/match/{ref}/{key}/stamp"
     },
     "me": {
       "auth": "required",
@@ -17231,6 +18409,854 @@
         "type": "object"
       },
       "path": "/api/mobile/v1/navigation"
+    },
+    "offerDecline": {
+      "auth": "optional",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "body": {
+            "properties": {
+              "creator": {
+                "maxLength": 16,
+                "minLength": 1,
+                "type": "string"
+              },
+              "persona": {
+                "maxLength": 100,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "persona",
+              "creator"
+            ],
+            "type": "object"
+          },
+          "params": {
+            "properties": {
+              "key": {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              "ref": {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "ref",
+              "key"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "params",
+          "body"
+        ],
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "brief": {
+            "additionalProperties": false,
+            "properties": {
+              "date": {
+                "anyOf": [
+                  {
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "duration": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reference": {
+                "type": "string"
+              },
+              "sentence": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "reference",
+              "sentence",
+              "date",
+              "duration"
+            ],
+            "type": "object"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "durations": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "value",
+                "label"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "locale": {
+            "enum": [
+              "en",
+              "ar"
+            ],
+            "type": "string"
+          },
+          "mode": {
+            "enum": [
+              "fixed",
+              "offers"
+            ],
+            "type": "string"
+          },
+          "nearby": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "date": {
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "type": "string"
+                },
+                "free": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "date",
+                "free"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "priceOnRequest": {
+            "type": "boolean"
+          },
+          "sections": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "budgetFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
+                "creators": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "displayCode": {
+                        "type": "string"
+                      },
+                      "featured": {
+                        "type": "boolean"
+                      },
+                      "gallery": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "kind": {
+                              "enum": [
+                                "image",
+                                "video"
+                              ],
+                              "type": "string"
+                            },
+                            "thumb": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "alt": {
+                                  "type": "string"
+                                },
+                                "height": {
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991,
+                                  "type": "integer"
+                                },
+                                "sizes": {
+                                  "items": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "height": {
+                                        "exclusiveMinimum": 0,
+                                        "maximum": 9007199254740991,
+                                        "type": "integer"
+                                      },
+                                      "url": {
+                                        "pattern": "^https?:\\/\\/\\S+$",
+                                        "type": "string"
+                                      },
+                                      "width": {
+                                        "exclusiveMinimum": 0,
+                                        "maximum": 9007199254740991,
+                                        "type": "integer"
+                                      }
+                                    },
+                                    "required": [
+                                      "url",
+                                      "width",
+                                      "height"
+                                    ],
+                                    "type": "object"
+                                  },
+                                  "minItems": 1,
+                                  "type": "array"
+                                },
+                                "width": {
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991,
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "alt",
+                                "width",
+                                "height",
+                                "sizes"
+                              ],
+                              "type": "object"
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "thumb"
+                          ],
+                          "type": "object"
+                        },
+                        "maxItems": 3,
+                        "type": "array"
+                      },
+                      "initials": {
+                        "type": "string"
+                      },
+                      "languages": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "photo": {
+                        "anyOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "alt": {
+                                "type": "string"
+                              },
+                              "height": {
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991,
+                                "type": "integer"
+                              },
+                              "sizes": {
+                                "items": {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "height": {
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991,
+                                      "type": "integer"
+                                    },
+                                    "url": {
+                                      "pattern": "^https?:\\/\\/\\S+$",
+                                      "type": "string"
+                                    },
+                                    "width": {
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "url",
+                                    "width",
+                                    "height"
+                                  ],
+                                  "type": "object"
+                                },
+                                "minItems": 1,
+                                "type": "array"
+                              },
+                              "width": {
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991,
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "alt",
+                              "width",
+                              "height",
+                              "sizes"
+                            ],
+                            "type": "object"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "places": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "saidYes": {
+                        "type": "boolean"
+                      },
+                      "sampleCount": {
+                        "maximum": 9007199254740991,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "samplePreviews": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "alt": {
+                              "type": "string"
+                            },
+                            "height": {
+                              "exclusiveMinimum": 0,
+                              "maximum": 9007199254740991,
+                              "type": "integer"
+                            },
+                            "sizes": {
+                              "items": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "height": {
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 9007199254740991,
+                                    "type": "integer"
+                                  },
+                                  "url": {
+                                    "pattern": "^https?:\\/\\/\\S+$",
+                                    "type": "string"
+                                  },
+                                  "width": {
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 9007199254740991,
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "url",
+                                  "width",
+                                  "height"
+                                ],
+                                "type": "object"
+                              },
+                              "minItems": 1,
+                              "type": "array"
+                            },
+                            "width": {
+                              "exclusiveMinimum": 0,
+                              "maximum": 9007199254740991,
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "alt",
+                            "width",
+                            "height",
+                            "sizes"
+                          ],
+                          "type": "object"
+                        },
+                        "maxItems": 3,
+                        "type": "array"
+                      },
+                      "specialties": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "types": {
+                        "type": "string"
+                      },
+                      "yearsExperience": {
+                        "anyOf": [
+                          {
+                            "maximum": 9007199254740991,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "displayCode",
+                      "name",
+                      "initials",
+                      "photo",
+                      "types",
+                      "places",
+                      "specialties",
+                      "languages",
+                      "yearsExperience",
+                      "sampleCount",
+                      "featured",
+                      "gallery"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "includes": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "offers": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "amountFils": {
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991,
+                        "type": "integer"
+                      },
+                      "answeredAt": {
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                        "type": "string"
+                      },
+                      "atYourPrice": {
+                        "type": "boolean"
+                      },
+                      "creator": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "displayCode": {
+                            "type": "string"
+                          },
+                          "featured": {
+                            "type": "boolean"
+                          },
+                          "gallery": {
+                            "items": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "kind": {
+                                  "enum": [
+                                    "image",
+                                    "video"
+                                  ],
+                                  "type": "string"
+                                },
+                                "thumb": {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "alt": {
+                                      "type": "string"
+                                    },
+                                    "height": {
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991,
+                                      "type": "integer"
+                                    },
+                                    "sizes": {
+                                      "items": {
+                                        "additionalProperties": false,
+                                        "properties": {
+                                          "height": {
+                                            "exclusiveMinimum": 0,
+                                            "maximum": 9007199254740991,
+                                            "type": "integer"
+                                          },
+                                          "url": {
+                                            "pattern": "^https?:\\/\\/\\S+$",
+                                            "type": "string"
+                                          },
+                                          "width": {
+                                            "exclusiveMinimum": 0,
+                                            "maximum": 9007199254740991,
+                                            "type": "integer"
+                                          }
+                                        },
+                                        "required": [
+                                          "url",
+                                          "width",
+                                          "height"
+                                        ],
+                                        "type": "object"
+                                      },
+                                      "minItems": 1,
+                                      "type": "array"
+                                    },
+                                    "width": {
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 9007199254740991,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "alt",
+                                    "width",
+                                    "height",
+                                    "sizes"
+                                  ],
+                                  "type": "object"
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "thumb"
+                              ],
+                              "type": "object"
+                            },
+                            "maxItems": 3,
+                            "type": "array"
+                          },
+                          "initials": {
+                            "type": "string"
+                          },
+                          "languages": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "photo": {
+                            "anyOf": [
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "alt": {
+                                    "type": "string"
+                                  },
+                                  "height": {
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 9007199254740991,
+                                    "type": "integer"
+                                  },
+                                  "sizes": {
+                                    "items": {
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "height": {
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 9007199254740991,
+                                          "type": "integer"
+                                        },
+                                        "url": {
+                                          "pattern": "^https?:\\/\\/\\S+$",
+                                          "type": "string"
+                                        },
+                                        "width": {
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 9007199254740991,
+                                          "type": "integer"
+                                        }
+                                      },
+                                      "required": [
+                                        "url",
+                                        "width",
+                                        "height"
+                                      ],
+                                      "type": "object"
+                                    },
+                                    "minItems": 1,
+                                    "type": "array"
+                                  },
+                                  "width": {
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 9007199254740991,
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "alt",
+                                  "width",
+                                  "height",
+                                  "sizes"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "places": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "saidYes": {
+                            "type": "boolean"
+                          },
+                          "sampleCount": {
+                            "maximum": 9007199254740991,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "samplePreviews": {
+                            "items": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "alt": {
+                                  "type": "string"
+                                },
+                                "height": {
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991,
+                                  "type": "integer"
+                                },
+                                "sizes": {
+                                  "items": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "height": {
+                                        "exclusiveMinimum": 0,
+                                        "maximum": 9007199254740991,
+                                        "type": "integer"
+                                      },
+                                      "url": {
+                                        "pattern": "^https?:\\/\\/\\S+$",
+                                        "type": "string"
+                                      },
+                                      "width": {
+                                        "exclusiveMinimum": 0,
+                                        "maximum": 9007199254740991,
+                                        "type": "integer"
+                                      }
+                                    },
+                                    "required": [
+                                      "url",
+                                      "width",
+                                      "height"
+                                    ],
+                                    "type": "object"
+                                  },
+                                  "minItems": 1,
+                                  "type": "array"
+                                },
+                                "width": {
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991,
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "alt",
+                                "width",
+                                "height",
+                                "sizes"
+                              ],
+                              "type": "object"
+                            },
+                            "maxItems": 3,
+                            "type": "array"
+                          },
+                          "specialties": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "types": {
+                            "type": "string"
+                          },
+                          "yearsExperience": {
+                            "anyOf": [
+                              {
+                                "maximum": 9007199254740991,
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "code",
+                          "displayCode",
+                          "name",
+                          "initials",
+                          "photo",
+                          "types",
+                          "places",
+                          "specialties",
+                          "languages",
+                          "yearsExperience",
+                          "sampleCount",
+                          "featured",
+                          "gallery"
+                        ],
+                        "type": "object"
+                      },
+                      "feeFils": {
+                        "maximum": 9007199254740991,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "totalFils": {
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "creator",
+                      "amountFils",
+                      "feeFils",
+                      "totalFils",
+                      "atYourPrice",
+                      "answeredAt"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "persona": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "plural": {
+                      "type": "string"
+                    },
+                    "singular": {
+                      "type": "string"
+                    },
+                    "slug": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "slug",
+                    "singular",
+                    "plural"
+                  ],
+                  "type": "object"
+                },
+                "priceFils": {
+                  "anyOf": [
+                    {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "persona",
+                "priceFils",
+                "includes",
+                "creators"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "sentTo": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "totalFils": {
+            "anyOf": [
+              {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "whatsappUrl": {
+            "anyOf": [
+              {
+                "pattern": "^https:\\/\\/\\S+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "locale",
+          "brief",
+          "date",
+          "priceOnRequest",
+          "durations",
+          "totalFils",
+          "sections",
+          "nearby",
+          "whatsappUrl"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/match/{ref}/{key}/offers/decline"
     },
     "otpRequest": {
       "auth": "none",
@@ -19514,7 +21540,9 @@
                     "travel",
                     "addon",
                     "discount",
-                    "adjustment"
+                    "adjustment",
+                    "offer",
+                    "fee"
                   ],
                   "type": "string"
                 },
@@ -20009,7 +22037,9 @@
                     "travel",
                     "addon",
                     "discount",
-                    "adjustment"
+                    "adjustment",
+                    "offer",
+                    "fee"
                   ],
                   "type": "string"
                 },
@@ -20548,6 +22578,29 @@
                 ],
                 "type": "object"
               },
+              "expect": {
+                "items": {
+                  "properties": {
+                    "amountFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    "persona": {
+                      "maxLength": 100,
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "persona",
+                    "amountFils"
+                  ],
+                  "type": "object"
+                },
+                "maxItems": 8,
+                "type": "array"
+              },
               "picks": {
                 "items": {
                   "properties": {
@@ -20810,7 +22863,9 @@
                     "travel",
                     "addon",
                     "discount",
-                    "adjustment"
+                    "adjustment",
+                    "offer",
+                    "fee"
                   ],
                   "type": "string"
                 },
@@ -21319,7 +23374,9 @@
                     "travel",
                     "addon",
                     "discount",
-                    "adjustment"
+                    "adjustment",
+                    "offer",
+                    "fee"
                   ],
                   "type": "string"
                 },
@@ -21814,7 +23871,9 @@
                     "travel",
                     "addon",
                     "discount",
-                    "adjustment"
+                    "adjustment",
+                    "offer",
+                    "fee"
                   ],
                   "type": "string"
                 },
@@ -22661,6 +24720,9 @@
               }
             ]
           },
+          "offersEnabled": {
+            "type": "boolean"
+          },
           "phone": {
             "anyOf": [
               {
@@ -23203,6 +25265,11 @@
                     }
                   ]
                 },
+                "budgetFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
                 "date": {
                   "anyOf": [
                     {
@@ -23214,11 +25281,26 @@
                     }
                   ]
                 },
+                "declined": {
+                  "type": "boolean"
+                },
                 "emirate": {
                   "type": "string"
                 },
                 "occasion": {
                   "type": "string"
+                },
+                "offerFils": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "outcome": {
                   "enum": [
@@ -23233,8 +25315,71 @@
                   "minLength": 1,
                   "type": "string"
                 },
+                "place": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "area": {
+                      "type": "string"
+                    },
+                    "distanceKm": {
+                      "anyOf": [
+                        {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "emirate": {
+                      "type": "string"
+                    },
+                    "mapUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "area",
+                    "emirate",
+                    "mapUrl",
+                    "distanceKm"
+                  ],
+                  "type": "object"
+                },
                 "profession": {
                   "type": "string"
+                },
+                "range": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxFils": {
+                      "anyOf": [
+                        {
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "minFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "minFils",
+                    "maxFils"
+                  ],
+                  "type": "object"
                 },
                 "reason": {
                   "type": [
@@ -23245,6 +25390,11 @@
                 "ref": {
                   "minLength": 1,
                   "type": "string"
+                },
+                "revisionsLeft": {
+                  "maximum": 3,
+                  "minimum": 0,
+                  "type": "integer"
                 },
                 "sentAt": {
                   "format": "date-time",
@@ -23290,6 +25440,11 @@
                     }
                   ]
                 },
+                "budgetFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
                 "date": {
                   "anyOf": [
                     {
@@ -23301,11 +25456,26 @@
                     }
                   ]
                 },
+                "declined": {
+                  "type": "boolean"
+                },
                 "emirate": {
                   "type": "string"
                 },
                 "occasion": {
                   "type": "string"
+                },
+                "offerFils": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "outcome": {
                   "enum": [
@@ -23320,8 +25490,71 @@
                   "minLength": 1,
                   "type": "string"
                 },
+                "place": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "area": {
+                      "type": "string"
+                    },
+                    "distanceKm": {
+                      "anyOf": [
+                        {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "emirate": {
+                      "type": "string"
+                    },
+                    "mapUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "area",
+                    "emirate",
+                    "mapUrl",
+                    "distanceKm"
+                  ],
+                  "type": "object"
+                },
                 "profession": {
                   "type": "string"
+                },
+                "range": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxFils": {
+                      "anyOf": [
+                        {
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "minFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "minFils",
+                    "maxFils"
+                  ],
+                  "type": "object"
                 },
                 "reason": {
                   "type": [
@@ -23332,6 +25565,11 @@
                 "ref": {
                   "minLength": 1,
                   "type": "string"
+                },
+                "revisionsLeft": {
+                  "maximum": 3,
+                  "minimum": 0,
+                  "type": "integer"
                 },
                 "sentAt": {
                   "format": "date-time",
@@ -23397,6 +25635,11 @@
                     }
                   ]
                 },
+                "budgetFils": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "type": "integer"
+                },
                 "date": {
                   "anyOf": [
                     {
@@ -23408,11 +25651,26 @@
                     }
                   ]
                 },
+                "declined": {
+                  "type": "boolean"
+                },
                 "emirate": {
                   "type": "string"
                 },
                 "occasion": {
                   "type": "string"
+                },
+                "offerFils": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "outcome": {
                   "enum": [
@@ -23427,8 +25685,71 @@
                   "minLength": 1,
                   "type": "string"
                 },
+                "place": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "area": {
+                      "type": "string"
+                    },
+                    "distanceKm": {
+                      "anyOf": [
+                        {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "emirate": {
+                      "type": "string"
+                    },
+                    "mapUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "area",
+                    "emirate",
+                    "mapUrl",
+                    "distanceKm"
+                  ],
+                  "type": "object"
+                },
                 "profession": {
                   "type": "string"
+                },
+                "range": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxFils": {
+                      "anyOf": [
+                        {
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991,
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "minFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "minFils",
+                    "maxFils"
+                  ],
+                  "type": "object"
                 },
                 "reason": {
                   "type": [
@@ -23439,6 +25760,11 @@
                 "ref": {
                   "minLength": 1,
                   "type": "string"
+                },
+                "revisionsLeft": {
+                  "maximum": 3,
+                  "minimum": 0,
+                  "type": "integer"
                 },
                 "sentAt": {
                   "format": "date-time",
@@ -23515,9 +25841,12 @@
     "booking.errors.signInRequired",
     "booking.errors.terminal",
     "booking.errors.unavailable",
+    "brief.errors.budgetRange",
+    "brief.errors.emirateRequired",
     "brief.errors.generic",
     "brief.errors.optionGone",
     "brief.errors.pastDate",
+    "brief.errors.placeOutside",
     "brief.errors.required",
     "brief.errors.signInRequired",
     "brief.errors.tooMany",
@@ -23540,6 +25869,11 @@
     "inbox.errors.reasonUnknown",
     "media.upload.size",
     "media.upload.type",
+    "offers.errors.amountChanged",
+    "offers.errors.declined",
+    "offers.errors.outOfRange",
+    "offers.errors.pickFromOffers",
+    "offers.errors.tooManyChanges",
     "payment.errors.provider",
     "payment.errors.unavailable",
     "push.errors.tokenInvalid"

@@ -1,11 +1,13 @@
 import 'server-only'
 import type { BriefItemV1, BriefsSummaryV1, CreatorBriefsV1 } from '@shoot/domain/api/v1'
-import { addDays, briefMatchesCreator, dubaiToday, inboxSections, isBriefOpen, type InboxAnswer, type InboxBrief, type InboxEntry } from '@shoot/domain/booking'
+import { addDays, briefMatchesCreator, offerRange as offerRangeOf, dubaiToday, inboxSections, isBriefOpen, MAX_OFFER_CHANGES, offerStamp, placeForCreator, type InboxAnswer, type InboxBrief, type InboxEntry, type Point } from '@shoot/domain/booking'
 import type { CreatorSummary } from '@shoot/domain/creators'
 import type { Payload, Where } from 'payload'
 import { briefFacts, DURATION_SET, LOCATION_SET, myProfileIds, readQuickMatch, unavailableOn } from '@/modules/booking'
 import { getDirectoryContext, getLocations, getPublicCreators } from '@/modules/creators'
 import { getLandingPage } from '@/modules/landing/queries'
+import { getMapsProvider } from '@/modules/maps/providers'
+import { env } from '@/shared/lib/env'
 import type { Brief, BriefAnswer, OptionSet } from '@/payload-types'
 import type { Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
@@ -108,14 +110,21 @@ async function readInbox(ctx: InboxContext, userId: number) {
   const slots = landing.briefBuilder?.slots ?? []
   const dates = [...new Set([...briefs.values()].map((b) => (b.date ? String(b.date).slice(0, 10) : null)).filter((d): d is string => Boolean(d)))]
   const blocks = await unavailableOn(dates)
-  return { today, settings, profiles, profileIds, directory, locations, reasons, answers, briefs, bookings, slots, blocks }
+  // 022: where each profile starts from, for the distance to a brief's area (never shown to clients).
+  const bases = new Map<string, Point>()
+  const baseDocs = await payload.find({ collection: 'creator-profiles', where: { id: { in: profileIds.map(Number) } }, depth: 0, pagination: false, draft: true, overrideAccess: true, select: { base: true } })
+  for (const d of baseDocs.docs as { id: number; base?: { lat?: number | null; lng?: number | null } | null }[]) {
+    if (d.base?.lat != null && d.base?.lng != null) bases.set(String(d.id), { lat: d.base.lat, lng: d.base.lng })
+  }
+  return { today, settings, profiles, profileIds, directory, locations, reasons, answers, briefs, bookings, slots, blocks, bases, locale }
 }
 
 type Read = NonNullable<Awaited<ReturnType<typeof readInbox>>>
 
 /** The creator's items: open matching briefs and their own answers, one per brief and type. */
 function itemsOf(read: Read): Item[] {
-  const { today, settings, profiles, profileIds, directory, locations, answers, briefs, bookings, slots, blocks } = read
+  const { today, settings, profiles, profileIds, directory, locations, answers, briefs, bookings, slots, blocks, bases, locale } = read
+  const maps = getMapsProvider(env())
   const items: Item[] = []
   for (const brief of briefs.values()) {
     const facts = briefFacts(brief, slots)
@@ -166,12 +175,59 @@ function itemsOf(read: Read): Item[] {
             answer: current?.decision ?? null,
             reason: current?.decision === 'rejected' ? (row?.reason ?? null) : null,
             outcome,
+            ...offerFields(brief, personaId, row, mine, emirate?.name ?? '', bases.get(profile.id) ?? null, maps, locale),
           },
         })
       }
     }
   }
   return items
+}
+
+type BriefWithOffers = Brief & {
+  offers?: { mode?: string | null; minPercent?: number | null; maxPercent?: number | null } | null
+  budgets?: { persona: unknown; suggestedFils?: number | null; amountFils: number }[] | null
+  place?: { area?: string | null; publicLat?: number | null; publicLng?: number | null; lat?: number | null; lng?: number | null; address?: string | null } | null
+}
+
+/**
+ * 022: what an offers brief adds to a creator's item (FR-008, FR-012, FR-005b): the client's price, the range,
+ * this creator's offer and changes left, the client's decline, and the place as a creator may see it.
+ * Never the fee, the pin or the address.
+ */
+function offerFields(
+  raw: Brief,
+  personaId: string,
+  row: BriefAnswer | undefined,
+  bookings: readonly { state: string }[],
+  emirateName: string,
+  base: Point | null,
+  maps: ReturnType<typeof getMapsProvider>,
+  locale: Locale,
+): Partial<BriefItemV1> {
+  const brief = raw as BriefWithOffers
+  if (brief.offers?.mode !== 'offers') return {}
+  const budget = (brief.budgets ?? []).find((b) => idOf(b.persona) === personaId)
+  if (!budget) return {}
+  const settings = { minPercent: brief.offers.minPercent ?? 70, maxPercent: brief.offers.maxPercent ?? 200 }
+  const range = offerRangeOf(budget.suggestedFils ?? null, settings)
+  const r = row as (BriefAnswer & { amountFils?: number | null; revisions?: number | null; clientDecision?: string | null }) | undefined
+  const current = r && !r.withdrawnAt && r.decision === 'accepted' ? (r.amountFils ?? null) : null
+  const place = brief.place
+  const state = bookings.find((b) => b.state !== 'quoted' && b.state !== 'expired')?.state ?? null
+  const seen = place?.area
+    ? placeForCreator({ lat: null, lng: null, address: null, area: place.area, emirateId: '', publicLat: place.publicLat ?? null, publicLng: place.publicLng ?? null }, base, state as never)
+    : null
+  return {
+    budgetFils: budget.amountFils,
+    range: { minFils: range.min, maxFils: range.max },
+    offerFils: current,
+    revisionsLeft: Math.max(0, MAX_OFFER_CHANGES - (r?.revisions ?? 0)),
+    declined: r?.clientDecision === 'declined',
+    ...(seen
+      ? { place: { area: seen.area, emirate: emirateName, mapUrl: seen.publicLat !== null && seen.publicLng !== null ? maps.staticMapUrl(seen.publicLat, seen.publicLng, locale) : null, distanceKm: seen.distanceKm } }
+      : {}),
+  }
 }
 
 /** The creator's inbox, or `null` when they have no live profile (US1-S4). */
@@ -189,8 +245,16 @@ export async function briefsSummary(ctx: InboxContext, userId: number): Promise<
   const first = inbox.open[0]
   return {
     count: inbox.open.length,
-    soonest: first ? { ref: first.ref, profession: first.profession, occasion: first.occasion, emirate: first.emirate, date: first.date } : null,
+    soonest: first ? { ref: first.ref, profession: first.profession, occasion: first.occasion, emirate: first.emirate, date: first.date, ...(first.budgetFils ? { budgetFils: first.budgetFils } : {}) } : null,
   }
+}
+
+/** 022 (research R9): a short fingerprint of what the creator's inbox shows; it changes when anything does. */
+export async function inboxStamp(ctx: InboxContext, userId: number): Promise<string> {
+  const inbox = await creatorInbox(ctx, userId)
+  if (!inbox) return offerStamp(['none'])
+  const line = (i: BriefItemV1) => [i.ref, i.persona, i.answer ?? '', i.outcome, i.offerFils ?? '', i.revisionsLeft ?? '', i.declined ? 1 : 0].join(':')
+  return offerStamp([...inbox.open.map(line), '|', ...inbox.accepted.map(line), '|', ...inbox.rejected.map(line)])
 }
 
 /** Convenience for pages: the shared Payload client. */
@@ -205,7 +269,8 @@ export async function saidYesCounts(payload: Payload, briefs: readonly { id: num
   if (!ids.length) return out
   const { docs } = await payload.find({
     collection: 'brief-answers',
-    where: { and: [{ brief: { in: ids } }, { decision: { equals: 'accepted' } }, { withdrawnAt: { exists: false } }] },
+    // 022: an offer the client declined no longer counts.
+    where: { and: [{ brief: { in: ids } }, { decision: { equals: 'accepted' } }, { withdrawnAt: { exists: false } }, { clientDecision: { exists: false } }] },
     depth: 0,
     pagination: false,
     overrideAccess: true,

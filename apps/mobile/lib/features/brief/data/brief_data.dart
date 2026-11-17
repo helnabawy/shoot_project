@@ -13,6 +13,7 @@ Map<String, Object?> briefRecordBody(
   BriefBuilderConfig config,
   BriefDraft draft, {
   String? creator,
+  Map<String, int>? budgets,
 }) {
   return {
     'selections': [
@@ -23,8 +24,25 @@ Map<String, Object?> briefRecordBody(
     ],
     'date': draft.date,
     'creator': ?creator,
+    if (budgets != null && budgets.isNotEmpty)
+      'budgets': [
+        for (final e in budgets.entries)
+          {'persona': e.key, 'amountFils': e.value},
+      ],
   };
 }
+
+/// 022: the answers as the price endpoint reads them (slot token → value, several joined by a comma).
+Map<String, Object?> briefPricesBody(
+  BriefBuilderConfig config,
+  BriefDraft draft,
+) => {
+  'values': {
+    for (final slot in config.slots)
+      if (draft.valuesOf(slot.token).isNotEmpty)
+        slot.token: draft.valuesOf(slot.token).join(','),
+  },
+};
 
 /// Decodes `briefReceiptV1`; throws [FormatException] on a missing field.
 BriefReceipt briefReceiptFromJson(Json json) => BriefReceipt(
@@ -44,12 +62,38 @@ final class BriefRepositoryImpl implements BriefRepository {
     BriefBuilderConfig config,
     BriefDraft draft, {
     String? creator,
+    Map<String, int>? budgets,
   }) => apiResult(() async {
     final answer = await apiPost(
       _dio,
       'briefs',
-      body: briefRecordBody(config, draft, creator: creator),
+      body: briefRecordBody(config, draft, creator: creator, budgets: budgets),
     );
     return briefReceiptFromJson(answer.body ?? const {});
   });
+
+  @override
+  Future<Result<List<BriefPrice>>> prices(
+    BriefBuilderConfig config,
+    BriefDraft draft,
+  ) => apiResult(() async {
+    final answer = await apiPost(
+      _dio,
+      'brief-builder/prices',
+      body: briefPricesBody(config, draft),
+    );
+    return briefPricesFromJson(answer.body ?? const {});
+  });
 }
+
+/// Decodes `briefPricesV1` (022); throws [FormatException] on a missing field.
+List<BriefPrice> briefPricesFromJson(Json json) =>
+    readList(json, 'prices', (o) {
+      final p = asObject(o);
+      return BriefPrice(
+        persona: readString(p, 'persona'),
+        suggestedFils: readNullableInt(p, 'suggestedFils'),
+        minFils: readInt(p, 'minFils'),
+        maxFils: readNullableInt(p, 'maxFils'),
+      );
+    });

@@ -25,6 +25,17 @@ abstract interface class QuickMatchRemoteDataSource {
 
   Future<BookingViewModel> fetchBooking(String ref, String key);
 
+  /// 022: the client declines one offer; answers step 2 again.
+  Future<MatchPageModel> declineOffer(
+    String ref,
+    String key, {
+    required String persona,
+    required String creator,
+  });
+
+  /// 022: step 2's fingerprint (research R9).
+  Future<String> matchStamp(String ref, String key);
+
   Future<BookingViewModel> accept(String ref, String key);
 
   Future<BookingViewModel> confirmDelivery(String ref, String key);
@@ -80,6 +91,24 @@ final class QuickMatchRemoteDataSourceImpl
       body: quotationRequestJson(picks, details),
     )).body!,
   );
+
+  @override
+  Future<MatchPageModel> declineOffer(
+    String ref,
+    String key, {
+    required String persona,
+    required String creator,
+  }) async => MatchPageModel.fromJson(
+    (await apiPost(
+      _dio,
+      'match/${_q(ref, key)}/offers/decline',
+      body: {'persona': persona, 'creator': creator},
+    )).body!,
+  );
+
+  @override
+  Future<String> matchStamp(String ref, String key) async =>
+      readString(await apiGet(_dio, 'match/${_q(ref, key)}/stamp'), 'stamp');
 
   @override
   Future<BookingViewModel> fetchBooking(String ref, String key) async =>

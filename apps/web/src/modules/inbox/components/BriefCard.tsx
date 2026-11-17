@@ -3,7 +3,9 @@ import { useTranslations } from 'next-intl'
 import { Bidi } from '@/shared/ui/Bidi'
 import { cx, GlyphTile, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
 import { CalendarIcon, CheckIcon, CloseIcon } from '@/shared/ui/icons'
+import { formatMoney } from '@shoot/domain/pricing'
 import { answerBriefAction } from '../actions'
+import { OfferForm, OfferPriceRow } from './OfferBits'
 
 export interface BriefCardView extends BriefItemV1 {
   /** "Fri 20 Nov" in the page language, or empty for "date to agree". */
@@ -29,6 +31,9 @@ export function BriefFields({ item, locale }: { item: Pick<BriefItemV1, 'ref' | 
 export function BriefCard({ item, locale, primary, reasons }: { item: BriefCardView; locale: string; primary: boolean; reasons: { value: string; label: string }[] }) {
   const t = useTranslations('inbox')
   const key = `${item.ref}-${item.persona}`
+  const offer = useTranslations('inbox.offer')
+  // 022: an offers brief accepts the client's price; the label names it (board 51).
+  const acceptLabel = item.budgetFils ? offer('accept', { price: formatMoney(item.budgetFils, locale) }) : t('accept')
   return (
     <div className="border-b border-hair pb-2 last:border-b-0" data-testid="inbox-brief" data-ref={item.ref}>
       <div className={rowClass('open', false)}>
@@ -47,17 +52,19 @@ export function BriefCard({ item, locale, primary, reasons }: { item: BriefCardV
           }
         />
       </div>
+      <OfferPriceRow item={item} locale={locale} />
       <form action={answerBriefAction}>
         <BriefFields item={item} locale={locale} />
         <input type="hidden" name="decision" value="accept" />
         {primary ? (
-          <TopHit label={t('accept')} testId="inbox-accept" />
+          <TopHit label={acceptLabel} testId="inbox-accept" />
         ) : (
           <button type="submit" className={cx(rowClass('open'), 'w-[calc(100%-12px)] text-start')} data-testid="inbox-accept">
-            <RowContent glyph={<CheckIcon width={15} height={15} />} label={t('accept')} />
+            <RowContent glyph={<CheckIcon width={15} height={15} />} label={acceptLabel} />
           </button>
         )}
       </form>
+      <OfferForm item={item} locale={locale} />
       <details className="px-4 pt-1">
         <summary className="min-h-11 cursor-pointer content-center text-[15px] text-ink">{t('reject')}</summary>
         <form action={answerBriefAction} className="grid gap-3 pb-2" data-testid="inbox-reject-form">

@@ -116,10 +116,14 @@ final class BriefBuilder extends Equatable {
     required this.locale,
     required this.builder,
     this.signInRequired = false,
+    this.offersEnabled = false,
   });
 
   final String locale;
   final BriefBuilderConfig? builder;
+
+  /// 022: the brief ends with the client's price per type ("Creators offer prices" is on).
+  final bool offersEnabled;
 
   /// 021: sending a brief needs a signed-in member (the owner's switch).
   final bool signInRequired;
@@ -127,5 +131,5 @@ final class BriefBuilder extends Equatable {
   bool get enabled => builder != null;
 
   @override
-  List<Object?> get props => [locale, builder, signInRequired];
+  List<Object?> get props => [locale, builder, signInRequired, offersEnabled];
 }

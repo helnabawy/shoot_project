@@ -45,6 +45,7 @@ final class BriefItem extends Equatable {
     required this.answer,
     required this.reason,
     required this.outcome,
+    this.offer,
   });
 
   final String ref;
@@ -60,6 +61,9 @@ final class BriefItem extends Equatable {
   final BriefAnswer? answer;
   final String? reason;
   final BriefOutcome outcome;
+
+  /// Feature 022: the client's price and this creator's offer, on an offers brief; `null` otherwise.
+  final BriefOffer? offer;
 
   /// Answers are per brief and type.
   String get key => '$ref/$persona';
@@ -77,7 +81,71 @@ final class BriefItem extends Equatable {
     answer,
     reason,
     outcome,
+    offer,
   ];
+}
+
+/// Feature 022: what an offers brief adds to a creator's item. Amounts are fils; never the service fee
+/// (the creator sees only their own amount) and never the client's pin (the area only).
+final class BriefOffer extends Equatable {
+  const BriefOffer({
+    required this.budgetFils,
+    required this.minFils,
+    required this.maxFils,
+    required this.offerFils,
+    required this.revisionsLeft,
+    required this.declined,
+    this.place,
+  });
+
+  /// The client's price for this type.
+  final int budgetFils;
+  final int minFils;
+
+  /// `null`: no ceiling (no usual price).
+  final int? maxFils;
+
+  /// This creator's current offer, or `null` before they answer.
+  final int? offerFils;
+  final int revisionsLeft;
+
+  /// The client declined this creator's offer (final).
+  final bool declined;
+  final BriefPlace? place;
+
+  bool allows(int fils) =>
+      fils >= minFils &&
+      (maxFils == null || fils <= maxFils!) &&
+      fils % 100 == 0;
+
+  @override
+  List<Object?> get props => [
+    budgetFils,
+    minFils,
+    maxFils,
+    offerFils,
+    revisionsLeft,
+    declined,
+    place,
+  ];
+}
+
+/// The area a creator may see before a booking: never the pin.
+final class BriefPlace extends Equatable {
+  const BriefPlace({
+    required this.area,
+    required this.emirate,
+    this.mapUrl,
+    this.distanceKm,
+  });
+
+  final String area;
+  final String emirate;
+  final String? mapUrl;
+  final int? distanceKm;
+
+  @override
+  List<Object?> get props => [area, emirate, mapUrl, distanceKm];
 }
 
 final class RejectReason extends Equatable {

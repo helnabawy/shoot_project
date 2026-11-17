@@ -1,6 +1,7 @@
 import 'server-only'
-import { dubaiToday, initialAssignments, type Pick } from '@shoot/domain/booking'
+import { dubaiToday, initialAssignments, offerQuote, type Pick } from '@shoot/domain/booking'
 import { quotePrice } from '@shoot/domain/pricing'
+import { getTranslations } from 'next-intl/server'
 import type { Payload, PayloadRequest } from 'payload'
 import { findPromo, getPriceRules } from '@/modules/pricing'
 import type { Booking } from '@/payload-types'
@@ -38,6 +39,8 @@ export interface IssueInput {
   /** The request the limit is counted on (cookie visitor for the website, install for the app). */
   req: PayloadRequest
   limitKey: string
+  /** 022: the offer amounts the client saw, per persona slug; a moved one refuses (edge case). */
+  expect?: { persona: string; amountFils: number }[]
 }
 
 export type IssueResult =
@@ -61,7 +64,11 @@ export async function issueQuotation(payload: Payload, input: IssueInput): Promi
   const date = input.date ?? briefDate ?? null
   if (!date || date < dubaiToday(now)) return fail('', { date: 'booking.errors.date' })
 
-  const page = await getMatchPage(brief, locale, now, { date, duration: input.details?.duration ?? null })
+  const offerMode = (brief as { offers?: { mode?: string | null } | null }).offers?.mode === 'offers'
+  // 022 (FR-018a): an offers brief keeps the date and duration the creators priced.
+  if (offerMode && briefDate && date !== briefDate) return fail('', { date: 'booking.errors.date' })
+  const page = await getMatchPage(brief, locale, now, offerMode ? {} : { date, duration: input.details?.duration ?? null })
+  if (offerMode) return issueFromOffers(payload, input, page, date, settings)
   const assigned: { personaId: string; creatorId: string | null }[] = []
   for (const section of page.sections) {
     const pick = picks.find((p) => p.persona === section.persona.slug)
@@ -86,6 +93,51 @@ export async function issueQuotation(payload: Payload, input: IssueInput): Promi
   })
   if (!quote.ok) return fail('booking.errors.generic')
 
+  return saveQuotation(payload, input, page, date, settings, assigned, { lines: quote.lines, subtotal: quote.subtotal, discount: quote.discount, total: quote.total, promoCode: quote.promo?.applied ? quote.promo.code : null }, quote.promo && !quote.promo.applied ? `?promo=${quote.promo.reason}` : quote.promo?.applied ? '?promo=applied' : '')
+}
+
+type Page = Awaited<ReturnType<typeof getMatchPage>>
+type Settings = Awaited<ReturnType<typeof readQuickMatch>>
+type Frozen = Parameters<typeof createQuotation>[1]['quote']
+
+/**
+ * 022 (US5, FR-017, FR-018): the quotation of an offers brief is the chosen offers plus the service fee. Every
+ * type needs one chosen offer (no "let us choose"); add-ons and promo codes play no part. An offer that moved
+ * since the client saw it refuses, so the client accepts only the amount shown.
+ */
+async function issueFromOffers(payload: Payload, input: IssueInput, page: Page, date: string, settings: Settings): Promise<IssueResult> {
+  const brief = input.brief as typeof input.brief & { offers?: { feePercent?: number | null } | null }
+  const assigned: { personaId: string; creatorId: string | null }[] = []
+  const picks: { personaId: string; label: { en: string; ar: string }; amount: number }[] = []
+  for (const section of page.sections) {
+    const pick = input.picks.find((p) => p.persona === section.persona.slug)
+    const offer = pick?.code ? section.offers?.find((o) => o.creator.code === pick.code) : undefined
+    if (!offer) return fail('booking.errors.unavailable')
+    const seen = input.expect?.find((e) => e.persona === section.persona.slug)
+    if (seen && seen.amountFils !== offer.amountFils) return fail('offers.errors.amountChanged')
+    assigned.push({ personaId: section.persona.id, creatorId: offer.creator.id })
+    const label = `${section.persona.singular} · ${offer.creator.displayName}`
+    picks.push({ personaId: section.persona.id, label: { en: label, ar: label }, amount: offer.amountFils })
+  }
+  if (!assigned.length) return fail('booking.errors.generic')
+  const feePercent = brief.offers?.feePercent ?? 10
+  const [en, ar] = await Promise.all([getTranslations({ locale: 'en', namespace: 'quote' }), getTranslations({ locale: 'ar', namespace: 'quote' })])
+  const quote = offerQuote(picks, feePercent, { en: en('feeLine', { percent: feePercent }), ar: ar('feeLine', { percent: feePercent }) })
+  return saveQuotation(payload, input, page, date, settings, assigned, { ...quote, promoCode: null }, '')
+}
+
+/** Books the quotation: a booking in "quoted" with its first quotation version (shared by both modes). */
+async function saveQuotation(
+  payload: Payload,
+  input: IssueInput,
+  page: Page,
+  date: string,
+  settings: Settings,
+  assigned: { personaId: string; creatorId: string | null }[],
+  quote: Frozen,
+  promoNote: string,
+): Promise<IssueResult> {
+  const { brief, now, locale } = input
   const salt = newSalt()
   const reference = await uniqueReference(payload)
   const validUntil = validUntilFrom(now, settings.quotationValidDays)
@@ -117,7 +169,7 @@ export async function issueQuotation(payload: Payload, input: IssueInput): Promi
     const quotation = await createQuotation(payload, {
       bookingId: created.id,
       briefId: brief.id,
-      quote: { ...quote, promoCode: quote.promo?.applied ? quote.promo.code : null },
+      quote,
       version: 1,
       validUntil,
       now,
@@ -140,6 +192,5 @@ export async function issueQuotation(payload: Payload, input: IssueInput): Promi
     throw error
   }
 
-  const promoNote = quote.promo && !quote.promo.applied ? `?promo=${quote.promo.reason}` : quote.promo?.applied ? '?promo=applied' : ''
   return { ok: true, reference, key: accessKey(salt, 'booking'), promoNote }
 }

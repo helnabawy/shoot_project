@@ -28,3 +28,19 @@ export function toRows(list: readonly Assignment[]): Row[] {
 }
 
 export { idOf }
+
+/**
+ * 022 (FR-012): what a creator is told a booking is worth: their own offer lines (by the types assigned to them)
+ * when the quotation is made of offers, never the client's total with the service fee. Null: not an offers
+ * booking, so the caller keeps the booking's total as before.
+ */
+export function creatorAmountFils(
+  booking: { quotation?: unknown; assignments?: { persona?: unknown; creator?: unknown }[] | null },
+  creatorId: number | string,
+): number | null {
+  const quotation = booking.quotation && typeof booking.quotation === 'object' ? (booking.quotation as { lines?: { kind?: string; amountFils?: number; persona?: unknown }[] | null }) : null
+  const lines = quotation?.lines ?? []
+  if (!lines.some((l) => l.kind === 'offer')) return null
+  const mine = new Set((booking.assignments ?? []).filter((a) => String(idOf(a.creator)) === String(creatorId)).map((a) => String(idOf(a.persona))))
+  return lines.filter((l) => l.kind === 'offer' && mine.has(String(idOf(l.persona)))).reduce((sum, l) => sum + (l.amountFils ?? 0), 0)
+}

@@ -78,7 +78,16 @@ enum ProblemCode {
   inboxNotMatching('inbox.errors.notMatching'),
   inboxReasonUnknown('inbox.errors.reasonUnknown'),
   inboxAlreadyPicked('inbox.errors.alreadyPicked'),
-  pushTokenInvalid('push.errors.tokenInvalid');
+  pushTokenInvalid('push.errors.tokenInvalid'),
+  // 022: creator offers and the place.
+  briefBudgetRange('brief.errors.budgetRange'),
+  briefEmirateRequired('brief.errors.emirateRequired'),
+  briefPlaceOutside('brief.errors.placeOutside'),
+  offersOutOfRange('offers.errors.outOfRange'),
+  offersTooManyChanges('offers.errors.tooManyChanges'),
+  offersDeclined('offers.errors.declined'),
+  offersAmountChanged('offers.errors.amountChanged'),
+  offersPickFromOffers('offers.errors.pickFromOffers');
 
   const ProblemCode(this.wire);
 
@@ -160,6 +169,13 @@ enum ProblemCode {
       inboxReasonUnknown => l10n.problemInvalidInput,
       inboxAlreadyPicked => l10n.problemBriefAlreadyPicked,
       pushTokenInvalid => l10n.problemUnexpected,
+      briefBudgetRange || offersOutOfRange => l10n.briefPriceOutOfRange,
+      briefEmirateRequired => l10n.problemEmirateRequired,
+      briefPlaceOutside => l10n.problemPlaceOutside,
+      offersTooManyChanges => l10n.problemOffersTooManyChanges,
+      offersDeclined => l10n.problemOffersDeclined,
+      offersAmountChanged => l10n.problemOffersAmountChanged,
+      offersPickFromOffers => l10n.problemOffersPickFromOffers,
       briefRequired => l10n.mlBriefRequired,
       briefOptionGone => l10n.mlBriefOptionGone,
       briefPastDate => l10n.mlBriefPastDate,

@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { getCurrentUser } from '@/modules/auth/session'
 import { MatchResults } from '@/modules/booking/components/MatchResults'
+import { OffersResults } from '@/modules/booking/components/OffersResults'
+import { whatsappHref } from '@/modules/contact/whatsapp'
 import { getBriefByKey, getMatchPage } from '@/modules/booking/match'
 import { matchView, picksFor } from '@/modules/booking/views'
 import { getDirectoryContext } from '@/modules/creators'
@@ -50,7 +52,18 @@ export default async function MatchPage({ params, searchParams }: Props) {
         {t('title')}
       </h1>
       <p className="mt-1 mb-5 px-1 text-[13px] text-mute">{t('step')}</p>
-      <MatchResults {...view} />
+      {page.mode === 'offers' ? (
+        <OffersResults
+          page={page}
+          refKey={{ ref: brief.reference ?? ref, key }}
+          locale={locale}
+          picks={picksFor(page, query.pick)}
+          editHref={view.editHref}
+          whatsappHref={whatsappHref(settings.whatsappNumber, brief.sentence ?? '') ?? '#'}
+        />
+      ) : (
+        <MatchResults {...view} />
+      )}
     </section>
   )
 }

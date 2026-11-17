@@ -26,6 +26,20 @@ export const briefItemV1 = z.object({
   /** The rejection reason's value, when rejected with one. */
   reason: z.string().nullable(),
   outcome: briefOutcomeV1,
+  /** 022 (additive): the client's price for this type, whole fils. */
+  budgetFils: z.int().positive().optional(),
+  /** 022 (additive): the prices this creator may offer. */
+  range: z.object({ minFils: z.int().positive(), maxFils: z.int().positive().nullable() }).optional(),
+  /** 022 (additive): this creator's current offer. */
+  offerFils: z.int().positive().nullable().optional(),
+  /** 022 (additive): price changes left (of 3). */
+  revisionsLeft: z.int().min(0).max(3).optional(),
+  /** 022 (additive): the client declined this creator's offer (final). */
+  declined: z.boolean().optional(),
+  /** 022 (additive): the place as a creator may see it before booking: never the pin or the address. */
+  place: z
+    .object({ area: z.string(), emirate: z.string(), mapUrl: z.string().nullable(), distanceKm: z.int().nonnegative().nullable() })
+    .optional(),
 })
 export type BriefItemV1 = z.infer<typeof briefItemV1>
 
@@ -46,14 +60,19 @@ export const briefAnswerRequestV1 = z
     decision: z.enum(['accept', 'reject']),
     reason: z.string().min(1).max(64).optional(),
     note: z.string().max(300).optional(),
+    /** 022 (additive): the offer, whole fils; accept only. Missing: the client's price. */
+    amountFils: z.int().positive().optional(),
   })
   .refine((b) => b.decision === 'reject' || (b.reason === undefined && b.note === undefined), { path: ['reason'], message: 'inbox.errors.reasonUnknown' })
+  .refine((b) => b.decision === 'accept' || b.amountFils === undefined, { path: ['amountFils'], message: 'offers.errors.outOfRange' })
 export type BriefAnswerRequestV1 = z.infer<typeof briefAnswerRequestV1>
 
 /** The account screen's summary for Up next. */
 export const briefsSummaryV1 = z.object({
   count: z.int().nonnegative(),
-  soonest: z.object({ ref: z.string(), profession: z.string(), occasion: z.string(), emirate: z.string(), date: day.nullable() }).nullable(),
+  soonest: z
+    .object({ ref: z.string(), profession: z.string(), occasion: z.string(), emirate: z.string(), date: day.nullable(), budgetFils: z.int().positive().optional() })
+    .nullable(),
 })
 export type BriefsSummaryV1 = z.infer<typeof briefsSummaryV1>
 

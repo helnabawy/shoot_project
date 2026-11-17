@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: t('metaTitle'), robots: { index: false, follow: false } }
 }
 
-const ERROR_KEYS = ['booking.errors.name', 'booking.errors.date', 'booking.errors.tooMany', 'booking.errors.unavailable', 'booking.errors.generic', 'booking.errors.not-found', 'contact.errors.whatsappFormat']
+const ERROR_KEYS = ['offers.errors.amountChanged', 'booking.errors.name', 'booking.errors.date', 'booking.errors.tooMany', 'booking.errors.unavailable', 'booking.errors.generic', 'booking.errors.not-found', 'contact.errors.whatsappFormat']
 
 /** Step 3 "Your details" (US2): the last step before the quotation. */
 export default async function DetailsPage({ params, searchParams }: Props) {
@@ -39,10 +39,15 @@ export default async function DetailsPage({ params, searchParams }: Props) {
   const page = await getMatchPage(brief, locale, now, { date })
   const picks = parsePicks(query.pick)
   const back = matchPath(brief.reference ?? ref, key, locale)
-  if (!picks || !page.total.ok || !page.sections.every((s) => picks.some((p) => p.persona === s.persona.slug))) redirect(back)
+  // 022: an offers brief continues with one chosen offer per type; its total is the offers plus the fee.
+  const offerMode = page.mode === 'offers'
+  const chosen = offerMode ? page.sections.map((s) => s.offers?.find((o) => picks?.some((p) => p.persona === s.persona.slug && p.code === o.creator.code))) : []
+  if (offerMode) {
+    if (!picks || chosen.some((o) => !o)) redirect(back)
+  } else if (!picks || !page.total.ok || !page.sections.every((s) => picks.some((p) => p.persona === s.persona.slug))) redirect(back)
 
   const t = await getTranslations({ locale, namespace: 'details' })
-  const summary = [
+  const summary: { label: string; trailing?: string }[] = [
     { label: brief.sentence ?? '' },
     ...page.sections.map((s) => {
       const pick = picks.find((p) => p.persona === s.persona.slug)
@@ -50,7 +55,15 @@ export default async function DetailsPage({ params, searchParams }: Props) {
       return { label: creator ? t('creatorRow', { type: s.persona.singular, name: creator.displayName }) : t('anyCreator', { type: s.persona.singular }) }
     }),
   ]
-  const addOns = (await getAddOnsFor(page.facts.personaIds, locale)).map((a) => ({ id: a.id, title: a.title, price: formatMoney(a.price, locale) }))
+  const addOns = offerMode ? [] : (await getAddOnsFor(page.facts.personaIds, locale)).map((a) => ({ id: a.id, title: a.title, price: formatMoney(a.price, locale) }))
+  const offerTotal = chosen.reduce((sum, o) => sum + (o?.totalFils ?? 0), 0)
+  if (offerMode) {
+    // The creators priced this day, length and place (FR-018a): shown as the summary, not asked again.
+    summary.forEach((row, i) => {
+      const offer = chosen[i - 1]
+      if (offer) row.trailing = formatMoney(offer.totalFils, locale)
+    })
+  }
   const [all, settings] = await Promise.all([getTranslations({ locale }), getSiteSettings(locale)])
   const errorText = Object.fromEntries(ERROR_KEYS.map((k) => [k, all(k as never)]))
   const labels = Object.fromEntries((['title', 'step', 'summary', 'name', 'whatsapp', 'whatsappHint', 'date', 'dateHint', 'extras', 'codeToggle', 'code', 'submit', 'change'] as const).map((k) => [k, t(k)])) as Record<string, string>
@@ -74,8 +87,11 @@ export default async function DetailsPage({ params, searchParams }: Props) {
         summary={summary}
         changeHref={`${back}?pick=${encodeURIComponent(query.pick ?? '')}${date && date !== briefDate ? `&date=${date}` : ''}`}
         addOns={addOns}
-        total={formatMoney(page.total.total, locale)}
+        total={formatMoney(offerMode ? offerTotal : page.total.ok ? page.total.total : 0, locale)}
         errorText={errorText}
+        {...(offerMode
+          ? { expect: page.sections.map((s, i) => ({ persona: s.persona.slug, amountFils: chosen[i]?.amountFils ?? 0 })), noPromo: true }
+          : {})}
       />
     </section>
   )

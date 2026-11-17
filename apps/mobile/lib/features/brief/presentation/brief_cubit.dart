@@ -15,6 +15,9 @@ enum BriefMessage {
   rateLimited,
   network,
   generic,
+
+  /// 022: a price outside the allowed range.
+  budgetRange,
 }
 
 enum BriefLoad { idle, loading, ready, off, failed }
@@ -35,6 +38,9 @@ final class BriefState extends Equatable {
     this.signInRequired = false,
     this.signInNeeded = false,
     this.awaitingSignIn = false,
+    this.offersEnabled = false,
+    this.prices = const [],
+    this.budgets = const {},
   });
 
   final BriefLoad load;
@@ -63,6 +69,15 @@ final class BriefState extends Equatable {
   /// 021: the brief waits for sign-in; `/brief/send` sends it once the person is in.
   final bool awaitingSignIn;
 
+  /// 022: "Creators offer prices" is on; a complete brief asks for the client's price.
+  final bool offersEnabled;
+
+  /// 022: the usual price and range per type, once the brief is complete (the price step shows).
+  final List<BriefPrice> prices;
+
+  /// 022: the client's price per type (persona slug → fils).
+  final Map<String, int> budgets;
+
   BriefState copyWith({
     BriefLoad? load,
     BriefBuilderConfig? config,
@@ -76,6 +91,9 @@ final class BriefState extends Equatable {
     bool? signInRequired,
     bool? signInNeeded,
     bool? awaitingSignIn,
+    bool? offersEnabled,
+    List<BriefPrice>? prices,
+    Map<String, int>? budgets,
   }) => BriefState(
     load: load ?? this.load,
     config: config ?? this.config,
@@ -95,6 +113,9 @@ final class BriefState extends Equatable {
     signInRequired: signInRequired ?? this.signInRequired,
     signInNeeded: signInNeeded ?? this.signInNeeded,
     awaitingSignIn: awaitingSignIn ?? this.awaitingSignIn,
+    offersEnabled: offersEnabled ?? this.offersEnabled,
+    prices: prices ?? this.prices,
+    budgets: budgets ?? this.budgets,
   );
 
   @override
@@ -111,6 +132,9 @@ final class BriefState extends Equatable {
     signInRequired,
     signInNeeded,
     awaitingSignIn,
+    offersEnabled,
+    prices,
+    budgets,
   ];
 }
 
@@ -158,6 +182,7 @@ class BriefCubit extends Cubit<BriefState> {
                   load: BriefLoad.ready,
                   config: config,
                   signInRequired: value.signInRequired,
+                  offersEnabled: value.offersEnabled,
                 ),
         );
       case Err():
@@ -255,7 +280,14 @@ class BriefCubit extends Cubit<BriefState> {
     final e = engine;
     if (e == null) return;
     final draft = e.skip(state.draft, token);
-    emit(state.copyWith(draft: draft, active: e.nextStep(draft)?.token));
+    emit(
+      state.copyWith(
+        draft: draft,
+        active: e.nextStep(draft)?.token,
+        prices: const [],
+        budgets: const {},
+      ),
+    );
   }
 
   void setDate(String? iso) {
@@ -295,7 +327,14 @@ class BriefCubit extends Cubit<BriefState> {
     final e = engine;
     if (e == null) return;
     final draft = e.takeBack(state.draft);
-    emit(state.copyWith(draft: draft, active: e.nextStep(draft)?.token));
+    emit(
+      state.copyWith(
+        draft: draft,
+        active: e.nextStep(draft)?.token,
+        prices: const [],
+        budgets: const {},
+      ),
+    );
   }
 
   /// The one primary action (FR-016): an incomplete brief opens its first missing step with a
@@ -315,10 +354,16 @@ class BriefCubit extends Cubit<BriefState> {
         ),
       );
     }
+    // 022 (US1): with offers on, a complete brief first shows the price step; the next tap sends it.
+    if (state.offersEnabled && state.prices.isEmpty) return _loadPrices(config);
     // 021 (BS-US4-S1): signed out while sending needs sign-in: keep the draft, ask for sign-in.
     if (state.signInRequired && !_isSignedIn()) return _askSignIn();
     emit(state.copyWith(submitting: true, message: null, messageToken: null));
-    final result = await _repository.record(config, state.draft);
+    final result = await _repository.record(
+      config,
+      state.draft,
+      budgets: state.offersEnabled ? state.budgets : null,
+    );
     if (isClosed) return;
     switch (result) {
       case Ok(:final value):
@@ -334,6 +379,44 @@ class BriefCubit extends Cubit<BriefState> {
       case Err(:final failure):
         emit(_failed(failure));
     }
+  }
+
+  Future<void> _loadPrices(BriefBuilderConfig config) async {
+    emit(state.copyWith(submitting: true, message: null, messageToken: null));
+    final result = await _repository.prices(config, state.draft);
+    if (isClosed) return;
+    switch (result) {
+      case Ok(:final value) when value.isNotEmpty:
+        emit(
+          state.copyWith(
+            submitting: false,
+            active: null,
+            prices: value,
+            budgets: {
+              for (final p in value)
+                if (p.suggestedFils != null) p.persona: p.suggestedFils!,
+            },
+          ),
+        );
+      case Ok():
+        // No price step from the server (offers turned off meanwhile): send as before.
+        emit(state.copyWith(submitting: false, offersEnabled: false));
+        await submit();
+      case Err(:final failure):
+        emit(_failed(failure));
+    }
+  }
+
+  /// 022: the client's price for one type, kept within its range (whole AED).
+  void setBudget(String persona, int fils) {
+    final price = state.prices.where((p) => p.persona == persona).firstOrNull;
+    if (price == null) return;
+    emit(
+      state.copyWith(
+        budgets: {...state.budgets, persona: price.clamp(fils)},
+        message: null,
+      ),
+    );
   }
 
   void _askSignIn() => emit(
@@ -372,6 +455,9 @@ class BriefCubit extends Cubit<BriefState> {
           signInNeeded: true,
           awaitingSignIn: true,
         );
+      }
+      if (failure.code == 'brief.errors.budgetRange') {
+        return base.copyWith(message: BriefMessage.budgetRange);
       }
       if (failure.statusCode == 429 || failure.code == 'brief.errors.tooMany') {
         return base.copyWith(message: BriefMessage.rateLimited);

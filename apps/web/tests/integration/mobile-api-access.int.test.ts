@@ -39,6 +39,9 @@ const SAMPLE_PARAMS: Record<string, Record<string, string>> = {
   quotationReport: { ref: 'Q-NONE', key: 'x' },
   quotationFresh: { ref: 'Q-NONE', key: 'x' },
   quotationPickAnother: { ref: 'Q-NONE', key: 'x' },
+  // 022: an unknown brief
+  matchStamp: { ref: 'B-NONE', key: 'x' },
+  offerDecline: { ref: 'B-NONE', key: 'x' },
 }
 /** Endpoints whose sample params name nothing in the seed: a 404 problem is the declared answer. */
 const NOT_IN_SEED = new Set<string>([
@@ -78,6 +81,10 @@ const BOOKING: Record<string, number> = {
   quotationPickAnother: 422,
   // 020: online payment for a confirmed booking.
   quotationPay: 404,
+  // 022: creator offers (an unknown brief is a 404; a POST without a body a 422).
+  matchStamp: 404,
+  offerDecline: 422,
+  briefPrices: 422,
 }
 
 /** Feature 009's endpoints: an anonymous call is refused as declared (401 signed in, 422 without a body); their own suites cover the rest. */

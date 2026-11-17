@@ -52,6 +52,14 @@ export function paymentProviderOf(env: { PAYMENT_PROVIDER?: 'stripe' | 'off'; ST
   return env.PAYMENT_PROVIDER ?? (env.STRIPE_SECRET_KEY ? 'stripe' : 'off')
 }
 
+/**
+ * The maps provider in use (feature 022, research R15): `MAPS_PROVIDER` when set, else `google` when the
+ * server key is configured, else `off` (the place step falls back to the emirate list).
+ */
+export function mapsProviderOf(env: { MAPS_PROVIDER?: 'google' | 'off'; GOOGLE_MAPS_SERVER_KEY?: string }): 'google' | 'off' {
+  return env.MAPS_PROVIDER ?? (env.GOOGLE_MAPS_SERVER_KEY ? 'google' : 'off')
+}
+
 const LOCAL_SITE = /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/
 
 export const envSchema = z
@@ -87,6 +95,11 @@ export const envSchema = z
     // Online payment (feature 020, research R8): Stripe Checkout; off (WhatsApp receipt) without keys.
     PAYMENT_PROVIDER: z.enum(['stripe', 'off'], { message: 'must be stripe or off' }).optional(),
     STRIPE_SECRET_KEY: optional.refine((v) => v === undefined || /^(sk|rk)_(test|live)_\w+$/.test(v), 'must be a secret key (sk_test_… or sk_live_…)'),
+    // The place (feature 022, research R15): Google Maps; off (emirate list) without keys.
+    MAPS_PROVIDER: z.enum(['google', 'off'], { message: 'must be google or off' }).optional(),
+    GOOGLE_MAPS_SERVER_KEY: optional,
+    GOOGLE_MAPS_BROWSER_KEY: optional,
+    GOOGLE_MAPS_URL_SECRET: optional,
     STRIPE_WEBHOOK_SECRET: optional.refine((v) => v === undefined || /^whsec_\w+$/.test(v), 'must be a webhook signing secret (whsec_…)'),
     APP_ANDROID_CERT_SHA256: list(CERT_SHA256, 'must be comma-separated SHA-256 fingerprints, AA:BB:… (32 bytes)').transform((v) =>
       v?.map((c) => c.toUpperCase()),
@@ -131,6 +144,10 @@ export const envSchema = z
     if (paymentProviderOf(env) === 'stripe') {
       if (!env.STRIPE_SECRET_KEY) ctx.addIssue({ code: 'custom', path: ['STRIPE_SECRET_KEY'], message: 'PAYMENT_PROVIDER=stripe needs the Stripe secret key (sk_test_… or sk_live_…)' })
       if (!env.STRIPE_WEBHOOK_SECRET) ctx.addIssue({ code: 'custom', path: ['STRIPE_WEBHOOK_SECRET'], message: 'Stripe needs the webhook signing secret (whsec_…) so payments can be confirmed' })
+    }
+    if (mapsProviderOf(env) === 'google') {
+      if (!env.GOOGLE_MAPS_SERVER_KEY) ctx.addIssue({ code: 'custom', path: ['GOOGLE_MAPS_SERVER_KEY'], message: 'MAPS_PROVIDER=google needs the Google Maps server key (Geocoding, Places, Static Maps)' })
+      if (!env.GOOGLE_MAPS_BROWSER_KEY) ctx.addIssue({ code: 'custom', path: ['GOOGLE_MAPS_BROWSER_KEY'], message: 'MAPS_PROVIDER=google needs the browser key (Maps JavaScript and Places, restricted to the site)' })
     }
     const missingVendor = unifonicKeys.filter((k) => !env[k])
     const someVendor = missingVendor.length < unifonicKeys.length

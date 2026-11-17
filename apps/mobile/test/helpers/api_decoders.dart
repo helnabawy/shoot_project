@@ -156,6 +156,20 @@ final Map<String, Object Function(Json json)> apiDecoders = {
       ((json['picks']! as List).length, (json['details']! as Map)['venue']),
   'report-request': (json) => json['reason']! as String,
   'pick-another-request': (json) => json['code']! as String,
+  // 022: creator offers.
+  'brief-prices': briefPricesFromJson,
+  'brief-prices-request': (json) => (
+    (json['values']! as Map)['persona']! as String,
+    (json['place'] as Map?)?['lat'],
+    (json['place'] as Map?)?['lng'],
+  ),
+  'creator-briefs-offers': (json) =>
+      CreatorInboxModel.fromJson(json).toEntity(),
+  'creator-briefs-stamp': (json) => readString(json, 'stamp'),
+  'match-stamp': (json) => readString(json, 'stamp'),
+  'match-offers-declined': (json) => MatchPageModel.fromJson(json).toEntity(),
+  'offer-decline': (json) =>
+      (json['persona']! as String, json['creator']! as String),
 };
 
 /// The request bodies the app sends: only the fields v1 knows, so an extra one changes nothing.

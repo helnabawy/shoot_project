@@ -128,6 +128,7 @@ export async function NextUpPanel({
             <span key="o" dir="auto">
               {[b.profession, b.occasion].filter(Boolean).join(' · ')}
             </span>,
+            ...(b.priceLabel ? [<span key="p">{t('briefsPrice', { price: b.priceLabel })}</span>] : []),
           ]}
         />
       )

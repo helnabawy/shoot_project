@@ -1,0 +1,64 @@
+{
+  "open": [
+    {
+      "ref": "BR-7K2Q",
+      "persona": "p_12",
+      "profession": "Photographer",
+      "occasion": "a birthday party",
+      "sentence": "I need a photographer for a birthday party in Dubai on 20 Nov",
+      "emirate": "Dubai",
+      "date": "2026-11-20",
+      "sentAt": "2026-11-13T09:12:00.000Z",
+      "answer": null,
+      "reason": null,
+      "outcome": "open",
+      "budgetFils": 80000,
+      "range": {
+        "minFils": 56000,
+        "maxFils": 160000
+      },
+      "offerFils": null,
+      "revisionsLeft": 3,
+      "declined": false,
+      "place": {
+        "area": "Yas Island",
+        "emirate": "Abu Dhabi",
+        "mapUrl": null,
+        "distanceKm": 22
+      }
+    },
+    {
+      "ref": "BR-9QX4",
+      "persona": "p_12",
+      "profession": "Photographer",
+      "occasion": "a product launch",
+      "sentence": "I need a photographer for a product launch in Abu Dhabi, date to agree",
+      "emirate": "Abu Dhabi",
+      "date": null,
+      "sentAt": "2026-11-12T16:40:00.000Z",
+      "answer": null,
+      "reason": null,
+      "outcome": "open"
+    }
+  ],
+  "accepted": [],
+  "rejected": [],
+  "reasons": [
+    {
+      "value": "not-free",
+      "label": "Not free that day"
+    },
+    {
+      "value": "too-far",
+      "label": "Too far"
+    },
+    {
+      "value": "not-my-work",
+      "label": "Not my kind of work"
+    },
+    {
+      "value": "other",
+      "label": "Other"
+    }
+  ]
+}

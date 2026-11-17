@@ -1,6 +1,6 @@
 import 'server-only'
 import type { CreatorBriefsV1 } from '@shoot/domain/api/v1'
-import { dubaiToday, isBriefOpen } from '@shoot/domain/booking'
+import { dubaiToday, isBriefOpen, offerRange, type OfferState } from '@shoot/domain/booking'
 import { readQuickMatch } from '@/modules/booking'
 import type { Payload } from 'payload'
 import type { Brief, BriefAnswer, User } from '@/payload-types'
@@ -56,4 +56,40 @@ export async function stillOpen(actor: InboxActor, brief: Brief): Promise<boolea
     { status: brief.status ?? 'new', date: brief.date ? String(brief.date).slice(0, 10) : null, createdAt: brief.createdAt, bookingStates: bookings.docs.map((b) => b.state) },
     { today: dubaiToday(actor.now), inboxDays: settings.inboxDays },
   )
+}
+
+/** 022: a brief's offer terms as the commands need them (frozen at sending, research R1). */
+export function offerTermsOf(brief: Brief) {
+  const offers = (brief as { offers?: { mode?: string | null; feePercent?: number | null; minPercent?: number | null; maxPercent?: number | null } | null }).offers
+  const budgets = ((brief as { budgets?: { persona: unknown; suggestedFils?: number | null; amountFils: number }[] | null }).budgets ?? []).map((b) => ({
+    personaId: String(b.persona && typeof b.persona === 'object' ? (b.persona as { id: unknown }).id : b.persona),
+    suggestedFils: b.suggestedFils ?? null,
+    amountFils: b.amountFils,
+  }))
+  if (offers?.mode !== 'offers') return null
+  const settings = { minPercent: offers.minPercent ?? 70, maxPercent: offers.maxPercent ?? 200 }
+  return {
+    feePercent: offers.feePercent ?? 10,
+    budgetFor: (personaId: string) => budgets.find((b) => b.personaId === personaId) ?? null,
+    rangeFor: (personaId: string) => offerRange(budgets.find((b) => b.personaId === personaId)?.suggestedFils ?? null, settings),
+  }
+}
+
+/**
+ * 022 (FR-010): an offer is locked while the brief's latest booking names this creator for this type and has
+ * not expired or been cancelled (a quotation including the offer is issued, or the booking went ahead).
+ */
+export async function offerLocked(payload: Payload, briefId: number, creatorId: string, personaId: string): Promise<boolean> {
+  const { docs } = await payload.find({ collection: 'bookings', where: { brief: { equals: briefId } }, sort: '-createdAt', limit: 1, depth: 0, overrideAccess: true, select: { state: true, assignments: true } })
+  const latest = docs[0] as { state?: string; assignments?: { persona?: unknown; creator?: unknown }[] | null } | undefined
+  if (!latest || latest.state === 'expired' || latest.state === 'cancelled') return false
+  const id = (v: unknown) => String(v && typeof v === 'object' ? (v as { id: unknown }).id : v)
+  return (latest.assignments ?? []).some((a) => id(a.creator) === String(creatorId) && id(a.persona) === String(personaId))
+}
+
+/** 022: the rules' view of a creator's current answer. */
+export function offerStateOf(row: BriefAnswer | null, locked: boolean): OfferState | null {
+  if (!row) return null
+  const r = row as BriefAnswer & { revisions?: number | null; clientDecision?: string | null }
+  return { decision: r.decision, withdrawn: Boolean(r.withdrawnAt), declined: r.clientDecision === 'declined', revisions: r.revisions ?? 0, locked }
 }

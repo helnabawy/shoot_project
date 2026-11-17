@@ -61,6 +61,25 @@ describe('QM-US2-S1 the quotation document', () => {
     expect(screen.getByTestId('quote-print')).toHaveTextContent('Download PDF')
   })
 
+  it('OF-US5-S1 an offers quotation lists each creator offer and one service-fee line', () => {
+    renderWithLocale(
+      <QuotationView
+        {...view({
+          lines: [
+            { kind: 'offer', label: "Omar K.'s offer", amount: 'AED 950', deliverables: ['60 edited photos'] },
+            { kind: 'fee', label: 'Service fee 10%', amount: 'AED 95', deliverables: [] },
+          ],
+          total: 'AED 1,045',
+        })}
+      />,
+    )
+    const lines = screen.getByTestId('quote-lines')
+    expect(within(lines).getByText("Omar K.'s offer")).toBeInTheDocument()
+    expect(within(lines).getByText('Service fee 10%')).toBeInTheDocument()
+    expect(within(lines).getByText('AED 95')).toBeInTheDocument()
+    expect(screen.getByTestId('quote-total')).toHaveTextContent('AED 1,045')
+  })
+
   it('a replaced version links to the current one and offers no acceptance', () => {
     renderWithLocale(<QuotationView {...view({ replacedBy: { reference: 'Q-33333', href: '/q/Q-33333/k' }, status: <BookingStatus {...status({ canAccept: false })} /> })} />)
     expect(screen.getByTestId('quote-replaced')).toHaveTextContent('Replaced by Q-33333')

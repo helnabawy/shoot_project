@@ -1,5 +1,5 @@
 import 'server-only'
-import { acceptorsFirst, dubaiToday, matchCreators, nearbyDates, type MatchFilter } from '@shoot/domain/booking'
+import { acceptorsFirst, dubaiToday, feeOf, matchCreators, nearbyDates, offerStamp, sortOffers, type MatchFilter } from '@shoot/domain/booking'
 import type { CreatorSummary } from '@shoot/domain/creators'
 import { quotePrice, type QuoteResult } from '@shoot/domain/pricing'
 import { getTranslations } from 'next-intl/server'
@@ -108,6 +108,20 @@ export interface MatchSection {
   creators: CreatorSummary[]
   /** 019: creators who said yes to this brief for this type (listed first). */
   saidYes: string[]
+  /** 022: the client's price for this type (offers mode). */
+  budgetFils?: number
+  /** 022: current offers, lowest total first (offers mode). */
+  offers?: MatchOffer[]
+}
+
+/** 022: one creator's offer as the client sees it (FR-013). */
+export interface MatchOffer {
+  creator: CreatorSummary
+  amountFils: number
+  feeFils: number
+  totalFils: number
+  atYourPrice: boolean
+  answeredAt: string
 }
 
 export interface MatchPage {
@@ -120,6 +134,12 @@ export interface MatchPage {
   nearby: string[]
   /** How many creators are free on each nearby day (the fewest across types), for the app's step 2. */
   nearbyFree: Record<string, number>
+  /** 022: `offers` when the brief went out with creator offers. */
+  mode: 'fixed' | 'offers'
+  /** 022: how many creators the brief was announced to (offers mode). */
+  sentTo: number
+  /** 022: a fingerprint of the offers shown, for live refresh (research R9). */
+  stamp: string
 }
 
 /** Labels for the travel and discount lines, frozen in both languages. */
@@ -154,6 +174,10 @@ export async function getMatchPage(brief: BriefRecord, locale: Locale, now: Date
   const freeFor = (personaId: string, day: string | null) =>
     matchCreators(creators, { personaId, emirateId: emirate, blocked: day ? (blocks.get(day) ?? new Set()) : new Set(), filters: facts.filters, categoryId: facts.categoryId })
 
+  // 022: an offers brief lists the current offers per type instead of everyone free (FR-013, FR-016a).
+  const offerMode = (brief as { offers?: { mode?: string | null } | null }).offers?.mode === 'offers'
+  if (offerMode) return offersPage(brief, facts, personas, creators, freeFor, date, rules, base)
+
   // 019: creators who said yes come first (US2-S3); one who is no longer free is simply not listed (US2-S8).
   const accepted = await acceptedFor(brief.id)
   const sections = facts.personaIds
@@ -170,7 +194,84 @@ export async function getMatchPage(brief: BriefRecord, locale: Locale, now: Date
       ? nearbyDates(date, (day) => sections.every((s) => freeFor(s.persona.id, day).length > 0), { today })
       : []
   const nearbyFree = Object.fromEntries(nearby.map((day) => [day, Math.min(...sections.map((s) => freeFor(s.persona.id, day).length))]))
-  return { brief, facts, sections, total: quotePrice(rules, { ...base, personaIds: sections.map((s) => s.persona.id) }), nearby, nearbyFree }
+  return { brief, facts, sections, total: quotePrice(rules, { ...base, personaIds: sections.map((s) => s.persona.id) }), nearby, nearbyFree, mode: 'fixed', sentTo: 0, stamp: '' }
+}
+
+type OfferBrief = BriefRecord & {
+  offers?: { feePercent?: number | null; sentTo?: number | null } | null
+  budgets?: { persona: unknown; amountFils: number }[] | null
+}
+
+/**
+ * 022 step 2 (US4): per type the client's price and the current offers: accepted, not withdrawn, not declined,
+ * from a creator still listed and free on the date (edge case: blocking the date removes the offer).
+ */
+async function offersPage(
+  raw: BriefRecord,
+  facts: BriefFacts,
+  personas: AudiencePersona[],
+  creators: CreatorSummary[],
+  freeFor: (personaId: string, day: string | null) => CreatorSummary[],
+  date: string | null,
+  rules: Awaited<ReturnType<typeof getPriceRules>>,
+  base: Omit<Parameters<typeof quotePrice>[1], 'personaIds'>,
+): Promise<MatchPage> {
+  const brief = raw as OfferBrief
+  const feePercent = brief.offers?.feePercent ?? 10
+  const payload = await getPayloadClient()
+  const { docs } = await payload.find({
+    collection: 'brief-answers',
+    where: { and: [{ brief: { equals: brief.id } }, { decision: { equals: 'accepted' } }, { withdrawnAt: { exists: false } }, { clientDecision: { exists: false } }] },
+    depth: 0,
+    pagination: false,
+    overrideAccess: true,
+  })
+  const answers = docs as { creator: unknown; persona: unknown; amountFils?: number | null; answeredAt: string; revisions?: number | null }[]
+  const parts: string[] = [String(brief.id)]
+  const sections: MatchSection[] = facts.personaIds
+    .map((id) => personas.find((p) => p.id === id))
+    .filter((p): p is AudiencePersona => Boolean(p))
+    .map((persona) => {
+      const free = new Map(freeFor(persona.id, date).map((c) => [c.id, c]))
+      const budget = (brief.budgets ?? []).find((b) => idOf(b.persona) === persona.id)?.amountFils
+      const offers: MatchOffer[] = sortOffers(
+        answers
+          .filter((a) => idOf(a.persona) === persona.id && a.amountFils && free.has(idOf(a.creator)))
+          .map((a) => {
+            const amount = a.amountFils as number
+            const fee = feeOf(amount, feePercent)
+            parts.push(`${persona.id}:${idOf(a.creator)}:${amount}:${a.revisions ?? 0}`)
+            return { creator: free.get(idOf(a.creator)) as CreatorSummary, amountFils: amount, feeFils: fee, totalFils: amount + fee, atYourPrice: amount === budget, answeredAt: a.answeredAt }
+          }),
+      )
+      return {
+        persona,
+        price: quotePrice(rules, { ...base, personaIds: [persona.id] }),
+        creators: offers.map((o) => o.creator),
+        saidYes: offers.map((o) => o.creator.id),
+        ...(budget ? { budgetFils: budget } : {}),
+        offers,
+      }
+    })
+  return {
+    brief: raw,
+    facts,
+    sections,
+    total: quotePrice(rules, { ...base, personaIds: sections.map((s) => s.persona.id) }),
+    nearby: [],
+    nearbyFree: {},
+    mode: 'offers',
+    sentTo: brief.offers?.sentTo ?? 0,
+    stamp: offerStamp(parts),
+  }
+}
+
+/** 022 (research R9): the step-2 fingerprint for a brief, or null for an unknown reference or wrong key. */
+export async function matchStamp(ref: string, key: string, locale: Locale, now: Date, memberId?: number | null): Promise<string | null> {
+  const brief = await getBriefByKey(ref, key, memberId)
+  if (!brief) return null
+  const page = await getMatchPage(brief, locale, now)
+  return page.stamp || offerStamp([String(brief.id), String(page.sections.map((s) => s.creators.length).join(','))])
 }
 
 /**

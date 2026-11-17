@@ -26,7 +26,7 @@ export const Quotations: CollectionConfig = {
       admin: { readOnly: true },
       fields: [
         { type: 'row', fields: [
-          { name: 'kind', type: 'select', required: true, options: ['tier', 'travel', 'addon', 'discount', 'adjustment'].map((value) => ({ label: value, value })) },
+          { name: 'kind', type: 'select', required: true, options: ['tier', 'travel', 'addon', 'discount', 'adjustment', 'offer', 'fee'].map((value) => ({ label: value, value })) },
           { name: 'labelEn', type: 'text', required: true },
           { name: 'labelAr', type: 'text', required: true },
           { name: 'amountFils', type: 'number', required: true },

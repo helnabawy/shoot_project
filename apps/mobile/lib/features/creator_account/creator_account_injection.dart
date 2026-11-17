@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shoot_mobile/core/push/push_service.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/features/creator_account/data/datasources/creator_account_remote_data_source.dart';
 import 'package:shoot_mobile/features/creator_account/data/datasources/inbox_remote_data_source.dart';
@@ -57,5 +58,12 @@ void registerCreatorAccountFeature(GetIt getIt) {
     ..registerLazySingleton<InboxRepository>(
       () => InboxRepositoryImpl(getIt<InboxRemoteDataSource>()),
     )
-    ..registerFactory(() => InboxCubit(getIt<InboxRepository>()));
+    ..registerFactory(
+      () => InboxCubit(
+        getIt<InboxRepository>(),
+        pushEvents: getIt.isRegistered<PushService>()
+            ? getIt<PushService>().events
+            : null,
+      ),
+    );
 }

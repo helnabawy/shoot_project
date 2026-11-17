@@ -13,7 +13,7 @@ vi.mock('next/navigation', () => ({
 }))
 
 // The brief bar's match preview is a server action (003 US1-S7); component tests never reach the server.
-vi.mock('@/modules/booking/preview-action', () => ({ previewMatches: async () => null }))
+vi.mock('@/modules/booking/preview-action', () => ({ previewMatches: async () => null, previewPrices: async () => null }))
 
 vi.mock('next/headers', () => ({
   headers: async () => new Headers(),

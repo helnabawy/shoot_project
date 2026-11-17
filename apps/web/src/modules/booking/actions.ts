@@ -75,6 +75,11 @@ export async function requestQuotation(_prev: QuoteState, form: FormData): Promi
     addOnIds: form.getAll('addOn').map(String),
     promo: str(form, 'promo') || undefined,
   })
+  // 022: the offer amounts the client saw (`expect.<persona>` in fils), so a moved offer refuses.
+  const expect = [...form.entries()]
+    .filter(([k]) => k.startsWith('expect.'))
+    .map(([k, v]) => ({ persona: k.slice('expect.'.length), amountFils: Number(v) }))
+    .filter((e) => Number.isInteger(e.amountFils) && e.amountFils > 0)
   if (!parsed.success) {
     const errors: Record<string, string> = {}
     for (const issue of parsed.error.issues) errors[String(issue.path[0] ?? 'form')] ??= issue.message
@@ -95,6 +100,7 @@ export async function requestQuotation(_prev: QuoteState, form: FormData): Promi
     promo: details.promo,
     req,
     limitKey: `quote:${visitorKey(req)}`,
+    ...(expect.length ? { expect } : {}),
   })
   if (!result.ok) return result.errors ? { status: 'error', errors: result.errors } : fail(result.formError)
   redirect(`${quotePath(result.reference, result.key, locale)}${result.promoNote}`)
@@ -262,4 +268,24 @@ export async function markNotificationRead(form: FormData): Promise<void> {
   const payload = await getPayloadClient()
   await payload.update({ collection: 'notifications', id: Number(str(form, 'id')), data: { readAt: new Date().toISOString() }, user, overrideAccess: false }).catch(() => null)
   back(ACCOUNT_BOOKINGS(locale))
+}
+
+/** 022 (US4-S5): the client declines one offer on step 2; back to the offers list with the choices kept. */
+export async function declineOfferAction(form: FormData): Promise<void> {
+  const locale: Locale = isLocale(str(form, 'locale')) ? (str(form, 'locale') as Locale) : 'en'
+  const ref = str(form, 'ref')
+  const key = str(form, 'key')
+  const user = await getCurrentUser()
+  const brief = await getBriefByKey(ref, key, user?.id)
+  if (!brief) redirect(localizeHref('/', locale))
+  const { declineOffer } = await import('@/modules/inbox')
+  const result = await declineOffer(await getPayloadClient(), brief, { personaId: str(form, 'persona'), creatorId: str(form, 'creator'), now: new Date() })
+  // A declined offer leaves the client's choice for that type (US4-S7).
+  const keep = (parsePicks(str(form, 'pick')) ?? []).filter((p) => p.code !== null && !(p.persona === str(form, 'personaSlug') && p.code === str(form, 'code')))
+  const query = new URLSearchParams()
+  if (keep.length) query.set('pick', formatPicks(keep))
+  if ('status' in result) query.set('error', result.code)
+  const back = `${localizeHref(`/match/${ref}/${key}`, locale)}${query.size ? `?${query.toString()}` : ''}`
+  revalidatePath(localizeHref(`/match/${ref}/${key}`, locale))
+  redirect(back)
 }

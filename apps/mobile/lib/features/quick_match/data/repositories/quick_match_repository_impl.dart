@@ -37,6 +37,25 @@ final class QuickMatchRepositoryImpl implements QuickMatchRepository {
   );
 
   @override
+  Future<Result<MatchPage>> declineOffer(
+    String ref,
+    String key, {
+    required String persona,
+    required String creator,
+  }) => apiResult(
+    () async => (await _remote.declineOffer(
+      ref,
+      key,
+      persona: persona,
+      creator: creator,
+    )).toEntity(),
+  );
+
+  @override
+  Future<Result<String>> matchStamp(String ref, String key) =>
+      apiResult(() => _remote.matchStamp(ref, key));
+
+  @override
   Future<Result<BookingView>> getBooking(String ref, String key) =>
       apiResult(() async => (await _remote.fetchBooking(ref, key)).toEntity());
 

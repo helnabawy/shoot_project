@@ -46,6 +46,9 @@ export interface DetailsFormProps {
   total: string
   /** Message key → text for errors the server returns (from booking.errors.* / contact.errors.*). */
   errorText: Record<string, string>
+  /** 022: an offers brief: the offer amounts the client saw (persona slug → fils), and no promo code. */
+  expect?: { persona: string; amountFils: number }[]
+  noPromo?: boolean
 }
 
 /** Step 3 "Your details": name, WhatsApp, the date only when missing, extras, a code; one Top Hit (US2). */
@@ -64,6 +67,7 @@ export function DetailsForm(props: DetailsFormProps) {
       <input type="hidden" name="pick" value={props.pick} />
       <input type="hidden" name="locale" value={props.locale} />
       {props.presetDate ? <input type="hidden" name="date" value={props.presetDate} /> : null}
+      {props.expect?.map((e) => <input key={e.persona} type="hidden" name={`expect.${e.persona}`} value={e.amountFils} />)}
 
       <ResultGroup label={l.summary}>
         {props.summary.map((row, i) => (
@@ -112,10 +116,12 @@ export function DetailsForm(props: DetailsFormProps) {
         </ResultGroup>
       ) : null}
 
-      <details className="px-4 py-2">
-        <summary className="min-h-11 cursor-pointer content-center text-[15px] text-ink">{l.codeToggle}</summary>
-        <Field id={`${id}-promo`} name="promo" label={l.code} autoComplete="off" maxLength={20} className="px-0" error={message(errors.promo)} />
-      </details>
+      {props.noPromo ? null : (
+        <details className="px-4 py-2">
+          <summary className="min-h-11 cursor-pointer content-center text-[15px] text-ink">{l.codeToggle}</summary>
+          <Field id={`${id}-promo`} name="promo" label={l.code} autoComplete="off" maxLength={20} className="px-0" error={message(errors.promo)} />
+        </details>
+      )}
 
       <p className="px-4 pb-2 text-[13px] text-mute">
         <Bidi>{l.total.replace('{price}', props.total)}</Bidi>

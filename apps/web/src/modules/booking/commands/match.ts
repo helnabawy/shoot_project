@@ -80,18 +80,26 @@ export async function matchView(payload: Payload, input: MatchInput): Promise<Ma
     totalFils: page.total.ok ? page.total.total : null,
     sections: page.sections.map((s) => {
       const tier = s.price.ok ? s.price.lines.find((l) => l.kind === 'tier') : undefined
+      const card = (c: (typeof s.creators)[number]) => ({
+        ...toWireCreatorCard(c, context.lookups, context.prefix, ctx),
+        gallery: gallery.get(c.id) ?? [],
+        ...(s.saidYes.includes(c.id) ? { saidYes: true } : {}),
+      })
+      // 022: older apps show one price per type; in offers mode that is the client's price plus the fee (R13).
+      const lowest = s.offers?.[0]
       return {
         persona: { slug: s.persona.slug, singular: s.persona.singular, plural: s.persona.plural },
-        priceFils: s.price.ok ? s.price.total : null,
+        priceFils: page.mode === 'offers' ? (lowest?.totalFils ?? s.budgetFils ?? null) : s.price.ok ? s.price.total : null,
         includes: tier?.deliverables?.[locale] ?? [],
-        creators: s.creators.map((c) => ({
-          ...toWireCreatorCard(c, context.lookups, context.prefix, ctx),
-          gallery: gallery.get(c.id) ?? [],
-          ...(s.saidYes.includes(c.id) ? { saidYes: true } : {}),
-        })),
+        creators: s.creators.map(card),
+        ...(s.budgetFils ? { budgetFils: s.budgetFils } : {}),
+        ...(s.offers
+          ? { offers: s.offers.map((o) => ({ creator: card(o.creator), amountFils: o.amountFils, feeFils: o.feeFils, totalFils: o.totalFils, atYourPrice: o.atYourPrice, answeredAt: o.answeredAt })) }
+          : {}),
       }
     }),
     nearby: page.nearby.map((date) => ({ date, free: page.nearbyFree[date] ?? 0 })),
     whatsappUrl: whatsappHref(settings.whatsappNumber, brief.sentence ?? ''),
+    ...(page.mode === 'offers' ? { mode: 'offers' as const, sentTo: page.sentTo } : {}),
   }
 }

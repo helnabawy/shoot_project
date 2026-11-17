@@ -41,6 +41,25 @@ export function matchCreators<T extends MatchCandidate>(creators: readonly T[], 
   return [...matches.filter((c) => c.specialtyIds.includes(category)), ...matches.filter((c) => !c.specialtyIds.includes(category))]
 }
 
+/** A location row as matching reads it: an emirate has no parent; a city points at its emirate. */
+export interface LocationRow {
+  id: string
+  slug: string
+  parentId: string | null
+}
+
+/**
+ * The emirate a brief's place resolves to (research R4): an emirate slug gives its id; a city slug gives its
+ * parent only with `cityToEmirate` (offers mode), so fixed-mode matching is unchanged; custom or unknown: null.
+ */
+export function emirateOf(value: string | null | undefined, custom: boolean, locations: readonly LocationRow[], options: { cityToEmirate: boolean }): string | null {
+  if (!value || custom) return null
+  const row = locations.find((l) => l.slug === value)
+  if (!row) return null
+  if (!row.parentId) return row.id
+  return options.cityToEmirate ? row.parentId : null
+}
+
 /**
  * Up to `max` other dates within `span` days that someone is free on (US1-S2): nearest first, the later
  * date first on a tie (a client who wanted the 10th would rather wait than move earlier), never before today.

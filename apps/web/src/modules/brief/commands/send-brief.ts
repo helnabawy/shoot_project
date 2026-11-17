@@ -10,6 +10,7 @@ import type { Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
 import { errorStatus } from '@/shared/payload/errors'
 import { accessKey, newSalt } from '../../booking/keys'
+import { offerFieldsFromForm, offerTerms, saveOfferTerms } from '../../booking/offers'
 import { detailsPath, matchPath } from '../../booking/paths'
 import { getCreatorByCode } from '../../creators'
 import { getActivePersonas } from '../../personas/queries'
@@ -120,6 +121,9 @@ export async function recordPrepared(
       // Stored in the order the visitor picked them (FR-063).
       const personaIds = slugs.map((slug) => found.find((p) => p.slug === slug)?.id).filter((id) => id != null)
       if (!personaIds.length || personaIds.length !== slugs.length) return { status: 'error', errors: { persona: 'brief.errors.required' } }
+      // 022: with "Creators offer prices" on, the client's price per type and the place are checked here (FR-005, FR-006).
+      const terms = await offerTerms(payload, { persona: personaIds as number[], selections, date: brief.date }, locale, offerFieldsFromForm(form))
+      if ('error' in terms) return { status: 'error', errors: { [terms.field]: terms.error } }
       const created = await payload.create({
         collection: 'briefs',
         data: {
@@ -138,6 +142,7 @@ export async function recordPrepared(
         context: { visitorId: visitor, ...(creator ? { creatorResolved: true } : {}), ...(salt ? { accessSalt: salt } : {}) },
       })
       reference = created.reference ?? ''
+      if (terms.mode === 'offers') await saveOfferTerms(payload, created.id, terms, selections)
       // 019 (US5): matching creators hear about a new brief, after the response.
       await (await import('@/modules/inbox')).announceLater(payload, created.id)
     }

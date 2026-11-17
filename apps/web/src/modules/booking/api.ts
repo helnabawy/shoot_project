@@ -9,7 +9,7 @@ import { acceptQuotation, confirmDelivery, freshQuotation, pickAnother, reportPr
 import { issueQuotation } from './commands/issue-quotation'
 import { matchView } from './commands/match'
 import { quotationView } from './commands/quotation-view'
-import { getBriefByKey } from './match'
+import { getBriefByKey, getMatchPage, matchStamp } from './match'
 import { getQuotationAccess, type QuotationAccess } from './queries'
 
 /**
@@ -35,6 +35,8 @@ function refused(result: Extract<CommandResult, { ok: false }>): Problem {
       return problem(409, 'booking.errors.unavailable')
     case 'creatorUnavailable':
       return problem(409, 'booking.errors.creatorUnavailable')
+    case 'pickFromOffers':
+      return problem(409, 'offers.errors.pickFromOffers')
     case 'terminal':
       return problem(409, 'booking.errors.terminal')
     case 'expired-quotation':
@@ -67,6 +69,32 @@ export const getMatchV1 = defineHandler({
   run: async (ctx, { params, query }) => (await matchView(ctx.payload, { ...params, ...query, userId: ctx.user?.id, locale: ctx.locale, now: ctx.now() })) ?? notFound(),
 })
 
+/** 022: `GET match/{ref}/{key}/stamp`, the step-2 fingerprint the app polls while the offers list is open. */
+export const getMatchStampV1 = defineHandler({
+  ...endpoints.matchStamp,
+  run: async (ctx, { params }) => {
+    const stamp = await matchStamp(params.ref, params.key, ctx.locale, ctx.now(), ctx.user?.id)
+    return stamp ? { stamp } : notFound()
+  },
+})
+
+/** 022: `POST match/{ref}/{key}/offers/decline`, the client declines one offer (US4-S5); answers step 2 again. */
+export const declineOfferV1 = defineHandler({
+  ...endpoints.offerDecline,
+  run: async (ctx, { params, body }) => {
+    const brief = await getBriefByKey(params.ref, params.key, ctx.user?.id)
+    if (!brief) return notFound()
+    const page = await getMatchPage(brief, ctx.locale, ctx.now())
+    const section = page.sections.find((s) => s.persona.slug === body.persona)
+    const offer = section?.offers?.find((o) => o.creator.code === body.creator || o.creator.code === body.creator.replace(/^\D+-?/, ''))
+    if (!section || !offer) return notFound()
+    const { declineOffer } = await import('@/modules/inbox')
+    const result = await declineOffer(ctx.payload, brief, { personaId: section.persona.id, creatorId: offer.creator.id, now: ctx.now() })
+    if ('status' in result) return result
+    return (await matchView(ctx.payload, { ...params, userId: ctx.user?.id, locale: ctx.locale, now: ctx.now() })) ?? notFound()
+  },
+})
+
 /** `POST match/{ref}/{key}/quotation`: the quotation and booking for a signed-in member, with WhatsApp's text. */
 export const issueQuotationV1 = defineHandler({
   ...endpoints.quotationIssue,
@@ -87,6 +115,7 @@ export const issueQuotationV1 = defineHandler({
       details: { startTime: body.details.startTime, duration: body.details.duration, venue: body.details.venue, note: body.details.note },
       req,
       limitKey: `quote:${ctx.visitorKey}`,
+      ...(body.expect ? { expect: body.expect } : {}),
     })
     if (!result.ok) {
       if (result.errors) {
@@ -94,6 +123,7 @@ export const issueQuotationV1 = defineHandler({
       }
       if (result.formError === 'booking.errors.tooMany') return problem(429, 'api.errors.rateLimited')
       if (result.formError === 'booking.errors.unavailable') return problem(409, 'booking.errors.unavailable')
+      if (result.formError === 'offers.errors.amountChanged') return problem(409, 'offers.errors.amountChanged')
       return problem(409, 'booking.errors.not-allowed')
     }
     const [settings, t] = await Promise.all([getSiteSettings(ctx.locale), getTranslations({ locale: ctx.locale, namespace: 'quote' })])

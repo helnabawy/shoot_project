@@ -31,7 +31,7 @@ describe('QM-FR-006 notifications per state change', () => {
   })
 
   it('documents the placeholders a template may use', () => {
-    expect(NOTIFICATION_PLACEHOLDERS).toEqual(['name', 'reference', 'date', 'total', 'link', 'occasion', 'type', 'emirate', 'creator', 'reason'])
+    expect(NOTIFICATION_PLACEHOLDERS).toEqual(['name', 'reference', 'date', 'total', 'link', 'occasion', 'type', 'emirate', 'creator', 'reason', 'price', 'area'])
   })
 
   it('dedupe keys are stable and distinguish every part', () => {
@@ -51,5 +51,17 @@ describe('BI-US4-S6 brief notifications are keyed by brief, not booking revision
   it('one key per brief, event, audience, channel and recipient', () => {
     expect(briefDedupeKey(7, 'brief-new', 'creator', 'push', '12')).toBe('brief:7:brief-new:creator:push:12')
     expect(briefDedupeKey(7, 'brief-accepted', 'admin', 'in-app')).toBe('brief:7:brief-accepted:admin:in-app:')
+  })
+})
+
+describe('022 offer events', () => {
+  it('offer-new goes to the client; declined and lost to the creator', () => {
+    expect(notificationsFor('offer-new')).toEqual(['client'])
+    expect(notificationsFor('offer-declined')).toEqual(['creator'])
+    expect(notificationsFor('offer-lost')).toEqual(['creator'])
+  })
+  it('each offer change has its own brief dedupe key', () => {
+    expect(briefDedupeKey(7, 'offer-new', 'client', 'push', '3', { answerId: 11, revisions: 2 })).toBe('brief:7:offer-new:client:push:3:11:2')
+    expect(briefDedupeKey(7, 'brief-new', 'creator', 'push', '3')).toBe('brief:7:brief-new:creator:push:3')
   })
 })

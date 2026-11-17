@@ -83,6 +83,15 @@ export const PROBLEM_CODES = [
   'inbox.errors.reasonUnknown',
   'inbox.errors.alreadyPicked',
   'push.errors.tokenInvalid',
+  // 022: creator offers and the place.
+  'brief.errors.budgetRange',
+  'brief.errors.emirateRequired',
+  'brief.errors.placeOutside',
+  'offers.errors.outOfRange',
+  'offers.errors.tooManyChanges',
+  'offers.errors.declined',
+  'offers.errors.amountChanged',
+  'offers.errors.pickFromOffers',
 ] as const
 export type ProblemCode = (typeof PROBLEM_CODES)[number]
 

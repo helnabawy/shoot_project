@@ -426,6 +426,7 @@ class _Hero extends StatelessWidget {
                                         onSubmit: () =>
                                             unawaited(brief.submit()),
                                         onWhatsapp: onWhatsapp,
+                                        onBudget: brief.setBudget,
                                         guest: session is! SignedIn,
                                         onProvider: (slug) => unawaited(
                                           context.push(

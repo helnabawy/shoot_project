@@ -20,7 +20,32 @@ BriefItem briefItemFromJson(Json json) => BriefItem(
   answer: BriefAnswer.fromWire(readNullableString(json, 'answer')),
   reason: readNullableString(json, 'reason'),
   outcome: BriefOutcome.fromWire(readString(json, 'outcome')),
+  offer: _offerFromJson(json),
 );
+
+/// Feature 022 (additive): present only on an offers brief.
+BriefOffer? _offerFromJson(Json json) {
+  final budget = readNullableInt(json, 'budgetFils');
+  if (budget == null) return null;
+  final range = readNullableObject(json, 'range');
+  final place = readNullableObject(json, 'place');
+  return BriefOffer(
+    budgetFils: budget,
+    minFils: range == null ? 100 : readInt(range, 'minFils'),
+    maxFils: range == null ? null : readNullableInt(range, 'maxFils'),
+    offerFils: readNullableInt(json, 'offerFils'),
+    revisionsLeft: readNullableInt(json, 'revisionsLeft') ?? 3,
+    declined: readOptionalBool(json, 'declined'),
+    place: place == null
+        ? null
+        : BriefPlace(
+            area: readString(place, 'area'),
+            emirate: readString(place, 'emirate'),
+            mapUrl: readNullableString(place, 'mapUrl'),
+            distanceKm: readNullableInt(place, 'distanceKm'),
+          ),
+  );
+}
 
 final class CreatorInboxModel {
   const CreatorInboxModel._(this._entity);

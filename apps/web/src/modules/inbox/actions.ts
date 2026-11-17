@@ -47,8 +47,10 @@ export async function answerBriefAction(form: FormData): Promise<void> {
     decision: str(form, 'decision'),
     reason: str(form, 'reason') || undefined,
     note: str(form, 'note') || undefined,
+    // 022: an offer in whole AED from the form; the command checks the range.
+    amountFils: /^\d{1,7}$/.test(str(form, 'amount')) ? Number(str(form, 'amount')) * 100 : undefined,
   })
-  if (!parsed.success) back(path, 'inbox.errors.reasonUnknown')
+  if (!parsed.success) back(path, parsed.error.issues[0]?.message === 'offers.errors.outOfRange' ? 'offers.errors.outOfRange' : 'inbox.errors.reasonUnknown')
   done(path, locale, await answerBrief(actor, str(form, 'ref'), parsed.data, onAccepted))
 }
 

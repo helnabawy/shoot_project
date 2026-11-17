@@ -258,6 +258,23 @@ void main() {
       expect(cubit.state.status, BookStatus.unavailable);
     });
 
+    for (final code in [
+      'offers.errors.amountChanged',
+      'offers.errors.declined',
+      'offers.errors.pickFromOffers',
+    ]) {
+      test('OF-US4-S7 $code takes the client back to the offers', () async {
+        when(() => repository.issueQuotation(any(), any(), any(), any()))
+            .thenAnswer(
+              (_) async => Err(ServerFailure(statusCode: 409, code: code)),
+            );
+        final cubit = filled(signedIn: true);
+        await cubit.continueSignedIn();
+        expect(cubit.state.status, BookStatus.unavailable);
+        expect((cubit.state.failure! as ServerFailure).code, code);
+      });
+    }
+
     test('a field the server names is shown on that field', () async {
       when(() => repository.issueQuotation(any(), any(), any(), any()))
           .thenAnswer(

@@ -1,0 +1,11 @@
+{
+  "prices": [
+    {
+      "persona": "photographer",
+      "suggestedFils": 80000,
+      "minFils": 56000,
+      "maxFils": 160000
+    }
+  ],
+  "emirate": "abu-dhabi"
+}

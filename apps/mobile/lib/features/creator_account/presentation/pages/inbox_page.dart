@@ -6,6 +6,7 @@ import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/widgets/empty_state.dart';
+import 'package:shoot_mobile/core/widgets/money.dart';
 import 'package:shoot_mobile/core/widgets/secondary_button.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/shoot_panel.dart';
@@ -16,6 +17,7 @@ import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/creator_account/domain/entities/inbox.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/inbox_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/widgets/creator_parts.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/widgets/offer_sheet.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/widgets/reject_sheet.dart';
 
 /// The creator brief inbox at `/account/inbox` (feature 019), built to board
@@ -33,7 +35,8 @@ class InboxPage extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         final cubit = create();
-        unawaited(cubit.load());
+        // 022: the inbox stays live while it is open (FR-023).
+        unawaited(cubit.load().then((_) => cubit.startLive()));
         if (onShown case final shown?) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) shown(context);
@@ -48,6 +51,10 @@ class InboxPage extends StatelessWidget {
             state: state,
             onRetry: cubit.load,
             onAccept: cubit.accept,
+            onOffer: (item) async {
+              final amount = await showOfferSheet(context, item: item);
+              if (amount != null) await cubit.accept(item, amountFils: amount);
+            },
             onReject: (item) async {
               final s = cubit.state;
               final reasons = s is InboxLoaded
@@ -82,11 +89,15 @@ class InboxView extends StatelessWidget {
     required this.onAccept,
     required this.onReject,
     required this.onWithdraw,
+    this.onOffer,
   });
 
   final InboxState state;
   final VoidCallback onRetry;
   final ValueChanged<BriefItem> onAccept;
+
+  /// 022: open the offer sheet for an offers brief.
+  final ValueChanged<BriefItem>? onOffer;
   final ValueChanged<BriefItem> onReject;
   final ValueChanged<BriefItem> onWithdraw;
 
@@ -145,26 +156,55 @@ class _Loaded extends StatelessWidget {
               busy: state.busyKey == item.key,
               onAccept: () => view.onAccept(item),
               onReject: () => view.onReject(item),
+              onOffer: view.onOffer == null ? null : () => view.onOffer!(item),
             ),
           if (inbox.accepted.isNotEmpty) ...[
-            GroupText(l10n.inboxSaidYes),
+            GroupText(
+              inbox.accepted.any((i) => i.offer?.offerFils != null)
+                  ? l10n.inboxOfferYouOffered
+                  : l10n.inboxSaidYes,
+            ),
             ShootPanel(
               padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
               child: Column(
                 children: [
                   for (final (i, item) in inbox.accepted.indexed)
                     ShootRow(
-                      label: '${item.occasion} · ${_when(context, item)}',
+                      label: [
+                        item.occasion,
+                        _when(context, item),
+                        if (item.offer?.offerFils case final fils?)
+                          Money.format(fils / 100),
+                      ].join(' · '),
                       chevron: false,
                       link: false,
                       divider: i == 0 ? RowDivider.none : RowDivider.top,
                       minHeight: 60,
-                      trailing: item.outcome == BriefOutcome.open
-                          ? TextLink(
-                              label: l10n.inboxWithdraw,
-                              onTap: state.busyKey == null
-                                  ? () => view.onWithdraw(item)
-                                  : null,
+                      trailing: item.offer?.declined == true
+                          ? StatusBadge(
+                              label: l10n.inboxOfferDeclined,
+                              tone: BadgeTone.neutral,
+                            )
+                          : item.outcome == BriefOutcome.open
+                          ? Wrap(
+                              spacing: 12,
+                              children: [
+                                if (item.offer != null &&
+                                    item.offer!.revisionsLeft > 0 &&
+                                    view.onOffer != null)
+                                  TextLink(
+                                    label: l10n.inboxOfferChange,
+                                    onTap: state.busyKey == null
+                                        ? () => view.onOffer!(item)
+                                        : null,
+                                  ),
+                                TextLink(
+                                  label: l10n.inboxWithdraw,
+                                  onTap: state.busyKey == null
+                                      ? () => view.onWithdraw(item)
+                                      : null,
+                                ),
+                              ],
                             )
                           : StatusBadge(
                               label: _outcome(context, item.outcome),
@@ -221,6 +261,7 @@ class _BriefCard extends StatelessWidget {
     required this.busy,
     required this.onAccept,
     required this.onReject,
+    this.onOffer,
   });
 
   final BriefItem item;
@@ -229,6 +270,15 @@ class _BriefCard extends StatelessWidget {
   final bool busy;
   final VoidCallback onAccept;
   final VoidCallback onReject;
+  final VoidCallback? onOffer;
+
+  /// 022: "Accept {price}" on an offers brief, "I can do this" otherwise.
+  String _acceptLabel(BuildContext context) => switch (item.offer) {
+    final offer? => context.l10n.inboxOfferAccept(
+      Money.format(offer.budgetFils / 100),
+    ),
+    null => context.l10n.inboxAccept,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +305,19 @@ class _BriefCard extends StatelessWidget {
             value: when,
             label: l10n.inboxFactWhen,
           ),
-          if (item.emirate.isNotEmpty)
+          if (item.offer?.place case final place?)
+            CreatorFact(
+              icon: ShootIcons.pin,
+              value: [
+                '${place.area}, ${place.emirate}',
+                if (place.distanceKm case final km?)
+                  l10n.inboxOfferDistance(km)
+                else
+                  l10n.inboxOfferSetBase,
+              ].join(' · '),
+              label: l10n.caFactWhere,
+            )
+          else if (item.emirate.isNotEmpty)
             CreatorFact(
               icon: ShootIcons.pin,
               value: item.emirate,
@@ -272,7 +334,20 @@ class _BriefCard extends StatelessWidget {
             value: '${formatDay(context, item.sentAt.toLocal())} · ${item.ref}',
             label: l10n.inboxFactSent,
           ),
+          if (item.offer case final offer?)
+            CreatorFact(
+              icon: ShootIcons.lines,
+              value: Money.format(offer.budgetFils / 100),
+              label: l10n.inboxFactPrice,
+            ),
           const SizedBox(height: 12),
+          if (item.offer != null && onOffer != null) ...[
+            SecondaryButton(
+              label: l10n.inboxOfferAnother,
+              onPressed: busy ? null : onOffer,
+            ),
+            const SizedBox(height: 8),
+          ],
           Row(
             spacing: 8,
             children: [
@@ -280,12 +355,12 @@ class _BriefCard extends StatelessWidget {
                 flex: 7,
                 child: primary
                     ? TopHit(
-                        label: l10n.inboxAccept,
+                        label: _acceptLabel(context),
                         loading: busy,
                         onPressed: busy ? null : onAccept,
                       )
                     : SecondaryButton(
-                        label: l10n.inboxAccept,
+                        label: _acceptLabel(context),
                         onPressed: busy ? null : onAccept,
                       ),
               ),

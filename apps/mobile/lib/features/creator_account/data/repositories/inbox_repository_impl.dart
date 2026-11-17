@@ -14,13 +14,15 @@ final class InboxRepositoryImpl implements InboxRepository {
       apiResult(() async => (await _remote.inbox()).toEntity());
 
   @override
-  Future<Result<CreatorInbox>> accept(BriefItem item) => apiResult(
-    () async => (await _remote.answer(
-      item.ref,
-      persona: item.persona,
-      accept: true,
-    )).toEntity(),
-  );
+  Future<Result<CreatorInbox>> accept(BriefItem item, {int? amountFils}) =>
+      apiResult(
+        () async => (await _remote.answer(
+          item.ref,
+          persona: item.persona,
+          accept: true,
+          amountFils: amountFils,
+        )).toEntity(),
+      );
 
   @override
   Future<Result<CreatorInbox>> reject(
@@ -42,4 +44,7 @@ final class InboxRepositoryImpl implements InboxRepository {
     () async =>
         (await _remote.withdraw(item.ref, persona: item.persona)).toEntity(),
   );
+
+  @override
+  Future<Result<String>> stamp() => apiResult(_remote.stamp);
 }

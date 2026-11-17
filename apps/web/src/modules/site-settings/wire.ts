@@ -31,5 +31,7 @@ export function toWireSite(settings: SiteSetting, personas: readonly Persona[], 
     labels: { seeker: label(settings.labels?.seekerLabel), provider: label(settings.labels?.providerLabel) },
     creatorCodePrefix: settings.creatorCodePrefix || 'CR',
     quickMatchEnabled: settings.quickMatch?.enabled === true,
+    // 022 (additive): briefs carry the client's price and creators answer with offers.
+    offersEnabled: settings.quickMatch?.enabled === true && settings.quickMatch?.offers?.enabled === true,
   }
 }

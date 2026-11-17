@@ -81,14 +81,26 @@ final class FakeBriefRepository implements BriefRepository {
   /// The creator code of each recorded brief (011 FR-021), `null` for a landing brief.
   final List<String?> creators = [];
 
+  /// 022: what each recorded brief priced (persona slug → fils), and the prices the fake answers.
+  final List<Map<String, int>?> budgets = [];
+  Result<List<BriefPrice>> pricesResult = const Ok([]);
+
   @override
   Future<Result<BriefReceipt>> record(
     BriefBuilderConfig config,
     BriefDraft draft, {
     String? creator,
+    Map<String, int>? budgets,
   }) async {
     recorded.add(draft);
     creators.add(creator);
+    this.budgets.add(budgets);
     return result;
   }
+
+  @override
+  Future<Result<List<BriefPrice>>> prices(
+    BriefBuilderConfig config,
+    BriefDraft draft,
+  ) async => pricesResult;
 }

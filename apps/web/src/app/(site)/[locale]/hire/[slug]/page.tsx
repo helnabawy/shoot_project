@@ -8,6 +8,7 @@ import { whatsappHref } from '@/modules/contact/whatsapp'
 import { getBlockContext } from '@/modules/landing'
 import { getIntentPage } from '@/modules/pages/intent'
 import { IntentView } from '@/modules/pages/components/IntentView'
+import { offersOf } from '@/modules/brief/offers-flag'
 import { getSiteSettings } from '@/modules/site-settings/queries'
 import { briefLabels } from '@/shared/i18n/server-labels'
 import { localizeHref } from '@/shared/i18n/href'
@@ -82,6 +83,7 @@ export default async function IntentPage(props: Props) {
         quickMatch={settings.quickMatch?.enabled === true}
         signInRequired={settings.briefNeedsSignIn === true}
         sourcePath={path}
+        offers={offersOf(settings)}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
     </>

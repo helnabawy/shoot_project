@@ -85,12 +85,36 @@ export async function acceptQuotation(payload: Payload, access: QuotationAccess,
     // The creator confirmed by saying yes to the brief: the step is theirs, noted as such in the audit trail.
     await applyTransition(payload, booking.id, 'confirm', { actor: 'creator', now, note: 'brief-accepted', data: { assignments: toRows(final) } })
   }
+  if (result.ok && (brief as { offers?: { mode?: string | null } | null }).offers?.mode === 'offers') {
+    // 022 (US5-S4): everyone else who offered for a type that is now booked hears it went to another creator.
+    await notifyLostOffers(payload, brief.id, final)
+  }
   if (result.ok && current.promoCode) {
     const promo = await payload.find({ collection: 'promo-codes', where: { code: { equals: current.promoCode } }, limit: 1, depth: 0, overrideAccess: true })
     const row = promo.docs[0]
     if (row) await payload.update({ collection: 'promo-codes', id: row.id, data: { usedCount: (row.usedCount ?? 0) + 1 }, overrideAccess: true, context: { disableRevalidate: true } })
   }
   return finish(result, 'accepted')
+}
+
+async function notifyLostOffers(payload: Payload, briefId: number, chosen: readonly Assignment[]) {
+  const { onOfferClosed } = await import('@/modules/inbox')
+  const { docs } = await payload.find({
+    collection: 'brief-answers',
+    where: { and: [{ brief: { equals: briefId } }, { decision: { equals: 'accepted' } }, { withdrawnAt: { exists: false } }, { clientDecision: { exists: false } }] },
+    depth: 0,
+    pagination: false,
+    overrideAccess: true,
+    select: { creator: true, persona: true },
+  })
+  const losers = new Set<string>()
+  for (const a of docs) {
+    const persona = idOf(a.persona)
+    const creator = idOf(a.creator)
+    const pick = chosen.find((c) => c.personaId === persona)
+    if (creator && pick && pick.creatorId !== creator) losers.add(creator)
+  }
+  for (const creatorId of losers) await onOfferClosed(payload, { briefId, creatorId, event: 'offer-lost' })
 }
 
 /** A client cancels before paying (US3; admins cancel later stages). */
@@ -128,6 +152,8 @@ export async function pickAnother(payload: Payload, access: QuotationAccess, who
   const { now, user, locale, personaId } = who
   const settings = await readQuickMatch(payload)
   const brief = await payload.findByID({ collection: 'briefs', id: Number(idOf(booking.brief)), depth: 0, overrideAccess: true })
+  // 022: an offers booking is changed by choosing another offer on step 2, never here (R7).
+  if ((brief as { offers?: { mode?: string | null } | null }).offers?.mode === 'offers') return { ok: false, reason: 'pickFromOffers' }
   const page = await getMatchPage(brief, locale, now, { date: booking.date ?? null })
   const creator = page.sections.find((s) => s.persona.id === personaId)?.creators.find((c) => c.code === who.code.toUpperCase())
   if (!creator) return { ok: false, reason: 'unavailable' }

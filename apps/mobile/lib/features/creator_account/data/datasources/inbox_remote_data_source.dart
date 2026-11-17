@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:shoot_mobile/core/network/api_get.dart';
 import 'package:shoot_mobile/core/network/api_post.dart';
 import 'package:shoot_mobile/core/network/api_send.dart';
+import 'package:shoot_mobile/core/network/json_read.dart';
 import 'package:shoot_mobile/features/creator_account/data/models/inbox_models.dart';
 
 /// `/api/mobile/v1/me/creator/briefs…`. Throws through the api helpers; never a Dio type.
@@ -14,9 +15,13 @@ abstract interface class InboxRemoteDataSource {
     required bool accept,
     String? reason,
     String? note,
+    int? amountFils,
   });
 
   Future<CreatorInboxModel> withdraw(String ref, {required String persona});
+
+  /// 022: the inbox fingerprint (research R9).
+  Future<String> stamp();
 }
 
 final class InboxRemoteDataSourceImpl implements InboxRemoteDataSource {
@@ -39,6 +44,7 @@ final class InboxRemoteDataSourceImpl implements InboxRemoteDataSource {
     required bool accept,
     String? reason,
     String? note,
+    int? amountFils,
   }) async {
     final answer = await apiPost(
       _dio,
@@ -49,6 +55,8 @@ final class InboxRemoteDataSourceImpl implements InboxRemoteDataSource {
         if (!accept && reason != null && reason.isNotEmpty) 'reason': reason,
         if (!accept && note != null && note.trim().isNotEmpty)
           'note': note.trim(),
+        // 022: an offer; missing means the client's price.
+        if (accept && amountFils != null) 'amountFils': amountFils,
       },
     );
     return CreatorInboxModel.fromJson(answer.body ?? const {});
@@ -65,4 +73,8 @@ final class InboxRemoteDataSourceImpl implements InboxRemoteDataSource {
       '${_answer(ref)}?persona=${Uri.encodeQueryComponent(persona)}',
     ),
   );
+
+  @override
+  Future<String> stamp() async =>
+      readString(await apiGet(_dio, '$_base/stamp'), 'stamp');
 }

@@ -38,6 +38,8 @@ export interface BriefLabels {
   preview: { group: string; groupNoPrice: string; loading: string; none: string; more: string }
   /** 021: under a guest's Top Hit while sending needs sign-in. */
   signInNext: string
+  /** 022: the price step (board 44). */
+  priceStep?: ReturnType<typeof priceStepLabelsFrom>
   /** 021: the Top Hit while the guest is taken to sign in. */
   signingIn: string
   /** Error key → sentence. */
@@ -54,6 +56,10 @@ export const BRIEF_ERROR_KEYS = [
   'brief.errors.tooMany',
   'brief.errors.creatorPersona',
   'brief.errors.generic',
+  // 022: the price step and the place.
+  'brief.errors.budgetRange',
+  'brief.errors.emirateRequired',
+  'brief.errors.placeOutside',
 ] as const
 
 type Translate = (key: string) => string
@@ -95,7 +101,14 @@ export function briefLabelsFrom(t: Translate, raw: Translate = t): BriefLabels {
     signInNext: t('brief.signInNext'),
     signingIn: t('brief.signingIn'),
     errors: Object.fromEntries(BRIEF_ERROR_KEYS.map((k) => [k, t(k)])),
+    priceStep: priceStepLabelsFrom(raw),
   }
+}
+
+/** 022: the price step's labels (board 44), templates with their {placeholders} intact. */
+export function priceStepLabelsFrom(raw: Translate) {
+  const k = (key: string) => raw(`brief.price.${key}`)
+  return { label: k('label'), range: k('range'), rangeOpen: k('rangeOpen'), total: k('total'), totalHint: k('totalHint'), lower: k('lower'), raise: k('raise'), loading: k('loading'), currency: k('currency') }
 }
 
 /** Replaces {name} placeholders in a resolved label. */

@@ -9,6 +9,8 @@ export interface QuickMatchSettings {
   quoteLimitPerHour: number
   /** 019: days a brief without a date stays open in the creator inbox. */
   inboxDays: number
+  /** 022: creator offers. `enabled` is the raw switch; offers mode also needs Quick Match. */
+  offers: { enabled: boolean; feePercent: number; minPercent: number; maxPercent: number }
 }
 
 /** The Quick match settings with their defaults (data-model "site-settings.quickMatch"). Uncached: used in writes. */
@@ -24,7 +26,14 @@ export async function readQuickMatch(payload: Payload, req?: PayloadRequest): Pr
     payoutDays: num(q.payoutDays, 10),
     quoteLimitPerHour: num(q.quoteLimitPerHour, 5),
     inboxDays: num(q.inboxDays, 30),
+    offers: offersSettings(q.offers),
   }
+}
+
+function offersSettings(raw: unknown): QuickMatchSettings['offers'] {
+  const o = (raw ?? {}) as Record<string, unknown>
+  const num = (v: unknown, d: number) => (typeof v === 'number' && Number.isFinite(v) ? v : d)
+  return { enabled: o.enabled === true, feePercent: num(o.feePercent, 10), minPercent: num(o.minPercent, 70), maxPercent: num(o.maxPercent, 200) }
 }
 
 const DAY = 24 * 60 * 60 * 1000

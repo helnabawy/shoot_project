@@ -410,7 +410,11 @@ final class BookFlowCubit extends Cubit<BookFlowState> {
     }
     final status = switch (code) {
       'booking.errors.unavailable' ||
-      'booking.errors.creatorUnavailable' => BookStatus.unavailable,
+      'booking.errors.creatorUnavailable' ||
+      // 022 (US5-S4): the chosen offer changed or went away; step 2 shows the offers again.
+      'offers.errors.amountChanged' ||
+      'offers.errors.declined' ||
+      'offers.errors.pickFromOffers' => BookStatus.unavailable,
       'api.errors.rateLimited' => BookStatus.rateLimited,
       _ => BookStatus.failed,
     };

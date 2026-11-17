@@ -12,6 +12,8 @@ const onlyRejectionsCarryReasons: CollectionBeforeValidateHook = ({ data, origin
   if (!data) return data
   const merged = { ...originalDoc, ...data } as { decision?: string; reason?: string | null; note?: string | null }
   if (merged.decision === 'accepted' && (merged.reason || merged.note)) throw new APIError('inbox.errors.reasonUnknown', 400, undefined, true)
+  // 022: an amount belongs to an offer, never to a rejection.
+  if (merged.decision === 'rejected' && (merged as { amountFils?: number | null }).amountFils != null) throw new APIError('offers.errors.outOfRange', 400, undefined, true)
   return data
 }
 
@@ -48,7 +50,7 @@ export const BriefAnswers: CollectionConfig = {
   admin: {
     group: 'Brief builder',
     useAsTitle: 'decision',
-    defaultColumns: ['brief', 'creator', 'persona', 'decision', 'reason', 'statusNow', 'answeredAt'],
+    defaultColumns: ['brief', 'creator', 'persona', 'decision', 'amountFils', 'revisions', 'clientDecision', 'statusNow', 'answeredAt'],
     description: 'Creators who said yes or no to a brief. Read-only.',
   },
   access: { read: readOwnOrAll, create: nobody, update: nobody, delete: nobody },
@@ -73,6 +75,16 @@ export const BriefAnswers: CollectionConfig = {
     { name: 'reason', type: 'text', maxLength: 64, admin: { readOnly: true } },
     // Only with `rejected`; never shown to the client.
     { name: 'note', type: 'textarea', maxLength: 300, admin: { readOnly: true } },
+    // Feature 022: the creator's offer (whole fils), how often it changed, and the client's decision.
+    { name: 'amountFils', label: 'Offer (fils)', type: 'number', min: 100, admin: { readOnly: true } },
+    { name: 'revisions', type: 'number', defaultValue: 0, min: 0, max: 3, admin: { readOnly: true } },
+    {
+      name: 'clientDecision',
+      type: 'select',
+      options: [{ label: 'Declined', value: 'declined' }],
+      admin: { readOnly: true },
+    },
+    { name: 'clientDecidedAt', type: 'date', admin: { readOnly: true, date: { pickerAppearance: 'dayAndTime' } } },
     { name: 'answeredAt', type: 'date', required: true, admin: { readOnly: true, date: { pickerAppearance: 'dayAndTime' } } },
     { name: 'withdrawnAt', type: 'date', admin: { readOnly: true, date: { pickerAppearance: 'dayAndTime' } } },
     // Computed for the team; never stored.

@@ -74,7 +74,10 @@
       "creatorPersona": "This professional does not offer that. Choose one of their types.",
       "optionGone": "That option is no longer available. Choose another.",
       "pastDate": "Pick today or a later date.",
-      "signInRequired": "Log in to send your brief."
+      "signInRequired": "Log in to send your brief.",
+      "budgetRange": "Choose a price within the range shown.",
+      "emirateRequired": "Choose the emirate where the shoot is.",
+      "placeOutside": "Mark a place on land in the emirates we cover."
     },
     "showMore": "Show {count} more",
     "successNextTitle": "What happens next",
@@ -90,7 +93,18 @@
       "more": "+{count} more on the next step"
     },
     "signInNext": "Next, we'll send a code to your mobile number to log you in.",
-    "signingIn": "Taking you to log in…"
+    "signingIn": "Taking you to log in…",
+    "price": {
+      "label": "Your price for the {type}",
+      "range": "Usual price AED {price}. You can offer AED {min} to AED {max}.",
+      "rangeOpen": "Any price from AED {min}.",
+      "total": "If a {type} accepts your price",
+      "totalHint": "Includes the {percent}% service fee. VAT included.",
+      "lower": "Lower by AED 50",
+      "raise": "Raise by AED 50",
+      "loading": "Working out the usual price…",
+      "currency": "AED"
+    }
   },
   "auth": {
     "loginTitle": "Log in",
@@ -224,7 +238,11 @@
       "briefAction": "Start a brief",
       "briefsTitle": "{count, plural, one {A new brief matches you} other {# new briefs match you}}",
       "briefsAction": "{count, plural, one {See the brief} other {See the briefs}}",
-      "briefsAnyDate": "Date to agree"
+      "briefsAnyDate": "Date to agree",
+      "briefsPrice": "The client's price is {price}. Accept it or answer with yours.",
+      "offersTitle": "{count, plural, one {# offer} other {# offers}} for your brief",
+      "offersAction": "See the offers",
+      "briefsAndOffers": "Briefs and offers"
     },
     "saidYes": "{count, plural, one {A creator said yes} other {# creators said yes}}"
   },
@@ -650,7 +668,11 @@
     "anyCreator": "{type}: we'll choose",
     "total": "Total {price}",
     "change": "Change",
-    "summary": "Your choice"
+    "summary": "Your choice",
+    "fixedPlace": "{when} · {place}",
+    "fixedNote": "The creators priced this day, length and place. To change them, send a new brief.",
+    "buildingLabel": "Building, floor or gate",
+    "buildingHint": "Only the creator you book sees the exact place."
   },
   "quote": {
     "metaTitle": "Quotation {reference}",
@@ -738,7 +760,10 @@
     "paySecure": "Secure payment by card, Apple Pay or Google Pay. You come back here when it's done.",
     "paymentPending": "Payment received. We're confirming it, this takes a few seconds.",
     "paymentCancelled": "Payment not completed. Nothing was charged; you can try again.",
-    "signInNext": "Next, we'll send a code to your mobile number to log you in."
+    "signInNext": "Next, we'll send a code to your mobile number to log you in.",
+    "feeLine": "Service fee {percent}%",
+    "offerLine": "{creator}'s offer",
+    "chooseAnotherOffer": "Choose another offer"
   },
   "booking": {
     "metaTitle": "Bookings",
@@ -864,6 +889,24 @@
       "other-creator": "Went to someone else",
       "booked-you": "Booked you",
       "closed": "Closed"
+    },
+    "offer": {
+      "clientPrice": "Client's price",
+      "accept": "Accept {price}",
+      "another": "Offer another price",
+      "yourPrice": "Your price",
+      "rangeHint": "Between {min} and {max}. You can change it {left} more times until the client chooses.",
+      "send": "Send offer",
+      "cancel": "Cancel",
+      "youOffered": "You offered",
+      "offered": "{price}",
+      "change": "Change",
+      "changesLeft": "({left} left)",
+      "declined": "Client declined",
+      "distance": "About {km} km from you · exact place after booking",
+      "setBase": "Set where you start from",
+      "setBaseHint": "to see the distance",
+      "intro": "Each client names a price. Accept it, or answer with yours. Nothing is booked until they choose."
     }
   },
   "push": {
@@ -876,5 +919,40 @@
       "unavailable": "Online payment isn't available right now. Please try again later or contact us on WhatsApp.",
       "provider": "We couldn't open the payment page. Please try again in a moment."
     }
+  },
+  "offers": {
+    "errors": {
+      "outOfRange": "Choose a price within the range shown.",
+      "tooManyChanges": "You have changed this price three times. You can still withdraw it.",
+      "declined": "The client chose another offer for this brief.",
+      "amountChanged": "This offer changed while you were choosing. Check the new price.",
+      "pickFromOffers": "Choose another offer from the offers list."
+    },
+    "waitingTitle": "Waiting for offers",
+    "waitingIntro": "Sent to {count} {types} who cover {emirate}. They see the area, not your pin. Offers appear here as they answer.",
+    "waitingNone": "No offers yet",
+    "waitingAuto": "This page updates by itself",
+    "yourPrice": "Your price",
+    "serviceFee": "Service fee",
+    "serviceFeeHint": "{percent}% of the offer you accept",
+    "countTitle": "{count, plural, one {# offer} other {# offers}}",
+    "intro": "Your price was {price}. Lowest total first.",
+    "atYourPrice": "Your price",
+    "theirPrice": "Their price",
+    "breakdown": "Offer {amount} + fee {fee}",
+    "accept": "Accept {name}",
+    "decline": "Decline",
+    "chosen": "Chosen",
+    "choose": "Choose",
+    "notAnswered": "{count} more have not answered yet.",
+    "groupLabel": "{type} · your price {price}",
+    "typeWaiting": "Sent to {count} {types}. No offers yet.",
+    "continue": "Continue",
+    "continueNeeds": "Continue opens once you have chosen one offer for each type.",
+    "closedTitle": "This brief is closed",
+    "closedIntro": "The date passed or the brief closed. Send a new brief to get fresh offers.",
+    "newBrief": "Send a new brief",
+    "changedTitle": "{name} changed the price",
+    "changedIntro": "It moved while you were choosing, so nothing was accepted. Here is the offer now."
   }
 }

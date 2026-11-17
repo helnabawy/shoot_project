@@ -151,6 +151,26 @@ export const CreatorProfiles: CollectionConfig = {
       admin: { description: 'The emirates this creator works in.' },
     },
     {
+      // 022: where the creator starts from, so a brief can show "about 12 km from you". Never shown to clients.
+      name: 'base',
+      label: 'Where you start from',
+      type: 'group',
+      access: { read: ({ req, doc }) => {
+        const user = req.user as { id?: number; roles?: string[] } | undefined
+        if (user?.roles?.includes('admin')) return true
+        const owner = doc?.user && typeof doc.user === 'object' ? (doc.user as { id: number }).id : doc?.user
+        return Boolean(user?.id && owner === user.id)
+      } },
+      admin: { description: 'Optional. Only the creator and the team see it.' },
+      fields: [
+        { type: 'row', fields: [
+          { name: 'lat', type: 'number', min: -90, max: 90, admin: { width: '33%' } },
+          { name: 'lng', type: 'number', min: -180, max: 180, admin: { width: '33%' } },
+          { name: 'area', type: 'text', localized: true, admin: { width: '34%' } },
+        ] },
+      ],
+    },
+    {
       name: 'languages',
       type: 'select',
       hasMany: true,
