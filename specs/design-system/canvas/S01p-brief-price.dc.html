@@ -113,10 +113,17 @@ a:focus-visible,button:focus-visible{outline:2px solid #0a60ff;outline-offset:2p
 .place{display:flex;align-items:center;gap:10px}
 .place .map{flex:none;width:84px;height:64px}
 .place .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:15px;line-height:1.35}
+.bad{background:#fde3e1;color:#9b1c1c}
+.note{display:flex;gap:10px;align-items:flex-start;border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.45}
+.note.n{background:#f1eeea;color:#3a342f}.note.bad{background:#fde3e1;color:#9b1c1c}
+.slot{color:#6b6560;border-bottom:2px dotted #a29d98}
+.top[aria-disabled="true"]{background:#d9d3cc;color:#6b6560;cursor:default}
+.top[aria-disabled="true"]::after{display:none}
+.map .hint{position:absolute;inset:auto 12px 12px;background:rgba(252,251,250,.94);border-radius:9px;padding:8px 10px;font-size:13px;color:#3a342f;text-align:center}
 a{color:#0848c2}a:hover{color:#0a60ff}
 </style>
 </helmet>
-<div class="root" style="height: 780px">
+<div class="root" style="height: 820px">
   <header class="hd" style="padding: 0 12px 0 20px">
     <a href="S01p-brief-price.dc.html" class="wm">Shoot</a>
     <div style="display: flex; gap: 2px">
@@ -129,8 +136,15 @@ a{color:#0848c2}a:hover{color:#0a60ff}
   <div style="padding: 8px 12px 0; display: flex; flex-direction: column; gap: 14px">
     <div class="bar">
       <div class="sent" style="border-bottom: 1px solid rgba(0,0,0,.08)">
-        <p>I need a <span class="tok">photographer</span> for a <span class="tok">birthday party</span> at <a href="S01q-brief-place.dc.html" class="tok" style="text-decoration: none">Yas Island, Abu Dhabi</a> on <span class="tok num">Fri 20 Nov</span> for <span class="tok num">2 hours</span>.</p>
+        <p>I need a <span class="tok">photographer</span> for a <span class="tok">birthday party</span> at <span class="tok">Yas Island</span> on <span class="tok num">Fri 20 Nov</span> for <span class="tok num">2 hours</span>.</p>
       </div>
+
+      <a href="S01q-brief-place.dc.html" class="place" style="padding: 10px 12px; border-bottom: 1px solid rgba(0,0,0,.08); text-decoration: none; color: #1d1d1f">
+        <span class="map" aria-hidden="true"><svg class="roads" viewBox="0 0 84 64" preserveAspectRatio="none"><path d="M-2 20 C20 18 40 30 86 24" stroke="#fff" stroke-width="4" fill="none"></path><path d="M30 -2 L38 66" stroke="#fff" stroke-width="3" fill="none"></path><path d="M-2 50 C30 44 60 56 86 48" stroke="#fff" stroke-width="3" fill="none"></path><path d="M60 30 C70 34 78 40 86 38" stroke="#f4d58d" stroke-width="4" fill="none"></path></svg><span class="pin" style="left: 54%; top: 58%"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="#fff" stroke-width="1.2"><path d="M12 22s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 15.8 12 22 12 22z"></path><circle cx="12" cy="10.5" r="2.6" fill="#fff"></circle></svg></span></span>
+        <span class="t"><span class="strong">Yas Marina Circuit</span><span class="meta">Yas Island, Abu Dhabi · only the area is shared</span></span>
+        <span style="flex: none; color: #0848c2; font-size: 15px; font-weight: 500; min-height: 44px; display: inline-flex; align-items: center">Change</span>
+      </a>
+
       <div style="padding: 14px 12px 12px; display: flex; flex-direction: column; gap: 12px">
         <label for="price" class="gl" style="padding: 0 4px">Your price for the photographer</label>
         <div class="amt">
@@ -138,25 +152,25 @@ a{color:#0848c2}a:hover{color:#0a60ff}
           <div class="field"><span>AED</span><input id="price" type="text" inputmode="numeric" value="{{ amount }}" onChange="{{ type }}" aria-describedby="range"></div>
           <button type="button" class="step" aria-label="Raise by AED 50" onClick="{{ up }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
         </div>
-        <p id="range" class="meta num" style="margin: 0; padding: 0 4px; white-space: normal">Usual price AED 800. You can offer AED 560 to AED 1,600.</p>
+        <p id="range" class="meta num" style="margin: 0; padding: 0 4px; white-space: normal">Usual price AED 800 for 2 hours on Yas Island. You can offer AED 560 to AED 1,600.</p>
         <div class="chips">
           <sc-for list="{{ quick }}" as="q" hint-placeholder-count="4">
             <button type="button" class="chip num {{ q.cls }}" aria-pressed="{{ q.pressed }}" onClick="{{ q.pick }}">{{ q.label }}</button>
           </sc-for>
         </div>
-        <a href="S02o-offers-waiting.dc.html" class="top" style="margin-top: 4px"><span style="flex: 1">Send to photographers</span><span class="num" style="font-size: 15px; font-weight: 500">AED {{ amount }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></a>
+        <div class="ln" style="border-top: 1px solid rgba(0,0,0,.08); padding: 10px 4px 0; min-height: 0">
+          <span class="l"><span style="font-size: 15px">If a photographer accepts your price</span><span class="meta">Includes the 10% service fee, VAT included</span></span>
+          <span class="num strong" style="font-size: 17px">AED {{ total }}</span>
+        </div>
+        <a href="S02o-offers-waiting.dc.html" class="top"><span style="flex: 1">Send to photographers</span><span class="num" style="font-size: 15px; font-weight: 500">AED {{ amount }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></a>
       </div>
     </div>
 
-    <ul class="list" style="margin: 0 8px">
-      <li><span class="row" style="min-height: 52px"><span class="t30" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h12m-5-5 5 5-5 5M20 5v14"></path></svg></span><span class="g"><span style="font-size: 15px">Photographers who cover Abu Dhabi see your price and the area, never your exact pin</span></span></span></li>
-      <li><span class="row" style="min-height: 52px"><span class="t30" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7 9 18l-5-5"></path></svg></span><span class="g"><span style="font-size: 15px">Each says yes, or answers with their own price</span></span></span></li>
-      <li><span class="row" style="min-height: 52px"><span class="t30" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"></rect><path d="M3 10h18"></path></svg></span><span class="g"><span style="font-size: 15px">You choose. A 10% service fee is added to the offer you accept</span></span></span></li>
-    </ul>
+    <p class="meta" style="margin: 0 8px; line-height: 1.5">Photographers who cover Abu Dhabi accept your price or answer with theirs. You choose; nothing is booked until you accept.</p>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":780}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":820}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -169,6 +183,7 @@ class Component extends DCLogic {
     const v = this.state.v;
     return {
       amount: fmt(v),
+      total: fmt(v + Math.round(v * 0.1)),
       up: () => set(v + 50),
       down: () => set(v - 50),
       type: (e) => { const n = parseInt(String(e.target.value).replace(/[^0-9]/g, ''), 10); if (!isNaN(n)) this.setState({ v: Math.min(max, n) }); },

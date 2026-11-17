@@ -27,7 +27,7 @@ Test-id prefix for this feature: `OF-` (for example `OF-US3-S2`).
 
 ### Design review 2026-11-17
 
-The owner approved canvas boards 44–56, and later the same day board 57 (the place step) with the place shown on 44–56, (`specs/design-system/canvas/`, feature `022-creator-offers`
+The owner approved canvas boards 44–56, and later the same day boards 57–63 (the place step and each of its states) with the place shown on 44–56, (`specs/design-system/canvas/`, feature `022-creator-offers`
 in `manifest.json`; 55 and 56 are the Arabic dark references of 46 and 51). Drawing them added
 FR-016a (a list, not the swipe rail), FR-016b (both account homes) and FR-018a (details lock what the
 creators priced).

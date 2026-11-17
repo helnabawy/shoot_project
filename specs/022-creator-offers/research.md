@@ -182,7 +182,16 @@ decision, rationale, alternatives rejected.
   | 53 | `S07j-account-creator-offers` | S07g / 27 Up next |
   | 54 | `S07k-account-client-offers` | 24 Up next and briefs |
   | 55, 56 | Arabic dark of 46 and 51 (designer variants) | — |
-  | 57 | `S01q-brief-place` mark the place on the map (R15, approved 2026-11-17) | the emirate slot |
+  | 57 | `S01q-brief-place` mark the place on the map, pin set (R15, approved 2026-11-17) | the emirate slot |
+  | 58 | `S01r-brief-no-place` brief before the place; the price waits | — |
+  | 59 | `S01s-place-empty` place step, nothing marked | — |
+  | 60 | `S01t-place-search` search results (OF-US1-S4a) | — |
+  | 61 | `S01u-place-location-off` location not allowed (OF-US1-S4c) | — |
+  | 62 | `S01v-place-outside` pin outside the area served (OF-US1-S4) | — |
+  | 63 | `S01w-place-fallback` map did not load: emirate and area (spec edge case) | — |
+
+  58–63 were added the same day to show every state before and after choosing the place, and were
+  approved by the owner on 2026-11-17.
 
   51 and 56 were revised the same day with the place row (area, rough map, distance); 49 now asks for
   the building, floor or gate under the pin.

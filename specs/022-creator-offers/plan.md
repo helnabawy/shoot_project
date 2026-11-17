@@ -71,7 +71,7 @@ events, 4 web surfaces changed, 4 app screens changed + 1 sheet, 4 canvas boards
 | VI Accessible, bilingual, themed | Pass | Number fields with labels and range hints, `inputmode="numeric"`, live region for new offers (`aria-live="polite"`), en/ar, light/dark, 360–1440 px. |
 | VII Secure | Pass | Amounts re-checked on the server; decline authorised by the brief key; stamps reveal no data; creator sees only own amount; rate limit on stamp and prices endpoints via existing `X-Shoot-Install` limits. |
 | VIII Simplicity | Justified | Answers extended instead of a new collection; polling instead of a realtime vendor. The map pin adds Google Maps Platform and two app packages (Complexity Tracking). |
-| IX Designed | Pass | Boards 44–57 approved by the owner 2026-11-17 and in `manifest.json` (research R14); web surfaces through the impeccable gates; one primary action per screen (client: Accept on the top offer; creator: Accept {price}). |
+| IX Designed | Pass | Boards 44–63 approved by the owner 2026-11-17 and in `manifest.json` (research R14); web surfaces through the impeccable gates; one primary action per screen (client: Accept on the top offer; creator: Accept {price}). |
 
 ## Project Structure
 
@@ -112,7 +112,7 @@ apps/mobile/lib/features/brief/presentation/{brief_bar.dart,brief_cubit.dart} + 
 apps/mobile/lib/features/creator_account/{data,domain,presentation/pages/inbox_page.dart,presentation/widgets/offer_sheet.dart,presentation/cubit/inbox_cubit.dart}
 apps/mobile/lib/features/quick_match/{data,domain,presentation/pages/match_page.dart,presentation/pages/booking_page.dart,presentation/cubit/match_cubit.dart}
 apps/mobile/lib/core/l10n/arb/app_{en,ar}.arb
-specs/design-system/canvas/S0*/S07* boards 44–57 + manifest.json   # approved 2026-11-17
+specs/design-system/canvas/S0*/S07* boards 44–63 + manifest.json   # approved 2026-11-17
 PRODUCT.md, specs/ROADMAP.md, CLAUDE.md, specs/003-*/spec.md, specs/019-*/spec.md   # annotations
 package.json                                                  # check:scenarios += 022 quickstart
 ```
@@ -131,7 +131,7 @@ part of the brief (`brief`), and the offers list and quotation are Quick Match (
 - **Order**: domain → migration and schema → brief price (server) → answers with amounts and decline
   → step 2 offers and quotation → notifications → stamps and LiveRefresh → web UI → API contract →
   boards (gate) → app.
-- **Owner gates**: boards 44–57 approved 2026-11-17 (including the place step and the place rows);
+- **Owner gates**: boards 44–63 approved 2026-11-17 (including the place step, its states and the place rows);
   still open: a Google Maps Platform project with billing and the keys of research R15; the
   default fee and range before switching on in production. Until the keys arrive, `MAPS_PROVIDER=off`
   keeps the emirate list.

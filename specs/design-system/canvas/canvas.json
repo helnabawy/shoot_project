@@ -481,7 +481,7 @@
       "is_interactive": true
     },
     "S01p-brief-price.dc.html": {
-      "h": 780,
+      "h": 820,
       "page": "screens",
       "radius": 28,
       "title": "44 · Brief · name your price",
@@ -608,6 +608,61 @@
       "w": 360,
       "x": 880,
       "y": 14560,
+      "is_interactive": true
+    },
+    "S01r-brief-no-place.dc.html": {
+      "h": 820,
+      "page": "screens",
+      "radius": 28,
+      "title": "58 · Brief · no place yet",
+      "w": 360,
+      "x": 0,
+      "y": 15620
+    },
+    "S01s-place-empty.dc.html": {
+      "h": 820,
+      "page": "screens",
+      "radius": 28,
+      "title": "59 · Place · nothing marked",
+      "w": 360,
+      "x": 440,
+      "y": 15620
+    },
+    "S01t-place-search.dc.html": {
+      "h": 820,
+      "page": "screens",
+      "radius": 28,
+      "title": "60 · Place · search results",
+      "w": 360,
+      "x": 880,
+      "y": 15620
+    },
+    "S01u-place-location-off.dc.html": {
+      "h": 820,
+      "page": "screens",
+      "radius": 28,
+      "title": "61 · Place · location not allowed",
+      "w": 360,
+      "x": 1320,
+      "y": 15620
+    },
+    "S01v-place-outside.dc.html": {
+      "h": 820,
+      "page": "screens",
+      "radius": 28,
+      "title": "62 · Place · outside the area served",
+      "w": 360,
+      "x": 1760,
+      "y": 15620
+    },
+    "S01w-place-fallback.dc.html": {
+      "h": 820,
+      "page": "screens",
+      "radius": 28,
+      "title": "63 · Place · map did not load",
+      "w": 360,
+      "x": 2200,
+      "y": 15620,
       "is_interactive": true
     }
   },
@@ -917,7 +972,13 @@
     "S07k-account-client-offers.dc.html",
     "S02p-offers-ar.dc.html",
     "S07h-inbox-price-ar.dc.html",
-    "S01q-brief-place.dc.html"
+    "S01q-brief-place.dc.html",
+    "S01r-brief-no-place.dc.html",
+    "S01s-place-empty.dc.html",
+    "S01t-place-search.dc.html",
+    "S01u-place-location-off.dc.html",
+    "S01v-place-outside.dc.html",
+    "S01w-place-fallback.dc.html"
   ],
   "pages": [
     {

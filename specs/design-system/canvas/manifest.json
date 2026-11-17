@@ -3,8 +3,8 @@
   "canvas": {
     "title": "Shoot — Design Directions",
     "url": "https://claude.ai/artifact/HeYx13fA2XFumiydvHeoTV",
-    "version": "1794329096-280b",
-    "exportedAt": "2026-11-11T00:00:00Z"
+    "version": "1794927085-0db9",
+    "exportedAt": "2026-11-17T00:00:00Z"
   },
   "designSystem": {
     "title": "Shoot Design System",
@@ -941,7 +941,7 @@
       "title": "Brief · name your price",
       "board": "S01p-brief-price.dc.html",
       "w": 360,
-      "h": 780,
+      "h": 820,
       "target": "mobile",
       "feature": "022-creator-offers",
       "variants": [
@@ -955,8 +955,7 @@
         "wordmark": ".wm",
         "topHit": ".top"
       },
-      "sha256": "8d0251fad9b3c2f0d17dd6bb9a59bacec7979f2a14d0ed87e3c42020bf52fee2",
-      "changedSinceLastExport": true
+      "sha256": "45708b62f8e0cd9b1614e69890858e0518001c8940943b6e40e7434d31a14bf6"
     },
     {
       "id": "45",
@@ -977,8 +976,7 @@
         "wordmark": ".wm",
         "h1": ".h1"
       },
-      "sha256": "bbf61a54e42b44f93a678ed495c3c80fd3e700729716923c57da11c37676c80f",
-      "changedSinceLastExport": true
+      "sha256": "15e201e21942ece1d894895626fc940f4434dfad9e0e13dd2326c9da9584eadd"
     },
     {
       "id": "46",
@@ -1000,8 +998,7 @@
         "h1": ".h1",
         "topHit": ".top"
       },
-      "sha256": "b31c6af5473b8ea8a6bc15135393bed912e44dc6530c7a6cb147f09820a9a09f",
-      "changedSinceLastExport": true
+      "sha256": "ac8f35739649462f60d97548e2fe18b4de0e5c09bf07aa489d41402ed01d3d1b"
     },
     {
       "id": "47",
@@ -1022,8 +1019,7 @@
         "wordmark": ".wm",
         "h1": ".h1"
       },
-      "sha256": "98b96efba1914759f0c01e2fedb649225874f05226f4b106508df6b6470bd7cc",
-      "changedSinceLastExport": true
+      "sha256": "f23977d15f06b3d27c8548ec71d41940f56e907b1602b627a65fc9abeeebd508"
     },
     {
       "id": "48",
@@ -1045,8 +1041,7 @@
         "h1": ".h1",
         "topHit": ".top"
       },
-      "sha256": "92ab64de7047052ad399801d5eb9a79841a0ae281be5d821a590b9b1c1b1c462",
-      "changedSinceLastExport": true
+      "sha256": "347709caaac5b2c37f439e5dcb3a871bd7f0c79d8b047e197f57ab96c16cd750"
     },
     {
       "id": "49",
@@ -1068,7 +1063,7 @@
         "h1": ".h1",
         "topHit": ".top"
       },
-      "sha256": "066fc83e356a1b1711117411436db0b22480c6b8b980107d310d9265ce4db6b5"
+      "sha256": "48e8325bf0e5f7c3430d71125180793eff648e5ca748fd83748d5f753ed40701"
     },
     {
       "id": "50",
@@ -1090,8 +1085,7 @@
         "h1": ".h1",
         "topHit": ".top"
       },
-      "sha256": "199781b3e1a06829789877a5a432cafadd331e75bbe3477a55a1a3043fd930e0",
-      "changedSinceLastExport": true
+      "sha256": "eaba0cda86d84da1c281ceabeae32ebc496606fd4428509eef2ceadd5f0bad99"
     },
     {
       "id": "51",
@@ -1113,7 +1107,7 @@
         "h1": ".h1",
         "topHit": ".top"
       },
-      "sha256": "64c209ca5b9613d34f15fcb81e471cf6bfa2406ed851300e5da14385541339fd"
+      "sha256": "96aa458921d213a0a1adfcb99f66aacfdb41d9a10d6a702ad4ea83b2aeb28221"
     },
     {
       "id": "52",
@@ -1135,8 +1129,7 @@
         "h1": ".h1",
         "topHit": ".top"
       },
-      "sha256": "7d5895d50dc8dc3f7a383e059f16608e80b6c36e3123036f31bfb01432481103",
-      "changedSinceLastExport": true
+      "sha256": "26047865da9d851194679913f7636f09c1ef80a1bd76f2fc864ac19c795b0e66"
     },
     {
       "id": "53",
@@ -1157,8 +1150,7 @@
         "wordmark": ".wm",
         "topHit": ".top"
       },
-      "sha256": "e18916d0b1ba2b0f1018eb3105bb1a2e96a4b25bfe4bae3c6f355a0ff40b37e1",
-      "changedSinceLastExport": true
+      "sha256": "cc400cea81d69bdbc9ced83605da611ee6dc482e278dcf232227ee96585f6bed"
     },
     {
       "id": "54",
@@ -1179,8 +1171,7 @@
         "wordmark": ".wm",
         "topHit": ".top"
       },
-      "sha256": "35fa3a8dc1904a0658c824a350d28fb55e95ec1682aa9eb8d75d032849b6b633",
-      "changedSinceLastExport": true
+      "sha256": "234032b7d60f486103f78c1eaff8bdc6d4e282f9a119ad195a17c37c95ad0a12"
     },
     {
       "id": "55",
@@ -1200,8 +1191,7 @@
         "h1": ".h1",
         "topHit": ".top"
       },
-      "sha256": "f91db4bf51be7cd5391b1102520547d2098d5d1a2ee9e0224c37f2b477ad61ba",
-      "changedSinceLastExport": true
+      "sha256": "f2e583272f7af55cb57acbbbb758e9e26286e07ce6f0321efae5f5c49ce6a011"
     },
     {
       "id": "56",
@@ -1221,7 +1211,7 @@
         "h1": ".h1",
         "topHit": ".top"
       },
-      "sha256": "c069051d8ed2aa9a94771cbaeba2b53687ee4623b1a8aec9546cf7498c1b4b9b"
+      "sha256": "1cf84912ece0b39441ffe673c5dfa4bf2d3066a7414571460d448dbd1921722e"
     },
     {
       "id": "57",
@@ -1242,7 +1232,132 @@
         "wordmark": ".wm",
         "topHit": ".top"
       },
-      "sha256": "b007737e0ea4c7de8bb3e31eadb882b5c3694ffcc2e1e44d4f1281983fd0771d"
+      "sha256": "d44a3467f955f88ce5e93692936fc4b2cc2d1febd2e4d8a0d63a3d7642b5a56c"
+    },
+    {
+      "id": "58",
+      "title": "Brief · no place yet",
+      "board": "S01r-brief-no-place.dc.html",
+      "w": 360,
+      "h": 820,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top"
+      },
+      "sha256": "72d341496db549e6758a481e2516c7c806ba46957fa4efe1b772e9129fe8ec73"
+    },
+    {
+      "id": "59",
+      "title": "Place · nothing marked",
+      "board": "S01s-place-empty.dc.html",
+      "w": 360,
+      "h": 820,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top"
+      },
+      "sha256": "d8195e6a347bb8242f3ccda57f5582db52ab3022193048258fb02a2df1c9b5f8"
+    },
+    {
+      "id": "60",
+      "title": "Place · search results",
+      "board": "S01t-place-search.dc.html",
+      "w": 360,
+      "h": 820,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm"
+      },
+      "sha256": "a79b203ef257e870e7d1f798531cb87683b72eb31fcdd95b44bc8d031f5de802"
+    },
+    {
+      "id": "61",
+      "title": "Place · location not allowed",
+      "board": "S01u-place-location-off.dc.html",
+      "w": 360,
+      "h": 820,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top"
+      },
+      "sha256": "f8a1731c08d8453cf742cbbe62ae71cee90afb55bf346fdf3c36eb5e74dc902c"
+    },
+    {
+      "id": "62",
+      "title": "Place · outside the area served",
+      "board": "S01v-place-outside.dc.html",
+      "w": 360,
+      "h": 820,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top"
+      },
+      "sha256": "f0f698dd2c6b210567bff9260386a74f66175eeb94d961c7cbf4eccf73c9286d"
+    },
+    {
+      "id": "63",
+      "title": "Place · map did not load",
+      "board": "S01w-place-fallback.dc.html",
+      "w": 360,
+      "h": 820,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top"
+      },
+      "sha256": "5095bb1007a18586b1083368638df04645bf95d83da0ff0914aa48e7b5577478"
     }
   ]
 }

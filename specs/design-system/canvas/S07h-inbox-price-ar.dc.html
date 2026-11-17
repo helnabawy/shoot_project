@@ -113,6 +113,13 @@ a:focus-visible,button:focus-visible{outline:2px solid #0a60ff;outline-offset:2p
 .place{display:flex;align-items:center;gap:10px}
 .place .map{flex:none;width:84px;height:64px}
 .place .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:15px;line-height:1.35}
+.bad{background:#fde3e1;color:#9b1c1c}
+.note{display:flex;gap:10px;align-items:flex-start;border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.45}
+.note.n{background:#f1eeea;color:#3a342f}.note.bad{background:#fde3e1;color:#9b1c1c}
+.slot{color:#6b6560;border-bottom:2px dotted #a29d98}
+.top[aria-disabled="true"]{background:#d9d3cc;color:#6b6560;cursor:default}
+.top[aria-disabled="true"]::after{display:none}
+.map .hint{position:absolute;inset:auto 12px 12px;background:rgba(252,251,250,.94);border-radius:9px;padding:8px 10px;font-size:13px;color:#3a342f;text-align:center}
 a{color:#b7d0ff}a:hover{color:#d6e4ff}
 </style>
 </helmet>
