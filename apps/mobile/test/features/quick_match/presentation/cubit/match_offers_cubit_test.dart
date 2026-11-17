@@ -141,5 +141,12 @@ void main() {
       verifyNever(() => repository.matchStamp(any(), any()));
       await cubit.close();
     });
+
+    test('OF-EC-01 a closed brief decodes as closed with no offers', () {
+      final json = loadExample('match-offers-declined')..['closed'] = true;
+      final page = MatchPageModel.fromJson(json).toEntity();
+      expect(page.closed, isTrue);
+      expect(offersPage().closed, isFalse);
+    });
   });
 }

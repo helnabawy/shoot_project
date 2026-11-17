@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { asClient, bookingByRef, briefFor, quoteFor, type BookingWorld } from './setup/booking'
 import { asVisitor, form, jar, redirectOf } from './setup/next-mocks'
 import { briefByRef, offersWorld } from './setup/offers'
-import { getTestPayload } from './setup/payload'
+import { getTestPayload, quiet } from './setup/payload'
 
 vi.mock('next/headers', async () => (await import('./setup/next-mocks')).nextHeaders)
 vi.mock('next/navigation', async () => (await import('./setup/next-mocks')).nextNavigation)
@@ -63,8 +63,10 @@ describe('OF-US5 quotation, acceptance and payment from the offers', () => {
     const b = await send()
     const budget = await budgetOf(b.ref)
     await answerBrief(await actor('sara'), b.ref, { persona: photo, decision: 'accept' })
-    const state = await requestQuotation({ status: 'idle' } as never, form({ locale: 'en', ref: b.ref, key: b.key, pick: `photographer:${world.creators.sara!.code}`, name: 'Layla Hassan', whatsapp: '+971501234567', 'expect.photographer': String(budget + 5000) }))
-    expect(state).toMatchObject({ status: 'error', formError: 'offers.errors.amountChanged' })
+    const to = await redirectOf(() => requestQuotation({ status: 'idle' } as never, form({ locale: 'en', ref: b.ref, key: b.key, pick: `photographer:${world.creators.sara!.code}`, name: 'Layla Hassan', whatsapp: '+971501234567', 'expect.photographer': String(budget + 5000) })))
+    // Board 48: back to the offers, naming the creator whose price moved.
+    expect(to).toContain(`/match/${b.ref}/${b.key}?pick=`)
+    expect(to).toContain(`changed=${world.creators.sara!.code}`)
   })
 
   it('OF-US5-S3 OF-US5-S4 accepting needs sign-in; then the creator is confirmed and the other offerer lost', async () => {
@@ -112,4 +114,46 @@ describe('OF-US5 quotation, acceptance and payment from the offers', () => {
     expect(onlinePaymentAllowed({ state: 'confirmed', totalFils: booking.totalFils! })).toBe(true)
     expect(booking.totalFils).toBe((await budgetOf(b.ref)) + Math.round(((await budgetOf(b.ref)) * 0.1) / 100) * 100)
   })
+
+  it('OF-US5-S5 a creator no longer free when the client accepts is refused; nothing is confirmed', async () => {
+    const b = await send()
+    await answerBrief(await actor('omar'), b.ref, { persona: photo, decision: 'accept' })
+    const q = await quoteFor(requestQuotation as never, b, { pick: `photographer:${world.creators.omar!.code}` })
+    const payload = await getTestPayload()
+    const date = String((await briefByRef(b.ref)).date).slice(0, 10)
+    await payload.create({ collection: 'availability-blocks', data: { creator: world.creators.omar!.id, user: (world.creators.omar!.user as { id: number }).id, date, kind: 'blocked' } as never, overrideAccess: true, context: quiet })
+    await asClient()
+    const to = await redirectOf(() => acceptQuotation(form({ locale: 'en', ref: q.ref, key: q.key })))
+    expect(to).toContain('booking.errors.creatorUnavailable')
+    const booking = await bookingByRef(payload, q.ref)
+    expect(booking.state).toBe('quoted')
+    expect(booking.assignments![0]).toMatchObject({ status: 'lapsed' })
+    jar.clear()
+    asVisitor()
+  })
+
+  it('OF-EC-03 one creator chosen on two types: one booking, one assignment per type, offers plus one fee', async () => {
+    const payload = await getTestPayload()
+    const video = String(world.personas.videographer)
+    const sara = world.creators.sara!
+    const profile = await payload.findByID({ collection: 'creator-profiles', id: sara.id, depth: 0, overrideAccess: true })
+    const before = (profile.personas ?? []) as unknown[]
+    await payload.update({ collection: 'creator-profiles', id: sara.id, data: { personas: [...before, Number(video)] } as never, overrideAccess: true, context: quiet })
+    try {
+      const b = await send()
+      const brief = await briefByRef(b.ref)
+      const budgets = brief.budgets as { persona: unknown; amountFils: number; suggestedFils?: number | null }[]
+      await payload.update({ collection: 'briefs', id: brief.id as number, data: { persona: [Number(photo), Number(video)], budgets: [...budgets, { ...budgets[0]!, id: undefined, persona: Number(video) }] } as never, overrideAccess: true, context: quiet })
+      await answerBrief(await actor('sara'), b.ref, { persona: photo, decision: 'accept' })
+      await answerBrief(await actor('sara'), b.ref, { persona: video, decision: 'accept' })
+      const q = await quoteFor(requestQuotation as never, b, { pick: `photographer:${sara.code},videographer:${sara.code}` })
+      const booking = await bookingByRef(payload, q.ref)
+      expect(booking.assignments!.map((a) => String(typeof a.persona === 'object' ? (a.persona as { id: unknown }).id : a.persona)).sort()).toEqual([photo, video].sort())
+      const quotation = (await payload.find({ collection: 'quotations', where: { reference: { equals: q.ref } }, limit: 1, depth: 0, overrideAccess: true })).docs[0] as unknown as { lines: { kind: string }[] }
+      expect(quotation.lines.map((l) => l.kind)).toEqual(['offer', 'offer', 'fee'])
+    } finally {
+      await payload.update({ collection: 'creator-profiles', id: sara.id, data: { personas: before } as never, overrideAccess: true, context: quiet })
+    }
+  })
 })
+

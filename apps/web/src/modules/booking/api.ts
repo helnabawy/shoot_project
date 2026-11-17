@@ -72,6 +72,8 @@ export const getMatchV1 = defineHandler({
 /** 022: `GET match/{ref}/{key}/stamp`, the step-2 fingerprint the app polls while the offers list is open. */
 export const getMatchStampV1 = defineHandler({
   ...endpoints.matchStamp,
+  // 022 (T082): the app polls every 3 s; a faster caller is told when to try again.
+  throttleMs: 2500,
   run: async (ctx, { params }) => {
     const stamp = await matchStamp(params.ref, params.key, ctx.locale, ctx.now(), ctx.user?.id)
     return stamp ? { stamp } : notFound()
@@ -81,6 +83,7 @@ export const getMatchStampV1 = defineHandler({
 /** 022: `POST match/{ref}/{key}/offers/decline`, the client declines one offer (US4-S5); answers step 2 again. */
 export const declineOfferV1 = defineHandler({
   ...endpoints.offerDecline,
+  rateLimit: { action: 'offer-decline', limit: 60 },
   run: async (ctx, { params, body }) => {
     const brief = await getBriefByKey(params.ref, params.key, ctx.user?.id)
     if (!brief) return notFound()
@@ -124,6 +127,7 @@ export const issueQuotationV1 = defineHandler({
       if (result.formError === 'booking.errors.tooMany') return problem(429, 'api.errors.rateLimited')
       if (result.formError === 'booking.errors.unavailable') return problem(409, 'booking.errors.unavailable')
       if (result.formError === 'offers.errors.amountChanged') return problem(409, 'offers.errors.amountChanged')
+      if (result.formError === 'inbox.errors.briefClosed') return problem(409, 'inbox.errors.briefClosed')
       return problem(409, 'booking.errors.not-allowed')
     }
     const [settings, t] = await Promise.all([getSiteSettings(ctx.locale), getTranslations({ locale: ctx.locale, namespace: 'quote' })])

@@ -26,6 +26,7 @@ export async function OffersResults({
   picks,
   editHref,
   whatsappHref,
+  changed,
 }: {
   page: MatchPage
   refKey: { ref: string; key: string }
@@ -33,6 +34,8 @@ export async function OffersResults({
   picks: Pick[]
   editHref: string
   whatsappHref: string
+  /** 022 (board 48): the code of a creator whose offer moved while the client was on step 3. */
+  changed?: string
 }) {
   const t = await getTranslations({ locale, namespace: 'offers' })
   const tm = await getTranslations({ locale, namespace: 'match' })
@@ -44,17 +47,31 @@ export async function OffersResults({
   const anyOffer = page.sections.some((s) => s.offers?.length)
   const noOneMatched = page.sentTo === 0 && !anyOffer
   const check = liveMatchStamp.bind(null, refKey.ref, refKey.key, locale)
+  const moved = changed ? page.sections.flatMap((s) => s.offers ?? []).find((o) => o.creator.code === changed) : undefined
 
   return (
     <BriefBar as="section" aria-labelledby="match-heading" data-floating-hide>
       <LiveRefresh stamp={page.stamp} check={check} />
+      {moved ? (
+        <div role="status" className="mx-3 mb-2 rounded-[10px] bg-attention px-3 py-2.5 text-on-attention" data-testid="offer-changed">
+          <p className="text-[15px] font-semibold">{t('changedTitle', { name: who(moved.creator).name.split(' ')[0] ?? '' })}</p>
+          <p className="text-[14px]">{t('changedIntro')}</p>
+        </div>
+      ) : null}
       <ResultGroup label={tm('yourBrief')}>
         <Link href={editHref} className={rowClass('set')}>
           <RowContent state="set" glyph={<CalendarIcon width={15} height={15} />} label={<span dir="auto">{page.brief.sentence}</span>} trailing={tm('editBrief')} />
         </Link>
       </ResultGroup>
 
-      {!anyOffer && !noOneMatched ? (
+      {page.closed ? (
+        <div className="px-4 pt-1 pb-3" data-testid="offers-closed">
+          <p className="text-[20px] font-semibold tracking-[-0.01em]">{t('closedTitle')}</p>
+          <p className="mt-1 text-[15px] leading-normal text-ink/80">{t('closedIntro')}</p>
+          <TopHit href={editHref} label={t('newBrief')} testId="offers-new-brief" className="mt-3" />
+        </div>
+      ) : null}
+      {!anyOffer && !noOneMatched && !page.closed ? (
         <div className="px-4 pt-1 pb-3" data-testid="offers-waiting">
           <p className="text-[20px] font-semibold tracking-[-0.01em]">{t('waitingTitle')}</p>
           <p className="mt-1 text-[15px] leading-normal text-ink/80">

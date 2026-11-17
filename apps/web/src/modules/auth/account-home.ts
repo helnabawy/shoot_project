@@ -22,6 +22,14 @@ export interface AccountJob {
   date: string
 }
 
+/** 022 (board 54): the client's open offers brief with the most offers, and where its offers are. */
+export interface AccountOffers {
+  count: number
+  sentence: string
+  reference: string
+  href: string
+}
+
 /** The one thing the account page puts first, with the one action that answers it. */
 export type NextUp<J extends AccountJob = AccountJob, B extends AccountBooking = AccountBooking> =
   | { kind: 'answer'; count: number; job: J }
@@ -30,6 +38,7 @@ export type NextUp<J extends AccountJob = AccountJob, B extends AccountBooking =
   | { kind: 'job'; job: J }
   | { kind: 'clear' }
   | { kind: 'quote'; booking: B }
+  | { kind: 'offers'; offers: AccountOffers }
   | { kind: 'booking'; booking: B }
   | { kind: 'brief' }
 
@@ -57,8 +66,10 @@ export function pickNextUp<J extends AccountJob, B extends AccountBooking>(input
   bookings: B[]
   /** 019: `null` or absent when the profile is not live. */
   briefs?: AccountBriefs | null
+  /** 022: a client's offers brief with offers waiting. */
+  offers?: AccountOffers | null
 }): NextUp<J, B> {
-  const { today, provider, profileStatus, jobs, bookings, briefs } = input
+  const { today, provider, profileStatus, jobs, bookings, briefs, offers } = input
   if (provider) {
     const waiting = jobs.filter((j) => j.awaitingAnswer)
     if (waiting.length) return { kind: 'answer', count: waiting.length, job: soonest(waiting)! }
@@ -70,6 +81,7 @@ export function pickNextUp<J extends AccountJob, B extends AccountBooking>(input
   const open = openBookings(bookings, today)
   const quote = open.find((b) => b.state === 'quoted')
   if (quote) return { kind: 'quote', booking: quote }
+  if (offers?.count) return { kind: 'offers', offers }
   const next = soonest(open)
   return next ? { kind: 'booking', booking: next } : { kind: 'brief' }
 }

@@ -20,8 +20,8 @@ const section = (slug: string, singular: string, offers: ReturnType<typeof offer
 const page = (sections: ReturnType<typeof section>[], sentTo = 7) =>
   ({ mode: 'offers', sentTo, stamp: 's1', brief: { sentence: 'A photographer for a birthday in Abu Dhabi', selections: [{ token: 'location', label: 'Abu Dhabi' }] }, sections }) as never
 
-async function show(p: unknown, picks: { persona: string; code: string | null }[] = []) {
-  const ui = await OffersResults({ page: p as never, refKey: { ref: 'B-22222', key: 'k' }, locale: 'en', picks, editHref: '/', whatsappHref: 'https://wa.me/1' })
+async function show(p: unknown, picks: { persona: string; code: string | null }[] = [], changed?: string) {
+  const ui = await OffersResults({ page: p as never, refKey: { ref: 'B-22222', key: 'k' }, locale: 'en', picks, editHref: '/', whatsappHref: 'https://wa.me/1', changed })
   render(
     <NextIntlClientProvider locale="en" messages={en} timeZone="Asia/Dubai">
       {ui}
@@ -56,5 +56,11 @@ describe('OF-US4 the client sees the offers', () => {
     await show(two, [{ persona: 'photographer', code: '0087' }])
     expect(screen.queryByTestId('offers-continue')).toBeNull()
     expect(screen.getByText(/Continue opens once/)).toBeInTheDocument()
+  })
+
+  it('OF-US4-S7 an offer that moved while the client chose shows a notice with the new amount', async () => {
+    await show(page([section('photographer', 'Photographer', [offer('0421', 'Mariam S.', 95000, false)])]), [], '0421')
+    expect(screen.getByTestId('offer-changed')).toHaveTextContent('Mariam changed the price')
+    expect(screen.getByText('AED 1,045')).toBeInTheDocument()
   })
 })

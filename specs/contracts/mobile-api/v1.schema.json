@@ -16013,6 +16013,9 @@
             ],
             "type": "object"
           },
+          "closed": {
+            "type": "boolean"
+          },
           "date": {
             "anyOf": [
               {
@@ -18501,6 +18504,9 @@
               "duration"
             ],
             "type": "object"
+          },
+          "closed": {
+            "type": "boolean"
           },
           "date": {
             "anyOf": [
@@ -21433,6 +21439,257 @@
         "type": "object"
       },
       "path": "/api/mobile/v1/personas"
+    },
+    "placeAutocomplete": {
+      "auth": "none",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "body": {
+            "properties": {
+              "q": {
+                "maxLength": 120,
+                "minLength": 2,
+                "type": "string"
+              },
+              "sessionToken": {
+                "maxLength": 64,
+                "minLength": 8,
+                "type": "string"
+              }
+            },
+            "required": [
+              "q",
+              "sessionToken"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "results": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "main": {
+                  "type": "string"
+                },
+                "placeId": {
+                  "type": "string"
+                },
+                "secondary": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "placeId",
+                "main",
+                "secondary"
+              ],
+              "type": "object"
+            },
+            "maxItems": 5,
+            "type": "array"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/places/autocomplete"
+    },
+    "placeDetails": {
+      "auth": "none",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "params": {
+            "properties": {
+              "placeId": {
+                "maxLength": 300,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "placeId"
+            ],
+            "type": "object"
+          },
+          "query": {
+            "properties": {
+              "sessionToken": {
+                "maxLength": 64,
+                "minLength": 8,
+                "type": "string"
+              }
+            },
+            "required": [
+              "sessionToken"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "params",
+          "query"
+        ],
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "area": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "emirate": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "slug": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "slug",
+                  "name"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "inside": {
+            "type": "boolean"
+          },
+          "lat": {
+            "type": "number"
+          },
+          "lng": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "lat",
+          "lng",
+          "inside",
+          "area",
+          "emirate"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/places/{placeId}"
+    },
+    "placeReverse": {
+      "auth": "none",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "body": {
+            "properties": {
+              "lat": {
+                "maximum": 90,
+                "minimum": -90,
+                "type": "number"
+              },
+              "lng": {
+                "maximum": 180,
+                "minimum": -180,
+                "type": "number"
+              }
+            },
+            "required": [
+              "lat",
+              "lng"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "area": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "emirate": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "slug": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "slug",
+                  "name"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "inside": {
+            "type": "boolean"
+          },
+          "lat": {
+            "type": "number"
+          },
+          "lng": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "lat",
+          "lng",
+          "inside",
+          "area",
+          "emirate"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/places/reverse"
     },
     "pushPreference": {
       "auth": "required",

@@ -88,6 +88,23 @@ against the local server with a foreground push.
 | OF-SC-002 | Tap the `brief-new` push | Inbox opens on that brief; "Accept {price}" is the next tap |
 | OF-SC-006 | Replay the released app's requests on an offers brief | Whole journey succeeds without errors |
 
+## Operator settings (T090)
+
+Everything is off until the owner turns it on, in this order:
+
+1. **Maps (optional).** Create a Google Maps Platform project with billing, enable Geocoding, Places and Static
+   Maps, and set `MAPS_PROVIDER=google`, `GOOGLE_MAPS_SERVER_KEY`, `GOOGLE_MAPS_BROWSER_KEY` (restricted to the
+   site's addresses) and `GOOGLE_MAPS_URL_SECRET` (see `apps/web/.env.example`). Without them the place is the
+   emirate list and nothing else changes.
+2. **Fee and range.** In admin, Site settings, Quick Match, Offers: the service fee percentage (default 10), the
+   lowest and highest offer as a percentage of the usual price (default 70 and 200). Sent briefs keep the numbers
+   they were sent with.
+3. **The switch.** Turn on "Creators offer prices" (Quick Match must be on). Turning it off returns new briefs to
+   the fixed-price flow; briefs already sent with offers keep working.
+
+Local demo: with `scratchpad`-style local env (never the production `DATABASE_URI`), `pnpm seed` then switch the
+setting on in `/admin`; `PUSH_PROVIDER=console` prints the pushes.
+
 ## Scenario → test mapping
 
 Read by `pnpm check:scenarios` (T002): each file must exist and carry the id in a test name.

@@ -49,6 +49,8 @@ export interface DetailsFormProps {
   /** 022: an offers brief: the offer amounts the client saw (persona slug → fils), and no promo code. */
   expect?: { persona: string; amountFils: number }[]
   noPromo?: boolean
+  /** 022 (FR-018a, board 49): the day, length and place the creators priced, shown as fixed with a way to send a new brief. */
+  fixed?: { label: string; note: string; newBriefHref: string; newBriefLabel: string }
 }
 
 /** Step 3 "Your details": name, WhatsApp, the date only when missing, extras, a code; one Top Hit (US2). */
@@ -76,6 +78,20 @@ export function DetailsForm(props: DetailsFormProps) {
           </div>
         ))}
       </ResultGroup>
+
+      {props.fixed ? (
+        <div className="px-4 pt-1 pb-2" data-testid="details-fixed">
+          <p className="text-[15px] font-medium">
+            <Bidi>{props.fixed.label}</Bidi>
+          </p>
+          <p className="text-[13px] text-mute">
+            {props.fixed.note}{' '}
+            <a href={props.fixed.newBriefHref} className="font-medium text-link">
+              {props.fixed.newBriefLabel}
+            </a>
+          </p>
+        </div>
+      ) : null}
 
       {formError ? (
         <div role="alert" className="px-4 pt-1">

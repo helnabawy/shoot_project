@@ -200,10 +200,19 @@ class _Offers extends StatelessWidget {
             children: [
               QmStepLine(step: 2, summary: page.sentence, onEdit: onEdit),
               Text(
-                count == 0 ? l10n.qmOffersWaiting : l10n.qmOffersCount(count),
+                page.closed
+                    ? l10n.qmOffersClosedTitle
+                    : count == 0
+                    ? l10n.qmOffersWaiting
+                    : l10n.qmOffersCount(count),
                 style: ShootType.title.copyWith(color: c.ink, fontSize: 28),
               ),
-              if (count == 0)
+              if (page.closed)
+                Text(
+                  l10n.qmOffersClosedIntro,
+                  style: ShootType.body.copyWith(color: c.mute),
+                )
+              else if (count == 0)
                 Text(
                   l10n.qmOffersSentTo(page.sentTo),
                   style: ShootType.body.copyWith(color: c.mute),

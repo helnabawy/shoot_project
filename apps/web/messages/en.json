@@ -94,6 +94,17 @@
     },
     "signInNext": "Next, we'll send a code to your mobile number to log you in.",
     "signingIn": "Taking you to log in…",
+    "place": {
+      "label": "Where is it taking place?",
+      "search": "Search a place or area",
+      "useLocation": "Use my location",
+      "locating": "Finding where you are…",
+      "denied": "Your location is off. Search for the place instead.",
+      "noResults": "No places found. Try another name.",
+      "outside": "Choose a place on land in the emirates we cover.",
+      "change": "Change",
+      "hint": "Creators see the area only. The exact place goes to the creator you book."
+    },
     "price": {
       "label": "Your price for the {type}",
       "range": "Usual price AED {price}. You can offer AED {min} to AED {max}.",
@@ -244,6 +255,7 @@
       "offersAction": "See the offers",
       "briefsAndOffers": "Briefs and offers"
     },
+    "offersCount": "{count, plural, one {# offer} other {# offers}}",
     "saidYes": "{count, plural, one {A creator said yes} other {# creators said yes}}"
   },
   "home": {
@@ -276,6 +288,14 @@
     "legal": "Legal"
   },
   "creators": {
+    "base": {
+      "title": "Where you start from",
+      "intro": "Optional. Only you and our team see it. We use it to show how far each brief is.",
+      "current": "Now: {area}",
+      "save": "Save starting point",
+      "clear": "Remove",
+      "saved": "Saved. Your briefs now show the distance."
+    },
     "network": {
       "pause": "Pause the moving list",
       "play": "Play the moving list"
@@ -766,6 +786,7 @@
     "chooseAnotherOffer": "Choose another offer"
   },
   "booking": {
+    "directions": "Directions",
     "metaTitle": "Bookings",
     "title": "Bookings",
     "yourRequests": "Your quotations and bookings",

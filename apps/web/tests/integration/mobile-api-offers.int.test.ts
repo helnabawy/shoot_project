@@ -11,6 +11,7 @@ import { POST as declineRoute } from '@/app/(payload)/api/mobile/v1/match/[ref]/
 import { GET as matchRoute } from '@/app/(payload)/api/mobile/v1/match/[ref]/[key]/route'
 import { GET as matchStampRoute } from '@/app/(payload)/api/mobile/v1/match/[ref]/[key]/stamp/route'
 import type { RouteHandler } from '@/shared/api/handler'
+import { resetThrottle } from '@/shared/api/throttle'
 import { briefFor, type BookingWorld } from './setup/booking'
 import { asVisitor } from './setup/next-mocks'
 import { briefByRef, offersWorld } from './setup/offers'
@@ -74,6 +75,7 @@ describe('OF mobile API', () => {
     expect(item.budgetFils).toBeGreaterThan(0)
     const answered = await ok(await call(answerRoute, `me/creator/briefs/${b.ref}/answer`, sara, { method: 'POST', params: { ref: b.ref }, body: { persona: item.persona, decision: 'accept' } }), creatorBriefsV1)
     expect(answered.accepted.find((i) => i.ref === b.ref)?.offerFils).toBe(item.budgetFils)
+    resetThrottle() // the stamp is polled at most every 3 s (T082); this test reads it twice at once
     const after = await ok(await call(briefsStampRoute, 'me/creator/briefs/stamp', sara), stampV1)
     expect(after.stamp).not.toBe(before.stamp)
   })

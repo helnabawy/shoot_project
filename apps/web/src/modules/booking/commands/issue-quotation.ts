@@ -45,7 +45,7 @@ export interface IssueInput {
 
 export type IssueResult =
   | { ok: true; reference: string; key: string; promoNote: string }
-  | { ok: false; formError: string; errors?: Record<string, string> }
+  | { ok: false; formError: string; errors?: Record<string, string>; changed?: string }
 
 const fail = (formError: string, errors?: Record<string, string>): IssueResult => ({ ok: false, formError, errors })
 
@@ -107,6 +107,7 @@ type Frozen = Parameters<typeof createQuotation>[1]['quote']
  */
 async function issueFromOffers(payload: Payload, input: IssueInput, page: Page, date: string, settings: Settings): Promise<IssueResult> {
   const brief = input.brief as typeof input.brief & { offers?: { feePercent?: number | null } | null }
+  if (page.closed) return fail('inbox.errors.briefClosed')
   const assigned: { personaId: string; creatorId: string | null }[] = []
   const picks: { personaId: string; label: { en: string; ar: string }; amount: number }[] = []
   for (const section of page.sections) {
@@ -114,7 +115,7 @@ async function issueFromOffers(payload: Payload, input: IssueInput, page: Page, 
     const offer = pick?.code ? section.offers?.find((o) => o.creator.code === pick.code) : undefined
     if (!offer) return fail('booking.errors.unavailable')
     const seen = input.expect?.find((e) => e.persona === section.persona.slug)
-    if (seen && seen.amountFils !== offer.amountFils) return fail('offers.errors.amountChanged')
+    if (seen && seen.amountFils !== offer.amountFils) return { ok: false, formError: 'offers.errors.amountChanged', changed: offer.creator.code }
     assigned.push({ personaId: section.persona.id, creatorId: offer.creator.id })
     const label = `${section.persona.singular} · ${offer.creator.displayName}`
     picks.push({ personaId: section.persona.id, label: { en: label, ar: label }, amount: offer.amountFils })

@@ -96,7 +96,7 @@ export async function recordBrief(ctx: ActorContext, input: BriefRecordV1): Prom
       }
       // 022: the client's price per type and the place, checked on the server; a missing price is the suggestion (FR-025).
       const budgets = Object.fromEntries((input.budgets ?? []).map((b) => [b.persona, b.amountFils]))
-      const terms = await offerTerms(payload, { persona: personaIds as number[], selections, date: brief.date }, locale, { budgets, place: input.place ?? null })
+      const terms = await offerTerms(payload, { persona: personaIds as number[], selections, date: brief.date }, locale, { budgets, place: input.place ?? null, pinOptional: true })
       if ('error' in terms) {
         const path = terms.field.startsWith('budget.') ? 'body.budgets' : 'body.place'
         return problem(422, terms.error, { fields: [{ path, code: terms.error }] })

@@ -168,6 +168,17 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'creator-briefs-stamp': (json) => readString(json, 'stamp'),
   'match-stamp': (json) => readString(json, 'stamp'),
   'match-offers-declined': (json) => MatchPageModel.fromJson(json).toEntity(),
+  // 022: the place step's search and pin (the app's place step is still to be built).
+  'place-autocomplete': (json) => [
+    for (final r in json['results']! as List) (r! as Map)['placeId']! as String,
+  ],
+  'place-autocomplete-request': (json) =>
+      (json['q']! as String, json['sessionToken']! as String),
+  'place': (json) =>
+      (json['lat']! as num, json['lng']! as num, json['inside']! as bool),
+  'place-outside': (json) =>
+      (json['lat']! as num, json['lng']! as num, json['inside']! as bool),
+  'place-reverse-request': (json) => (json['lat']! as num, json['lng']! as num),
   'offer-decline': (json) =>
       (json['persona']! as String, json['creator']! as String),
 };

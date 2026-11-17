@@ -16,7 +16,7 @@
 - Q: Which payment path is used at this stage? → A: No payment provider. Once the creator confirms, the client is shown the amount and payment instructions (managed content) and sends the transfer receipt to WhatsApp; an admin records the payment by hand as held, then released to the creator after delivery is confirmed, or refunded.
 - Q: How is the quotation PDF produced? → A: The quotation page has a print layout; "Download PDF" uses the browser's own Save as PDF, in the page language. No PDF is generated on the server.
 - Q: Which stories are in scope and how are notifications sent? → A: All four stories. Every notification is recorded in a notification log (recipient, channel, template, booking, state change); the WhatsApp channel produces a pre-filled WhatsApp link an admin or the recipient can open, the in-app channel shows on the account page; automatic outbound sending (WhatsApp/email) is feature 008.
-- Q: Does each creator have a different price? → A: No. The price is computed once per brief from the price rules, so every creator listed for a brief shows the same fixed price ("one price"); "let us choose" has the same price.
+- Q: Does each creator have a different price? → A: No. The price is computed once per brief from the price rules, so every creator listed for a brief shows the same fixed price ("one price"); "let us choose" has the same price. (While "Creators offer prices" is off; see spec 022 for the offers model.)
 - Q: How do clients without an account reach their quotation and booking? → A: Through a private link with an unguessable token (shown after step 3 and included in the WhatsApp message); members also see their quotations and bookings in their account. Creators act on bookings from their signed-in account.
 - Q: What are the default time windows? → A: Content-managed settings with defaults: quotation valid 7 days; creator confirms within 24 hours; client confirms delivery within 7 days, after which an admin may complete the booking; creator payout due within 10 days of completion. Currency is AED; prices are shown VAT-inclusive (tax lines are out of scope).
 
@@ -153,7 +153,9 @@ creators, adjust prices, cancel, and export.
 - **FR-002**: Creators MUST be able to mark availability per date (default
   available, with blocked dates) and the matching MUST honour it.
 - **FR-003**: Each listed creator MUST show one price computed from the
-  pricing rules for the brief (type, duration, location, extras).
+  pricing rules for the brief (type, duration, location, extras). (While
+  "Creators offer prices" is off; with it on, each listed creator shows their own
+  offer, see spec 022.)
 - **FR-004**: Quotations MUST have a unique reference, a printable PDF
   (FR-013), a validity period, an itemised price and an online acceptance
   action.

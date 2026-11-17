@@ -1,5 +1,5 @@
 import 'server-only'
-import { acceptorsFirst, dubaiToday, feeOf, matchCreators, nearbyDates, offerStamp, sortOffers, type MatchFilter } from '@shoot/domain/booking'
+import { acceptorsFirst, dubaiToday, feeOf, isBriefOpen, matchCreators, nearbyDates, offerStamp, sortOffers, type MatchFilter } from '@shoot/domain/booking'
 import type { CreatorSummary } from '@shoot/domain/creators'
 import { quotePrice, type QuoteResult } from '@shoot/domain/pricing'
 import { getTranslations } from 'next-intl/server'
@@ -11,6 +11,7 @@ import type { Brief, OptionSet } from '@/payload-types'
 import type { Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
 import { keyMatches } from './keys'
+import { readQuickMatch } from './settings'
 
 /** Price rules are keyed on these two option sets (research §4); every other slot is plain brief text. */
 export const DURATION_SET = 'durations'
@@ -138,6 +139,8 @@ export interface MatchPage {
   mode: 'fixed' | 'offers'
   /** 022: how many creators the brief was announced to (offers mode). */
   sentTo: number
+  /** 022 (FR-012a): the brief's date passed or its open window ended; its offers are closed for both sides. */
+  closed?: boolean
   /** 022: a fingerprint of the offers shown, for live refresh (research R9). */
   stamp: string
 }
@@ -219,6 +222,12 @@ async function offersPage(
   const brief = raw as OfferBrief
   const feePercent = brief.offers?.feePercent ?? 10
   const payload = await getPayloadClient()
+  const { inboxDays } = await readQuickMatch(payload)
+  // A booking on the brief does not close it here: a client whose creator dropped out comes back to the offers.
+  const closed = !isBriefOpen(
+    { status: brief.status ?? 'new', date: brief.date ? String(brief.date).slice(0, 10) : null, createdAt: brief.createdAt, bookingStates: [] },
+    { today: dubaiToday(base.now), inboxDays },
+  )
   const { docs } = await payload.find({
     collection: 'brief-answers',
     where: { and: [{ brief: { equals: brief.id } }, { decision: { equals: 'accepted' } }, { withdrawnAt: { exists: false } }, { clientDecision: { exists: false } }] },
@@ -234,7 +243,7 @@ async function offersPage(
     .map((persona) => {
       const free = new Map(freeFor(persona.id, date).map((c) => [c.id, c]))
       const budget = (brief.budgets ?? []).find((b) => idOf(b.persona) === persona.id)?.amountFils
-      const offers: MatchOffer[] = sortOffers(
+      const offers: MatchOffer[] = closed ? [] : sortOffers(
         answers
           .filter((a) => idOf(a.persona) === persona.id && a.amountFils && free.has(idOf(a.creator)))
           .map((a) => {
@@ -262,7 +271,8 @@ async function offersPage(
     nearbyFree: {},
     mode: 'offers',
     sentTo: brief.offers?.sentTo ?? 0,
-    stamp: offerStamp(parts),
+    ...(closed ? { closed: true } : {}),
+    stamp: offerStamp(closed ? [...parts, 'closed'] : parts),
   }
 }
 

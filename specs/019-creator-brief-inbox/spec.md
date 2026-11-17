@@ -14,7 +14,7 @@ Test-id prefix for this feature: `BI-` (for example `BI-US1-S3`).
 
 ### Session 2026-11-13
 
-- Q: When a matching creator accepts an open brief, what happens to the quotation and booking flow? → A: Several creators may accept one brief. The client's Quick Match step 2 lists the creators who already accepted first; the one the client picks is assigned already confirmed (no second confirmation). The price stays the one price from the rules; the admin flow is otherwise unchanged.
+- Q: When a matching creator accepts an open brief, what happens to the quotation and booking flow? → A: Several creators may accept one brief. The client's Quick Match step 2 lists the creators who already accepted first; the one the client picks is assigned already confirmed (no second confirmation). The price stays the one price from the rules (while "Creators offer prices" is off; see spec 022); the admin flow is otherwise unchanged.
 - Q: Which open briefs does a creator see? → A: The same rules as Quick Match step 2: the creator offers the brief's professional type, serves its emirate, is free on its date (not blocked, not booked; a brief without a date matches on everything else) and satisfies every filtering slot such as the "shot by" gender preference. The occasion's specialty only sorts the list, it never filters.
 - Q: What does Reject do? → A: It hides the brief for that creator only, with an optional reason from a short content-managed list (English and Arabic) and an optional note; the creator can undo while the brief is open; the client is never told; admins see the reasons.
 - Q: How does the client hear that a creator accepted? → A: Push notification, in-app notification and the brief's private link, all three. (Owner's answer: "push notification and in app - private link as well".)
@@ -264,7 +264,7 @@ devices, and switching it on again restores them.
 - **FR-006**: The creator MUST be able to accept an open matching brief; the system MUST check again
   that the brief is open and still matches when the answer arrives, and record who accepted and when.
 - **FR-007**: Several creators MAY accept one brief. Quick Match step 2 MUST list the creators who
-  accepted first, marked as having said yes, at the same one price; a creator who accepted MUST
+  accepted first, marked as having said yes, at the same one price (while "Creators offer prices" is off; see spec 022); a creator who accepted MUST
   still be free and matching to be listed. When the client picks a creator who accepted and accepts
   the quotation, that creator's assignment MUST start confirmed. Picking anyone else, or "let us
   choose", MUST follow the existing flow. A creator MAY withdraw their acceptance until the client

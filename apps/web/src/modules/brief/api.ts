@@ -37,6 +37,8 @@ export const recordBriefV1 = defineHandler({
 /** 022: `POST brief-builder/prices`, the suggested price and range per type for the answers so far. */
 export const getBriefPricesV1 = defineHandler({
   ...endpoints.briefPrices,
+  // 022 (T082): a price read is cheap but runs the price rules; an install asks a few times per brief.
+  rateLimit: { action: 'brief-prices', limit: 240 },
   run: async (ctx, { body }) => {
     const { briefFromAnswers, placeOfPin, readQuickMatch, suggestedPrices } = await import('@/modules/booking')
     const brief = await briefFromAnswers({ values: body.values, custom: body.custom ?? {} }, ctx.locale)

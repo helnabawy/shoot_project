@@ -42,6 +42,7 @@ export const withdrawCreatorBriefV1 = defineHandler({
 /** 022 (research R9): the inbox fingerprint the app polls while the inbox is open. */
 export const getCreatorBriefsStampV1 = defineHandler({
   ...endpoints.creatorBriefsStamp,
+  throttleMs: 2500,
   run: async (ctx) => {
     if (ctx.user?.accountType !== 'provider') return notProvider()
     return { stamp: await inboxStamp({ payload: ctx.payload, locale: ctx.locale, now: ctx.now() }, ctx.user.id) }

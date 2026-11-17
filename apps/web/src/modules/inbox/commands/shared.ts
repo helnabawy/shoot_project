@@ -58,6 +58,15 @@ export async function stillOpen(actor: InboxActor, brief: Brief): Promise<boolea
   )
 }
 
+/** 022 (FR-012a): the brief's date has not passed and its open window has not ended (bookings aside). */
+export async function windowOpen(payload: Payload, brief: Brief, now: Date): Promise<boolean> {
+  const { inboxDays } = await readQuickMatch(payload)
+  return isBriefOpen(
+    { status: brief.status ?? 'new', date: brief.date ? String(brief.date).slice(0, 10) : null, createdAt: brief.createdAt, bookingStates: [] },
+    { today: dubaiToday(now), inboxDays },
+  )
+}
+
 /** 022: a brief's offer terms as the commands need them (frozen at sending, research R1). */
 export function offerTermsOf(brief: Brief) {
   const offers = (brief as { offers?: { mode?: string | null; feePercent?: number | null; minPercent?: number | null; maxPercent?: number | null } | null }).offers

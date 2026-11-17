@@ -132,4 +132,17 @@ describe('OF-US2 OF-US3 creators answer with a price', () => {
     await payload.update({ collection: 'briefs', where: { reference: { equals: ref } }, data: { status: 'closed' }, overrideAccess: true, context: quiet })
     expect(await answerBrief(await actor('sara'), ref, { persona: photo, decision: 'accept' })).toMatchObject({ status: 409, code: 'inbox.errors.briefClosed' })
   })
+
+  it('OF-EC-01 once the shoot date passes, the offer shows closed and cannot be changed', async () => {
+    const { ref } = await send()
+    const persona = String(world.personas.photographer)
+    await answerBrief(await actor('sara'), ref, { persona, decision: 'accept' })
+    const date = String((await briefByRef(ref)).date).slice(0, 10)
+    const later = new Date(Date.parse(`${date}T12:00:00Z`) + 2 * 86_400_000)
+    const inbox = (await creatorInbox({ payload: await getTestPayload(), locale: 'en', now: later }, (world.creators.sara!.user as { id: number }).id))!
+    expect(inbox.accepted.find((i) => i.ref === ref)?.outcome).toBe('closed')
+    const changed = await answerBrief({ ...(await actor('sara')), now: later }, ref, { persona, decision: 'accept', amountFils: (await budgetOf(ref)) + 5000 })
+    expect(changed).toMatchObject({ status: 409, code: 'inbox.errors.briefClosed' })
+  })
 })
+

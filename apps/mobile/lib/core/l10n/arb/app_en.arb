@@ -3571,6 +3571,14 @@
       }
     }
   },
+  "qmOffersClosedTitle": "This brief is closed",
+  "@qmOffersClosedTitle": {
+    "description": "022: step 2 of a brief whose date passed (FR-012a)."
+  },
+  "qmOffersClosedIntro": "The date passed or the brief closed. Send a new brief to get fresh offers.",
+  "@qmOffersClosedIntro": {
+    "description": "022: what to do when a brief closed."
+  },
   "qmOffersSentTo": "Sent to {count} creators. They see the area, not your pin. Offers appear here as they answer.",
   "@qmOffersSentTo": {
     "description": "022: who the brief went to.",

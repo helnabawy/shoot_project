@@ -15,7 +15,7 @@ export interface InboxListView {
 }
 
 /** Waiting briefs, then the ones the creator said yes to, then "Not for you" with Undo (US1–US3). */
-export function InboxList({ inbox, locale }: { inbox: InboxListView; locale: string }) {
+export function InboxList({ inbox, locale, focus }: { inbox: InboxListView; locale: string; focus?: { ref: string; persona?: string } }) {
   const t = useTranslations('inbox')
   const offer = useTranslations('inbox.offer')
   const reasonLabel = (value: string | null) => inbox.reasons.find((r) => r.value === value)?.label ?? ''
@@ -24,7 +24,8 @@ export function InboxList({ inbox, locale }: { inbox: InboxListView; locale: str
     <>
       <ResultGroup label={t('waiting')}>
         {inbox.open.length ? (
-          inbox.open.map((item, i) => <BriefCard key={`${item.ref}-${item.persona}`} item={item} locale={locale} primary={i === 0} reasons={inbox.reasons} />)
+          // 022 (SC-002): the brief a push opened comes first, its Accept the primary action (second tap).
+          [...inbox.open].sort((a, b) => Number(isFocus(b, focus)) - Number(isFocus(a, focus))).map((item, i) => <BriefCard key={`${item.ref}-${item.persona}`} item={item} locale={locale} primary={i === 0} reasons={inbox.reasons} />)
         ) : (
           <div className={rowClass('open', false)} data-testid="inbox-empty">
             <RowContent glyph={<MinusIcon width={15} height={15} />} label={t('empty')} />
@@ -98,3 +99,6 @@ export function InboxList({ inbox, locale }: { inbox: InboxListView; locale: str
     </>
   )
 }
+
+const isFocus = (item: { ref: string; persona: string }, focus?: { ref: string; persona?: string }) =>
+  Boolean(focus && item.ref === focus.ref && (!focus.persona || item.persona === focus.persona))

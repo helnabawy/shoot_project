@@ -100,6 +100,6 @@ export async function matchView(payload: Payload, input: MatchInput): Promise<Ma
     }),
     nearby: page.nearby.map((date) => ({ date, free: page.nearbyFree[date] ?? 0 })),
     whatsappUrl: whatsappHref(settings.whatsappNumber, brief.sentence ?? ''),
-    ...(page.mode === 'offers' ? { mode: 'offers' as const, sentTo: page.sentTo } : {}),
+    ...(page.mode === 'offers' ? { mode: 'offers' as const, sentTo: page.sentTo, ...(page.closed ? { closed: true } : {}) } : {}),
   }
 }

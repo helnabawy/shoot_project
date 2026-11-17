@@ -95,4 +95,43 @@ describe('OF-US4 the client sees the offers and chooses', () => {
     expect(p.sentTo).toBe(0)
     expect(p.sections[0]!.offers).toEqual([])
   })
+
+  it('OF-EC-01 once the shoot date passes, the offers close for the client: none listed, decline refused', async () => {
+    const b = await send()
+    await answerBrief(await actor('sara'), b.ref, { persona: photo, decision: 'accept' })
+    const brief = (await getBriefByKey(b.ref, b.key))!
+    const later = new Date(Date.parse(`${String(brief.date).slice(0, 10)}T12:00:00Z`) + 2 * 86_400_000)
+    const p = await getMatchPage(brief, 'en', later)
+    expect(p.closed).toBe(true)
+    expect(p.sections[0]!.offers).toEqual([])
+    const open = await getMatchPage(brief, 'en', new Date())
+    expect(open.closed).toBeUndefined()
+    expect(open.stamp).not.toBe(p.stamp)
+    const refused = await declineOffer(await getTestPayload(), brief as never, { personaId: photo, creatorId: String(world.creators.sara!.id), now: later })
+    expect(refused).toMatchObject({ status: 409, code: 'inbox.errors.briefClosed' })
+  })
+
+  it('OF-EC-03 one creator offering on two types appears in both lists, each its own offer', async () => {
+    const payload = await getTestPayload()
+    const video = String(world.personas.videographer)
+    const sara = world.creators.sara!
+    const profile = await payload.findByID({ collection: 'creator-profiles', id: sara.id, depth: 0, overrideAccess: true })
+    const before = (profile.personas ?? []) as unknown[]
+    await payload.update({ collection: 'creator-profiles', id: sara.id, data: { personas: [...before, Number(video)] } as never, overrideAccess: true, context: quiet })
+    try {
+      const b = await send()
+      const brief = await briefByRef(b.ref)
+      // The seeded builder asks one type; a two-type brief is set up directly (both types, a price each).
+      const budgets = brief.budgets as { persona: unknown; amountFils: number; suggestedFils?: number | null }[]
+      await payload.update({ collection: 'briefs', id: brief.id as number, data: { persona: [Number(photo), Number(video)], budgets: [...budgets, { ...budgets[0]!, id: undefined, persona: Number(video) }] } as never, overrideAccess: true, context: quiet })
+      await answerBrief(await actor('sara'), b.ref, { persona: photo, decision: 'accept' })
+      await answerBrief(await actor('sara'), b.ref, { persona: video, decision: 'accept', amountFils: budgets[0]!.amountFils + 10000 })
+      const p = await page(b)
+      expect(p.sections.map((x) => x.offers!.map((o) => o.creator.code))).toEqual([[sara.code], [sara.code]])
+      expect(p.sections[1]!.offers![0]!.amountFils).toBe(p.sections[0]!.offers![0]!.amountFils + 10000)
+    } finally {
+      await payload.update({ collection: 'creator-profiles', id: sara.id, data: { personas: before } as never, overrideAccess: true, context: quiet })
+    }
+  })
 })
+

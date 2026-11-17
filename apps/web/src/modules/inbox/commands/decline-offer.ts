@@ -3,7 +3,7 @@ import type { Payload } from 'payload'
 import { problem, type Problem } from '@/shared/api/problem'
 import type { Brief, BriefAnswer } from '@/payload-types'
 import { onOfferClosed } from './notify-brief'
-import { offerLocked, offerTermsOf } from './shared'
+import { briefClosed, offerLocked, offerTermsOf, windowOpen } from './shared'
 
 /**
  * 022 (US4-S5, FR-014): the client declines one creator's offer for one type. The caller has already
@@ -16,6 +16,7 @@ export async function declineOffer(
   input: { personaId: string; creatorId: string; now: Date },
 ): Promise<{ ok: true } | Problem> {
   if (!offerTermsOf(brief)) return problem(409, 'offers.errors.pickFromOffers')
+  if (!(await windowOpen(payload, brief, input.now))) return briefClosed()
   const { docs } = await payload.find({
     collection: 'brief-answers',
     where: { and: [{ brief: { equals: brief.id } }, { creator: { equals: Number(input.creatorId) } }, { persona: { equals: Number(input.personaId) } }] },

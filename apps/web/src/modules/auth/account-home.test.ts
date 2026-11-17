@@ -6,6 +6,13 @@ const job = (over: Partial<AccountJob> = {}): AccountJob => ({ reference: 'S-1',
 const booking = (over: Partial<AccountBooking> = {}): AccountBooking => ({ reference: 'S-2', state: 'confirmed', date: '2026-11-15', ...over })
 
 describe('account home: what comes next', () => {
+  it('OF-US4-S1 a client with offers waiting sees "N offers" first, after a quotation to answer', () => {
+    const offers = { count: 3, sentence: 'A photographer for a birthday', reference: 'B-22222', href: '/match/B-22222/k' }
+    expect(pickNextUp({ today, provider: false, profileStatus: null, jobs: [], bookings: [booking()], offers })).toEqual({ kind: 'offers', offers })
+    expect(pickNextUp({ today, provider: false, profileStatus: null, jobs: [], bookings: [booking({ state: 'quoted' })], offers }).kind).toBe('quote')
+    expect(pickNextUp({ today, provider: false, profileStatus: null, jobs: [], bookings: [], offers: { ...offers, count: 0 } }).kind).toBe('brief')
+  })
+
   it('a creator answers waiting requests before anything else, soonest deadline first', () => {
     const next = pickNextUp({ today, provider: true, profileStatus: 'draft', jobs: [job(), job({ reference: 'S-9', state: 'accepted', awaitingAnswer: true, date: '2026-12-01' })], bookings: [] })
     expect(next).toEqual({ kind: 'answer', count: 1, job: expect.objectContaining({ reference: 'S-9' }) })

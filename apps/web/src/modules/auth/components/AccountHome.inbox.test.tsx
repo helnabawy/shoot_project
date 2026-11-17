@@ -28,3 +28,14 @@ describe('BI-US1-S1 Up next leads with open briefs', () => {
     setRequestLocale('en')
   })
 })
+
+describe('OF-US4-S1 a client with offers waiting', () => {
+  it('Up next says how many offers and links to them', async () => {
+    setRequestLocale('en')
+    render(await NextUpPanel({ next: { kind: 'offers', offers: { count: 3, sentence: 'A photographer for a birthday', reference: 'B-22222', href: '/match/B-22222/k' } }, hrefs }))
+    // The test stand-in for next-intl leaves plurals unformatted; the title is the offers one.
+    expect(screen.getByText(/offers?\}* for your brief/)).toBeInTheDocument()
+    expect(screen.getByText('B-22222')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'See the offers' })).toHaveAttribute('href', '/match/B-22222/k')
+  })
+})

@@ -23,9 +23,17 @@ import 'package:shoot_mobile/features/creator_account/presentation/widgets/rejec
 /// The creator brief inbox at `/account/inbox` (feature 019), built to board
 /// `S07e-creator-inbox`. Only the first waiting brief carries the red action.
 class InboxPage extends StatelessWidget {
-  const InboxPage({super.key, required this.create, this.onShown});
+  const InboxPage({
+    super.key,
+    required this.create,
+    this.onShown,
+    this.focusRef,
+  });
 
   final InboxCubit Function() create;
+
+  /// 022 (SC-002): the brief a push opened (`?brief=`); its card comes first, Accept is the second tap.
+  final String? focusRef;
 
   /// Called once after the screen first shows (the push permission ask, research R7).
   final void Function(BuildContext context)? onShown;
@@ -49,6 +57,7 @@ class InboxPage extends StatelessWidget {
           final cubit = context.read<InboxCubit>();
           return InboxView(
             state: state,
+            focusRef: focusRef,
             onRetry: cubit.load,
             onAccept: cubit.accept,
             onOffer: (item) async {
@@ -90,9 +99,13 @@ class InboxView extends StatelessWidget {
     required this.onReject,
     required this.onWithdraw,
     this.onOffer,
+    this.focusRef,
   });
 
   final InboxState state;
+
+  /// 022 (SC-002): the reference of the brief to show first.
+  final String? focusRef;
   final VoidCallback onRetry;
   final ValueChanged<BriefItem> onAccept;
 
@@ -148,7 +161,10 @@ class _Loaded extends StatelessWidget {
               title: l10n.inboxTitle,
               body: l10n.inboxEmpty,
             ),
-          for (final (i, item) in inbox.open.indexed)
+          for (final (i, item) in _focusFirst(
+            inbox.open,
+            view.focusRef,
+          ).indexed)
             _BriefCard(
               item: item,
               when: _when(context, item),
@@ -382,4 +398,14 @@ class _BriefCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 022 (SC-002): the brief a push opened first, the rest in the server's order.
+List<BriefItem> _focusFirst(List<BriefItem> open, String? ref) {
+  if (ref == null) return open;
+  final wanted = ref.toUpperCase();
+  return [
+    ...open.where((i) => i.ref == wanted),
+    ...open.where((i) => i.ref != wanted),
+  ];
 }

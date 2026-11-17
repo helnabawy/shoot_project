@@ -5,12 +5,17 @@ import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server'
 import Link from 'next/link'
+import { placeStepLabelsFrom } from '@/modules/brief/labels'
 import { getLegalForRegistration } from '@/modules/legal'
+import { mapsEnabled } from '@/modules/maps/providers'
+import { env } from '@/shared/lib/env'
+import { getPayloadClient } from '@/shared/lib/payload'
 import { requireUser } from '@/modules/auth/session'
 import { whatsappHref } from '@/modules/contact/whatsapp'
 import { calendarMonths } from '@/modules/booking/calendar'
 import { getMyAvailability } from '@/modules/booking/queries'
 import { formatCode, getMyProfileView } from '@/modules/creators'
+import { BaseSection } from '@/modules/creators/components/BaseSection'
 import { IdentitySection } from '@/modules/creators/components/IdentitySection'
 import { ProfileCalendar } from '@/modules/creators/components/ProfileCalendar'
 import { ProfileForm } from '@/modules/creators/components/ProfileForm'
@@ -62,6 +67,13 @@ export default async function MyProfilePage({ params, searchParams }: Props) {
   const displayCode = profile?.code ? await formatCode(profile.code, locale) : null
   const publicNow = profile && (profile.status === 'live' || profile.status === 'live-with-changes')
   const chosen = new Set(profile?.specialties ?? defaults.specialties)
+  // 022 (T078): the creator's starting point, when this deployment has map keys.
+  const base = mapsEnabled(env()) && profile ? await myBaseArea(user.id, locale) : undefined
+  const baseLabels = base === undefined ? null : {
+    title: all('creators.base.title'), intro: all('creators.base.intro'), current: all('creators.base.current', { area: '{area}' }), save: all('creators.base.save'), clear: all('creators.base.clear'), saved: all('creators.base.saved'),
+    place: placeStepLabelsFrom(all as never),
+    errors: { 'brief.errors.placeOutside': all('brief.errors.placeOutside'), 'brief.errors.generic': all('brief.errors.generic'), 'creators.errors.notProvider': all('creators.errors.notProvider') },
+  }
 
   return (
     <section className="mx-auto max-w-[1040px] px-3 pt-8 pb-8 sm:pt-14" data-floating-hide>
@@ -110,6 +122,7 @@ export default async function MyProfilePage({ params, searchParams }: Props) {
                         <p className="mt-1 px-1 text-[15px] text-mute">{availability ? tc('intro') : tc('needsProfile')}</p>
                         {availability ? <ProfileCalendar months={calendarMonths(today, CALENDAR_DAYS, dayStatus)} locale={locale} blocked={blocked} error={calendarError} /> : null}
                       </section>
+                      {baseLabels ? <BaseSection locale={locale} area={base ?? null} labels={baseLabels} /> : null}
                     </StepPanel>
                     <StepPanel step="identity">
                       <section className="mt-12" aria-labelledby="sec-identity" data-testid="section-identity">
@@ -145,3 +158,11 @@ export default async function MyProfilePage({ params, searchParams }: Props) {
     </section>
   )
 }
+
+/** 022 (T078): the area of the creator's own starting point, or null when none is set. */
+async function myBaseArea(userId: number, locale: Locale): Promise<string | null> {
+  const payload = await getPayloadClient()
+  const doc = (await payload.find({ collection: 'creator-profiles', where: { user: { equals: userId } }, draft: true, limit: 1, depth: 0, overrideAccess: true, locale })).docs[0] as { base?: { lat?: number | null; area?: string | null } | null } | undefined
+  return doc?.base?.lat != null ? (doc.base.area ?? '') : null
+}
+

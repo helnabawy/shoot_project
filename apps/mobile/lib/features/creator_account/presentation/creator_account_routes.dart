@@ -85,8 +85,11 @@ List<RouteBase> creatorAccountRoutes({
         GoRoute(
           path: 'inbox',
           redirect: creatorOnly,
-          builder: (context, state) =>
-              InboxPage(create: createInbox, onShown: onInboxShown),
+          builder: (context, state) => InboxPage(
+            create: createInbox,
+            onShown: onInboxShown,
+            focusRef: state.uri.queryParameters['brief'],
+          ),
         ),
         GoRoute(
           path: 'bookings',

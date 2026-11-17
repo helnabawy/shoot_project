@@ -154,6 +154,7 @@ final class MatchPage extends Equatable {
     required this.whatsappUrl,
     this.offersMode = false,
     this.sentTo = 0,
+    this.closed = false,
   });
 
   final String reference;
@@ -180,6 +181,9 @@ final class MatchPage extends Equatable {
   /// 022: how many creators the brief was announced to.
   final int sentTo;
 
+  /// 022 (FR-012a): the brief's date passed or its window ended; no offers, send a new brief.
+  final bool closed;
+
   /// Nobody is free in at least one type (screen 08).
   bool get noneFree => sections.any((s) => s.creators.isEmpty);
 
@@ -198,6 +202,7 @@ final class MatchPage extends Equatable {
     whatsappUrl,
     offersMode,
     sentTo,
+    closed,
   ];
 }
 

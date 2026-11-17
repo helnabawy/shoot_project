@@ -13,6 +13,7 @@ const PROFESSIONS = /photograph|videograph|مصور|تصوير|فيديو/i
 const NAMESPACES = [
   (m: typeof en) => m.offers,
   (m: typeof en) => (m.inbox as Record<string, unknown>).offer,
+  (m: typeof en) => (m.brief as Record<string, unknown>).place,
 ]
 
 const strings = (node: unknown, path = ''): [string, string][] =>
@@ -47,6 +48,9 @@ describe('OF-FR-026 no profession named in the offers code or strings', () => {
       'web/src/modules/booking/offers.ts',
       'web/src/modules/booking/components/OffersResults.tsx',
       'web/src/modules/brief/components/PriceStep.tsx',
+      'web/src/modules/brief/components/PlaceStep.tsx',
+      'web/src/modules/maps/actions.ts',
+      'web/src/modules/maps/api.ts',
       'web/src/modules/inbox/components/OfferBits.tsx',
       'web/src/modules/inbox/commands/decline-offer.ts',
       'mobile/lib/features/creator_account/presentation/widgets/offer_sheet.dart',

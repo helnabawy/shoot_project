@@ -40,6 +40,9 @@ Cache:
 | `personas` | `GET /personas` | none | public | — | `personasV1` | `personas` `getActivePersonas`, `getCategoriesForAudience` | — |
 | `briefBuilder` | `GET /brief-builder` | none | public | — | `briefBuilderV1` | `brief` `getBriefBuilderConfig` | — (`builder: null` when off) |
 | `briefPrices` | `POST /brief-builder/prices` | none | no-store | `briefPricesRequestV1` | `briefPricesV1` | `booking` `suggestedPrices` (022) | — |
+| `placeAutocomplete` | `POST /places/autocomplete` | none | no-store | `placeAutocompleteRequestV1` | `placeAutocompleteV1` | `maps` `autocomplete` (022) | maps off: empty list |
+| `placeDetails` | `GET /places/{placeId}` | none | no-store | `placeDetailsQueryV1` | `placeV1` | `maps` `details` (022) | unknown place (404) |
+| `placeReverse` | `POST /places/reverse` | none | no-store | `placeReverseRequestV1` | `placeV1` | `maps` `reverse` (022) | outside the emirates served: `inside: false` |
 | `landing` | `GET /landing` | none | public | — | `landingV1` | `landing` `getLandingPage` + `getBlockContext` | — |
 | `creators` | `GET /creators?type&specialty&place&page` | none | public | `creatorsRequestV1` | `creatorListV1` | `creators` `getPublicCreators`, `getDirectoryContext`, `buildDirectory` | — (unknown filter slugs are ignored, as on the website) |
 | `creatorProfile` | `GET /creators/{code}` | none | public | `params.code` (1–16 chars) | `creatorProfileV1` | `creators` `getCreatorProfile` | unknown, unpublished, suspended |

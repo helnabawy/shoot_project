@@ -14,6 +14,8 @@ vi.mock('next/navigation', () => ({
 
 // The brief bar's match preview is a server action (003 US1-S7); component tests never reach the server.
 vi.mock('@/modules/booking/preview-action', () => ({ previewMatches: async () => null, previewPrices: async () => null }))
+// 022: the place step's search runs on the server too.
+vi.mock('@/modules/maps/actions', () => ({ searchPlaces: async () => [], pickPlace: async () => null, locatePlace: async () => null }))
 
 vi.mock('next/headers', () => ({
   headers: async () => new Headers(),

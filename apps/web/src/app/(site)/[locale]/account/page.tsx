@@ -15,7 +15,8 @@ import { AccountSummary, SignOut } from '@/modules/auth/components/AccountSummar
 import { requireUser } from '@/modules/auth/session'
 import { MyBriefs } from '@/modules/brief/components/MyBriefs'
 import { getMyBriefs } from '@/modules/brief/queries'
-import { memberBookingPath } from '@/modules/booking/paths'
+import { accessKey } from '@/modules/booking/keys'
+import { matchPath, memberBookingPath } from '@/modules/booking/paths'
 import {
   getCreatorBookings,
   getMyAvailability,
@@ -26,10 +27,13 @@ import {
 import { creatorBookingViews, formatDay } from '@/modules/booking/views'
 import { getLocations } from '@/modules/creators'
 import { getMyProfile } from '@/modules/creators/my-profile'
-import { briefsSummary, inboxContext, saidYesCounts } from '@/modules/inbox'
+import { briefsSummary, inboxContext, inboxStamp, saidYesCounts } from '@/modules/inbox'
+import { liveInboxStamp } from '@/modules/inbox/live-actions'
+import { LiveRefresh } from '@/shared/components/LiveRefresh'
 import { getAllPersonas } from '@/modules/personas/queries'
 import { localizeHref } from '@/shared/i18n/href'
 import type { Locale } from '@/shared/lib/locale'
+import { getPayloadClient } from '@/shared/lib/payload'
 import { CalendarIcon, DocumentIcon, UserIcon } from '@/shared/ui/icons'
 
 type Props = { params: Promise<{ locale: string }> }
@@ -119,7 +123,8 @@ export default async function AccountPage({ params }: Props) {
     price: b.totalFils != null ? formatMoney(b.totalFils, locale) : '',
   }))
   const profileStatus = provider ? (profile?.status ?? 'draft') : null
-  const next = pickNextUp({ today, provider, profileStatus, jobs, bookings, briefs: openBriefs })
+  const offers = provider ? null : await offersNextUp(briefs, yes, locale)
+  const next = pickNextUp({ today, provider, profileStatus, jobs, bookings, briefs: openBriefs, offers })
   const waiting = jobs.filter((j) => j.awaitingAnswer).length
   const bookingStatus = placeStatus({ today, waiting, unread: notices.length, jobs, bookings })
   const daysOff = availability ? availability.blocks.filter((b) => b.kind === 'blocked').length : 0
@@ -127,6 +132,8 @@ export default async function AccountPage({ params }: Props) {
   return (
     <div className="mx-auto grid max-w-[560px] gap-y-8 px-3 pt-8 pb-24 sm:pt-14 sm:pb-16 lg:max-w-[960px] lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-x-16">
       {/* pb-24 on phones: room under the last row for the floating WhatsApp button, with or without JavaScript. */}
+      {/* 022 (FR-023): a creator's Up next shows new briefs and offers without a reload. */}
+      {inbox ? <LiveRefresh stamp={await inboxStamp(await inboxContext(locale, now), user.id)} check={liveInboxStamp.bind(null, locale)} /> : null}
       {/* The start column holds who you are, the places in the account and log out; on phones it dissolves so log out falls to the end of the page. */}
       <div className="contents lg:sticky lg:top-24 lg:col-start-1 lg:row-start-1 lg:block lg:self-start">
         <AccountSummary user={user} personaLabel={personaLabel || undefined} locale={locale} />
@@ -192,3 +199,15 @@ export default async function AccountPage({ params }: Props) {
     </div>
   )
 }
+
+/** 022 (board 54): the client's open offers brief with the most offers, and the private link to its offers. */
+async function offersNextUp(briefs: { id: number; reference?: string | null; sentence?: string | null; status?: string | null }[], counts: ReadonlyMap<number, number>, locale: Locale) {
+  const withOffers = briefs.filter((b) => (b as { offers?: { mode?: string | null } | null }).offers?.mode === 'offers' && (counts.get(b.id) ?? 0) > 0)
+  const top = withOffers.sort((a, b) => (counts.get(b.id) ?? 0) - (counts.get(a.id) ?? 0))[0]
+  if (!top?.reference) return null
+  const payload = await getPayloadClient()
+  const full = (await payload.findByID({ collection: 'briefs', id: top.id, depth: 0, overrideAccess: true, showHiddenFields: true, select: { accessSalt: true } })) as { accessSalt?: string | null }
+  if (!full.accessSalt) return null
+  return { count: counts.get(top.id)!, sentence: top.sentence ?? '', reference: top.reference, href: matchPath(top.reference, accessKey(full.accessSalt, 'brief'), locale) }
+}
+

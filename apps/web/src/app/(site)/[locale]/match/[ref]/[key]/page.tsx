@@ -12,7 +12,7 @@ import { getDirectoryContext } from '@/modules/creators'
 import { getSiteSettings } from '@/modules/site-settings/queries'
 import type { Locale } from '@/shared/lib/locale'
 
-type Props = { params: Promise<{ locale: string; ref: string; key: string }>; searchParams: Promise<{ pick?: string; date?: string }> }
+type Props = { params: Promise<{ locale: string; ref: string; key: string }>; searchParams: Promise<{ pick?: string; date?: string; changed?: string }> }
 
 export const dynamic = 'force-dynamic'
 
@@ -58,6 +58,7 @@ export default async function MatchPage({ params, searchParams }: Props) {
           refKey={{ ref: brief.reference ?? ref, key }}
           locale={locale}
           picks={picksFor(page, query.pick)}
+          changed={query.changed}
           editHref={view.editHref}
           whatsappHref={whatsappHref(settings.whatsappNumber, brief.sentence ?? '') ?? '#'}
         />

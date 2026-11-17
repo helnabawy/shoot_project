@@ -80,6 +80,13 @@ describe('QM-US2-S1 the quotation document', () => {
     expect(screen.getByTestId('quote-total')).toHaveTextContent('AED 1,045')
   })
 
+  it('OF-US5-S1 an offers booking whose creator dropped out goes back to the offers, not a creator list', () => {
+    const replacements = [{ personaId: '1', type: 'Photographer', sentence: 'Pick another', creators: [] }]
+    renderWithLocale(<BookingStatus {...status({ state: 'accepted', canAccept: false, replacements })} offersHref="/match/B-22222/k" />)
+    expect(screen.getByTestId('quote-choose-offer')).toHaveAttribute('href', '/match/B-22222/k')
+    expect(screen.queryByText('Choose another Photographer')).toBeNull()
+  })
+
   it('a replaced version links to the current one and offers no acceptance', () => {
     renderWithLocale(<QuotationView {...view({ replacedBy: { reference: 'Q-33333', href: '/q/Q-33333/k' }, status: <BookingStatus {...status({ canAccept: false })} /> })} />)
     expect(screen.getByTestId('quote-replaced')).toHaveTextContent('Replaced by Q-33333')

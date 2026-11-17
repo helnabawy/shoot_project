@@ -10,6 +10,7 @@ import { matchPath } from '@/modules/booking/paths'
 import { whatsappHref } from '@/modules/contact/whatsapp'
 import { getAddOnsFor } from '@/modules/pricing'
 import { getSiteSettings } from '@/modules/site-settings/queries'
+import { localizeHref } from '@/shared/i18n/href'
 import type { Locale } from '@/shared/lib/locale'
 
 type Props = { params: Promise<{ locale: string; ref: string; key: string }>; searchParams: Promise<{ pick?: string; date?: string }> }
@@ -64,6 +65,11 @@ export default async function DetailsPage({ params, searchParams }: Props) {
       if (offer) row.trailing = formatMoney(offer.totalFils, locale)
     })
   }
+  // 022 (FR-018a): the day, length and place the creators priced, shown as one fixed row.
+  const selection = (token: string) => (brief.selections ?? []).find((x) => x.token === token)?.label ?? ''
+  const day = date ? new Intl.DateTimeFormat(locale === 'ar' ? 'ar-AE-u-nu-latn' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Asia/Dubai' }).format(new Date(`${date}T12:00:00Z`)) : ''
+  const placed = (brief as { place?: { area?: string | null } | null }).place?.area
+  const fixedLabel = t('fixedPlace', { when: [day, selection('duration')].filter(Boolean).join(' · '), place: [placed, selection('location')].filter(Boolean).join(', ') })
   const [all, settings] = await Promise.all([getTranslations({ locale }), getSiteSettings(locale)])
   const errorText = Object.fromEntries(ERROR_KEYS.map((k) => [k, all(k as never)]))
   const labels = Object.fromEntries((['title', 'step', 'summary', 'name', 'whatsapp', 'whatsappHint', 'date', 'dateHint', 'extras', 'codeToggle', 'code', 'submit', 'change'] as const).map((k) => [k, t(k)])) as Record<string, string>
@@ -90,7 +96,11 @@ export default async function DetailsPage({ params, searchParams }: Props) {
         total={formatMoney(offerMode ? offerTotal : page.total.ok ? page.total.total : 0, locale)}
         errorText={errorText}
         {...(offerMode
-          ? { expect: page.sections.map((s, i) => ({ persona: s.persona.slug, amountFils: chosen[i]?.amountFils ?? 0 })), noPromo: true }
+          ? {
+              expect: page.sections.map((s, i) => ({ persona: s.persona.slug, amountFils: chosen[i]?.amountFils ?? 0 })),
+              noPromo: true,
+              fixed: { label: fixedLabel, note: t('fixedNote'), newBriefHref: localizeHref('/', locale) + '#brief', newBriefLabel: all('offers.newBrief') },
+            }
           : {})}
       />
     </section>

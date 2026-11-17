@@ -32,7 +32,7 @@ import { issueQuotation } from './commands/issue-quotation'
 import { blockDateFor, releaseDates } from './effects'
 import { getBriefByKey } from './match'
 import { notify } from './notify'
-import { detailsPath, quotePath } from './paths'
+import { detailsPath, matchPath, quotePath } from './paths'
 import { getQuotationAccess, myProfileIds } from './queries'
 import { toAssignments, toRows } from './rows'
 import { applyChange, applyTransition } from './transitions'
@@ -102,6 +102,8 @@ export async function requestQuotation(_prev: QuoteState, form: FormData): Promi
     limitKey: `quote:${visitorKey(req)}`,
     ...(expect.length ? { expect } : {}),
   })
+  // 022 (board 48): an offer that moved sends the client back to the offers with the new amount shown.
+  if (!result.ok && result.changed) redirect(`${matchPath(brief.reference ?? str(form, 'ref'), str(form, 'key'), locale)}?pick=${encodeURIComponent(str(form, 'pick'))}&changed=${encodeURIComponent(result.changed)}`)
   if (!result.ok) return result.errors ? { status: 'error', errors: result.errors } : fail(result.formError)
   redirect(`${quotePath(result.reference, result.key, locale)}${result.promoNote}`)
 }

@@ -39,7 +39,7 @@ function Hidden({ access }: { access: BookingStatusProps['access'] }) {
 }
 
 /** The one action per state (surface brief quotation): accept, pay and send the receipt, confirm delivery… */
-export function BookingStatus({ state, access, sentence, canAccept, payment, replacements, history, paymentReturn, guest = false }: BookingStatusProps) {
+export function BookingStatus({ state, access, sentence, canAccept, payment, replacements, history, paymentReturn, guest = false, offersHref }: BookingStatusProps & { offersHref?: string }) {
   const t = useTranslations('quote')
   const waitingForPayment = Boolean(payment?.online) && paymentReturn === 'done'
   return (
@@ -126,7 +126,14 @@ export function BookingStatus({ state, access, sentence, canAccept, payment, rep
         </>
       ) : null}
 
-      {replacements.map((r) => (
+      {offersHref && replacements.length ? (
+        <div className="px-3 pb-2">
+          <a href={offersHref} className={cx(rowClass('open'), 'w-[calc(100%-12px)] justify-center border border-control-border font-semibold')} data-testid="quote-choose-offer">
+            {t('chooseAnotherOffer')}
+          </a>
+        </div>
+      ) : null}
+      {(offersHref ? [] : replacements).map((r) => (
         <ResultGroup key={r.personaId} label={t('pickAnother', { type: r.type })}>
           <p className="px-4 pb-1 text-[13px] text-mute">{r.sentence}</p>
           {r.creators.map((row) => (

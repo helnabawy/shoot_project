@@ -81,3 +81,4 @@ export function placeForCreator(place: BriefPlace, base: Point | null, bookingSt
   }
   return seen
 }
+

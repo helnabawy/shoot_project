@@ -32,6 +32,7 @@ import {
 import { BarField, BriefBar, cx, GlyphTile, KeyHint, ResultGroup, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
 import { submitBrief } from '../actions'
 import { MatchPreview } from './MatchPreview'
+import { PlaceStep } from './PlaceStep'
 import { PriceStep } from './PriceStep'
 import type { CreatorBooking } from '../creator'
 import { briefWhatsAppMessage, chosenPersonas, CUSTOM_SUFFIX, CUSTOM_VALUE, readSlotValues, sentenceLabelFor, slotRules } from '../submit'
@@ -69,7 +70,7 @@ export interface BriefBuilderProps {
   /** Feature 021: sending needs sign-in ("Briefs need sign-in" is on); a guest is told before they send. */
   signInRequired?: boolean
   /** Feature 022: "Creators offer prices" is on: the bar ends with the client's price per type (board 44). */
-  offers?: { feePercent: number } | null
+  offers?: { feePercent: number; maps?: boolean } | null
 }
 
 /** Slots in the order the sentence asks them; slots missing from the sentence come last. */
@@ -878,6 +879,9 @@ export function BriefBuilder({
         </BarField>
 
         <div className={cx('pt-1.5 pb-2', !showTopHit && 'js-hidden')} hidden={hydrated && !showTopHit}>
+          {showTopHit && priceAnswers && offers?.maps && labels.placeStep ? (
+            <PlaceStep locale={config.locale} labels={labels.placeStep} error={Object.entries(errors).find(([, v]) => v === 'brief.errors.placeOutside') ? errorText('brief.errors.placeOutside') : undefined} />
+          ) : null}
           {showTopHit && priceAnswers && offers && labels.priceStep ? (
             <PriceStep
               locale={config.locale}

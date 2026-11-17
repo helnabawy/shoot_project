@@ -15,7 +15,7 @@ Next.js 16 (App Router, React) with Payload CMS 3 embedded, PostgreSQL, Tailwind
 Two client types, served equally by one flow (confirmed 2026-11-06):
 
 - **Individuals** in the UAE booking a one-off shoot: weddings and engagements, proposals, birthdays, family and newborn, portraits. Usually first-timers, usually on a phone, often reached through WhatsApp or Instagram, deciding quickly and wanting to know the price and whether someone is free.
-- **Businesses and brands** booking content: products, food and drinks, property, corporate and branding, social media content. Repeat buyers who value speed, a fixed price and a reliable professional.
+- **Businesses and brands** booking content: products, food and drinks, property, corporate and branding, social media content. Repeat buyers who value speed, a fixed price (while "Creators offer prices" is off; see spec 022) and a reliable professional.
 
 Secondary audiences:
 
@@ -28,7 +28,7 @@ A marketplace front door that turns "I need a shoot" into a booked professional 
 
 ## Positioning
 
-Inspired by shootix.ae: verified professionals, one fixed price shown before booking, a one-sentence brief instead of a quote form. Differentiators specific to this product: the target audience is data (the same site can serve teachers or any profession tomorrow), and the whole experience is bilingual English/Arabic with right-to-left done properly. Any further claim (pricing, guarantees, verification process) is undecided and must not be invented.
+Inspired by shootix.ae: verified professionals, one fixed price shown before booking (while "Creators offer prices" is off; with it on, the client names a price and creators offer theirs, see spec 022), a one-sentence brief instead of a quote form. Differentiators specific to this product: the target audience is data (the same site can serve teachers or any profession tomorrow), and the whole experience is bilingual English/Arabic with right-to-left done properly. Any further claim (pricing, guarantees, verification process) is undecided and must not be invented.
 
 ## Operating Context
 

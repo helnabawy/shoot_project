@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { accountHomeV1, accountPageRequestV1, bookingListV1, briefListV1, meUpdateV1 } from './account'
 import { briefPricesRequestV1, briefPricesV1, briefReceiptV1, briefRecordV1 } from './brief'
+import { placeAutocompleteRequestV1, placeAutocompleteV1, placeDetailsQueryV1, placeParamsV1, placeReverseRequestV1, placeV1 } from './places'
 import { authRefreshV1, authTokenV1, meV1, otpChallengeV1, otpRequestV1, otpVerifyV1 } from './auth'
 import {
   answerV1,
@@ -90,6 +91,39 @@ export const endpoints = {
     output: briefPricesV1,
     examples: ['brief-prices'],
     requestExamples: ['brief-prices-request'],
+  }),
+  // 022 (R15): the place step's search and pin, through the server (keys never reach the app).
+  placeAutocomplete: defineEndpoint({
+    id: 'placeAutocomplete',
+    method: 'POST',
+    path: '/api/mobile/v1/places/autocomplete',
+    auth: 'none',
+    cache: 'no-store',
+    input: z.object({ body: placeAutocompleteRequestV1 }),
+    output: placeAutocompleteV1,
+    examples: ['place-autocomplete'],
+    requestExamples: ['place-autocomplete-request'],
+  }),
+  placeDetails: defineEndpoint({
+    id: 'placeDetails',
+    method: 'GET',
+    path: '/api/mobile/v1/places/{placeId}',
+    auth: 'none',
+    cache: 'no-store',
+    input: z.object({ params: placeParamsV1, query: placeDetailsQueryV1 }),
+    output: placeV1,
+    examples: ['place'],
+  }),
+  placeReverse: defineEndpoint({
+    id: 'placeReverse',
+    method: 'POST',
+    path: '/api/mobile/v1/places/reverse',
+    auth: 'none',
+    cache: 'no-store',
+    input: z.object({ body: placeReverseRequestV1 }),
+    output: placeV1,
+    examples: ['place-outside'],
+    requestExamples: ['place-reverse-request'],
   }),
   landing: defineEndpoint({ ...publicRead, id: 'landing', path: '/api/mobile/v1/landing', output: landingV1, examples: ['landing'] }),
   // 010: recording a brief from the app (specs/010-first-visit-landing/contracts/briefs-api.md).

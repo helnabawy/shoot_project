@@ -344,3 +344,18 @@ the app runs with push off and nothing else changes. iOS also needs the APNs key
 Firebase project (Project settings → Cloud Messaging); the `aps-environment` entitlement and the
 `remote-notification` background mode are in `ios/Runner`. Tapped notifications open their
 `data.path` only after `safe_next` accepts it. Release builds set `aps-environment` to `production`.
+
+## Creator offers (feature 022)
+
+With the site setting "Creators offer prices" on (off by default), the app asks the client for a price per
+type after the brief, shows the offers on step 2 and lets creators accept the client's price or offer another.
+Nothing is needed at build time: the switch, the fee and the range come from the server (`GET brief-builder`
+carries `offers`), and an app built before this feature keeps working (an accept without an amount is the
+client's price).
+
+- **Live lists.** The inbox and step 2 re-check a short fingerprint every 3 seconds while open
+  (`core/network/stamp_poller.dart`, `GET me/creator/briefs/stamp`, `GET match/{ref}/{key}/stamp`), and a push
+  that arrives while the app is open reloads the list at once (`PushService.events`). Nothing needs configuring.
+- **The place.** The brief's place comes from the server's map provider (`MAPS_PROVIDER`, see `apps/web/.env.example`);
+  the app never holds a map key. With maps off the client chooses the emirate as before. The app's map and place
+  step (`google_maps_flutter`, `geolocator`) are still to be built (spec 022 tasks T075).

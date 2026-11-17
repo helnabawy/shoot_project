@@ -12,7 +12,7 @@ import { localizeHref } from '@/shared/i18n/href'
 import type { Locale } from '@/shared/lib/locale'
 import { BriefBar } from '@/shared/ui/bar'
 
-type Props = { params: Promise<{ locale: string }>; searchParams: Promise<{ error?: string }> }
+type Props = { params: Promise<{ locale: string }>; searchParams: Promise<{ error?: string; brief?: string; persona?: string }> }
 
 export const dynamic = 'force-dynamic'
 
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /** The creator brief inbox (feature 019): open briefs that match them, with accept, reject and undo. */
 export default async function InboxPage({ params, searchParams }: Props) {
   const { locale: raw } = await params
-  const { error } = await searchParams
+  const { error, brief, persona } = await searchParams
   setRequestLocale(raw)
   const locale = raw as Locale
   const user = await requireUser(locale, '/account/inbox')
@@ -52,7 +52,7 @@ export default async function InboxPage({ params, searchParams }: Props) {
       ) : null}
       {inbox ? <LiveRefresh stamp={stamp} check={liveInboxStamp.bind(null, locale)} /> : null}
       <BriefBar as="div" data-floating-hide>
-        <InboxList inbox={list} locale={locale} />
+        <InboxList inbox={list} locale={locale} focus={brief ? { ref: brief.toUpperCase(), persona } : undefined} />
       </BriefBar>
     </section>
   )

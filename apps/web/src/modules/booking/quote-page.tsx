@@ -6,7 +6,9 @@ import type { Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
 import { BookingStatus, CancelBooking, type BookingStatusProps } from './components/BookingStatus'
 import { QuotationView } from './components/QuotationView'
+import { accessKey } from './keys'
 import { getMatchPage } from './match'
+import { matchPath } from './paths'
 import type { QuotationAccess } from './queries'
 import { idOf } from './rows'
 import { matchView, quotationView } from './views'
@@ -38,6 +40,7 @@ export async function QuotationPage({
     getTranslations({ locale }),
   ])
   let replacements: BookingStatusProps['replacements'] = []
+  let offersHref: string | undefined
   if (access.booking.state === 'accepted') {
     const payload = await getPayloadClient()
     const brief = await payload.findByID({
@@ -45,6 +48,7 @@ export async function QuotationPage({
       id: Number(idOf(access.booking.brief)),
       depth: 0,
       overrideAccess: true,
+      showHiddenFields: true,
     })
     const page = await getMatchPage(brief, locale, now, { date: access.booking.date ?? null })
     const view = matchView(page, {
@@ -62,8 +66,10 @@ export async function QuotationPage({
       personaId: s.personaId,
       type: s.singular,
       sentence: '',
-      creators: s.creators.slice(0, 8),
+      creators: page.mode === 'offers' ? [] : s.creators.slice(0, 8),
     }))
+    // 022 (board 50): an offers brief goes back to its offers, not to a list of free creators.
+    if (page.mode === 'offers' && brief.accessSalt && brief.reference) offersHref = matchPath(brief.reference, accessKey(brief.accessSalt, 'brief'), locale)
   }
   const { view, status } = await quotationView(access, {
     locale,
@@ -93,7 +99,7 @@ export async function QuotationPage({
         error={
           error && /^(booking|availability|payment)\.errors\.[\w-]+$/.test(error) ? known(error) : null
         }
-        status={<BookingStatus {...status} guest={guest} paymentReturn={payment === 'done' || payment === 'cancelled' ? payment : null} />}
+        status={<BookingStatus {...status} offersHref={offersHref} guest={guest} paymentReturn={payment === 'done' || payment === 'cancelled' ? payment : null} />}
         endActions={
           status.canCancel ? (
             <CancelBooking access={status.access} label={all('quote.cancel')} />

@@ -48,7 +48,8 @@ export async function MyBriefs({
                     </span>
                     {saidYes?.get(brief.id) ? (
                       <span data-testid="brief-said-yes" className="mt-0.5 block text-[13px] font-medium text-selected-ink">
-                        {t('saidYes', { count: saidYes.get(brief.id)! })}
+                        {/* 022: an offers brief counts its current offers. */}
+                        {(brief as { offers?: { mode?: string | null } | null }).offers?.mode === 'offers' ? t('offersCount', { count: saidYes.get(brief.id)! }) : t('saidYes', { count: saidYes.get(brief.id)! })}
                       </span>
                     ) : null}
                   </>

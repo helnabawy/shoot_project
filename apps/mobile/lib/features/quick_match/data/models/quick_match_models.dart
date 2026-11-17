@@ -87,6 +87,7 @@ final class MatchPageModel {
         whatsappUrl: readNullableString(json, 'whatsappUrl'),
         offersMode: readNullableString(json, 'mode') == 'offers',
         sentTo: readNullableInt(json, 'sentTo') ?? 0,
+        closed: readOptionalBool(json, 'closed'),
         nearby: List.unmodifiable(
           readList(json, 'nearby', (item) {
             final n = asObject(item);

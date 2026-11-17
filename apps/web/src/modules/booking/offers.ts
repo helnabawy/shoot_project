@@ -104,7 +104,7 @@ export async function offerTerms(
   payload: Payload,
   brief: Pick<Brief, 'persona' | 'selections' | 'date'>,
   locale: Locale,
-  input: { budgets: Record<string, number>; place?: PlaceInput | null },
+  input: { budgets: Record<string, number>; place?: PlaceInput | null; pinOptional?: boolean },
 ): Promise<Terms | Refusal> {
   const qm = await readQuickMatch(payload)
   if (!offersOn({ quickMatchEnabled: qm.enabled, offersEnabled: qm.offers.enabled })) return { mode: 'fixed' }
@@ -125,9 +125,10 @@ export async function offerTerms(
     emirateSlug = found.emirate.slug
     emirateId = found.emirate.id
     place = { lat: input.place.lat, lng: input.place.lng, address: found.address, area: found.area, emirate: Number(found.emirate.id), placeId: input.place.placeId ?? null, source: input.place.source, ...snapPublic(input.place.lat, input.place.lng) }
-  } else if (mapsOn) {
+  } else if (mapsOn && !input.pinOptional) {
     return { error: 'brief.errors.placeOutside', field: locationToken }
   } else {
+    // Maps off, or an app without the place step (FR-025): the emirate chosen in the brief.
     const locations = await loadLocations(payload)
     emirateId = emirateOf(facts.location?.value, facts.location?.custom ?? false, locations, { cityToEmirate: true })
     if (!emirateId) return { error: 'brief.errors.emirateRequired', field: locationToken }

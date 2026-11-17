@@ -25,11 +25,13 @@ void main() {
     InboxState state, {
     List<String>? log,
     Locale locale = const Locale('en'),
+    String? focusRef,
   }) async {
     phone(tester);
     await tester.pumpApp(
       InboxView(
         state: state,
+        focusRef: focusRef,
         onRetry: () => log?.add('retry'),
         onAccept: (i) => log?.add('accept ${i.ref}'),
         onReject: (i) => log?.add('reject ${i.ref}'),
@@ -208,6 +210,24 @@ void main() {
       expect(find.text('2 new briefs match you'), findsOneWidget);
       await tester.tap(find.widgetWithText(TopHit, 'See the briefs'));
       expect(opened, ['/account/inbox']);
+    });
+  });
+
+  group('OF-SC-002 two taps from the push', () {
+    testWidgets('the brief the push opened comes first with the red Accept', (
+      tester,
+    ) async {
+      final inbox = inboxExample();
+      final second = inbox.open[1];
+      final log = <String>[];
+      await show(
+        tester,
+        InboxLoaded(inbox),
+        log: log,
+        focusRef: second.ref.toLowerCase(),
+      );
+      await tester.tap(find.byType(TopHit).first);
+      expect(log, ['accept ${second.ref}']);
     });
   });
 }

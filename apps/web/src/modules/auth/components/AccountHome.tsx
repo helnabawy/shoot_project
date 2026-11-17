@@ -178,6 +178,23 @@ export async function NextUpPanel({
       )
       action = { label: t('clearAction'), href: hrefs.availability }
       break
+    case 'offers': {
+      const o = next.offers
+      row = (
+        <NextRow
+          glyph={<DocumentIcon width={15} height={15} />}
+          title={t('offersTitle', { count: o.count })}
+          lines={[
+            <span key="s" dir="auto">
+              {o.sentence}
+            </span>,
+            <Bidi key="r">{o.reference}</Bidi>,
+          ]}
+        />
+      )
+      action = { label: t('offersAction'), href: o.href }
+      break
+    }
     case 'quote':
     case 'booking': {
       const b = next.booking

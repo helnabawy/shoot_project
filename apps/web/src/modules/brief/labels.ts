@@ -40,6 +40,8 @@ export interface BriefLabels {
   signInNext: string
   /** 022: the price step (board 44). */
   priceStep?: ReturnType<typeof priceStepLabelsFrom>
+  /** 022: the place step (maps on). */
+  placeStep?: ReturnType<typeof placeStepLabelsFrom>
   /** 021: the Top Hit while the guest is taken to sign in. */
   signingIn: string
   /** Error key → sentence. */
@@ -102,6 +104,7 @@ export function briefLabelsFrom(t: Translate, raw: Translate = t): BriefLabels {
     signingIn: t('brief.signingIn'),
     errors: Object.fromEntries(BRIEF_ERROR_KEYS.map((k) => [k, t(k)])),
     priceStep: priceStepLabelsFrom(raw),
+    placeStep: placeStepLabelsFrom(raw),
   }
 }
 
@@ -109,6 +112,11 @@ export function briefLabelsFrom(t: Translate, raw: Translate = t): BriefLabels {
 export function priceStepLabelsFrom(raw: Translate) {
   const k = (key: string) => raw(`brief.price.${key}`)
   return { label: k('label'), range: k('range'), rangeOpen: k('rangeOpen'), total: k('total'), totalHint: k('totalHint'), lower: k('lower'), raise: k('raise'), loading: k('loading'), currency: k('currency') }
+}
+
+export function placeStepLabelsFrom(raw: Translate) {
+  const k = (key: string) => raw(`brief.place.${key}`)
+  return { label: k('label'), search: k('search'), useLocation: k('useLocation'), locating: k('locating'), denied: k('denied'), noResults: k('noResults'), outside: k('outside'), change: k('change'), hint: k('hint') }
 }
 
 /** Replaces {name} placeholders in a resolved label. */

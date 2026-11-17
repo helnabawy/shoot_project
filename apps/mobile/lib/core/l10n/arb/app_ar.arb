@@ -874,6 +874,8 @@
   "inboxFactPrice": "سعر العميل",
   "qmOffersWaiting": "بانتظار العروض",
   "qmOffersCount": "{count, plural, =1{عرض واحد} =2{عرضان} few{{count} عروض} many{{count} عرضاً} other{{count} عرض}}",
+  "qmOffersClosedTitle": "هذا الطلب مغلق",
+  "qmOffersClosedIntro": "مضى التاريخ أو أُغلق الطلب. أرسل طلباً جديداً لتصلك عروض جديدة.",
   "qmOffersSentTo": "أُرسل إلى {count} محترفين. يرون المنطقة لا موقعك الدقيق. تظهر العروض هنا عند ردهم.",
   "qmOffersGroup": "{type} · سعرك {price}",
   "qmOffersNone": "لا عروض بعد. تتحدّث هذه الصفحة تلقائياً.",

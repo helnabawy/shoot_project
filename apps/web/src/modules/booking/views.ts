@@ -1,5 +1,5 @@
 import 'server-only'
-import { allowedEvents, effectiveState, formatPicks, parsePicks, withPick, type BookingState, type Pick } from '@shoot/domain/booking'
+import { allowedEvents, effectiveState, formatPicks, parsePicks, placeForCreator, withPick, type BookingState, type Pick } from '@shoot/domain/booking'
 import { formatBriefDate } from '@shoot/domain/brief/message'
 import { onlinePaymentAllowed } from '@shoot/domain/payments'
 import { formatMoney } from '@shoot/domain/pricing'
@@ -187,9 +187,22 @@ export function creatorBookingViews(bookings: Booking[], profileIds: number[], l
         })(),
         clientFirstName: (b.client?.name ?? '').split(' ')[0] ?? '',
         respondBy: a.respondBy ? formatDateTime(a.respondBy, locale) : null,
+        exactPlace: exactPlaceOf(brief, b.state, a.status),
       })
     }
   }
   return rows.sort((x, y) => Number(y.awaitingAnswer) - Number(x.awaitingAnswer) || x.date.localeCompare(y.date))
+}
+
+/**
+ * 022 (FR-005c, US2-S1b): the pin, address and directions, only for a creator whose own part is confirmed on a
+ * booking that is confirmed or later; everyone else keeps the area.
+ */
+function exactPlaceOf(brief: unknown, state: string, assignment: string): CreatorBookingView['exactPlace'] {
+  const place = (brief as { place?: { lat?: number | null; lng?: number | null; address?: string | null; area?: string | null } | null } | null)?.place
+  if (!place || assignment !== 'confirmed') return null
+  const seen = placeForCreator({ lat: place.lat ?? null, lng: place.lng ?? null, address: place.address ?? null, area: place.area ?? '', emirateId: '', publicLat: null, publicLng: null }, null, state as BookingState)
+  if (seen.lat === undefined || seen.lng === undefined) return null
+  return { address: seen.address ?? '', directionsUrl: `https://www.google.com/maps/dir/?api=1&destination=${seen.lat},${seen.lng}` }
 }
 

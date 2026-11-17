@@ -96,8 +96,9 @@ export function sortOffers<T extends { totalFils: number; answeredAt: string }>(
 /** A short, stable fingerprint of what a live list shows (research R9): FNV-1a over the parts. */
 export function offerStamp(parts: readonly string[]): string {
   let hash = 0x811c9dc5
-  for (const char of parts.join('|')) {
-    hash ^= char.codePointAt(0) ?? 0
+  const text = parts.join('|')
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i)
     hash = Math.imul(hash, 0x01000193) >>> 0
   }
   return hash.toString(36)

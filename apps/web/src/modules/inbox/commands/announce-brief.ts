@@ -17,6 +17,9 @@ const relId = (v: unknown): number | null => (v == null ? null : typeof v === 'o
 
 export const INBOX_PATH = '/account/inbox'
 
+/** 022 (SC-002): the push opens the inbox on this brief's card, so accepting is the second tap. */
+export const inboxCardPath = (ref: string, personaId: string) => `${INBOX_PATH}?brief=${encodeURIComponent(ref)}&persona=${encodeURIComponent(personaId)}`
+
 /**
  * A new brief (US5, FR-018): every live creator it matches by the Quick Match rules (only the named creator
  * for a brief sent to one) gets an in-app row and one push in their device's language. Returns how many
@@ -79,7 +82,7 @@ export async function announceBrief(payload: Payload, briefId: number): Promise<
       // The push row is the dedupe guard: one push per creator and brief.
       if (!(await writeRow(payload, { brief: brief.id, event: 'brief-new', audience: 'creator', channel: 'push', locale: 'en', user, text: text('en', personaId), link: INBOX_PATH }))) continue
       told += 1
-      await pushToUser(payload, user, (locale) => ({ title: PUSH_TITLES['brief-new'][locale], body: text(locale, personaId), data: { event: 'brief-new', path: INBOX_PATH } }))
+      await pushToUser(payload, user, (locale) => ({ title: PUSH_TITLES['brief-new'][locale], body: text(locale, personaId), data: { event: 'brief-new', path: inboxCardPath(brief.reference ?? '', personaId) } }))
     }
     // 022: the client's waiting screen says how many creators the brief went to (FR-016).
     if (offers?.mode === 'offers') await recordSentTo(payload, brief.id, matched.length)

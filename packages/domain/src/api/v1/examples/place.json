@@ -1,0 +1,10 @@
+{
+  "lat": 24.4672,
+  "lng": 54.6031,
+  "inside": true,
+  "area": "Yas Island",
+  "emirate": {
+    "slug": "abu-dhabi",
+    "name": "Abu Dhabi"
+  }
+}

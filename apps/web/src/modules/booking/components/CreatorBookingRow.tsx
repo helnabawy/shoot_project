@@ -19,6 +19,8 @@ export interface CreatorBookingView {
   price: string
   clientFirstName: string
   respondBy: string | null
+  /** 022 (FR-005c): the exact place, once this creator is booked; `null` before. */
+  exactPlace?: { address: string; directionsUrl: string } | null
 }
 
 /**
@@ -50,6 +52,14 @@ export function CreatorBookingRow({ view, locale, primary = true }: { view: Crea
               <span className="block text-[13px] text-mute">
                 {t('client', { name: view.clientFirstName })} · <Bidi>{view.price}</Bidi>
               </span>
+              {view.exactPlace ? (
+                <span className="block text-[13px] text-ink" data-testid="creator-exact-place">
+                  <span dir="auto">{view.exactPlace.address}</span>{' '}
+                  <a href={view.exactPlace.directionsUrl} target="_blank" rel="noopener noreferrer" className="font-medium text-link">
+                    {t('directions')}
+                  </a>
+                </span>
+              ) : null}
               {view.awaitingAnswer && view.respondBy ? <span className="block text-[13px] font-medium text-ink">{t('respondBy', { time: view.respondBy })}</span> : null}
             </>
           }

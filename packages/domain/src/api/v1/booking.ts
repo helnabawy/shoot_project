@@ -73,6 +73,8 @@ export const matchV1 = z.object({
   mode: z.enum(['fixed', 'offers']).optional(),
   /** 022 (additive): how many creators the brief went to. */
   sentTo: z.int().nonnegative().optional(),
+  /** 022 (FR-012a): the brief's date passed or its window ended; no offers, send a new brief. */
+  closed: z.boolean().optional(),
 })
 export type MatchV1 = z.infer<typeof matchV1>
 

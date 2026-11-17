@@ -4,6 +4,7 @@ import type { z } from 'zod'
 import type { SiteSetting, User } from '@/payload-types'
 import { getPayloadClient } from '@/shared/lib/payload'
 import { consumeAllowance } from '@/shared/payload/rate-limit'
+import { throttleMark, throttleWait } from './throttle'
 import type { ActorContext } from './actor'
 import { clientAddressOf, negotiateLocale, readInstallId, requestIdOf, visitorKeyOf } from './negotiate'
 import { ApiProblem, fromZodError, isProblem, problem, problemResponse, type Problem } from './problem'
@@ -35,6 +36,8 @@ export interface HandlerSpec<I extends EndpointInput, O extends z.ZodType> {
   status?: SuccessStatus
   deprecated?: boolean
   rateLimit?: RateLimitSpec
+  /** 022: a polled read answered at most once per this many ms per install and path (in memory). */
+  throttleMs?: number
   run: (ctx: ActorContext, input: z.output<I>) => Promise<z.input<O> | Problem>
 }
 
@@ -118,6 +121,13 @@ export function defineHandler<I extends EndpointInput, O extends z.ZodType>(spec
         requestId,
       }
 
+      // 6a. A polled read's throttle (022 stamps): cheap, per instance.
+      const throttleKey = `${url.pathname}:${ctx.visitorKey}`
+      if (spec.throttleMs) {
+        const wait = throttleWait(throttleKey, spec.throttleMs, ctx.now().getTime())
+        if (wait !== null) return fail(problem(429, 'api.errors.rateLimited', { retryAfter: wait }))
+      }
+
       // 6. A declared rate limit, counted in the database so it holds across instances.
       if (spec.rateLimit) {
         const { action, code = 'api.errors.rateLimited' } = spec.rateLimit
@@ -140,6 +150,7 @@ export function defineHandler<I extends EndpointInput, O extends z.ZodType>(spec
       // 7. The handler.
       const result = await spec.run(ctx, parsed.data)
       if (isProblem(result)) return fail(result)
+      if (spec.throttleMs) throttleMark(throttleKey, ctx.now().getTime())
 
       // 8. The answer must match the contract (checked outside production only, research R2).
       if (process.env.NODE_ENV !== 'production') {

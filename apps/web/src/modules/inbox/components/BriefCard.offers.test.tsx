@@ -61,3 +61,15 @@ describe('OF-US3 the creator offers another price', () => {
     expect(within(change).getByText(/2 more times/)).toBeInTheDocument()
   })
 })
+
+describe('OF-SC-002 two taps from the push', () => {
+  it('the brief the push opened comes first, with its Accept as the primary action', () => {
+    const first = item({ ref: 'B-AAAAA', ...offers } as never)
+    const pushed = item({ ref: 'B-PUSH1', ...offers, budgetFils: 120000 } as never)
+    renderWithLocale(<InboxList locale="en" focus={{ ref: 'B-PUSH1', persona: '1' }} inbox={{ open: [first, pushed], accepted: [], rejected: [], reasons }} />)
+    const cards = screen.getAllByTestId('inbox-brief')
+    expect(cards[0]).toHaveAttribute('data-ref', 'B-PUSH1')
+    expect(within(cards[0]!).getByTestId('inbox-accept')).toHaveTextContent('Accept AED 1,200')
+  })
+})
+

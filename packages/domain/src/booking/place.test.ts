@@ -65,3 +65,17 @@ describe('OF-US2-S1 what a creator sees', () => {
     expect(placeForCreator(typed, base, 'confirmed')).toEqual({ area: 'Yas Island', emirateId: 'auh', publicLat: null, publicLng: null, distanceKm: null })
   })
 })
+
+describe('OF-US2-S1b the exact place after booking', () => {
+  it('a booked creator gets the pin and address; a fallback place without a pin stays the area', () => {
+    expect(placeForCreator(yas, null, 'confirmed')).toMatchObject({ lat: yas.lat, lng: yas.lng })
+    expect(placeForCreator({ ...yas, address: null }, null, 'paid').address).toBe('')
+    const fallback = placeForCreator({ ...yas, lat: null, lng: null, address: null, publicLat: null, publicLng: null }, null, 'confirmed')
+    expect(fallback.lat).toBeUndefined()
+    expect(fallback.distanceKm).toBeNull()
+  })
+
+  it('Musandam and the Omani coast are outside', () => {
+    expect(insideUae(26.0, 56.2)).toBe(false)
+  })
+})

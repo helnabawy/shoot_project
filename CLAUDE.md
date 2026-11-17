@@ -102,6 +102,16 @@ answers `401 brief.errors.signInRequired` for a guest; `BriefCubit` asks for sig
 the owner's confirmation of the clarifications (both sessions), whether the app's number and code screens
 (boards 10–11) move from before the quotation to Accept, the live hero chip, "Why book this way" item and
 FAQ copy, the device walkthrough.
+Feature 022 (`specs/022-creator-offers/`, test-id prefix `OF-`) is partly implemented: behind the
+site-settings switch "Creators offer prices" (`quickMatch.offers`, **default off**) the client names a price per
+professional type (pre-filled with the price-rule suggestion, within an admin range) and pins the place; every matching
+creator accepts it or offers another price (at most 3 changes, stored on `brief-answers` as `amountFils`); the client sees
+offers live on step 2 (stamps polled every 3 s plus foreground push), accepts or declines each; the quotation lines are
+the offers plus one `fee` line (admin percentage, hidden from creators); the exact pin goes only to the booked creator.
+Rules in `packages/domain/src/booking/{offers,place}.ts`, modules `apps/web/src/modules/{maps,booking/offers.ts,inbox}`,
+app `apps/mobile/lib/core/network/stamp_poller.dart` and the brief, inbox and step 2 screens; maps through `MAPS_PROVIDER`
+(`google` | `off`) with `GOOGLE_MAPS_SERVER_KEY`. Open in its `tasks.md`: the draggable map and app place step, goldens,
+e2e, device walkthrough, the owner's Google Maps keys and fee confirmation.
 `specs/ROADMAP.md` has the screens per feature:
 
 | # | Feature (test-id prefix) | What |

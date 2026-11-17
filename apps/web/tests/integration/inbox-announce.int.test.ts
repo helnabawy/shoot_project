@@ -40,7 +40,7 @@ describe('BI-US5 creators hear about a new brief that matches them', () => {
     const ref = await send()
     expect(pushed()).toEqual(['omar', 'sara'])
     const omar = pushes.sent.find((m) => m.token === tokens.omar)!
-    expect(omar).toMatchObject({ title: 'طلب جديد لك', data: { event: 'brief-new', path: '/account/inbox' } })
+    expect(omar).toMatchObject({ title: 'طلب جديد لك', data: { event: 'brief-new', path: expect.stringMatching(/^\/account\/inbox\?brief=[A-Z0-9-]+&persona=\d+$/) } })
     expect(pushes.sent.find((m) => m.token === tokens.sara)!.body).toContain('Photographer')
     const id = (await (await payload()).find({ collection: 'briefs', where: { reference: { equals: ref } }, limit: 1, depth: 0, overrideAccess: true })).docs[0]!.id
     const rows = (await (await payload()).find({ collection: 'notifications', where: { brief: { equals: id } }, depth: 0, pagination: false, overrideAccess: true })).docs
