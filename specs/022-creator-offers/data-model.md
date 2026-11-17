@@ -87,7 +87,7 @@ any --brief closes (date passed, window ended, booking past quoted)--> closed
 | `address` | text | reverse-geocoded address, **private** as above |
 | `area` | text, localized | neighbourhood or locality from reverse geocoding (en and ar) |
 | `emirate` | relationship → `locations` (emirate rows) | from reverse geocoding on the server; drives matching and travel price |
-| `publicLat`, `publicLng` | number | pin snapped to a 0.02° grid; the only point creators get |
+| `publicLat`, `publicLng` | number | centre of the pin's 0.02° grid cell; the only point creators get |
 | `source` | select `search` \| `drag` \| `device` \| `fallback` | how it was set |
 
 `creator-profiles.base` (group, optional): `lat`, `lng`, `area` (localized); readable by the creator and
@@ -99,6 +99,6 @@ admins only.
 Bookings: the assignment view for a creator adds `place.lat`, `place.lng`, `place.address` and
 `details.venue` only when `state` ∈ {confirmed, paid, scheduled, delivered, completed}.
 
-Domain (`packages/domain/src/booking/place.ts`, 100 % coverage): `snapPublic(lat, lng)`,
+Domain (`packages/domain/src/booking/place.ts`, 100 % coverage): `snapPublic(lat, lng)` (centre of the 0.02° cell holding the pin),
 `distanceKm(from, to)` (haversine, whole km), `insideUae(lat, lng)` (bounding polygon check before
 geocoding), `placeForCreator(place, base, bookingState)` → the public or the full shape.

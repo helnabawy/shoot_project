@@ -32,6 +32,13 @@ in `manifest.json`; 55 and 56 are the Arabic dark references of 46 and 51). Draw
 FR-016a (a list, not the swipe rail), FR-016b (both account homes) and FR-018a (details lock what the
 creators priced).
 
+### Analysis 2026-11-17
+
+`/speckit-analyze` fixes: the emirate comes from the pin everywhere (US1-S1, US5-S2); FR-005 applies
+when the map is available and FR-005d names the fallback; the public point is the centre of the pin's
+~2 km grid cell (FR-005b); an offer locks when a quotation that includes it is issued and unlocks if
+that quotation expires (FR-010, US3-S4–S6); lists re-check every 3 seconds (SC-001).
+
 Related specs: `specs/003-quick-match-booking/` (step 2, quotation, booking states, price rules),
 `specs/019-creator-brief-inbox/` (creator inbox, accept and reject, push), `specs/020-online-payment/`
 (Pay {total}), `specs/021-brief-sign-in/` (sign in to accept a quotation), and their app counterparts
@@ -68,9 +75,9 @@ suggested price, refuses an amount outside the range, and is saved with the chos
 
 **Acceptance Scenarios**:
 
-1. **Given** the switch is on and the client has chosen a photographer, an emirate and a duration,
-   **When** they reach the last step, **Then** the price box shows the suggested price for that
-   type, duration and emirate, and the allowed range.
+1. **Given** the switch is on and the client has chosen a photographer and a duration and pinned the
+   place, **When** they reach the last step, **Then** the price box shows the suggested price for
+   that type, duration and the pin's emirate, and the allowed range.
 2. **Given** a brief for a photographer and a videographer, **When** the client reaches the last
    step, **Then** there is one price box per type, each with its own suggestion.
 3. **Given** the client types an amount below the floor or above the ceiling, **When** they try to
@@ -145,13 +152,14 @@ refused.
    the range and sends, **Then** an offer of AED 950 is recorded.
 3. **Given** the creator types an amount outside the range, **When** they send, **Then** nothing is
    recorded and a plain message names the range.
-4. **Given** an offer the client has not picked yet, **When** the creator changes the price,
+4. **Given** an offer that is not in an issued quotation, **When** the creator changes the price,
    **Then** the new amount replaces the old one and the client sees the new amount; this is allowed
    at most 3 times per brief.
-5. **Given** an offer the client has not picked yet, **When** the creator withdraws it, **Then** the
+5. **Given** an offer that is not in an issued quotation, **When** the creator withdraws it, **Then** the
    offer disappears from the client's list.
-6. **Given** the client has already picked this creator's offer, **When** the creator tries to change
-   or withdraw it, **Then** it is refused with a plain message that the client has accepted it.
+6. **Given** the client has a quotation that includes this creator's offer, **When** the creator
+   tries to change or withdraw it, **Then** it is refused with a plain message that the client is
+   booking it; once that quotation expires the creator may change or withdraw again.
 7. **Given** the creator says "Not for me", **Then** the behaviour is as today (hidden for them, an
    optional reason, undo while the brief is open, the client is never told).
 8. **Given** a creator on an older app that cannot send an amount, **When** they accept, **Then** the
@@ -216,7 +224,7 @@ exactly that.
 1. **Given** accepted offers, **When** the client completes details, **Then** the quotation lists one
    line per creator's offer and one platform-fee line, with the total.
 2. **Given** the switch is on, **Then** details offer no paid add-ons and no promo code, and show
-   the date, duration and emirate as fixed with a way to send a new brief instead.
+   the date, duration and pinned place as fixed with a way to send a new brief instead.
 3. **Given** a signed-out client, **When** they accept the quotation, **Then** they are asked to sign
    in and come back, as in feature 021.
 4. **Given** the client accepts the quotation, **Then** each chosen creator's assignment starts
@@ -294,15 +302,19 @@ setting while briefs already sent keep the mode and fee they started with.
 - **FR-004**: With the switch on, the brief MUST end with a price per professional type, pre-filled
   with the suggested price (package for the duration plus travel for the emirate) and limited to
   the range.
-- **FR-005**: With the switch on, a brief MUST have a map pin inside the emirates the site serves
-  before it can be sent; its emirate (used for matching, travel price and the inbox) MUST be taken
+- **FR-005**: With the switch on and the map available, a brief MUST have a map pin inside the
+  emirates the site serves before it can be sent; its emirate (used for matching, travel price and the inbox) MUST be taken
   from the pin, and the emirate question is not asked.
 - **FR-005a**: The place step MUST offer address and venue search, dragging the pin, and "Use my
   location" (only with the visitor's permission), and MUST show the area name under the map.
 - **FR-005b**: Before a booking is confirmed, creators and every API they use MUST receive only the
-  area name, the emirate, a public point at least 1 km away from the pin (rounded), and the distance
+  area name, the emirate, a public point (the centre of the roughly 2 km grid cell that holds the pin, never the pin
+  itself), and the distance
   in whole kilometres from the creator's starting point; the exact pin and address MUST reach only the
   client, admins, and the booked creator once the booking is confirmed.
+- **FR-005d**: When the map is not available (it fails to load, or maps are switched off), the place
+  step MUST fall back to choosing one of the emirates and typing an area; such a brief is matched
+  and priced by that emirate, and creators see the area and emirate with no map or distance.
 - **FR-005c**: A creator MUST be able to set where they start from (a pin or an area) on their
   profile; the distance is shown only when it is set.
 - **FR-006**: The client's price MUST be checked on the server as well as on screen.
@@ -319,8 +331,10 @@ setting while briefs already sent keep the mode and fee they started with.
 
 - **FR-009**: A matching creator MUST be able to accept the client's price, offer another price within
   the range, or say not for me.
-- **FR-010**: A creator MUST be able to change their price at most 3 times, or withdraw, until the
-  client accepts their offer; after that, both are refused.
+- **FR-010**: A creator MUST be able to change their price at most 3 times, or withdraw, until a
+  quotation that includes their offer is issued (the client sent details); while that quotation
+  stands both are refused, and they are allowed again if it expires or the client chooses another
+  offer before accepting it.
 - **FR-011**: An accept without an amount (older app) MUST be recorded at the client's price.
 - **FR-012**: The creator MUST see their own offer amount and never the platform fee.
 - **FR-012a**: An offer MUST stay open until the client accepts or declines it, the creator withdraws
@@ -395,7 +409,7 @@ setting while briefs already sent keep the mode and fee they started with.
 ### Measurable Outcomes
 
 - **SC-001**: A client goes from sending a brief to seeing the first offer without reloading or
-  leaving the page; changes appear within 5 seconds in 95 % of cases.
+  leaving the page; changes appear within 5 seconds in 95 % of cases (lists re-check every 3 seconds while visible).
 - **SC-002**: A creator can accept or counter a brief in at most 2 taps from the push.
 - **SC-003**: A client can go from accepting an offer to a confirmed booking in under 3 minutes.
 - **SC-004**: 100 % of offers are within the brief's range; no booking total differs from the sum of

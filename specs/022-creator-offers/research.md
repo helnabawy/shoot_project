@@ -106,7 +106,7 @@ decision, rationale, alternatives rejected.
 
 ## R9. Live lists without a realtime service
 
-- **Decision**: a **change stamp** per list, polled every 5 s while the page or screen is visible,
+- **Decision**: a **change stamp** per list, polled every 3 s while the page or screen is visible,
   and a full refresh only when the stamp changes.
   - Stamp = short hash of the ids, amounts, revisions, decisions and withdrawals that the list depends
     on: for the client's step 2 the brief's answers; for the creator's inbox the open-brief ids that
@@ -210,8 +210,9 @@ decision, rationale, alternatives rejected.
     never from the browser, so a client cannot claim another emirate; `emirate` is matched to the
     `locations` collection (emirate rows) by name with a slug map kept in `locations` (new optional
     field `googleName` per emirate, content-managed).
-  - `publicLat/publicLng` = the pin snapped to a 0.02° grid (≈ 2 km cells), so it is always ≥ 1 km
-    from the true pin's neighbours in a predictable way and never reveals it (FR-005b).
+  - `publicLat/publicLng` = the centre of the 0.02° grid cell (≈ 2 km) that holds the pin: every
+    pin in the cell maps to the same point, so it never reveals the pin; when the pin is within
+    300 m of the centre the point still names only the cell, never the pin (FR-005b).
   - The distance shown to a creator = straight-line (haversine) km from their starting point to the
     **public** point, rounded to whole km, prefixed "about". No routing API.
 - **Creator starting point**: `creator-profiles.base { lat, lng, area }`, optional, set on the profile
