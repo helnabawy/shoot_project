@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 
 /// `.hd`: the 58 px screen header. Padding is 20 at the inline start (12 when it leads with a back
@@ -10,7 +11,11 @@ class ShootHeader extends StatelessWidget {
     this.trailing = const [],
     this.leadsWithBack = false,
     this.middle,
+    this.divider = false,
   });
+
+  /// A bottom hairline (board 24's `.hd`).
+  final bool divider;
 
   /// The wordmark, or a back button followed by a title.
   final Widget leading;
@@ -27,8 +32,13 @@ class ShootHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: ShootSize.header,
+      decoration: divider
+          ? BoxDecoration(
+              border: Border(bottom: BorderSide(color: context.colors.hair)),
+            )
+          : null,
       child: Padding(
         padding: EdgeInsetsDirectional.only(
           start: leadsWithBack ? ShootSpace.s3 : ShootSpace.s5,

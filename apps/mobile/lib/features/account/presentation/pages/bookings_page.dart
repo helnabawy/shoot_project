@@ -15,9 +15,9 @@ import 'package:shoot_mobile/core/widgets/empty_state.dart';
 import 'package:shoot_mobile/core/widgets/group_label.dart';
 import 'package:shoot_mobile/core/widgets/icon_tile.dart';
 import 'package:shoot_mobile/core/widgets/photo_tile.dart';
-import 'package:shoot_mobile/core/widgets/segmented_control.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/shoot_scaffold.dart';
+import 'package:shoot_mobile/core/widgets/tab_strip.dart';
 import 'package:shoot_mobile/core/widgets/text_link.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/account/domain/entities/account.dart';
@@ -76,7 +76,11 @@ class _BookingsPageState extends State<BookingsPage> {
                       alignment: AlignmentDirectional.centerStart,
                       child: Text(
                         l10n.bookingsTitle,
-                        style: ShootType.title.copyWith(color: c.ink),
+                        key: const ValueKey('fidelity:h1'),
+                        style: ShootType.display.copyWith(
+                          color: c.ink,
+                          height: 1.25,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -97,8 +101,8 @@ class _BookingsPageState extends State<BookingsPage> {
                 child: Semantics(
                   container: true,
                   label: l10n.bookingsTabsLabel,
-                  child: SegmentedControl<BookingsTab>(
-                    segments: [
+                  child: TabStrip<BookingsTab>(
+                    tabs: [
                       (BookingsTab.bookings, l10n.bookingsTabBookings),
                       (BookingsTab.briefs, l10n.bookingsTabBriefs),
                       (BookingsTab.settings, l10n.bookingsTabSettings),
@@ -198,8 +202,12 @@ class _BookingsTab extends StatelessWidget {
             l10n.bookingsUpcoming,
             padding: const EdgeInsetsDirectional.only(bottom: 8),
           ),
-          for (final (i, b) in state.upcoming.indexed)
-            _BookingRow(booking: b, index: i),
+          _Group(
+            children: [
+              for (final (i, b) in state.upcoming.indexed)
+                _BookingRow(booking: b, index: i),
+            ],
+          ),
         ],
         if (state.past.isNotEmpty) ...[
           Padding(
@@ -211,8 +219,12 @@ class _BookingsTab extends StatelessWidget {
               padding: const EdgeInsetsDirectional.only(bottom: 8),
             ),
           ),
-          for (final (i, b) in state.past.indexed)
-            _BookingRow(booking: b, index: i + 2),
+          _Group(
+            children: [
+              for (final (i, b) in state.past.indexed)
+                _BookingRow(booking: b, index: i + 2),
+            ],
+          ),
         ],
         if (state.hasMore)
           Align(
@@ -225,6 +237,22 @@ class _BookingsTab extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Rows under a group label: a hairline above the first, each row closing with its own.
+class _Group extends StatelessWidget {
+  const _Group({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsetsDirectional.only(top: 1),
+    decoration: BoxDecoration(
+      border: Border(top: BorderSide(color: context.colors.hair)),
+    ),
+    child: Column(children: children),
+  );
 }
 
 class _BriefsTab extends StatelessWidget {
@@ -250,6 +278,7 @@ class _BriefsTab extends StatelessWidget {
           ),
         for (final b in state.briefs)
           BriefRow(
+            inset: false,
             brief: b,
             onTap: b.bookingReference == null
                 ? null

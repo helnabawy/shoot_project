@@ -65,6 +65,35 @@ enum ShootIcons {
   /// A tick (board 21's selected row, stroke 2.4).
   check('<path d="m5 12 5 5L20 7"/>'),
 
+  /// A page with lines (board 24's Bookings row).
+  document(
+    '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>'
+    '<path d="M14 3v5h5M9 13h6M9 17h4"/>',
+  ),
+
+  /// A globe (language and theme, boards 24 and 25).
+  globe(
+    '<circle cx="12" cy="12" r="9"/>'
+    '<path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  ),
+
+  /// An envelope (board 25's email item).
+  mail(
+    '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  ),
+
+  /// A padlock with a taller body (board 25's list).
+  padlock(
+    '<rect x="4" y="10" width="16" height="11" rx="2"/>'
+    '<path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  ),
+
+  /// Turning back (board 25's "next time" line).
+  history('<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>'),
+
+  /// A tick drawn as board 25 draws it (`M20 7 9 18l-5-5`).
+  tick('<path d="M20 7 9 18l-5-5"/>'),
+
   /// Leaving through a door (the menu's Log out); the arrow points to the inline end.
   logOut(
     '<path d="M10 4H5v16h5"/><path d="m15 8 4 4-4 4M19 12H9"/>',

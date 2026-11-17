@@ -9,12 +9,14 @@ import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/routing/app_routes.dart';
 import 'package:shoot_mobile/core/routing/error_page.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
+import 'package:shoot_mobile/core/theme/shoot_scene.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/widgets/appearance_sheet.dart';
 import 'package:shoot_mobile/core/widgets/group_label.dart';
 import 'package:shoot_mobile/core/widgets/icon_tile.dart';
 import 'package:shoot_mobile/core/widgets/progress_bar.dart';
+import 'package:shoot_mobile/core/widgets/scene_tile.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/shoot_panel.dart';
 import 'package:shoot_mobile/core/widgets/shoot_row.dart';
@@ -88,7 +90,7 @@ class _AccountHomePageState extends State<AccountHomePage> {
         return ShootScaffold(
           child: Column(
             children: [
-              const AccountHeader(),
+              const AccountHeader(current: true),
               Expanded(
                 child: home == null
                     ? const Center(child: CircularProgressIndicator.adaptive())
@@ -119,40 +121,40 @@ class _Body extends StatelessWidget {
     final upNext = home.upNext;
     final progress = finishProgress(context, home);
     final briefs = home.briefs;
-    return SingleChildScrollView(
+    // `.mx`: a column with a 28 px gap; "Log out" sits at the bottom (`margin-top: auto`).
+    return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsetsDirectional.fromSTEB(12, 24, 12, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _Person(name: home.name, phone: home.phone),
-          const SizedBox(height: 28),
-          if (upNext != null) ...[
-            Semantics(
-              container: true,
-              label: l10n.accountUpNext,
-              child: _UpNextCard(upNext: upNext),
-            ),
-            const SizedBox(height: 28),
-          ] else if (home.offers case final offers?) ...[
-            // 022 (board 54): offers waiting lead when no quotation needs an answer.
-            Semantics(
-              container: true,
-              label: l10n.accountUpNext,
-              child: _OffersCard(offers: offers),
-            ),
-            const SizedBox(height: 28),
-          ],
-          Padding(
-            padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsetsDirectional.fromSTEB(12, 24, 12, 0),
+          sliver: SliverFillRemaining(
+            hasScrollBody: false,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                GroupLabel(l10n.accountInYourAccount),
-                _Rows(
+                _Person(name: home.name, phone: home.phone),
+                const SizedBox(height: 28),
+                if (upNext != null) ...[
+                  Semantics(
+                    container: true,
+                    label: l10n.accountUpNext,
+                    child: _UpNextCard(upNext: upNext),
+                  ),
+                  const SizedBox(height: 28),
+                ] else if (home.offers case final offers?) ...[
+                  // 022 (board 54): offers waiting lead when no quotation needs an answer.
+                  Semantics(
+                    container: true,
+                    label: l10n.accountUpNext,
+                    child: _OffersCard(offers: offers),
+                  ),
+                  const SizedBox(height: 28),
+                ],
+                _Section(
+                  label: l10n.accountInYourAccount,
                   rows: [
                     _PlaceRow(
-                      icon: ShootIcons.calendar,
+                      icon: ShootIcons.document,
                       label: l10n.accountRowBookings,
                       status: _bookingsStatus(context, home),
                       hot: home.bookingsWaiting > 0,
@@ -178,18 +180,21 @@ class _Body extends StatelessWidget {
                             child: ProgressBar(
                               value: progress.done / progress.total,
                               label: l10n.finishProgressLabel,
+                              thickness: 4,
                             ),
                           ),
                           const SizedBox(width: ShootSpace.s2),
                           Text(
                             l10n.accountProgress(progress.done, progress.total),
-                            style: ShootType.meta.copyWith(color: c.mute),
+                            style: ShootType.num(
+                              ShootType.meta.copyWith(color: c.mute),
+                            ),
                           ),
                         ],
                       ),
                     ),
                     _PlaceRow(
-                      icon: ShootIcons.home,
+                      icon: ShootIcons.globe,
                       label: l10n.accountRowPreferences,
                       status: prefsStatus(context),
                       onTap: () => unawaited(showAppearanceSheet(context)),
@@ -197,63 +202,76 @@ class _Body extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 28),
-                GroupLabel(l10n.accountYourBriefs),
-                if (briefs.isEmpty)
+                _Section(
+                  label: l10n.accountYourBriefs,
+                  empty: briefs.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                            12,
+                            0,
+                            12,
+                            8,
+                          ),
+                          child: Text(
+                            l10n.accountBriefsEmpty,
+                            style: ShootType.meta.copyWith(color: c.mute),
+                          ),
+                        )
+                      : null,
+                  rows: [
+                    for (final b in briefs)
+                      BriefRow(
+                        brief: b,
+                        onTap: () => context.go(
+                          b.bookingReference == null
+                              ? AppRoutes.accountBookings
+                              : bookingPath(b.bookingReference!),
+                        ),
+                      ),
+                  ],
+                ),
+                if (upNext == null)
                   Padding(
-                    padding: const EdgeInsetsDirectional.only(bottom: 8),
-                    child: Text(
-                      l10n.accountBriefsEmpty,
-                      style: ShootType.meta.copyWith(color: c.mute),
+                    padding: const EdgeInsetsDirectional.only(
+                      top: ShootSpace.s3,
+                    ),
+                    child: TopHit(
+                      label: l10n.accountStartBrief,
+                      chevron: true,
+                      onPressed: () => context.go(AppRoutes.home),
                     ),
                   )
                 else
-                  Column(
-                    children: [
-                      for (final b in briefs)
-                        BriefRow(
-                          brief: b,
-                          onTap: () => context.go(
-                            b.bookingReference == null
-                                ? AppRoutes.accountBookings
-                                : bookingPath(b.bookingReference!),
-                          ),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: 12,
+                    ),
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: TextLink(
+                        label: l10n.accountStartBrief,
+                        style: ShootType.chip.copyWith(
+                          fontWeight: FontWeight.w500,
                         ),
-                    ],
+                        onTap: () => context.go(AppRoutes.home),
+                      ),
+                    ),
                   ),
-                if (upNext == null)
-                  const SizedBox(height: ShootSpace.s3)
-                else
-                  TextLink(
-                    label: l10n.accountStartBrief,
-                    onTap: () => context.go(AppRoutes.home),
+                const SizedBox(height: 28),
+                const Spacer(),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(top: BorderSide(color: c.hair)),
                   ),
+                  padding: const EdgeInsetsDirectional.fromSTEB(4, 0, 4, 18),
+                  alignment: AlignmentDirectional.centerStart,
+                  child: _LogOut(onTap: onLogOut),
+                ),
               ],
             ),
           ),
-          if (upNext == null)
-            Padding(
-              padding: const EdgeInsetsDirectional.only(top: ShootSpace.s2),
-              child: TopHit(
-                label: l10n.accountStartBrief,
-                chevron: true,
-                onPressed: () => context.go(AppRoutes.home),
-              ),
-            ),
-          const SizedBox(height: 28),
-          Container(
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: c.hair)),
-            ),
-            padding: const EdgeInsetsDirectional.fromSTEB(4, 0, 4, 18),
-            alignment: AlignmentDirectional.centerStart,
-            child: TextLink(
-              key: const ValueKey('account:logOut'),
-              label: l10n.accountLogOut,
-              onTap: onLogOut,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -264,6 +282,79 @@ class _Body extends StatelessWidget {
     }
     if (home.bookingsOpen > 0) return l10n.accountOpenCount(home.bookingsOpen);
     return null;
+  }
+}
+
+/// A group of `.rows` under its label: the label inset 12 (the section's padding), the rows full
+/// width (`margin: 0 -12px`) between hairlines.
+class _Section extends StatelessWidget {
+  const _Section({required this.label, required this.rows, this.empty});
+
+  final String label;
+  final List<Widget> rows;
+  final Widget? empty;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        GroupLabel(
+          label,
+          padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 8),
+        ),
+        ?empty,
+        if (rows.isNotEmpty)
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: c.hair)),
+            ),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(top: 1),
+              child: Column(children: rows),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// "Log out": a 16 px door and the words in `ink`, 15 px, at least 44 high.
+class _LogOut extends StatelessWidget {
+  const _LogOut({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Semantics(
+      button: true,
+      child: InkWell(
+        key: const ValueKey('account:logOut'),
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 44),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ShootIcon(
+                ShootIcons.logOut,
+                size: 16,
+                strokeWidth: 2.2,
+                color: c.ink,
+              ),
+              const SizedBox(width: ShootSpace.s2),
+              Text(
+                context.l10n.accountLogOut,
+                style: ShootType.chip.copyWith(color: c.ink),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -283,7 +374,18 @@ class _Person extends StatelessWidget {
         container: true,
         child: Row(
           children: [
-            const IconTile.large(ShootIcons.person),
+            SizedBox.square(
+              dimension: 52,
+              child: SceneTile(
+                radius: ShootRadius.photoLarge,
+                child: ShootIcon(
+                  ShootIcons.person,
+                  size: 24,
+                  strokeWidth: 1.8,
+                  color: context.scene.sceneInk,
+                ),
+              ),
+            ),
             const SizedBox(width: ShootSpace.s3),
             Expanded(
               child: Column(
@@ -291,7 +393,7 @@ class _Person extends StatelessWidget {
                 children: [
                   Text(
                     name ?? l10n.accountNameFallback,
-                    style: ShootType.title.copyWith(color: c.ink),
+                    style: ShootType.title.copyWith(color: c.ink, height: 1.2),
                   ),
                   Padding(
                     padding: const EdgeInsetsDirectional.only(top: 2),
@@ -299,16 +401,14 @@ class _Person extends StatelessWidget {
                       TextSpan(
                         children: [
                           if (phone != null) ...[
-                            TextSpan(
-                              text: ltrIsolate(formatPhone(phone!)),
-                              style: ShootType.num(ShootType.meta),
-                            ),
+                            TextSpan(text: ltrIsolate(formatPhone(phone!))),
                             const TextSpan(text: ' · '),
                           ],
                           TextSpan(text: l10n.accountClient),
                         ],
                       ),
-                      style: ShootType.meta.copyWith(color: c.mute),
+                      style: ShootType.num(ShootType.meta)
+                          .copyWith(color: c.mute),
                     ),
                   ),
                 ],
@@ -363,8 +463,12 @@ class _UpNextCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GroupLabel(context.l10n.accountUpNext),
-        ShootPanel(
+        GroupLabel(
+          context.l10n.accountUpNext,
+          padding: const EdgeInsetsDirectional.fromSTEB(4, 0, 4, 8),
+        ),
+        ShootPanel.raised(
+          padding: const EdgeInsetsDirectional.fromSTEB(8, 14, 8, 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -450,17 +554,7 @@ class _OffersCard extends StatelessWidget {
   }
 }
 
-/// `.rows`: the account's places, hairlines between.
-class _Rows extends StatelessWidget {
-  const _Rows({required this.rows});
-
-  final List<Widget> rows;
-
-  @override
-  Widget build(BuildContext context) =>
-      Column(children: [for (final row in rows) row]);
-}
-
+/// A `.rows` place: 60 high (`min-height: 52` plus `padding: 4 16`), a hairline below.
 class _PlaceRow extends StatelessWidget {
   const _PlaceRow({
     required this.icon,
@@ -481,32 +575,49 @@ class _PlaceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    return ShootRow(
-      label: label,
-      onTap: onTap,
-      leading: IconTile(icon),
-      chevron: false,
-      minHeight: 52,
-      divider: RowDivider.topAndBottom,
-      trailing:
-          trailing ??
-          (status == null
-              ? null
-              : Text(
-                  status!,
-                  textAlign: TextAlign.end,
-                  style: ShootType.meta.copyWith(
-                    color: hot ? c.ink : c.mute,
-                    fontWeight: hot ? FontWeight.w500 : FontWeight.w400,
-                  ),
-                )),
+    return Container(
+      padding: const EdgeInsetsDirectional.only(bottom: 1),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: c.hair)),
+      ),
+      child: ShootRow(
+        label: label,
+        onTap: onTap,
+        leading: IconTile(icon, iconSize: 15, tone: IconTileTone.tile),
+        chevron: false,
+        minHeight: 60,
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: 16,
+          vertical: 4,
+        ),
+        trailing:
+            trailing ??
+            (status == null
+                ? null
+                : Text(
+                    status!,
+                    textAlign: TextAlign.end,
+                    style: ShootType.meta.copyWith(
+                      color: hot ? c.ink : c.mute,
+                      fontWeight: hot ? FontWeight.w500 : FontWeight.w400,
+                    ),
+                  )),
+      ),
     );
   }
 }
 
 /// A brief on the account: its sentence, the date sent and its status in words.
 class BriefRow extends StatelessWidget {
-  const BriefRow({super.key, required this.brief, required this.onTap});
+  const BriefRow({
+    super.key,
+    required this.brief,
+    required this.onTap,
+    this.inset = true,
+  });
+
+  /// Board 24's full-width row (`padding: 4 16`, 68 high); false for a list already inset.
+  final bool inset;
 
   final BriefSummary brief;
   final VoidCallback? onTap;
@@ -523,7 +634,16 @@ class BriefRow extends StatelessWidget {
               ? l10n.accountOffersCount(brief.saidYes)
               : l10n.accountSaidYes(brief.saidYes),
       ].join(' · '),
-      leading: const IconTile(ShootIcons.search),
+      leading: const IconTile(
+        ShootIcons.search,
+        iconSize: 15,
+        tone: IconTileTone.tile,
+      ),
+      minHeight: inset ? 68 : 60,
+      padding: inset
+          ? const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 4)
+          : const EdgeInsetsDirectional.symmetric(vertical: 8),
+      metaMaxLines: inset ? 1 : null,
       onTap: onTap,
       trailing: StatusBadge(
         label: briefStatusLabel(context, brief.status),

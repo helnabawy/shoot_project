@@ -1001,6 +1001,10 @@
   "@accountThemeAuto": {
     "description": "Theme follows the device."
   },
+  "accountThemeFollowsPhone": "follows your phone",
+  "@accountThemeFollowsPhone": {
+    "description": "Theme follows the device, in the longer words of screen 25's checklist."
+  },
   "accountThemeLight": "light",
   "@accountThemeLight": {
     "description": "Light theme."
@@ -1187,14 +1191,32 @@
   "@finishLater": {
     "description": "Closes screen 25 for good."
   },
-  "finishBody": "{done} done, {left} to go. Each takes seconds, and your bookings and quotes stay in one place.",
+  "finishBody": "{done}, {left}. Each takes seconds, and your bookings and quotes stay in one place.",
   "@finishBody": {
-    "description": "Intro of screen 25.",
+    "description": "Intro of screen 25: finishDone and finishLeft, then the reason.",
     "placeholders": {
       "done": {
-        "type": "int"
+        "type": "String"
       },
       "left": {
+        "type": "String"
+      }
+    }
+  },
+  "finishDone": "{count, plural, =1{One thing done} =2{Two things done} other{{count} things done}}",
+  "@finishDone": {
+    "description": "Start of screen 25's intro: how many items are done, in words.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "finishLeft": "{count, plural, =1{one to go} =2{two to go} other{{count} to go}}",
+  "@finishLeft": {
+    "description": "Second part of screen 25's intro: how many items are left, in words.",
+    "placeholders": {
+      "count": {
         "type": "int"
       }
     }

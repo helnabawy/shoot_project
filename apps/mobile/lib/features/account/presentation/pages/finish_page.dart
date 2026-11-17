@@ -11,6 +11,7 @@ import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/widgets/appearance_sheet.dart';
+import 'package:shoot_mobile/core/widgets/group_label.dart';
 import 'package:shoot_mobile/core/widgets/icon_tile.dart';
 import 'package:shoot_mobile/core/widgets/progress_bar.dart';
 import 'package:shoot_mobile/core/widgets/secondary_button.dart';
@@ -115,6 +116,7 @@ class _FinishPageState extends State<FinishPage> {
                   ShootTextAction(
                     text: l10n.finishLater,
                     label: l10n.finishLater,
+                    color: context.colors.accentInk,
                     onPressed: _close,
                   ),
                 ],
@@ -153,17 +155,21 @@ class _FinishPageState extends State<FinishPage> {
                     children: [
                       Text(
                         l10n.finishTitle,
-                        style: ShootType.title.copyWith(color: c.ink),
+                        key: const ValueKey('fidelity:h1'),
+                        style: ShootType.displaySignIn.copyWith(color: c.ink),
                       ),
                       const SizedBox(height: 10),
                       Text(
                         next == null
                             ? l10n.finishAllDone
                             : l10n.finishBody(
-                                progress.done,
-                                progress.total - progress.done,
+                                l10n.finishDone(progress.done),
+                                l10n.finishLeft(progress.total - progress.done),
                               ),
-                        style: ShootType.body.copyWith(color: c.bodyInk),
+                        style: ShootType.body.copyWith(
+                          color: c.bodyInk,
+                          height: 1.625,
+                        ),
                       ),
                       const SizedBox(height: 14),
                       Row(
@@ -172,6 +178,7 @@ class _FinishPageState extends State<FinishPage> {
                             child: ProgressBar(
                               value: progress.done / progress.total,
                               label: l10n.finishProgressLabel,
+                              thickness: 4,
                             ),
                           ),
                           const SizedBox(width: ShootSpace.s3),
@@ -196,6 +203,7 @@ class _FinishPageState extends State<FinishPage> {
                       child: Column(
                         children: [
                           _StepRow(
+                            icon: ShootIcons.person,
                             done: home.item(FinishKey.number)?.done ?? false,
                             title: l10n.finishItemNumber,
                             meta: home.phone == null
@@ -203,6 +211,7 @@ class _FinishPageState extends State<FinishPage> {
                                 : ltrIsolate(formatPhone(home.phone!)),
                           ),
                           _StepRow(
+                            icon: ShootIcons.person,
                             done: name?.done ?? false,
                             title: l10n.finishItemName,
                             meta: name?.value ?? l10n.finishNameHint,
@@ -212,6 +221,7 @@ class _FinishPageState extends State<FinishPage> {
                             onTap: () => unawaited(_edit(FinishKey.name)),
                           ),
                           _StepRow(
+                            icon: ShootIcons.mail,
                             done: email?.done ?? false,
                             title: l10n.finishItemEmail,
                             meta: email?.value ?? l10n.finishEmailHint,
@@ -221,9 +231,10 @@ class _FinishPageState extends State<FinishPage> {
                             onTap: () => unawaited(_edit(FinishKey.email)),
                           ),
                           _StepRow(
+                            icon: ShootIcons.globe,
                             done: prefs,
                             title: l10n.finishItemPrefs,
-                            meta: prefsStatus(context),
+                            meta: prefsStatus(context, long: true),
                             action: l10n.finishActionSet,
                             onTap: () =>
                                 unawaited(showAppearanceSheet(context)),
@@ -242,32 +253,17 @@ class _FinishPageState extends State<FinishPage> {
                       0,
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
-                          l10n.finishAboutLabel.toUpperCase(),
-                          style: ShootType.groupLabel.copyWith(color: c.mute),
+                        GroupLabel(
+                          l10n.finishAboutLabel,
+                          padding: const EdgeInsetsDirectional.only(bottom: 12),
                         ),
-                        const SizedBox(height: 8),
-                        for (final line in home.about)
-                          Padding(
-                            padding: const EdgeInsetsDirectional.only(
-                              bottom: 8,
-                            ),
-                            child: Row(
-                              children: [
-                                const IconTile(ShootIcons.check),
-                                const SizedBox(width: ShootSpace.s3),
-                                Expanded(
-                                  child: Text(
-                                    line,
-                                    style: ShootType.meta.copyWith(
-                                      color: c.bodyInk,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                        for (final (i, line) in home.about.indexed)
+                          _AboutLine(
+                            icon: _aboutIcons[i % _aboutIcons.length],
+                            text: line,
+                            last: i == home.about.length - 1,
                           ),
                       ],
                     ),
@@ -279,6 +275,7 @@ class _FinishPageState extends State<FinishPage> {
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 18),
           child: TopHit(
+            centered: true,
             label: switch (next) {
               _Step.name => l10n.finishPrimaryAddName,
               _Step.email => l10n.finishPrimaryAddEmail,
@@ -302,9 +299,57 @@ enum _Step {
       key == FinishKey.name ? _Step.name : _Step.email;
 }
 
-/// `.row` of the checklist: a 30 px tile (ticked when done), two lines and the action.
+/// The tiles beside the CMS lines of "What your account does", in board 25's order. The lines
+/// carry no icon of their own, so the tiles are decoration that cycles by position.
+const _aboutIcons = [
+  ShootIcons.calendar,
+  ShootIcons.padlock,
+  ShootIcons.history,
+];
+
+/// A `.why` line: a 30 px tile and the text (15 px, `ink`), at least 44 high, hairlines between.
+class _AboutLine extends StatelessWidget {
+  const _AboutLine({
+    required this.icon,
+    required this.text,
+    required this.last,
+  });
+
+  final ShootIcons icon;
+  final String text;
+  final bool last;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final hair = BorderSide(color: c.hair);
+    return Container(
+      padding: EdgeInsetsDirectional.only(top: 1, bottom: last ? 1 : 0),
+      decoration: BoxDecoration(
+        border: Border(top: hair, bottom: last ? hair : BorderSide.none),
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 44),
+        child: Row(
+          children: [
+            IconTile(icon, tone: IconTileTone.tile),
+            const SizedBox(width: ShootSpace.s3),
+            Expanded(
+              child: Text(text, style: ShootType.chip.copyWith(color: c.ink)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// `.row` of the checklist: 60 high, padding 8, a 30 px tile (a green tick when done, the
+/// item's own icon otherwise), two lines and the action in `accentInk`. The whole row is the
+/// target, so a done item with "Edit" can still be changed.
 class _StepRow extends StatelessWidget {
   const _StepRow({
+    required this.icon,
     required this.done,
     required this.title,
     this.meta,
@@ -312,6 +357,7 @@ class _StepRow extends StatelessWidget {
     this.onTap,
   });
 
+  final ShootIcons icon;
   final bool done;
   final String title;
   final String? meta;
@@ -322,35 +368,43 @@ class _StepRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final row = Container(
-      constraints: const BoxConstraints(minHeight: 52),
-      padding: const EdgeInsetsDirectional.symmetric(
-        horizontal: ShootSpace.s2,
-        vertical: 6,
-      ),
+      constraints: const BoxConstraints(minHeight: 60),
+      padding: const EdgeInsets.all(ShootSpace.s2),
       child: Row(
         children: [
-          IconTile(done ? ShootIcons.check : ShootIcons.person),
+          done
+              ? const IconTile(
+                  ShootIcons.tick,
+                  strokeWidth: 2.4,
+                  tone: IconTileTone.success,
+                )
+              : IconTile(icon, tone: IconTileTone.tile),
           const SizedBox(width: ShootSpace.s3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: ShootType.row.copyWith(color: c.ink)),
-                if (meta != null)
+                Text(
+                  title,
+                  style: ShootType.row.copyWith(color: c.ink, height: 1.375),
+                ),
+                if (meta != null) ...[
+                  const SizedBox(height: 2),
                   Text(meta!, style: ShootType.meta.copyWith(color: c.mute)),
+                ],
               ],
             ),
           ),
-          if (action != null)
-            ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-              child: Center(
-                child: Text(
-                  action!,
-                  style: ShootType.button.copyWith(color: c.accentInk),
-                ),
+          if (action != null) ...[
+            const SizedBox(width: ShootSpace.s3),
+            Text(
+              action!,
+              style: ShootType.chip.copyWith(
+                fontWeight: FontWeight.w500,
+                color: c.accentInk,
               ),
             ),
+          ],
         ],
       ),
     );
@@ -360,7 +414,13 @@ class _StepRow extends StatelessWidget {
       button: onTap != null,
       label: label,
       excludeSemantics: true,
-      child: onTap == null ? row : InkWell(onTap: onTap, child: row),
+      child: onTap == null
+          ? row
+          : InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(ShootRadius.row),
+              child: row,
+            ),
     );
   }
 }
