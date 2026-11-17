@@ -12,7 +12,12 @@ class ShootIconButton extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onPressed,
+    this.current = false,
   });
+
+  /// The page this button opens is the one showing (`.ib.on`): a 6 % `ink` wash, and announced
+  /// as selected.
+  final bool current;
 
   final ShootIcons icon;
   final String label;
@@ -23,8 +28,15 @@ class ShootIconButton extends StatelessWidget {
     return _IbFrame(
       label: label,
       onPressed: onPressed,
-      child: SizedBox.square(
-        dimension: ShootSize.iconButton,
+      child: Container(
+        width: ShootSize.iconButton,
+        height: ShootSize.iconButton,
+        decoration: current
+            ? BoxDecoration(
+                color: context.colors.ink.withValues(alpha: .06),
+                borderRadius: BorderRadius.circular(ShootRadius.row),
+              )
+            : null,
         child: Center(
           child: ShootIcon(
             icon,
@@ -47,7 +59,11 @@ class ShootTextAction extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.square = false,
+    this.color,
   });
+
+  /// The text colour; `ink` by default, `accentInk` for board 25's "Later".
+  final Color? color;
 
   /// What it shows (the other language's name, in that language).
   final String text;
@@ -65,7 +81,7 @@ class ShootTextAction extends StatelessWidget {
     final style = TextStyle(
       fontSize: 15,
       fontWeight: FontWeight.w500,
-      color: context.colors.ink,
+      color: color ?? context.colors.ink,
       fontFamilyFallback: ShootType.body.fontFamilyFallback,
       leadingDistribution: TextLeadingDistribution.even,
     );

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -18,15 +20,20 @@ import 'package:shoot_mobile/features/account/domain/entities/account.dart';
 /// The words and small pieces screens 24, 25 and 26 share. Interface labels come from the ARB
 /// files; the data (names, places, prices, statuses as keys) comes from the server.
 
-/// The header of My account and Your bookings: the wordmark, the language action and the account
-/// button (current on both screens).
+/// The header of My account and Your bookings: the wordmark, the language action, the account
+/// button and the menu. On My account (board 24) the account button is current and a hairline
+/// closes the header.
 class AccountHeader extends StatelessWidget {
-  const AccountHeader({super.key});
+  const AccountHeader({super.key, this.current = false});
+
+  /// My account itself is showing.
+  final bool current;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return ShootHeader(
+      divider: current,
       leading: Wordmark(
         label: l10n.appTitle,
         onTap: () => context.go(AppRoutes.home),
@@ -36,7 +43,13 @@ class AccountHeader extends StatelessWidget {
         ShootIconButton(
           icon: ShootIcons.person,
           label: l10n.accountButtonLabel,
+          current: current,
           onPressed: () => context.go(AppRoutes.account),
+        ),
+        ShootIconButton(
+          icon: ShootIcons.menu,
+          label: l10n.mlOpenMenu,
+          onPressed: () => unawaited(context.push('/menu')),
         ),
       ],
     );
@@ -145,7 +158,17 @@ class TwoLineRow extends StatelessWidget {
     this.leading,
     this.trailing,
     this.semanticLabel,
+    this.minHeight = 60,
+    this.padding = const EdgeInsetsDirectional.symmetric(vertical: 8),
+    this.metaMaxLines,
   });
+
+  /// Board 24's brief row is 68 (`min-height: 60` plus `padding: 4 16`); board 26's is 60.
+  final double minHeight;
+  final EdgeInsetsGeometry padding;
+
+  /// Board 24 keeps the meta line to one line; null lets it wrap so nothing is lost.
+  final int? metaMaxLines;
 
   final String title;
   final String? meta;
@@ -164,42 +187,50 @@ class TwoLineRow extends StatelessWidget {
       excludeSemantics: semanticLabel != null,
       child: InkWell(
         onTap: onTap,
+        // The hairline sits outside the row's min-height, as a CSS border does.
         child: Container(
-          constraints: const BoxConstraints(minHeight: 60),
-          padding: const EdgeInsetsDirectional.symmetric(vertical: 8),
+          padding: const EdgeInsetsDirectional.only(bottom: 1),
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: c.hair)),
           ),
-          child: Row(
-            children: [
-              if (leading case final l?) ...[
-                l,
-                const SizedBox(width: ShootSpace.s3),
-              ],
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: ShootType.row.copyWith(color: c.ink),
-                    ),
-                    if (meta != null && meta!.isNotEmpty)
+          child: Container(
+            constraints: BoxConstraints(minHeight: minHeight),
+            padding: padding,
+            child: Row(
+              children: [
+                if (leading case final l?) ...[
+                  l,
+                  const SizedBox(width: ShootSpace.s3),
+                ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       Text(
-                        meta!,
-                        style: ShootType.meta.copyWith(color: c.mute),
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: ShootType.row.copyWith(color: c.ink),
                       ),
-                  ],
+                      if (meta != null && meta!.isNotEmpty)
+                        Text(
+                          meta!,
+                          maxLines: metaMaxLines,
+                          overflow: metaMaxLines == null
+                              ? null
+                              : TextOverflow.ellipsis,
+                          style: ShootType.meta.copyWith(color: c.mute),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              if (trailing case final t?) ...[
-                const SizedBox(width: ShootSpace.s3),
-                t,
+                if (trailing case final t?) ...[
+                  const SizedBox(width: ShootSpace.s3),
+                  t,
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

@@ -7,10 +7,16 @@ import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 
 /// `.panel` (and `.sum` with [padding] 8): `panelSolid`, 1 px `hair`, radius 14, the `lift` shadow.
 class ShootPanel extends StatelessWidget {
-  const ShootPanel({super.key, required this.child, this.padding});
+  const ShootPanel({super.key, required this.child, this.padding})
+    : raised = false;
+
+  /// Board 24's Up next card: the translucent `panel` with the `raised` shadow.
+  const ShootPanel.raised({super.key, required this.child, this.padding})
+    : raised = true;
 
   final Widget child;
   final EdgeInsetsGeometry? padding;
+  final bool raised;
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +24,12 @@ class ShootPanel extends StatelessWidget {
     final brightness = Theme.of(context).brightness;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: c.panelSolid,
+        color: raised ? c.panel : c.panelSolid,
         border: Border.all(color: c.hair),
         borderRadius: BorderRadius.circular(ShootRadius.panel),
-        boxShadow: ShootShadows.of(brightness).lift,
+        boxShadow: raised
+            ? ShootShadows.of(brightness).raised
+            : ShootShadows.of(brightness).lift,
       ),
       child: Padding(padding: padding ?? EdgeInsets.zero, child: child),
     );

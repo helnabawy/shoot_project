@@ -8,8 +8,9 @@ import 'package:shoot_mobile/features/account/domain/entities/account.dart';
 /// The device's language and theme (feature 006), the fourth item of the checklist (FR-021).
 /// They are never stored in the account (spec assumptions).
 
-/// "English · auto": the language in use and whether the theme follows the device.
-String prefsStatus(BuildContext context) {
+/// "English · auto": the language in use and whether the theme follows the device. [long] is
+/// screen 25's wording ("English · follows your phone").
+String prefsStatus(BuildContext context, {bool long = false}) {
   final l10n = context.l10n;
   final locale = context.watch<LocaleCubit>().state;
   final mode = context.watch<ThemeModeCubit>().state;
@@ -18,7 +19,8 @@ String prefsStatus(BuildContext context) {
   return l10n.accountPrefsStatus(
     arabic ? l10n.accountLanguageArabic : l10n.accountLanguageEnglish,
     switch (mode) {
-      ThemeMode.system => l10n.accountThemeAuto,
+      ThemeMode.system =>
+        long ? l10n.accountThemeFollowsPhone : l10n.accountThemeAuto,
       ThemeMode.light => l10n.accountThemeLight,
       ThemeMode.dark => l10n.accountThemeDark,
     },

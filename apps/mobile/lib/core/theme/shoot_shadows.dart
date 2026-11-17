@@ -26,7 +26,11 @@ final class ShootShadows {
     required this.panel,
     required this.sheet,
     required this.lift,
+    required this.raised,
   });
+
+  /// Board 24's Up next card: a soft drop under the translucent panel (`0 18 40 -22`).
+  final List<BoxShadow> raised;
 
   /// `--shadow-panel`: the floating Brief Bar panel.
   final List<BoxShadow> panel;
@@ -41,12 +45,14 @@ final class ShootShadows {
     panel: [cssShadow(0, 24, 60, 0, const Color.fromRGBO(40, 25, 12, 0.22))],
     sheet: [cssShadow(0, -8, 32, 0, const Color.fromRGBO(40, 25, 12, 0.14))],
     lift: [cssShadow(0, 1, 2, 0, const Color.fromRGBO(0, 0, 0, 0.06))],
+    raised: [cssShadow(0, 18, 40, -22, const Color.fromRGBO(29, 29, 31, 0.35))],
   );
 
   static final dark = ShootShadows._(
     panel: [cssShadow(0, 24, 60, 0, const Color.fromRGBO(0, 0, 0, 0.5))],
     sheet: [cssShadow(0, -8, 32, 0, const Color.fromRGBO(0, 0, 0, 0.5))],
     lift: [cssShadow(0, 1, 2, 0, const Color.fromRGBO(0, 0, 0, 0.4))],
+    raised: [cssShadow(0, 18, 40, -22, const Color.fromRGBO(0, 0, 0, 0.6))],
   );
 
   static ShootShadows of(Brightness brightness) =>
