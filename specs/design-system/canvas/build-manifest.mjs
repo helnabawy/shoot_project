@@ -29,6 +29,7 @@ const FEATURE = [
   [['33', '34', '35', '36', '38'], '015-mobile-content'],
   [['37', '39'], '007-mobile-foundation'],
   [['44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '57', '58', '59', '60', '61', '62', '63'], '022-creator-offers'],
+  [['64', '65', '67'], '023-creator-home'],
 ]
 const featureOf = (id) => FEATURE.find(([ids]) => ids.includes(id))?.[1] ?? null
 
@@ -40,17 +41,33 @@ const DESIGNER_VARIANT = {
   '43': { of: '13', variant: 'ar-dark' },
   '55': { of: '46', variant: 'ar-dark' },
   '56': { of: '51', variant: 'ar-dark' },
+  '66': { of: '64', variant: 'ar-dark' },
 }
 
 // Selectors whose boxes the geometry gate compares (±1 logical px), when the board has them.
 const BOX_CANDIDATES = { header: '.hd', wordmark: '.wm', h1: '.h1', topHit: '.top' }
 // Boards whose heading has no `.h1` class: a stable selector for it (feature 007, T033).
-const EXTRA_BOXES = { '37': { h1: 'main h1' }, '39': { h1: 'main h1' } }
+// 023: the creator home's counts strip and its one panel (the request card, "You are up to date",
+// the profile steps).
+const EXTRA_BOXES = {
+  '37': { h1: 'main h1' },
+  '39': { h1: 'main h1' },
+  '64': { stats: '.stats', card: '.panel' },
+  '65': { stats: '.stats', card: '.panel' },
+  '66': { stats: '.stats', card: '.panel' },
+  '67': { card: '.panel' },
+}
+// Boxes a board still draws that the app deliberately dropped: the menu's "Start a brief" Top Hit
+// (commit fbc6228, 2026-11-14), so the geometry gate does not look for it.
+const DROPPED_BOXES = { '06': ['topHit'] }
 
 const screens = []
 for (const board of canvas.order) {
   const entry = canvas.boards[board]
   if (entry.page !== 'screens') continue
+  // "Play · …" boards are working copies of a numbered screen for the canvas's Play mode; their
+  // placeholders need the canvas runtime, which the renderer stubs, so they are never references.
+  if ((entry.title ?? '').startsWith('Play · ')) continue
   const match = /^(\d{2}) · (.+)$/.exec(entry.title ?? '')
   if (!match) throw new Error(`Board ${board} has no "NN · title"`)
   const [, id, title] = match
@@ -58,7 +75,11 @@ for (const board of canvas.order) {
   const sha256 = createHash('sha256').update(html).digest('hex')
   const classes = new Set([...html.matchAll(/class="([^"]+)"/g)].flatMap((m) => m[1].split(/\s+/)))
   const boxes = {
-    ...Object.fromEntries(Object.entries(BOX_CANDIDATES).filter(([, sel]) => classes.has(sel.slice(1)))),
+    ...Object.fromEntries(
+      Object.entries(BOX_CANDIDATES).filter(
+        ([name, sel]) => classes.has(sel.slice(1)) && !(DROPPED_BOXES[id] ?? []).includes(name),
+      ),
+    ),
     ...(EXTRA_BOXES[id] ?? {}),
   }
   const isWeb = entry.w > 600

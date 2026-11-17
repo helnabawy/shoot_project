@@ -664,6 +664,61 @@
       "x": 2200,
       "y": 15620,
       "is_interactive": true
+    },
+    "S14-creator-home.dc.html": {
+      "h": 1120,
+      "page": "screens",
+      "radius": 28,
+      "title": "64 · Creator home · one request at a time",
+      "w": 360,
+      "x": 0,
+      "y": 17040
+    },
+    "S14b-creator-home-clear.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "65 · Creator home · nothing to answer",
+      "w": 360,
+      "x": 440,
+      "y": 17040
+    },
+    "S14-creator-home-ar.dc.html": {
+      "h": 1120,
+      "page": "screens",
+      "radius": 28,
+      "title": "66 · Creator home · Arabic dark",
+      "w": 360,
+      "x": 880,
+      "y": 17040
+    },
+    "S14c-creator-home-not-live.dc.html": {
+      "h": 900,
+      "page": "screens",
+      "radius": 28,
+      "title": "67 · Creator home · not live yet",
+      "w": 360,
+      "x": 1320,
+      "y": 17040
+    },
+    "S14-creator-home-play.dc.html": {
+      "h": 1120,
+      "page": "screens",
+      "radius": 28,
+      "title": "Play · Creator home · answer the queue (64)",
+      "w": 360,
+      "x": 0,
+      "y": 18540,
+      "is_interactive": true
+    },
+    "S14c-creator-home-not-live-play.dc.html": {
+      "h": 900,
+      "page": "screens",
+      "radius": 28,
+      "title": "Play · Creator home · not live, Tweaks: in review (67)",
+      "w": 360,
+      "x": 440,
+      "y": 18540
     }
   },
   "createdOnFiles": {
@@ -707,7 +762,9 @@
     "s-note-accounts",
     "s-note-new",
     "s-note-motion",
-    "n022"
+    "n022",
+    "n023",
+    "n023p"
   ],
   "notes": {
     "note-a": {
@@ -907,6 +964,22 @@
       "kind": "title1",
       "maxW": 4760,
       "page": "screens"
+    },
+    "n023": {
+      "x": 0,
+      "y": 16740,
+      "text": "023 · Creator home: what a signed-in creator sees first · 64 to 67",
+      "kind": "title1",
+      "maxW": 1680,
+      "page": "screens"
+    },
+    "n023p": {
+      "x": 0,
+      "y": 18240,
+      "text": "023 · Play: 64 and 67 with working buttons and Tweaks",
+      "kind": "title1",
+      "maxW": 800,
+      "page": "screens"
     }
   },
   "order": [
@@ -978,7 +1051,13 @@
     "S01t-place-search.dc.html",
     "S01u-place-location-off.dc.html",
     "S01v-place-outside.dc.html",
-    "S01w-place-fallback.dc.html"
+    "S01w-place-fallback.dc.html",
+    "S14-creator-home.dc.html",
+    "S14b-creator-home-clear.dc.html",
+    "S14-creator-home-ar.dc.html",
+    "S14c-creator-home-not-live.dc.html",
+    "S14-creator-home-play.dc.html",
+    "S14c-creator-home-not-live-play.dc.html"
   ],
   "pages": [
     {

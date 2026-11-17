@@ -1,0 +1,22 @@
+{
+  "_note": "Arabic for the derived ar-light and ar-dark references (feature 007, research R6): each English text node of the board, trimmed, to the same Arabic as app_ar.arb and the shared examples. Written with feature 023 from the designer's Arabic on board 66 where it has the words; the rest needs review by an Arabic writer. Not yet in board_strings_test.dart: add the board there when app_ar.arb has the creator home strings (023 T051).",
+  "Shoot": "شوت",
+  "عربي": "English",
+  "Omar K.": "عمر ك.",
+  "Photographer ·": "مصوّر ·",
+  "Manage": "إدارة",
+  "Availability": "أوقات التوفّر",
+  "My profile": "ملفي",
+  "Not live yet": "غير منشور بعد",
+  "Do this first": "ابدأ بهذا",
+  "3 of 5 steps done": "3 من 5 خطوات مكتملة",
+  "Clients can't find you yet": "لا يستطيع العملاء العثور عليك بعد",
+  "Finish these steps and our team reviews your profile. Once it is approved, new briefs and booking requests show here.": "أكمل هذه الخطوات وسيراجع فريقنا ملفك. بعد الموافقة عليه تظهر هنا الطلبات الجديدة وطلبات الحجز.",
+  "Samples of your work": "نماذج من أعمالك",
+  "Missing": "ناقص",
+  "Cities you cover": "المدن التي تغطيها",
+  "Photo, about you and what you shoot": "الصورة، نبذة عنك وما تصوّره",
+  "Finish my profile": "أكمل ملفي",
+  "Free every day": "متاح كل يوم",
+  "3 of 5 done": "3 من 5 مكتملة"
+}
