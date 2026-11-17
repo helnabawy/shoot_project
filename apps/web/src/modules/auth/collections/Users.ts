@@ -25,10 +25,12 @@ export const Users: CollectionConfig = {
   },
   hooks: {
     // FR-016: code accounts are unreachable by password, so /api/users/login can neither guess nor
-    // lock them; a login by `username` is refused before Payload counts an attempt.
+    // lock them; a login by a number `username` is refused before Payload counts an attempt. The REST
+    // endpoint always sends `username` (empty when only an email is given), and the admin form sends the
+    // "Email or Username" box as `username`, so only a non-empty value that is not an email is refused.
     beforeOperation: [
       ({ operation, args }) => {
-        if (operation === 'login' && (args as { data?: { username?: unknown } }).data?.username !== undefined) {
+        if (operation === 'login' && refusedUsername((args as { data?: { username?: unknown } }).data?.username)) {
           throw new APIError('auth.errors.invalid', 401, undefined, true)
         }
         return args
@@ -139,3 +141,9 @@ export const Users: CollectionConfig = {
     },
   ],
 }
+
+/** A password login by a number: code accounts' `username` is their E.164 mobile number, never an email. */
+export function refusedUsername(value: unknown): boolean {
+  return typeof value === 'string' && value.trim() !== '' && !value.includes('@')
+}
+

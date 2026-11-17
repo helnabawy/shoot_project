@@ -48,6 +48,18 @@ describe('009 phone identity on users (migration users_phone_identity, username 
     }
   })
 
+  it('OT-US2-S7 editors and admins sign in by email through the REST endpoint and the admin form', async () => {
+    const payload = await getTestPayload()
+    const admin = (await createUser(['admin'])) as User
+    // `POST /api/users/login` always sends `username` (empty when only an email is given) …
+    const rest = await payload.login({ collection: 'users', data: { email: admin.email!, password: 'password-123', username: '' } as never })
+    expect(rest.token).toBeTruthy()
+    // … and the admin form sends its "Email or Username" box as `username`.
+    const form = await payload.login({ collection: 'users', data: { username: admin.email!, password: 'password-123' } as never })
+    expect(form.token).toBeTruthy()
+    await expect(payload.login({ collection: 'users', data: { username: admin.email!, password: 'wrong-password' } as never })).rejects.toThrow()
+  })
+
   it('OT-US2-S7 password login by number is refused, and 10 tries never block code sign-in', async () => {
     const payload = await getTestPayload()
     const { id, phone } = await codeAccount()
