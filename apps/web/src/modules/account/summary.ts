@@ -58,5 +58,6 @@ export function toBriefSummary(brief: Brief, bookingReference: string | null, sa
     status: brief.status === 'contacted' || brief.status === 'closed' ? brief.status : 'new',
     bookingReference,
     ...(saidYes ? { saidYes } : {}),
+    ...((brief as { offers?: { mode?: string | null } | null }).offers?.mode === 'offers' ? { offers: true } : {}),
   }
 }

@@ -276,12 +276,24 @@ async function offersPage(
   }
 }
 
-/** 022 (research R9): the step-2 fingerprint for a brief, or null for an unknown reference or wrong key. */
-export async function matchStamp(ref: string, key: string, locale: Locale, now: Date, memberId?: number | null): Promise<string | null> {
+/**
+ * 022 (research R9, T064): the step-2 fingerprint for a brief, or null for an unknown reference or wrong key.
+ * Built from light reads (the brief, its answers, the day's blocked creators; ids and change times only) rather
+ * than the whole page, so a poll every few seconds stays cheap. It changes when an offer arrives, changes, is
+ * withdrawn or declined, when a creator blocks the day, when the brief is booked or closes, and with the day.
+ */
+export async function matchStamp(ref: string, key: string, _locale: Locale, now: Date, memberId?: number | null): Promise<string | null> {
   const brief = await getBriefByKey(ref, key, memberId)
   if (!brief) return null
-  const page = await getMatchPage(brief, locale, now)
-  return page.stamp || offerStamp([String(brief.id), String(page.sections.map((s) => s.creators.length).join(','))])
+  const payload = await getPayloadClient()
+  const day = brief.date ? String(brief.date).slice(0, 10) : null
+  const [answers, blocks] = await Promise.all([
+    payload.find({ collection: 'brief-answers', where: { brief: { equals: brief.id } }, depth: 0, pagination: false, overrideAccess: true, select: { updatedAt: true } }),
+    day
+      ? payload.find({ collection: 'availability-blocks', where: { and: [{ date: { equals: day } }, { kind: { equals: 'blocked' } }] }, depth: 0, pagination: false, overrideAccess: true, select: { updatedAt: true } })
+      : Promise.resolve({ docs: [] as { id: number; updatedAt: string }[] }),
+  ])
+  return offerStamp([dubaiToday(now), String(brief.id), brief.status ?? '', brief.updatedAt, ...answers.docs.map((a) => `${a.id}:${a.updatedAt}`), '|', ...blocks.docs.map((b) => `${b.id}`)])
 }
 
 /**

@@ -73,3 +73,14 @@ describe('OF-SC-002 two taps from the push', () => {
   })
 })
 
+describe('OF-FR-025 Arabic place rows', () => {
+  it('the distance and the price keep Western digits and the area reads right to left', () => {
+    renderWithLocale(<InboxList locale="ar" inbox={{ open: [item({ ...offers, place: { ...offers.place, area: 'جزيرة ياس', emirate: 'أبوظبي' } } as never)], accepted: [], rejected: [], reasons }} />, { locale: 'ar' })
+    const place = screen.getByTestId('inbox-place')
+    expect(place).toHaveTextContent('جزيرة ياس، أبوظبي')
+    expect(place.textContent).toMatch(/22/)
+    expect(screen.getByTestId('inbox-client-price').textContent).toMatch(/800/)
+    expect(place.textContent).not.toMatch(/[٠-٩]/)
+  })
+})
+

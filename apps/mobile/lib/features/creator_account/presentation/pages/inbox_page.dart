@@ -325,7 +325,7 @@ class _BriefCard extends StatelessWidget {
             CreatorFact(
               icon: ShootIcons.pin,
               value: [
-                '${place.area}, ${place.emirate}',
+                '${place.area}${Localizations.localeOf(context).languageCode == 'ar' ? '، ' : ', '}${place.emirate}',
                 if (place.distanceKm case final km?)
                   l10n.inboxOfferDistance(km)
                 else

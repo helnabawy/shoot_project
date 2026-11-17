@@ -12,6 +12,8 @@ try {
     demoCreators: process.env.SEED_DEMO_CREATORS === '1',
     resetDemoCreators: process.env.SEED_DEMO_RESET === '1',
     demoGuides: process.env.SEED_DEMO_GUIDES === '1',
+    // Local/e2e only (feature 022): "Creators offer prices" on, fee 10 %, range 70–200 %.
+    demoOffers: process.env.SEED_DEMO_OFFERS === '1',
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
     demoPassword: process.env.SEED_ADMIN_PASSWORD,
   })

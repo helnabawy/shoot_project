@@ -16941,6 +16941,9 @@
                     "null"
                   ]
                 },
+                "offers": {
+                  "type": "boolean"
+                },
                 "reference": {
                   "minLength": 1,
                   "type": "string"
@@ -17488,6 +17491,9 @@
                     "string",
                     "null"
                   ]
+                },
+                "offers": {
+                  "type": "boolean"
                 },
                 "reference": {
                   "minLength": 1,

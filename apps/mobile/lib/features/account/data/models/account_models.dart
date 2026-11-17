@@ -45,6 +45,7 @@ BriefSummary briefFromJson(Json json) {
     },
     bookingReference: readNullableString(json, 'bookingReference'),
     saidYes: readNullableInt(json, 'saidYes') ?? 0,
+    offers: readOptionalBool(json, 'offers'),
   );
 }
 

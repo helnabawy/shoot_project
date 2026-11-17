@@ -75,7 +75,7 @@ export function PlaceStep({ locale, labels, error }: { locale: string; labels: P
             // eslint-disable-next-line @next/next/no-img-element
             <img src={place.mapUrl} alt="" width={84} height={64} className="h-16 w-[84px] shrink-0 rounded-[10px] object-cover" />
           ) : null}
-          <span className="min-w-0 flex-1 text-[15px]">{[place.area, place.emirate?.name].filter(Boolean).join(', ')}</span>
+          <span className="min-w-0 flex-1 text-[15px]">{[place.area, place.emirate?.name].filter(Boolean).join(locale === 'ar' ? '، ' : ', ')}</span>
           <button type="button" onClick={() => setPlace(null)} className="min-h-11 px-2 text-[15px] font-medium text-link">
             {labels.change}
           </button>

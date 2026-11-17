@@ -102,8 +102,9 @@ Everything is off until the owner turns it on, in this order:
 3. **The switch.** Turn on "Creators offer prices" (Quick Match must be on). Turning it off returns new briefs to
    the fixed-price flow; briefs already sent with offers keep working.
 
-Local demo: with `scratchpad`-style local env (never the production `DATABASE_URI`), `pnpm seed` then switch the
-setting on in `/admin`; `PUSH_PROVIDER=console` prints the pushes.
+Local demo: on a local database only (never the production `DATABASE_URI`), `SEED_DEMO_CREATORS=1 SEED_DEMO_OFFERS=1
+pnpm seed` creates the demo creators and turns the switch on (refused on non-local hosts); `PUSH_PROVIDER=console` prints
+the pushes.
 
 ## Scenario → test mapping
 

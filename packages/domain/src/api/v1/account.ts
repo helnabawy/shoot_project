@@ -46,6 +46,8 @@ export const briefSummaryV1 = z.object({
   bookingReference: z.string().nullable(),
   /** 019: how many creators said yes to this brief while it is open. */
   saidYes: z.int().nonnegative().optional(),
+  /** 022 (additive): the brief was sent with creator offers, so `saidYes` counts its current offers. */
+  offers: z.boolean().optional(),
 })
 export type BriefSummaryV1 = z.infer<typeof briefSummaryV1>
 

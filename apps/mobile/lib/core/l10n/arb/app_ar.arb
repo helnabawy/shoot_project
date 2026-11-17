@@ -842,6 +842,7 @@
   "inboxSent": "أُرسل {date}",
   "caBriefsTitle": "{count, plural, =1{طلب جديد يناسبك} =2{طلبان جديدان يناسبانك} few{{count} طلبات جديدة تناسبك} other{{count} طلبًا جديدًا يناسبك}}",
   "caBriefsAction": "{count, plural, =1{اطّلع على الطلب} other{اطّلع على الطلبات}}",
+  "accountOffersCount": "{count, plural, =0{لا عروض} =1{عرض واحد} =2{عرضان} few{{count} عروض} many{{count} عرضًا} other{{count} عرض}}",
   "accountSaidYes": "{count, plural, =1{وافق محترف واحد} =2{وافق محترفان} few{وافق {count} محترفين} other{وافق {count} محترفًا}}",
   "qmPayAction": "ادفع",
   "qmPaySecure": "دفع آمن بالبطاقة أو Apple Pay أو Google Pay. تعود إلى هنا بعد الانتهاء.",

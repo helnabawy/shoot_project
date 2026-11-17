@@ -13,6 +13,7 @@ vi.mock('@/i18n/navigation', async () => (await import('./setup/next-mocks')).i1
 const { submitBrief } = await import('@/modules/brief/actions')
 const { getBriefByKey, getMatchPage } = await import('@/modules/booking/match')
 const { answerBrief } = await import('@/modules/inbox/commands/answer-brief')
+const { seedDemoOffers } = await import('@/shared/payload/seed/demo-offers')
 
 /** Feature 022 US6: the team switches the model and its numbers; sent briefs keep what they were sent with. */
 describe('OF-US6 the team controls the model', () => {
@@ -77,4 +78,16 @@ describe('OF-US6 the team controls the model', () => {
     expect(answers.docs[0]).toMatchObject({ decision: 'accepted', revisions: 0 })
     expect((answers.docs[0] as { amountFils?: number }).amountFils).toBeGreaterThan(0)
   })
+
+  it('OF-US6-S1 the opt-in demo seed turns the switch on, twice the same, and is refused on a real host', async () => {
+    const payload = await getTestPayload()
+    await setOffers(payload, { enabled: false })
+    const log = () => {}
+    await expect(seedDemoOffers(payload, { siteUrl: 'https://shoot.example.com', log })).rejects.toThrow()
+    await seedDemoOffers(payload, { siteUrl: 'http://localhost:3000', log })
+    await seedDemoOffers(payload, { siteUrl: 'http://localhost:3000', log })
+    const settings = (await payload.findGlobal({ slug: 'site-settings', depth: 0, overrideAccess: true })) as { quickMatch?: { offers?: { enabled?: boolean; feePercent?: number } } }
+    expect(settings.quickMatch?.offers).toMatchObject({ enabled: true, feePercent: 10 })
+  })
 })
+

@@ -25,7 +25,7 @@ export function OfferPriceRow({ item, locale }: { item: BriefItemV1; locale: str
             <img src={item.place.mapUrl} alt="" width={84} height={64} className="h-16 w-[84px] shrink-0 rounded-[10px] border border-hair object-cover" />
           ) : null}
           <span className="min-w-0 text-[15px] leading-snug">
-            <span className="block">{[item.place.area, item.place.emirate].filter(Boolean).join(', ')}</span>
+            <span className="block">{[item.place.area, item.place.emirate].filter(Boolean).join(locale === 'ar' ? '، ' : ', ')}</span>
             <span className="block text-[13px] text-mute">
               {item.place.distanceKm !== null ? (
                 t('distance', { km: item.place.distanceKm })

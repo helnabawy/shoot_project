@@ -249,12 +249,39 @@ export async function briefsSummary(ctx: InboxContext, userId: number): Promise<
   }
 }
 
-/** 022 (research R9): a short fingerprint of what the creator's inbox shows; it changes when anything does. */
+/**
+ * 022 (research R9, T064): a short fingerprint of what the creator's inbox shows, from three light reads
+ * (the open briefs and the creator's answers, ids and change times only) instead of building the whole inbox.
+ * It changes when a brief arrives, closes or is booked, or an answer is given, changed, withdrawn or declined,
+ * and with the day. A change only to the creator's own days off or profile is theirs and refreshes on its own.
+ */
 export async function inboxStamp(ctx: InboxContext, userId: number): Promise<string> {
-  const inbox = await creatorInbox(ctx, userId)
-  if (!inbox) return offerStamp(['none'])
-  const line = (i: BriefItemV1) => [i.ref, i.persona, i.answer ?? '', i.outcome, i.offerFils ?? '', i.revisionsLeft ?? '', i.declined ? 1 : 0].join(':')
-  return offerStamp([...inbox.open.map(line), '|', ...inbox.accepted.map(line), '|', ...inbox.rejected.map(line)])
+  const { payload, now } = ctx
+  const profiles = await liveProfiles(userId, ctx.locale)
+  if (!profiles.length) return offerStamp(['none'])
+  const today = dubaiToday(now)
+  const { inboxDays } = await readQuickMatch(payload)
+  const oldestUndated = new Date(Date.parse(`${addDays(today, -inboxDays)}T00:00:00+04:00`)).toISOString()
+  const [open, answers] = await Promise.all([
+    payload.find({
+      collection: 'briefs',
+      where: { and: [{ status: { equals: 'new' } }, { or: [{ date: { greater_than_equal: `${today}T00:00:00.000Z` } }, { and: [{ date: { exists: false } }, { createdAt: { greater_than_equal: oldestUndated } }] }] }] },
+      sort: '-createdAt',
+      limit: OPEN_BRIEF_LIMIT,
+      depth: 0,
+      overrideAccess: true,
+      select: { updatedAt: true },
+    }),
+    payload.find({
+      collection: 'brief-answers',
+      where: { and: [{ creator: { in: profiles.map((p) => p.id) } }, { answeredAt: { greater_than_equal: new Date(now.getTime() - ANSWERED_DAYS * 86_400_000).toISOString() } }] },
+      depth: 0,
+      pagination: false,
+      overrideAccess: true,
+      select: { updatedAt: true },
+    }),
+  ])
+  return offerStamp([today, ...open.docs.map((b) => `${b.id}:${b.updatedAt}`), '|', ...answers.docs.map((a) => `${a.id}:${a.updatedAt}`)])
 }
 
 /** Convenience for pages: the shared Payload client. */

@@ -1,4 +1,4 @@
-import { briefPricesV1, creatorBriefsV1, matchV1, problemV1, stampV1 } from '@shoot/domain/api/v1'
+import { bookingViewV1, briefPricesV1, creatorBriefsV1, matchV1, problemV1, quotationIssuedV1, stampV1 } from '@shoot/domain/api/v1'
 import { addDays } from '@shoot/domain/booking'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 import type { z } from 'zod'
@@ -8,6 +8,9 @@ import { POST as answerRoute } from '@/app/(payload)/api/mobile/v1/me/creator/br
 import { GET as briefsRoute } from '@/app/(payload)/api/mobile/v1/me/creator/briefs/route'
 import { GET as briefsStampRoute } from '@/app/(payload)/api/mobile/v1/me/creator/briefs/stamp/route'
 import { POST as declineRoute } from '@/app/(payload)/api/mobile/v1/match/[ref]/[key]/offers/decline/route'
+import { POST as acceptQuoteRoute } from '@/app/(payload)/api/mobile/v1/quotations/[ref]/[key]/accept/route'
+import { POST as issueRoute } from '@/app/(payload)/api/mobile/v1/match/[ref]/[key]/quotation/route'
+import { POST as recordRoute } from '@/app/(payload)/api/mobile/v1/briefs/route'
 import { GET as matchRoute } from '@/app/(payload)/api/mobile/v1/match/[ref]/[key]/route'
 import { GET as matchStampRoute } from '@/app/(payload)/api/mobile/v1/match/[ref]/[key]/stamp/route'
 import type { RouteHandler } from '@/shared/api/handler'
@@ -15,7 +18,7 @@ import { resetThrottle } from '@/shared/api/throttle'
 import { briefFor, type BookingWorld } from './setup/booking'
 import { asVisitor } from './setup/next-mocks'
 import { briefByRef, offersWorld } from './setup/offers'
-import { getTestPayload } from './setup/payload'
+import { createUser, getTestPayload } from './setup/payload'
 
 vi.mock('next/headers', async () => (await import('./setup/next-mocks')).nextHeaders)
 vi.mock('next/navigation', async () => (await import('./setup/next-mocks')).nextNavigation)
@@ -106,4 +109,34 @@ describe('OF mobile API', () => {
     expect(res.status).toBe(422)
     expect(problemV1.parse(await res.json()).code).toBe('offers.errors.outOfRange')
   })
+
+  it('OF-SC-006 a released app (no new field anywhere) briefs, is answered, quotes and books on an offers brief', async () => {
+    // The brief: the request exactly as a build before 022 sends it (no budgets, no place).
+    const recorded = await call(recordRoute, 'briefs', null, { method: 'POST', body: { selections: [{ token: 'persona', value: 'photographer' }, { token: 'occasion', value: 'event' }, { token: 'duration', value: '2h' }, { token: 'location', value: 'dubai' }, { token: 'shotBy', value: 'anyone' }], date: addDays(world.date, 30) } })
+    expect(recorded.status, await recorded.clone().text()).toBe(200)
+    const receipt = (await recorded.json()) as { reference: string; matchPath: string | null }
+    expect(receipt.matchPath).toBeTruthy()
+    const [, , ref, key] = receipt.matchPath!.replace(/^\/ar/, '').split('/') as [string, string, string, string]
+    expect(((await briefByRef(ref)).budgets as unknown[]).length).toBe(1) // no budget sent: the suggestion
+
+    // The creator's older app accepts with no amount: that is the client's price.
+    const answered = await ok(await call(answerRoute, `me/creator/briefs/${ref}/answer`, sara, { method: 'POST', params: { ref }, body: { persona: String(world.personas.photographer), decision: 'accept' } }), creatorBriefsV1)
+    expect(answered.accepted.find((i) => i.ref === ref)?.offerFils).toBeGreaterThan(0)
+
+    // Step 2 as the old app reads it: creators and one price per section, no offers needed.
+    const match = await ok(await call(matchRoute, `match/${ref}/${key}`, null, { params: { ref, key } }), matchV1)
+    expect(match.sections[0]!.creators.map((c) => c.code)).toEqual([world.creators.sara!.code])
+    expect(match.sections[0]!.priceFils).toBeGreaterThan(0)
+
+    // Quotation without `expect`, then accept as a signed-in member: confirmed (the creator already agreed).
+    const client = await createUser(['member'], { accountType: 'seeker' })
+    const payload = await getTestPayload()
+    const clientToken = (await payload.login({ collection: 'users', data: { email: client.email!, password: 'password-123' } })).token as string
+    const details = { date: String((await briefByRef(ref)).date).slice(0, 10), startTime: '18:30', duration: '2h', venue: 'Dubai Marina, Marina Walk' }
+    const issued = await ok(await call(issueRoute, `match/${ref}/${key}/quotation`, clientToken, { method: 'POST', params: { ref, key }, body: { picks: [{ persona: 'photographer', code: world.creators.sara!.code }], details } }), quotationIssuedV1)
+    const booked = await ok(await call(acceptQuoteRoute, `quotations/${issued.reference}/${issued.key}/accept`, clientToken, { method: 'POST', params: { ref: issued.reference, key: issued.key } }), bookingViewV1)
+    expect(booked.state).toBe('confirmed')
+    expect(booked.totalFils).toBeGreaterThan(0)
+  })
 })
+

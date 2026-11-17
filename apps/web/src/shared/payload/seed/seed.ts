@@ -3,6 +3,7 @@ import type { CollectionSlug, Payload } from 'payload'
 import { briefSlots, categories, landingPage, locations, optionSets, personas, siteSettings } from './content'
 import { demoPassword, removeDemoCreators, seedDemoCreators } from './demo-creators'
 import { seedDemoGuides } from './demo-guides'
+import { seedDemoOffers } from './demo-offers'
 import { seedLegalDocuments } from './legal'
 import { seedHowItWorksPage, seedStudiosPage } from './pages'
 import { pickLocale, withRowIds } from './localize'
@@ -34,6 +35,8 @@ export interface SeedOptions {
   resetDemoCreators?: boolean
   /** Local/e2e only: also create demo guides and an intent page (refused on non-local hosts). */
   demoGuides?: boolean
+  /** Local/e2e only: turn "Creators offer prices" on with the default fee and range (feature 022). */
+  demoOffers?: boolean
   siteUrl?: string
   demoPassword?: string
 }
@@ -158,6 +161,10 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
 
   if (options.demoGuides) {
     await seedDemoGuides(payload, { siteUrl: options.siteUrl, log })
+  }
+
+  if (options.demoOffers) {
+    await seedDemoOffers(payload, { siteUrl: options.siteUrl, log })
   }
 }
 

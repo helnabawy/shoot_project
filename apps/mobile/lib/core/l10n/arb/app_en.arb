@@ -3402,6 +3402,15 @@
       }
     }
   },
+  "accountOffersCount": "{count, plural, =1{1 offer} other{{count} offers}}",
+  "@accountOffersCount": {
+    "description": "022: offers waiting on a brief.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "accountSaidYes": "{count, plural, =1{A creator said yes} other{{count} creators said yes}}",
   "@accountSaidYes": {
     "description": "Line on a client brief.",

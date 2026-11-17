@@ -77,6 +77,18 @@ describe('OF-US1 the place pin', () => {
     expect(problemV1.parse(await unknown.json()).code).toBe('api.errors.notFound')
   })
 
+  it('OF-US1-S4a under /ar the provider is asked for Arabic names', async () => {
+    const asked: string[] = []
+    setMapsProvider({ ...fakeMaps, reverse: async (lat, lng, language) => (asked.push(language), fakeMaps.reverse(lat, lng, language)) })
+    try {
+      const res = await reverseRoute(new Request('http://test/api/mobile/v1/places/reverse', { method: 'POST', headers: { 'content-type': 'application/json', 'accept-language': 'ar', 'x-shoot-install': 'b'.repeat(32) }, body: JSON.stringify(YAS) }), { params: Promise.resolve({}) })
+      expect(res.status).toBe(200)
+      expect(asked).toContain('ar')
+    } finally {
+      setMapsProvider(fakeMaps)
+    }
+  })
+
   it('OF-US1-S4b dragging the pin updates the area and emirate; outside is not inside', async () => {
     const dubai = placeV1.parse(await (await call(reverseRoute, 'places/reverse', { method: 'POST', body: DOWNTOWN })).json())
     expect(dubai).toMatchObject({ inside: true, area: 'Downtown Dubai', emirate: { slug: 'dubai' } })
