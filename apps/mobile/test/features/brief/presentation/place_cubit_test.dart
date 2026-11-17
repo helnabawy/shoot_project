@@ -165,5 +165,19 @@ void main() {
         await cubit.close();
       },
     );
+
+    test('OF-US1-S4b a tap on the map marks the place as dragged; at sea it is outside', () async {
+      final cubit = make();
+      await cubit.dropPin(24.4672, 54.6031);
+      expect(cubit.state.pin?.source, PlaceSource.drag);
+      expect(cubit.state.pin?.area, 'Yas Island');
+      places.reading = const Ok(
+        PlaceReading(lat: 24.9, lng: 53.9, inside: false),
+      );
+      cubit.clear();
+      await cubit.dropPin(24.9, 53.9);
+      expect(cubit.state.status, PlaceStatus.outside);
+      await cubit.close();
+    });
   });
 }

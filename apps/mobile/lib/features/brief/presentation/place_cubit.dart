@@ -37,6 +37,7 @@ final class PlaceState extends Equatable {
     this.results = const [],
     this.pin,
     this.busy = false,
+    this.focus,
   });
 
   final PlaceStatus status;
@@ -47,22 +48,27 @@ final class PlaceState extends Equatable {
   /// A pick or a reading is in flight.
   final bool busy;
 
+  /// Where the map opens before a place is marked (the brief's emirate, found by name).
+  final ({double lat, double lng})? focus;
+
   PlaceState copyWith({
     PlaceStatus? status,
     String? query,
     List<PlaceSuggestion>? results,
     Object? pin = _keep,
     bool? busy,
+    ({double lat, double lng})? focus,
   }) => PlaceState(
     status: status ?? this.status,
     query: query ?? this.query,
     results: results ?? this.results,
     pin: identical(pin, _keep) ? this.pin : pin as PlacePin?,
     busy: busy ?? this.busy,
+    focus: focus ?? this.focus,
   );
 
   @override
-  List<Object?> get props => [status, query, results, pin, busy];
+  List<Object?> get props => [status, query, results, pin, busy, focus];
 }
 
 const _keep = Object();
@@ -130,6 +136,29 @@ final class PlaceCubit extends Cubit<PlaceState> {
       case DeviceDenied():
         emit(state.copyWith(status: PlaceStatus.denied, busy: false));
     }
+  }
+
+  /// Opens the map on [name] (the brief's emirate as the CMS spells it), found through the place search, so no
+  /// place is written in code. Nothing happens when a place is already marked or the name is not found.
+  Future<void> focusOn(String? name) async {
+    if (name == null || name.trim().isEmpty || state.pin != null) return;
+    final found = await _repository.search(name, _session);
+    if (isClosed || state.pin != null) return;
+    if (found case Ok(:final value) when value.isNotEmpty) {
+      final reading = await _repository.pick(value.first.placeId, _session);
+      if (isClosed || state.pin != null) return;
+      if (reading case Ok(:final value)) {
+        emit(state.copyWith(focus: (lat: value.lat, lng: value.lng)));
+      }
+    }
+  }
+
+  /// A tap on the map (board 57): the server reads the area there.
+  Future<void> dropPin(double lat, double lng) async {
+    emit(state.copyWith(busy: true));
+    final result = await _repository.reverse(lat, lng);
+    if (isClosed) return;
+    _settle(result, PlaceSource.drag);
   }
 
   /// Takes back a marked place to search again.

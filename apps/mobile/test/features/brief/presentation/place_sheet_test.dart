@@ -52,6 +52,7 @@ void main() {
                 context,
                 repository: _Places(),
                 locator: _Denied(),
+                showMap: false,
               ),
             ),
             child: const Text('open'),

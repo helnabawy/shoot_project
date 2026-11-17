@@ -3697,6 +3697,14 @@
   "@briefPlaceLabel": {
     "description": "022: the place step's title."
   },
+  "briefPlaceMapHint": "Or tap the map where it is.",
+  "@briefPlaceMapHint": {
+    "description": "022: board 57, under the map."
+  },
+  "briefPlaceMapLabel": "Map. Tap where the shoot is to drop the pin.",
+  "@briefPlaceMapLabel": {
+    "description": "022: the map's name for screen readers."
+  },
   "briefPlaceChoose": "Mark the place",
   "@briefPlaceChoose": {
     "description": "022: the row that opens the place step."

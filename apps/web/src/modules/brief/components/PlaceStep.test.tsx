@@ -11,9 +11,21 @@ vi.mock('@/modules/maps/actions', () => ({
   locatePlace: (...a: unknown[]) => locatePlace(...a),
 }))
 
+// The real map needs a browser canvas; a stand-in drops a pin where a tap would.
+vi.mock('next/dynamic', () => ({
+  default: () =>
+    function MapStandIn({ onPick, label }: { onPick: (lat: number, lng: number) => void; label: string }) {
+      return (
+        <button type="button" aria-label={label} onClick={() => onPick(24.4672, 54.6031)}>
+          map
+        </button>
+      )
+    },
+}))
+
 const { PlaceStep } = await import('./PlaceStep')
 
-const labels = { label: 'Where is the shoot?', search: 'Search a place or area', useLocation: 'Use my location', locating: 'Finding where you are…', denied: 'Your location is off. Search for the place instead.', noResults: 'No places found.', outside: 'Choose a place on land in the emirates we cover.', change: 'Change', hint: 'Creators see the area only.' }
+const labels = { label: 'Where is the shoot?', search: 'Search a place or area', useLocation: 'Use my location', locating: 'Finding where you are…', denied: 'Your location is off. Search for the place instead.', noResults: 'No places found.', outside: 'Choose a place on land in the emirates we cover.', change: 'Change', hint: 'Creators see the area only.', mapHint: 'Or tap the map where it is.', mapLabel: 'Map' }
 const yas = { lat: 24.4672, lng: 54.6031, inside: true, area: 'Yas Island', emirate: { slug: 'abu-dhabi', name: 'Abu Dhabi' }, mapUrl: 'https://maps.example.test/pin.png', placeId: 'yas-marina' }
 const flush = () => act(async () => {})
 
@@ -70,4 +82,16 @@ describe('OF-US1 the place step', () => {
     await flush()
     expect(screen.getByRole('status')).toHaveTextContent(labels.denied)
   })
+
+  it('OF-US1-S4b a tap on the map drops the pin and posts it as dragged', async () => {
+    locatePlace.mockResolvedValue({ ...yas, placeId: undefined })
+    const { container } = renderWithLocale(<PlaceStep locale="en" labels={labels} emirateName="Abu Dhabi" />)
+    expect(screen.getByText('Or tap the map where it is.')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Map' }))
+    await flush()
+    expect(locatePlace).toHaveBeenCalledWith(24.4672, 54.6031, 'en')
+    expect(container.querySelector('input[name="place.source"]')).toHaveValue('drag')
+    expect(screen.getByTestId('place-chosen')).toHaveTextContent('Yas Island, Abu Dhabi')
+  })
 })
+

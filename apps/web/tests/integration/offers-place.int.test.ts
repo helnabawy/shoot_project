@@ -50,7 +50,8 @@ describe('OF-US1 the place pin', () => {
   it('OF-US1-S4 with maps on, a brief needs a pin inside the emirates served', async () => {
     const none = (await send({})) as { status: string; errors?: Record<string, string> }
     expect(none.status).toBe('error')
-    expect(Object.values(none.errors ?? {})).toContain('brief.errors.placeOutside')
+    // The refusal belongs to the place step, so the builder does not reopen the emirate list.
+    expect(none.errors).toEqual({ place: 'brief.errors.placeOutside' })
     const abroad = (await send({ 'place.lat': String(DOHA.lat), 'place.lng': String(DOHA.lng), 'place.source': 'drag' })) as { errors?: Record<string, string> }
     expect(Object.values(abroad.errors ?? {})).toContain('brief.errors.placeOutside')
     const sea = (await send({ 'place.lat': String(SEA.lat), 'place.lng': String(SEA.lng), 'place.source': 'drag' })) as { errors?: Record<string, string> }

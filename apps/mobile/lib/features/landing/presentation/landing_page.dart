@@ -35,6 +35,7 @@ import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_routes.dart';
 import 'package:shoot_mobile/features/brief/presentation/place_sheet.dart';
 import 'package:shoot_mobile/features/landing/presentation/landing_cubit.dart';
+import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
 /// The Pause choice, kept on the device (spec FR-031).
 final class LandingMotionStore {
@@ -90,6 +91,20 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   final _scroll = ScrollController();
 
+  /// The label of the place chosen in the brief (CMS data), for opening the map there.
+  String? _locationLabel(BriefState state) {
+    for (final slot in state.config?.slots ?? const <BuilderSlot>[]) {
+      for (final value in state.draft.valuesOf(slot.token)) {
+        for (final option in slot.options) {
+          if (option.value == value && slot.token == 'location') {
+            return option.label;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   /// 022 (boards 57–63): the place step; the marked place goes to the brief.
   Future<void> _markPlace(BuildContext context, BriefCubit brief) async {
     final pin = await showPlaceSheet(
@@ -97,6 +112,7 @@ class _LandingPageState extends State<LandingPage> {
       repository: widget.places!,
       locator: widget.locator!,
       current: brief.state.place,
+      emirateName: _locationLabel(brief.state),
     );
     if (pin != null) brief.setPlace(pin);
   }

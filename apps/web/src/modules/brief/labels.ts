@@ -116,7 +116,7 @@ export function priceStepLabelsFrom(raw: Translate) {
 
 export function placeStepLabelsFrom(raw: Translate) {
   const k = (key: string) => raw(`brief.place.${key}`)
-  return { label: k('label'), search: k('search'), useLocation: k('useLocation'), locating: k('locating'), denied: k('denied'), noResults: k('noResults'), outside: k('outside'), change: k('change'), hint: k('hint') }
+  return { label: k('label'), search: k('search'), useLocation: k('useLocation'), locating: k('locating'), denied: k('denied'), noResults: k('noResults'), outside: k('outside'), change: k('change'), hint: k('hint'), mapHint: k('mapHint'), mapLabel: k('mapLabel') }
 }
 
 /** Replaces {name} placeholders in a resolved label. */

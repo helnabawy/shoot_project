@@ -880,7 +880,7 @@ export function BriefBuilder({
 
         <div className={cx('pt-1.5 pb-2', !showTopHit && 'js-hidden')} hidden={hydrated && !showTopHit}>
           {showTopHit && priceAnswers && offers?.maps && labels.placeStep ? (
-            <PlaceStep locale={config.locale} labels={labels.placeStep} error={Object.entries(errors).find(([, v]) => v === 'brief.errors.placeOutside') ? errorText('brief.errors.placeOutside') : undefined} />
+            <PlaceStep locale={config.locale} labels={labels.placeStep} emirateName={order.find((s) => s.token === 'location')?.options.find((o) => o.value === priceAnswers.values.location)?.label} error={Object.entries(errors).find(([, v]) => v === 'brief.errors.placeOutside') ? errorText('brief.errors.placeOutside') : undefined} />
           ) : null}
           {showTopHit && priceAnswers && offers && labels.priceStep ? (
             <PriceStep

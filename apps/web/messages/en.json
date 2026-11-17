@@ -103,7 +103,9 @@
       "noResults": "No places found. Try another name.",
       "outside": "Choose a place on land in the emirates we cover.",
       "change": "Change",
-      "hint": "Creators see the area only. The exact place goes to the creator you book."
+      "hint": "Creators see the area only. The exact place goes to the creator you book.",
+      "mapHint": "Or tap the map where it is.",
+      "mapLabel": "Map. Tap where the shoot is to drop the pin."
     },
     "price": {
       "label": "Your price for the {type}",

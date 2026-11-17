@@ -400,6 +400,9 @@ class BriefCubit extends Cubit<BriefState> {
             example: false,
             receipt: value,
             signInRequired: state.signInRequired,
+            // 022: the next brief still asks for a price and a place (the server's switches, not this brief's).
+            offersEnabled: state.offersEnabled,
+            mapsEnabled: state.mapsEnabled,
           ),
         );
       case Err(:final failure):

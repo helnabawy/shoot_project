@@ -48,6 +48,9 @@ type Terms =
     }
 type Refusal = { error: 'brief.errors.budgetRange' | 'brief.errors.emirateRequired' | 'brief.errors.placeOutside'; field: string }
 
+/** 022: the form field a place refusal belongs to (the place step, not a brief slot). */
+export const PLACE_FIELD = 'place'
+
 const NO_LABELS = { travel: { en: '', ar: '' }, discount: { en: '', ar: '' } }
 
 /** Locations as matching reads them, with the Google name of each emirate. */
@@ -121,12 +124,13 @@ export async function offerTerms(
   const mapsOn = getMapsProvider(env()).name !== 'off'
   if (mapsOn && input.place) {
     const found = await placeOfPin(payload, input.place, locale)
-    if (!found) return { error: 'brief.errors.placeOutside', field: locationToken }
+    // The place step's own field, so the builder keeps the place step open instead of the emirate list.
+    if (!found) return { error: 'brief.errors.placeOutside', field: PLACE_FIELD }
     emirateSlug = found.emirate.slug
     emirateId = found.emirate.id
     place = { lat: input.place.lat, lng: input.place.lng, address: found.address, area: found.area, emirate: Number(found.emirate.id), placeId: input.place.placeId ?? null, source: input.place.source, ...snapPublic(input.place.lat, input.place.lng) }
   } else if (mapsOn && !input.pinOptional) {
-    return { error: 'brief.errors.placeOutside', field: locationToken }
+    return { error: 'brief.errors.placeOutside', field: PLACE_FIELD }
   } else {
     // Maps off, or an app without the place step (FR-025): the emirate chosen in the brief.
     const locations = await loadLocations(payload)

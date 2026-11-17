@@ -149,5 +149,32 @@ void main() {
       await c.submit();
       expect(repo.places.single, isNull);
     });
+
+    test(
+      'a second brief after one is sent still asks for the price and the place',
+      () async {
+        final repo = FakeBriefRepository()..pricesResult = const Ok([price]);
+        final c = await ready(repo, maps: true);
+        await c.submit();
+        c.setPlace(pin);
+        await c.submit();
+        expect(c.state.receipt, fxReceipt);
+        c.acknowledge();
+        expect(c.state.offersEnabled, isTrue);
+        expect(c.state.mapsEnabled, isTrue);
+        expect(c.state.place, isNull);
+        c
+          ..choose('persona', 'photographer')
+          ..choose('occasion', 'wedding')
+          ..choose('location', 'dubai');
+        await c.submit();
+        expect(
+          repo.recorded,
+          hasLength(1),
+          reason: 'the first tap shows the price step again',
+        );
+        expect(c.state.prices, [price]);
+      },
+    );
   });
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useEffect, useId, useRef, useState } from 'react'
 import { locatePlace, pickPlace, searchPlaces, type PlacePick } from '@/modules/maps/actions'
 import { rowClass, RowContent } from '@/shared/ui/bar'
@@ -15,9 +16,16 @@ export interface PlaceStepLabels {
   outside: string
   change: string
   hint: string
+  /** "Or tap the map where it is." */
+  mapHint: string
+  /** The map's name for screen readers. */
+  mapLabel: string
 }
 
 type Suggestion = { placeId: string; main: string; secondary: string }
+
+// Leaflet loads only when the place step shows (landing JS budget).
+const PlaceMap = dynamic(() => import('./PlaceMap'), { ssr: false, loading: () => <div className="h-56 w-full rounded-[12px] bg-tile" /> })
 
 /**
  * 022 (US1, boards 57–63): where the shoot is, as a pin the client chooses by searching or with their location.
@@ -25,14 +33,30 @@ type Suggestion = { placeId: string; main: string; secondary: string }
  * and emirate again (FR-005). Creators only ever see the area (FR-005b). The draggable map comes with the
  * browser map key; until then search and location set the pin.
  */
-export function PlaceStep({ locale, labels, error }: { locale: string; labels: PlaceStepLabels; error?: string }) {
+export function PlaceStep({ locale, labels, error, emirateName }: { locale: string; labels: PlaceStepLabels; error?: string; emirateName?: string }) {
   const id = useId()
   const [session] = useState(() => `s${Math.random().toString(36).slice(2, 14)}`)
   const [q, setQ] = useState('')
   const [results, setResults] = useState<Suggestion[] | null>(null)
-  const [place, setPlace] = useState<(PlacePick & { source: 'search' | 'device' }) | null>(null)
+  const [place, setPlace] = useState<(PlacePick & { source: 'search' | 'device' | 'drag' }) | null>(null)
   const [note, setNote] = useState<string | null>(null)
   const latest = useRef(0)
+  const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null)
+
+  // The map opens on the brief's emirate, found by the name the CMS gives it (no place is written in code).
+  useEffect(() => {
+    if (!emirateName) return
+    let alive = true
+    searchPlaces(emirateName, session, locale)
+      .then(async (found) => (found[0] ? pickPlace(found[0].placeId, session, locale) : null))
+      .then((p) => {
+        if (alive && p) setFocus({ lat: p.lat, lng: p.lng })
+      })
+      .catch(() => {})
+    return () => {
+      alive = false
+    }
+  }, [emirateName, session, locale])
 
   useEffect(() => {
     if (place || q.trim().length < 2) return
@@ -45,7 +69,7 @@ export function PlaceStep({ locale, labels, error }: { locale: string; labels: P
     return () => clearTimeout(timer)
   }, [q, session, locale, place])
 
-  const choose = (picked: PlacePick | null, source: 'search' | 'device') => {
+  const choose = (picked: PlacePick | null, source: 'search' | 'device' | 'drag') => {
     if (!picked || !picked.inside) {
       setNote(labels.outside)
       return
@@ -68,6 +92,8 @@ export function PlaceStep({ locale, labels, error }: { locale: string; labels: P
   return (
     <div className="flex flex-col gap-2 px-3 pb-3" data-testid="place-step">
       <span className="group-label block px-1">{labels.label}</span>
+      <PlaceMap pin={place ? { lat: place.lat, lng: place.lng } : null} focus={focus} label={labels.mapLabel} onPick={(lat, lng) => void locatePlace(lat, lng, locale).then((p) => choose(p, 'drag'))} />
+      <p className="px-1 text-[13px] text-mute">{labels.mapHint}</p>
       {place ? (
         <div className="flex items-center gap-2.5 rounded-[12px] border border-hair bg-panel-solid p-2.5" data-testid="place-chosen">
           {place.mapUrl ? (

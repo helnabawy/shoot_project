@@ -894,6 +894,8 @@
   "qmOfferTheirPrice": "بسعره",
   "qmOfferBreakdown": "العرض {amount} + الرسوم {fee}",
   "briefPlaceLabel": "أين سيكون الموعد؟",
+  "briefPlaceMapHint": "أو اضغط على الخريطة حيث المكان.",
+  "briefPlaceMapLabel": "خريطة. اضغط حيث المكان لوضع العلامة.",
   "briefPlaceChoose": "حدّد المكان",
   "briefPlaceSearch": "ابحث عن مكان أو منطقة",
   "briefPlaceUseLocation": "استخدم موقعي",
