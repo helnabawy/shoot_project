@@ -53,10 +53,10 @@ export function paymentProviderOf(env: { PAYMENT_PROVIDER?: 'stripe' | 'off'; ST
 }
 
 /**
- * The maps provider in use (feature 022, research R15): `MAPS_PROVIDER` when set, else `google` when the
- * server key is configured, else `off` (the place step falls back to the emirate list).
+ * The maps provider in use (feature 022, research R15): `MAPS_PROVIDER` when set (`google`, `osm` or `off`), else
+ * `google` when the server key is configured, else `off` (the place step falls back to the emirate list).
  */
-export function mapsProviderOf(env: { MAPS_PROVIDER?: 'google' | 'off'; GOOGLE_MAPS_SERVER_KEY?: string }): 'google' | 'off' {
+export function mapsProviderOf(env: { MAPS_PROVIDER?: 'google' | 'osm' | 'off'; GOOGLE_MAPS_SERVER_KEY?: string }): 'google' | 'osm' | 'off' {
   return env.MAPS_PROVIDER ?? (env.GOOGLE_MAPS_SERVER_KEY ? 'google' : 'off')
 }
 
@@ -95,8 +95,11 @@ export const envSchema = z
     // Online payment (feature 020, research R8): Stripe Checkout; off (WhatsApp receipt) without keys.
     PAYMENT_PROVIDER: z.enum(['stripe', 'off'], { message: 'must be stripe or off' }).optional(),
     STRIPE_SECRET_KEY: optional.refine((v) => v === undefined || /^(sk|rk)_(test|live)_\w+$/.test(v), 'must be a secret key (sk_test_… or sk_live_…)'),
-    // The place (feature 022, research R15): Google Maps; off (emirate list) without keys.
-    MAPS_PROVIDER: z.enum(['google', 'off'], { message: 'must be google or off' }).optional(),
+    // The place (feature 022, research R15): Google Maps, OpenStreetMap (no key), or off (emirate list).
+    MAPS_PROVIDER: z.enum(['google', 'osm', 'off'], { message: 'must be google, osm or off' }).optional(),
+    // OpenStreetMap: a hosted or self-hosted Nominatim and Photon; the public servers when unset.
+    OSM_NOMINATIM_URL: optional.refine((v) => v === undefined || /^https?:\/\/\S+$/.test(v), 'must be an http(s) URL'),
+    OSM_PHOTON_URL: optional.refine((v) => v === undefined || /^https?:\/\/\S+$/.test(v), 'must be an http(s) URL'),
     GOOGLE_MAPS_SERVER_KEY: optional,
     GOOGLE_MAPS_BROWSER_KEY: optional,
     GOOGLE_MAPS_URL_SECRET: optional,

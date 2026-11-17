@@ -110,7 +110,7 @@ offers live on step 2 (stamps polled every 3 s plus foreground push), accepts or
 the offers plus one `fee` line (admin percentage, hidden from creators); the exact pin goes only to the booked creator.
 Rules in `packages/domain/src/booking/{offers,place}.ts`, modules `apps/web/src/modules/{maps,booking/offers.ts,inbox}`,
 app `apps/mobile/lib/core/network/stamp_poller.dart` and the brief, inbox and step 2 screens; maps through `MAPS_PROVIDER`
-(`google` | `off`) with `GOOGLE_MAPS_SERVER_KEY`. Open in its `tasks.md`: the draggable map and app place step, goldens,
+(`osm` | `google` | `off`; `osm` is OpenStreetMap with no key, optional `OSM_NOMINATIM_URL`/`OSM_PHOTON_URL`; `google` needs `GOOGLE_MAPS_SERVER_KEY`). Open in its `tasks.md`: the draggable map and app place step, goldens,
 e2e, device walkthrough, the owner's Google Maps keys and fee confirmation.
 `specs/ROADMAP.md` has the screens per feature:
 

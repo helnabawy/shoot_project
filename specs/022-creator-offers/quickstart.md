@@ -92,7 +92,8 @@ against the local server with a foreground push.
 
 Everything is off until the owner turns it on, in this order:
 
-1. **Maps (optional).** Create a Google Maps Platform project with billing, enable Geocoding, Places and Static
+1. **Maps (optional).** For a pilot, `MAPS_PROVIDER=osm` uses OpenStreetMap with no key (no map image on creator
+   cards; the public servers allow light use only). Or create a Google Maps Platform project with billing, enable Geocoding, Places and Static
    Maps, and set `MAPS_PROVIDER=google`, `GOOGLE_MAPS_SERVER_KEY`, `GOOGLE_MAPS_BROWSER_KEY` (restricted to the
    site's addresses) and `GOOGLE_MAPS_URL_SECRET` (see `apps/web/.env.example`). Without them the place is the
    emirate list and nothing else changes.

@@ -23,7 +23,7 @@ export interface PlaceSuggestion {
 }
 
 export interface MapsProvider {
-  name: 'google' | 'off' | 'fake'
+  name: 'google' | 'osm' | 'off' | 'fake'
   reverse(lat: number, lng: number, language: string): Promise<ReverseResult | null>
   autocomplete(q: string, sessionToken: string, language: string): Promise<PlaceSuggestion[]>
   details(placeId: string, sessionToken: string, language: string): Promise<{ lat: number; lng: number } | null>
@@ -126,6 +126,102 @@ export function googleProvider(keys: { server: string; urlSecret?: string }): Ma
   }
 }
 
+/** The emirates by their ISO 3166-2 code (Nominatim's `ISO3166-2-lvl4`), as `locations.googleName` holds them. */
+const EMIRATE_BY_ISO: Record<string, string> = {
+  'AE-AZ': 'Abu Dhabi',
+  'AE-DU': 'Dubai',
+  'AE-SH': 'Sharjah',
+  'AE-AJ': 'Ajman',
+  'AE-UQ': 'Umm Al Quwain',
+  'AE-RK': 'Ras Al Khaimah',
+  'AE-FU': 'Fujairah',
+}
+
+type NominatimAddress = Record<string, string | undefined>
+
+/** Maps a Nominatim reverse answer to the area and the emirate (exported for tests); null outside the emirates. */
+export function readNominatim(json: { error?: string; display_name?: string; address?: NominatimAddress } | null): ReverseResult | null {
+  if (!json || json.error || !json.address) return null
+  const a = json.address
+  const emirateName = EMIRATE_BY_ISO[a['ISO3166-2-lvl4'] ?? '']
+  if (!emirateName || a.country_code !== 'ae') return null
+  return {
+    area: a.suburb || a.neighbourhood || a.quarter || a.city_district || a.residential || a.city || a.town || a.village || emirateName,
+    emirateName,
+    address: json.display_name ?? '',
+    reachable: true,
+  }
+}
+
+type PhotonFeature = { geometry?: { coordinates?: [number, number] }; properties?: Record<string, string | undefined> }
+
+/** Maps Photon search results to suggestions; the point travels in the id, so picking needs no second call. */
+export function readPhoton(json: { features?: PhotonFeature[] } | null): PlaceSuggestion[] {
+  return (json?.features ?? [])
+    .filter((f) => f.properties?.countrycode === 'AE' && Array.isArray(f.geometry?.coordinates))
+    .slice(0, 5)
+    .map((f) => {
+      const p = f.properties ?? {}
+      const [lng, lat] = f.geometry!.coordinates!
+      const main = p.name || [p.housenumber, p.street].filter(Boolean).join(' ') || p.district || p.city || ''
+      const secondary = [p.district !== main ? p.district : undefined, p.city !== main && p.city !== p.district ? p.city : undefined, p.state].filter(Boolean).join(', ')
+      return { placeId: `osm:${lat.toFixed(6)},${lng.toFixed(6)}`, main, secondary }
+    })
+    .filter((s) => s.main)
+}
+
+/** The point inside an `osm:` place id, or null. */
+export function pointOfOsmId(placeId: string): { lat: number; lng: number } | null {
+  const m = /^osm:(-?\d{1,2}(?:\.\d{1,7})?),(-?\d{1,3}(?:\.\d{1,7})?)$/.exec(placeId)
+  if (!m) return null
+  const lat = Number(m[1])
+  const lng = Number(m[2])
+  return Math.abs(lat) <= 90 && Math.abs(lng) <= 180 ? { lat, lng } : null
+}
+
+/**
+ * OpenStreetMap (feature 022): Photon for search as you type and Nominatim for the area under a pin. No key.
+ * The public servers ask for an identifying User-Agent and, for Nominatim, at most one request a second, so
+ * reverse lookups are spaced out in this process. `nominatimUrl` and `photonUrl` point at a hosted or
+ * self-hosted instance later. There is no static map image: cards show the area and distance only.
+ */
+export function osmProvider(options: { userAgent: string; nominatimUrl?: string; photonUrl?: string; minGapMs?: number }): MapsProvider {
+  const nominatim = (options.nominatimUrl ?? 'https://nominatim.openstreetmap.org').replace(/\/$/, '')
+  const photon = (options.photonUrl ?? 'https://photon.komoot.io').replace(/\/$/, '')
+  const gap = options.minGapMs ?? 1100
+  let next = 0
+  const headers = { 'User-Agent': options.userAgent, Accept: 'application/json' }
+  const getJson = async (url: string) => {
+    try {
+      const res = await fetch(url, { headers, cache: 'no-store' })
+      return res.ok ? ((await res.json()) as Record<string, unknown>) : null
+    } catch {
+      return null
+    }
+  }
+  return {
+    name: 'osm',
+    async reverse(lat, lng, language) {
+      // Nominatim's usage policy: at most one request a second from this server.
+      const wait = Math.max(0, next - Date.now())
+      next = Math.max(next, Date.now()) + gap
+      if (wait) await new Promise((r) => setTimeout(r, wait))
+      const json = await getJson(`${nominatim}/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=16&addressdetails=1&accept-language=${language === 'ar' ? 'ar' : 'en'}`)
+      return readNominatim(json as never)
+    },
+    async autocomplete(q, _sessionToken, language) {
+      // The UAE's bounding box; Photon has no Arabic option, so Arabic uses the names as mapped locally.
+      const lang = language === 'ar' ? 'default' : 'en'
+      const json = await getJson(`${photon}/api/?q=${encodeURIComponent(q)}&limit=8&lang=${lang}&bbox=51.5,22.6,56.4,26.1`)
+      return readPhoton(json as never)
+    },
+    async details(placeId) {
+      return pointOfOsmId(placeId)
+    },
+    staticMapUrl: () => null,
+  }
+}
+
 let cached: MapsProvider | undefined
 let override: MapsProvider | undefined
 
@@ -134,14 +230,20 @@ export function setMapsProvider(provider: MapsProvider | undefined): void {
   override = provider
 }
 
-export function getMapsProvider(e: Pick<Env, 'MAPS_PROVIDER' | 'GOOGLE_MAPS_SERVER_KEY' | 'GOOGLE_MAPS_URL_SECRET'>): MapsProvider {
+export function getMapsProvider(e: Pick<Env, 'MAPS_PROVIDER' | 'GOOGLE_MAPS_SERVER_KEY' | 'GOOGLE_MAPS_URL_SECRET' | 'OSM_NOMINATIM_URL' | 'OSM_PHOTON_URL' | 'NEXT_PUBLIC_SITE_URL'>): MapsProvider {
   if (override) return override
   if (cached) return cached
-  cached = mapsProviderOf(e) === 'google' && e.GOOGLE_MAPS_SERVER_KEY ? googleProvider({ server: e.GOOGLE_MAPS_SERVER_KEY, urlSecret: e.GOOGLE_MAPS_URL_SECRET }) : offProvider
+  const which = mapsProviderOf(e)
+  cached =
+    which === 'google' && e.GOOGLE_MAPS_SERVER_KEY
+      ? googleProvider({ server: e.GOOGLE_MAPS_SERVER_KEY, urlSecret: e.GOOGLE_MAPS_URL_SECRET })
+      : which === 'osm'
+        ? osmProvider({ userAgent: `Shoot/1.0 (+${e.NEXT_PUBLIC_SITE_URL})`, nominatimUrl: e.OSM_NOMINATIM_URL, photonUrl: e.OSM_PHOTON_URL })
+        : offProvider
   return cached
 }
 
 /** Maps are on for this deployment (the place step shows a map). */
-export function mapsEnabled(e: Pick<Env, 'MAPS_PROVIDER' | 'GOOGLE_MAPS_SERVER_KEY' | 'GOOGLE_MAPS_URL_SECRET'>): boolean {
+export function mapsEnabled(e: Parameters<typeof getMapsProvider>[0]): boolean {
   return getMapsProvider(e).name !== 'off'
 }
