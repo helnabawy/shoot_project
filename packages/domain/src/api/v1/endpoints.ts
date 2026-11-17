@@ -202,7 +202,7 @@ export const endpoints = {
     cache: 'no-store',
     input: noInput,
     output: accountHomeV1,
-    examples: ['me-account', 'me-account-empty'],
+    examples: ['me-account', 'me-account-empty', 'me-account-offers'],
   }),
   meBookings: defineEndpoint({
     id: 'meBookings',

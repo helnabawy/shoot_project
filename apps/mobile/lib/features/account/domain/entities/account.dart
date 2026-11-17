@@ -116,6 +116,24 @@ final class FinishItem extends Equatable {
 }
 
 /// `accountHomeV1`: everything screen 24 shows, and the server's three checklist items for 25.
+/// 022 (board 54): the client's open offers brief with the most offers, and the private link to them.
+final class OffersNextUp extends Equatable {
+  const OffersNextUp({
+    required this.count,
+    required this.reference,
+    required this.sentence,
+    required this.matchPath,
+  });
+
+  final int count;
+  final String reference;
+  final String sentence;
+  final String matchPath;
+
+  @override
+  List<Object?> get props => [count, reference, sentence, matchPath];
+}
+
 final class AccountHome extends Equatable {
   const AccountHome({
     required this.name,
@@ -128,6 +146,7 @@ final class AccountHome extends Equatable {
     required this.finishItems,
     required this.finishAutoOpen,
     required this.about,
+    this.offers,
   });
 
   final String? name;
@@ -140,6 +159,9 @@ final class AccountHome extends Equatable {
   final List<FinishItem> finishItems;
   final bool finishAutoOpen;
   final List<String> about;
+
+  /// 022: offers waiting on a brief; leads when there is no booking to answer.
+  final OffersNextUp? offers;
 
   FinishItem? item(FinishKey key) {
     for (final item in finishItems) {
@@ -165,6 +187,7 @@ final class AccountHome extends Equatable {
     finishItems: finishItems ?? this.finishItems,
     finishAutoOpen: finishAutoOpen ?? this.finishAutoOpen,
     about: about,
+    offers: offers,
   );
 
   @override
@@ -179,6 +202,7 @@ final class AccountHome extends Equatable {
     finishItems,
     finishAutoOpen,
     about,
+    offers,
   ];
 }
 

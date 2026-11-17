@@ -1,6 +1,7 @@
 import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_draft.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
+import 'package:shoot_mobile/features/brief/domain/place.dart';
 import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
 BuilderOption fxOption(String v, {List<String> personas = const []}) =>
@@ -83,6 +84,9 @@ final class FakeBriefRepository implements BriefRepository {
 
   /// 022: what each recorded brief priced (persona slug → fils), and the prices the fake answers.
   final List<Map<String, int>?> budgets = [];
+
+  /// 022: the place each recorded brief carried.
+  final List<PlacePin?> places = [];
   Result<List<BriefPrice>> pricesResult = const Ok([]);
 
   @override
@@ -91,10 +95,12 @@ final class FakeBriefRepository implements BriefRepository {
     BriefDraft draft, {
     String? creator,
     Map<String, int>? budgets,
+    PlacePin? place,
   }) async {
     recorded.add(draft);
     creators.add(creator);
     this.budgets.add(budgets);
+    places.add(place);
     return result;
   }
 

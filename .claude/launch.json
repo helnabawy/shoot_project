@@ -36,6 +36,15 @@
         "export PATH=\"$HOME/.nvm/versions/node/v24.22.2/bin:$PATH\" && cd .claude/worktrees/019-creator-brief-inbox/apps/web && pnpm dev -p 3019"
       ],
       "port": 3019
+    },
+    {
+      "name": "web-022",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "export PATH=\"$HOME/.nvm/versions/node/v24.22.2/bin:$PATH\" && source /private/tmp/claude-501/-Users-helnabawy-Work-personal-shoot-project--claude-worktrees-indrive-delivery-creator-flow-87a706/c577c18c-7de2-42f8-b7f0-71e36d1ac696/scratchpad/local.env && cd apps/web && pnpm dev -H 0.0.0.0 -p 3022"
+      ],
+      "port": 3022
     }
   ]
 }

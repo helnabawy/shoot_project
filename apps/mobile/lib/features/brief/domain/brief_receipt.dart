@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_draft.dart';
+import 'package:shoot_mobile/features/brief/domain/place.dart';
 import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
 /// What the server answers when a brief is recorded (`briefReceiptV1`).
@@ -34,6 +35,7 @@ abstract interface class BriefRepository {
     BriefDraft draft, {
     String? creator,
     Map<String, int>? budgets,
+    PlacePin? place,
   });
 
   /// 022: the usual price and the allowed range per type for a complete draft.

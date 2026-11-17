@@ -4,6 +4,9 @@
     <!-- Take a photo of a profile picture, ID or trade licence (creator profile). The system photo
          picker and file chooser need no storage permission. -->
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- 022: "Use my location" in the place step; asked only when the person taps it. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
     <application

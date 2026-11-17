@@ -22,6 +22,7 @@ final class MatchState extends Equatable {
     this.date,
     this.duration,
     this.failure,
+    this.moved,
   });
 
   final MatchStatus status;
@@ -37,6 +38,22 @@ final class MatchState extends Equatable {
   /// A duration picked on screen 09 (overrides the brief's).
   final String? duration;
   final Failure? failure;
+
+  /// 022 (board 48): the first name of a creator whose offer moved while the client was on the details step.
+  final String? moved;
+
+  /// 022 (board 49): the chosen offers plus the fee, when every type has one; `null` otherwise.
+  int? get offersTotalFils {
+    final p = page;
+    if (p == null || !p.offersMode) return null;
+    var sum = 0;
+    for (var i = 0; i < p.sections.length; i++) {
+      final offer = _offerIn(p.sections[i], chosenIn(i));
+      if (offer == null) return null;
+      sum += offer.totalFils;
+    }
+    return sum;
+  }
 
   /// The chosen creator of section [index], or `null` for "let us pick" or nobody free.
   MatchCreator? chosenIn(int index) {
@@ -77,6 +94,7 @@ final class MatchState extends Equatable {
     String? Function()? date,
     String? Function()? duration,
     Failure? Function()? failure,
+    String? Function()? moved,
   }) => MatchState(
     status: status ?? this.status,
     page: page ?? this.page,
@@ -85,6 +103,7 @@ final class MatchState extends Equatable {
     date: date == null ? this.date : date(),
     duration: duration == null ? this.duration : duration(),
     failure: failure == null ? this.failure : failure(),
+    moved: moved == null ? this.moved : moved(),
   );
 
   @override
@@ -96,6 +115,7 @@ final class MatchState extends Equatable {
     date,
     duration,
     failure,
+    moved,
   ];
 }
 
@@ -148,6 +168,30 @@ final class MatchCubit extends Cubit<MatchState> {
       _applyWanted();
     }
   }
+
+  /// 022 (board 48): reloads step 2 after a quotation was refused because an offer moved, and notes
+  /// whose price changed from the amounts the client saw ([seen], the picks with `expectFils`).
+  Future<void> reloadAfterMove(List<Pick> seen) async {
+    await load();
+    if (isClosed) return;
+    String? who;
+    for (final pick in seen) {
+      final expect = pick.expectFils;
+      if (expect == null || pick.code == null) continue;
+      for (final section in state.page?.sections ?? const <MatchSection>[]) {
+        if (section.persona.slug != pick.persona) continue;
+        for (final offer in section.offers ?? const <MatchOffer>[]) {
+          if (offer.creator.code == pick.code && offer.amountFils != expect) {
+            who ??= offer.creator.firstName;
+          }
+        }
+      }
+    }
+    emit(state.copyWith(moved: () => who));
+  }
+
+  /// The notice was read.
+  void dismissMoved() => emit(state.copyWith(moved: () => null));
 
   /// 022 (US4-S5): declines one offer; the list answers again without it.
   Future<void> decline(int section, int index) async {

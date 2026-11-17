@@ -148,5 +148,50 @@ void main() {
       expect(page.closed, isTrue);
       expect(offersPage().closed, isFalse);
     });
+
+    test(
+      'OF-US4-S7 after a moved offer the reload names whose price changed',
+      () async {
+        final cubit = make();
+        await cubit.load();
+        final offer = cubit.state.page!.sections.first.offers!.first;
+        await cubit.reloadAfterMove([
+          Pick(
+            persona: 'photographer',
+            code: offer.creator.code,
+            expectFils: offer.amountFils - 5000,
+          ),
+        ]);
+        expect(cubit.state.moved, offer.creator.firstName);
+        cubit.dismissMoved();
+        expect(cubit.state.moved, isNull);
+        // The same amount: nothing moved, no notice.
+        await cubit.reloadAfterMove([
+          Pick(
+            persona: 'photographer',
+            code: offer.creator.code,
+            expectFils: offer.amountFils,
+          ),
+        ]);
+        expect(cubit.state.moved, isNull);
+        await cubit.close();
+      },
+    );
+
+    test(
+      'OF-US5-S2 the details total is the chosen offers plus the fee',
+      () async {
+        final cubit = make();
+        await cubit.load();
+        final offer = cubit.state.page!.sections.first.offers!.first;
+        expect(cubit.state.offersTotalFils, offer.totalFils);
+        answers(exampleMatch());
+        final fixed = make();
+        await fixed.load();
+        expect(fixed.state.offersTotalFils, isNull);
+        await fixed.close();
+        await cubit.close();
+      },
+    );
   });
 }

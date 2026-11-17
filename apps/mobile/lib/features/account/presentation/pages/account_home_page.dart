@@ -134,6 +134,14 @@ class _Body extends StatelessWidget {
               child: _UpNextCard(upNext: upNext),
             ),
             const SizedBox(height: 28),
+          ] else if (home.offers case final offers?) ...[
+            // 022 (board 54): offers waiting lead when no quotation needs an answer.
+            Semantics(
+              container: true,
+              label: l10n.accountUpNext,
+              child: _OffersCard(offers: offers),
+            ),
+            const SizedBox(height: 28),
           ],
           Padding(
             padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
@@ -384,6 +392,55 @@ class _UpNextCard extends StatelessWidget {
                 label: _upNextAction(context, upNext.kind),
                 chevron: true,
                 onPressed: () => context.go(bookingPath(booking.reference)),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// 022 (board 54): "N offers for your brief" with one action to the offers.
+class _OffersCard extends StatelessWidget {
+  const _OffersCard({required this.offers});
+
+  final OffersNextUp offers;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final c = context.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GroupLabel(l10n.accountUpNext),
+        ShootPanel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsetsDirectional.symmetric(horizontal: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 6,
+                  children: [
+                    Text(
+                      l10n.accountOffersTitle(offers.count),
+                      style: ShootType.heading.copyWith(color: c.ink),
+                    ),
+                    Text(
+                      offers.sentence,
+                      style: ShootType.meta.copyWith(color: c.mute),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              TopHit(
+                label: l10n.accountOffersAction,
+                chevron: true,
+                onPressed: () => context.go(offers.matchPath),
               ),
             ],
           ),

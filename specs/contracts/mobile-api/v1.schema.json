@@ -17026,6 +17026,35 @@
             ],
             "type": "object"
           },
+          "offers": {
+            "additionalProperties": false,
+            "properties": {
+              "count": {
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991,
+                "type": "integer"
+              },
+              "matchPath": {
+                "format": "starts_with",
+                "pattern": "^\\/.*",
+                "type": "string"
+              },
+              "reference": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "sentence": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "count",
+              "reference",
+              "sentence",
+              "matchPath"
+            ],
+            "type": "object"
+          },
           "person": {
             "additionalProperties": false,
             "properties": {

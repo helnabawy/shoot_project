@@ -184,11 +184,18 @@ final class CreatorInbox extends Equatable {
 
 /// What Up next leads with: how many open briefs match, and the soonest.
 final class BriefsSummary extends Equatable {
-  const BriefsSummary({required this.count, required this.soonest});
+  const BriefsSummary({
+    required this.count,
+    required this.soonest,
+    this.budgetFils,
+  });
 
   final int count;
   final BriefItem? soonest;
 
+  /// 022 (board 53): the client's price on the soonest brief, when it asks for offers.
+  final int? budgetFils;
+
   @override
-  List<Object?> get props => [count, soonest];
+  List<Object?> get props => [count, soonest, budgetFils];
 }

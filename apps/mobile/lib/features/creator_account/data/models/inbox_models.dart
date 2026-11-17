@@ -85,6 +85,7 @@ BriefsSummary? briefsSummaryFromJson(Json account) {
   final soonest = readNullableObject(json, 'soonest');
   return BriefsSummary(
     count: readInt(json, 'count'),
+    budgetFils: soonest == null ? null : readNullableInt(soonest, 'budgetFils'),
     soonest: soonest == null
         ? null
         : BriefItem(

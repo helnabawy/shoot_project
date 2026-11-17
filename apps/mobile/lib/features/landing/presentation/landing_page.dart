@@ -29,9 +29,11 @@ import 'package:shoot_mobile/core/widgets/shoot_image.dart';
 import 'package:shoot_mobile/core/widgets/specialty_scene.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/core/widgets/wordmark.dart';
+import 'package:shoot_mobile/features/brief/domain/place.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_bar.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_routes.dart';
+import 'package:shoot_mobile/features/brief/presentation/place_sheet.dart';
 import 'package:shoot_mobile/features/landing/presentation/landing_cubit.dart';
 
 /// The Pause choice, kept on the device (spec FR-031).
@@ -63,6 +65,8 @@ class LandingPage extends StatefulWidget {
     required this.links,
     this.open = openInBrowser,
     this.fullScreenHero = true,
+    this.places,
+    this.locator,
   });
 
   /// The hero and its scene fill the first screen. Tests and goldens that render the whole page on one
@@ -75,12 +79,27 @@ class LandingPage extends StatefulWidget {
   final WebsiteLinks links;
   final UrlOpener open;
 
+  /// 022: the place step's server calls and the device location; without them the place row does nothing.
+  final PlaceRepository? places;
+  final DeviceLocator? locator;
+
   @override
   State<LandingPage> createState() => _LandingPageState();
 }
 
 class _LandingPageState extends State<LandingPage> {
   final _scroll = ScrollController();
+
+  /// 022 (boards 57–63): the place step; the marked place goes to the brief.
+  Future<void> _markPlace(BuildContext context, BriefCubit brief) async {
+    final pin = await showPlaceSheet(
+      context,
+      repository: widget.places!,
+      locator: widget.locator!,
+      current: brief.state.place,
+    );
+    if (pin != null) brief.setPlace(pin);
+  }
 
   @override
   void initState() {
@@ -204,6 +223,9 @@ class _LandingPageState extends State<LandingPage> {
                       scroll: _scroll,
                       clock: widget.clock,
                       fullScreenHero: widget.fullScreenHero,
+                      onPlace: widget.places == null || widget.locator == null
+                          ? null
+                          : () => unawaited(_markPlace(context, widget.brief)),
                       onWhatsapp: () => unawaited(
                         _openWhatsapp(
                           state.site?.whatsapp.number,
@@ -230,8 +252,10 @@ class _LandingView extends StatelessWidget {
     required this.clock,
     required this.fullScreenHero,
     required this.onWhatsapp,
+    this.onPlace,
   });
 
+  final VoidCallback? onPlace;
   final bool fullScreenHero;
   final LandingState state;
   final BriefCubit brief;
@@ -268,6 +292,7 @@ class _LandingView extends StatelessWidget {
                   brief: brief,
                   clock: clock,
                   onWhatsapp: onWhatsapp,
+                  onPlace: onPlace,
                   // With no creators section the Pause control sits near the hero (spec FR-031).
                   pauseNearHero: sections.creators == null,
                 ),
@@ -304,6 +329,7 @@ class _Hero extends StatelessWidget {
     required this.clock,
     required this.onWhatsapp,
     required this.pauseNearHero,
+    this.onPlace,
   });
 
   final double minHeight;
@@ -312,6 +338,7 @@ class _Hero extends StatelessWidget {
   final Clock clock;
   final VoidCallback onWhatsapp;
   final bool pauseNearHero;
+  final VoidCallback? onPlace;
 
   @override
   Widget build(BuildContext context) {
@@ -427,6 +454,7 @@ class _Hero extends StatelessWidget {
                                             unawaited(brief.submit()),
                                         onWhatsapp: onWhatsapp,
                                         onBudget: brief.setBudget,
+                                        onPlace: onPlace,
                                         guest: session is! SignedIn,
                                         onProvider: (slug) => unawaited(
                                           context.push(

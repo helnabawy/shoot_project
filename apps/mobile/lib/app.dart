@@ -23,6 +23,7 @@ import 'package:shoot_mobile/core/web/website_links.dart';
 import 'package:shoot_mobile/features/account/presentation/account_routes.dart';
 import 'package:shoot_mobile/features/account/presentation/cubit/account_cubit.dart';
 import 'package:shoot_mobile/features/account/presentation/cubit/bookings_cubit.dart';
+import 'package:shoot_mobile/features/brief/domain/place.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_routes.dart';
 import 'package:shoot_mobile/features/content/presentation/content_deps.dart';
@@ -124,6 +125,8 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
           motion: getIt<LandingMotionStore>(),
           clock: getIt<Clock>(),
           links: getIt<WebsiteLinks>(),
+          places: getIt<PlaceRepository>(),
+          locator: getIt<DeviceLocator>(),
         ),
   );
 

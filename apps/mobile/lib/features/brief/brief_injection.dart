@@ -3,7 +3,9 @@ import 'package:get_it/get_it.dart';
 import 'package:shoot_mobile/core/auth/session_cubit.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/features/brief/data/brief_data.dart';
+import 'package:shoot_mobile/features/brief/data/place_data.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
+import 'package:shoot_mobile/features/brief/domain/place.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/site/domain/repositories/site_repository.dart';
 
@@ -14,6 +16,10 @@ void registerBriefFeature(GetIt getIt) {
     ..registerLazySingleton<BriefRepository>(
       () => BriefRepositoryImpl(getIt<Dio>()),
     )
+    ..registerLazySingleton<PlaceRepository>(
+      () => PlaceRepositoryImpl(getIt<Dio>()),
+    )
+    ..registerLazySingleton<DeviceLocator>(() => const GeolocatorLocator())
     ..registerLazySingleton<BriefCubit>(
       () => BriefCubit(
         loadBuilder: getIt<SiteRepository>().getBriefBuilder,

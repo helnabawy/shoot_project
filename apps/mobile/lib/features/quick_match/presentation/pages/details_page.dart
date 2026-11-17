@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
@@ -13,6 +14,7 @@ import 'package:shoot_mobile/core/widgets/money.dart';
 import 'package:shoot_mobile/core/widgets/picker_field.dart';
 import 'package:shoot_mobile/core/widgets/shoot_field.dart';
 import 'package:shoot_mobile/core/widgets/shoot_scaffold.dart';
+import 'package:shoot_mobile/core/widgets/text_link.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/book_flow_cubit.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/match_cubit.dart';
@@ -46,7 +48,16 @@ class BookFlowListener extends StatelessWidget {
           if (url != null) unawaited(openUrl(Uri.parse(url)));
           context.go('/q/${issued.reference}/${issued.key}');
         } else if (state.status == BookStatus.unavailable) {
-          unawaited(context.read<MatchCubit>().load());
+          // 022 (board 48): an offer that moved says whose price changed; otherwise the list just reloads.
+          final failure = state.failure;
+          final moved =
+              failure is ServerFailure &&
+              failure.code == 'offers.errors.amountChanged';
+          unawaited(
+            moved
+                ? context.read<MatchCubit>().reloadAfterMove(state.picks)
+                : context.read<MatchCubit>().load(),
+          );
           context.go('/match/$ref/$accessKey');
         }
       },
@@ -169,7 +180,9 @@ class _DetailsPageState extends State<DetailsPage> {
         builder: (context, match) => BlocBuilder<BookFlowCubit, BookFlowState>(
           builder: (context, flow) {
             final page = match.page;
-            final total = page?.totalFils;
+            // 022 (board 49): with offers, the total is the chosen offers plus the fee.
+            final offersMode = page?.offersMode ?? false;
+            final total = offersMode ? match.offersTotalFils : page?.totalFils;
             final durations = page?.durations ?? const [];
             final label = durations
                 .where((d) => d.value == flow.duration)
@@ -226,19 +239,31 @@ class _DetailsPageState extends State<DetailsPage> {
                                   text: qmFailureText(context, flow.failure!),
                                   tone: BannerTone.error,
                                 ),
-                              PickerField(
-                                key: const ValueKey('qm:date'),
-                                label: l10n.qmDateLabel,
-                                opensHint: l10n.qmDateLabel,
-                                value: flow.date.isEmpty
-                                    ? null
-                                    : qmDay(context, flow.date),
-                                error: qmFieldText(
-                                  context,
-                                  flow.errors['date'],
+                              if (offersMode)
+                                _FixedRow(
+                                  text: [
+                                    if (flow.date.isNotEmpty)
+                                      qmDay(context, flow.date),
+                                    ?label,
+                                  ].join(' · '),
+                                  note: l10n.qmDetailsFixedNote,
+                                  linkLabel: l10n.qmDetailsNewBrief,
+                                  onNewBrief: () => context.go('/'),
+                                )
+                              else
+                                PickerField(
+                                  key: const ValueKey('qm:date'),
+                                  label: l10n.qmDateLabel,
+                                  opensHint: l10n.qmDateLabel,
+                                  value: flow.date.isEmpty
+                                      ? null
+                                      : qmDay(context, flow.date),
+                                  error: qmFieldText(
+                                    context,
+                                    flow.errors['date'],
+                                  ),
+                                  onTap: () => unawaited(_pickDate()),
                                 ),
-                                onTap: () => unawaited(_pickDate()),
-                              ),
                               PickerField(
                                 key: const ValueKey('qm:time'),
                                 label: l10n.qmTimeLabel,
@@ -253,7 +278,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 ),
                                 onTap: () => unawaited(_pickTime()),
                               ),
-                              if (durations.isNotEmpty)
+                              if (durations.isNotEmpty && !offersMode)
                                 PickerField(
                                   key: const ValueKey('qm:duration'),
                                   label: l10n.qmDurationLabel,
@@ -348,6 +373,35 @@ class _DurationSheet extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// 022 (board 49, FR-018a): the day and length the creators priced, fixed, with a way to start again.
+class _FixedRow extends StatelessWidget {
+  const _FixedRow({
+    required this.text,
+    required this.note,
+    required this.linkLabel,
+    required this.onNewBrief,
+  });
+
+  final String text;
+  final String note;
+  final String linkLabel;
+  final VoidCallback onNewBrief;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 4,
+      children: [
+        Text(text, style: ShootType.body.copyWith(color: c.ink)),
+        Text(note, style: ShootType.meta.copyWith(color: c.mute)),
+        TextLink(label: linkLabel, onTap: onNewBrief),
+      ],
     );
   }
 }

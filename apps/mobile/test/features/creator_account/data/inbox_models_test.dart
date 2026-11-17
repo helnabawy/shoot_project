@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shoot_mobile/features/creator_account/data/models/inbox_models.dart';
 import 'package:shoot_mobile/features/creator_account/domain/entities/inbox.dart';
 
 import '../fixtures.dart';
@@ -49,6 +50,29 @@ void main() {
       expect(BriefOutcome.fromWire('something-new'), BriefOutcome.open);
       expect(BriefAnswer.fromWire('rejected'), BriefAnswer.rejected);
       expect(BriefAnswer.fromWire(null), isNull);
+    });
+  });
+
+  group('OF-US2-S1 the creator home carries the client price (board 53)', () {
+    Map<String, Object?> account(Map<String, Object?> soonest) => {
+      'briefs': {'count': 2, 'soonest': soonest},
+    };
+    const base = {
+      'ref': 'BR-7K2Q',
+      'profession': 'Photographer',
+      'occasion': 'a birthday',
+      'emirate': 'Dubai',
+      'date': null,
+    };
+
+    test('an offers brief has its price; a fixed-price brief has none', () {
+      expect(
+        briefsSummaryFromJson(account({...base, 'budgetFils': 80000}))
+            ?.budgetFils,
+        80000,
+      );
+      expect(briefsSummaryFromJson(account(base))?.budgetFils, isNull);
+      expect(briefsSummaryFromJson(const {}), isNull);
     });
   });
 }

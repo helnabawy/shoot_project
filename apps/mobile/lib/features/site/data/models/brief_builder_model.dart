@@ -17,6 +17,7 @@ final class BriefBuilderModel {
         signInRequired: json['signInRequired'] == true,
         // 022, additive: an older server leaves it out (no price step).
         offersEnabled: (json['offers'] as Map?)?['enabled'] == true,
+        mapsEnabled: (json['maps'] as Map?)?['enabled'] == true,
       ),
     );
   }

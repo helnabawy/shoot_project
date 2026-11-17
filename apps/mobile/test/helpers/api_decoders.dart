@@ -40,6 +40,7 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   // 013: the client account.
   'me-account': (json) => AccountHomeModel.fromJson(json).toEntity(),
   'me-account-empty': (json) => AccountHomeModel.fromJson(json).toEntity(),
+  'me-account-offers': (json) => AccountHomeModel.fromJson(json).toEntity(),
   'me-bookings': (json) => BookingListModel.fromJson(json).toEntity(),
   'me-briefs': (json) => BriefListModel.fromJson(json).toEntity(),
   'me-updated': SessionUser.fromMe,

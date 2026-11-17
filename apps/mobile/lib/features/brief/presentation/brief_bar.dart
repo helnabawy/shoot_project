@@ -10,6 +10,7 @@ import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_draft.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
+import 'package:shoot_mobile/features/brief/domain/place.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
@@ -34,6 +35,7 @@ class BriefBar extends StatefulWidget {
     this.onProvider,
     this.guest = false,
     this.onBudget,
+    this.onPlace,
   });
 
   /// 021: a signed-out person while sending needs sign-in: one line under the Top Hit says a
@@ -59,6 +61,9 @@ class BriefBar extends StatefulWidget {
 
   /// 022: the client changes their price for one type (persona slug, fils).
   final void Function(String persona, int fils)? onBudget;
+
+  /// 022: opens the place step (boards 57–63).
+  final VoidCallback? onPlace;
 
   @override
   State<BriefBar> createState() => _BriefBarState();
@@ -137,7 +142,9 @@ class _BriefBarState extends State<BriefBar> {
               child: InlineError(_messageText(context, state, engine)),
             ),
           if (complete && !searching) ...[
-            // 022: the price step (board 44), once the brief is complete and offers are on.
+            // 022: the place (boards 57–58), then the price step (board 44), once the brief is complete.
+            if (state.mapsEnabled && state.prices.isNotEmpty)
+              _PlaceRow(place: state.place, onTap: widget.onPlace),
             for (final price in state.prices)
               _PriceRow(
                 price: price,
@@ -258,6 +265,7 @@ class _BriefBarState extends State<BriefBar> {
       BriefMessage.network => l10n.mlBriefNetwork,
       BriefMessage.generic => l10n.mlBriefGeneric,
       BriefMessage.budgetRange => l10n.briefPriceOutOfRange,
+      BriefMessage.placeNeeded => l10n.briefPlaceNeeded,
     };
   }
 
@@ -269,6 +277,60 @@ class _BriefBarState extends State<BriefBar> {
       }
     }
     return slug;
+  }
+}
+
+/// 022 (boards 57–58): the place row: "Mark the place" until one is marked, then its area and emirate.
+class _PlaceRow extends StatelessWidget {
+  const _PlaceRow({required this.place, required this.onTap});
+
+  final PlacePin? place;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final c = context.colors;
+    final comma = Localizations.localeOf(context).languageCode == 'ar'
+        ? '، '
+        : ', ';
+    final marked = place;
+    return InkWell(
+      key: const ValueKey('brief:place'),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 4),
+        child: Row(
+          spacing: 12,
+          children: [
+            ShootIcon(ShootIcons.pin, size: 20, color: c.ink),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GroupLabel(l10n.briefPlaceLabel),
+                  Text(
+                    marked == null
+                        ? l10n.briefPlaceChoose
+                        : [
+                            marked.area,
+                            marked.emirate,
+                          ].where((s) => s.isNotEmpty).join(comma),
+                    style: ShootType.body.copyWith(
+                      color: marked == null ? c.mute : c.ink,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Text(
+              l10n.briefPlaceChange,
+              style: ShootType.meta.copyWith(color: c.mute),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

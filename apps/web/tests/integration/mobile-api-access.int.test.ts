@@ -85,6 +85,10 @@ const BOOKING: Record<string, number> = {
   matchStamp: 404,
   offerDecline: 422,
   briefPrices: 422,
+  // 022: the place step's search and pin: no body or token is a 422 (no-store, public in no cache).
+  placeAutocomplete: 422,
+  placeDetails: 422,
+  placeReverse: 422,
 }
 
 /** Feature 009's endpoints: an anonymous call is refused as declared (401 signed in, 422 without a body); their own suites cover the rest. */

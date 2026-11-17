@@ -1,0 +1,55 @@
+{
+  "person": {
+    "name": "Sara",
+    "phone": "+971501234567"
+  },
+  "upNext": null,
+  "places": {
+    "bookings": {
+      "waiting": 1,
+      "open": 2
+    },
+    "briefs": {
+      "open": 1
+    }
+  },
+  "briefs": [
+    {
+      "reference": "B-2026-0311",
+      "sentence": "A wedding photographer in Dubai on 12 December",
+      "sentAt": "2026-11-10T09:30:00.000Z",
+      "status": "contacted",
+      "bookingReference": "Q-2026-0142"
+    }
+  ],
+  "finish": {
+    "items": [
+      {
+        "key": "number",
+        "done": true,
+        "value": "+971501234567"
+      },
+      {
+        "key": "name",
+        "done": true,
+        "value": "Sara"
+      },
+      {
+        "key": "email",
+        "done": false,
+        "value": null
+      }
+    ],
+    "autoOpen": true
+  },
+  "about": [
+    "Find your quotations and bookings again without a link.",
+    "Keep your details for the next brief."
+  ],
+  "offers": {
+    "count": 3,
+    "reference": "B-2026-0311",
+    "sentence": "A wedding photographer in Dubai on 12 December",
+    "matchPath": "/match/B-2026-0311/kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+  }
+}

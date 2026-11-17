@@ -5,6 +5,7 @@ import 'package:shoot_mobile/core/network/api_post.dart';
 import 'package:shoot_mobile/core/network/json_read.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_draft.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
+import 'package:shoot_mobile/features/brief/domain/place.dart';
 import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
 /// The request body of `POST briefs` (`briefRecordV1`): one entry per chosen value, in the order
@@ -14,6 +15,7 @@ Map<String, Object?> briefRecordBody(
   BriefDraft draft, {
   String? creator,
   Map<String, int>? budgets,
+  PlacePin? place,
 }) {
   return {
     'selections': [
@@ -29,6 +31,13 @@ Map<String, Object?> briefRecordBody(
         for (final e in budgets.entries)
           {'persona': e.key, 'amountFils': e.value},
       ],
+    if (place != null)
+      'place': {
+        'lat': place.lat,
+        'lng': place.lng,
+        'source': place.source.name,
+        'placeId': ?place.placeId,
+      },
   };
 }
 
@@ -63,11 +72,18 @@ final class BriefRepositoryImpl implements BriefRepository {
     BriefDraft draft, {
     String? creator,
     Map<String, int>? budgets,
+    PlacePin? place,
   }) => apiResult(() async {
     final answer = await apiPost(
       _dio,
       'briefs',
-      body: briefRecordBody(config, draft, creator: creator, budgets: budgets),
+      body: briefRecordBody(
+        config,
+        draft,
+        creator: creator,
+        budgets: budgets,
+        place: place,
+      ),
     );
     return briefReceiptFromJson(answer.body ?? const {});
   });

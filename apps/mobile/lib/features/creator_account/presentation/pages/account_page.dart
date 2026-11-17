@@ -9,6 +9,7 @@ import 'package:shoot_mobile/core/routing/app_routes.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/widgets/icon_tile.dart';
+import 'package:shoot_mobile/core/widgets/money.dart';
 import 'package:shoot_mobile/core/widgets/progress_bar.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
 import 'package:shoot_mobile/core/widgets/shoot_panel.dart';
@@ -264,6 +265,9 @@ class _UpNext extends StatelessWidget {
           MetaText(
             [s.profession, s.occasion].where((t) => t.isNotEmpty).join(' · '),
           ),
+        // 022 (board 53): the client's price, so the creator knows what is being asked before opening it.
+        if (a.briefs!.budgetFils case final fils?)
+          MetaText(l10n.caBriefsPrice(Money.format(fils / 100))),
         TopHit(
           label: l10n.caBriefsAction(a.briefs!.count),
           chevron: true,

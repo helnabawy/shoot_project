@@ -3384,6 +3384,15 @@
       }
     }
   },
+  "caBriefsPrice": "The client's price is {price}. Accept it or answer with yours.",
+  "@caBriefsPrice": {
+    "description": "022: board 53, the client's price on the soonest brief.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "caBriefsTitle": "{count, plural, =1{A new brief matches you} other{{count} new briefs match you}}",
   "@caBriefsTitle": {
     "description": "Up next title for matching briefs.",
@@ -3401,6 +3410,19 @@
         "type": "int"
       }
     }
+  },
+  "accountOffersTitle": "{count, plural, =1{1 offer for your brief} other{{count} offers for your brief}}",
+  "@accountOffersTitle": {
+    "description": "022: board 54 title.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountOffersAction": "See the offers",
+  "@accountOffersAction": {
+    "description": "022: board 54 action."
   },
   "accountOffersCount": "{count, plural, =1{1 offer} other{{count} offers}}",
   "@accountOffersCount": {
@@ -3580,6 +3602,27 @@
       }
     }
   },
+  "qmDetailsFixedNote": "The creators priced this day, length and place. To change them, send a new brief.",
+  "@qmDetailsFixedNote": {
+    "description": "022: board 49."
+  },
+  "qmDetailsNewBrief": "Send a new brief",
+  "@qmDetailsNewBrief": {
+    "description": "022: board 49 link."
+  },
+  "qmOffersChangedTitle": "{name} changed the price",
+  "@qmOffersChangedTitle": {
+    "description": "022: board 48 title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qmOffersChangedIntro": "It moved while you were choosing, so nothing was accepted. Here is the offer now.",
+  "@qmOffersChangedIntro": {
+    "description": "022: board 48 text."
+  },
   "qmOffersClosedTitle": "This brief is closed",
   "@qmOffersClosedTitle": {
     "description": "022: step 2 of a brief whose date passed (FR-012a)."
@@ -3649,6 +3692,62 @@
         "type": "String"
       }
     }
+  },
+  "briefPlaceLabel": "Where is it taking place?",
+  "@briefPlaceLabel": {
+    "description": "022: the place step's title."
+  },
+  "briefPlaceChoose": "Mark the place",
+  "@briefPlaceChoose": {
+    "description": "022: the row that opens the place step."
+  },
+  "briefPlaceSearch": "Search a place or area",
+  "@briefPlaceSearch": {
+    "description": "022: the search field's label."
+  },
+  "briefPlaceUseLocation": "Use my location",
+  "@briefPlaceUseLocation": {
+    "description": "022: sets the place from the device."
+  },
+  "briefPlaceLocating": "Finding where you are\u2026",
+  "@briefPlaceLocating": {
+    "description": "022: waiting for the device's location."
+  },
+  "briefPlaceEmpty": "Nothing marked yet. Search for the place or use your location.",
+  "@briefPlaceEmpty": {
+    "description": "022: board 59."
+  },
+  "briefPlaceNoResults": "No places found. Try another name.",
+  "@briefPlaceNoResults": {
+    "description": "022: board 60 with no results."
+  },
+  "briefPlaceDenied": "Your location is off. Search for the place instead.",
+  "@briefPlaceDenied": {
+    "description": "022: board 61."
+  },
+  "briefPlaceOutside": "Choose a place on land in the emirates we cover.",
+  "@briefPlaceOutside": {
+    "description": "022: board 62."
+  },
+  "briefPlaceFailed": "We could not reach the map. Try again in a moment.",
+  "@briefPlaceFailed": {
+    "description": "022: board 63."
+  },
+  "briefPlaceHint": "Creators see the area only. The exact place goes to the creator you book.",
+  "@briefPlaceHint": {
+    "description": "022: what creators see."
+  },
+  "briefPlaceChange": "Change",
+  "@briefPlaceChange": {
+    "description": "022: take back the marked place."
+  },
+  "briefPlaceConfirm": "Use this place",
+  "@briefPlaceConfirm": {
+    "description": "022: confirm the marked place."
+  },
+  "briefPlaceNeeded": "Mark where it is taking place.",
+  "@briefPlaceNeeded": {
+    "description": "022: sending needs a place when maps are on."
   },
   "briefPriceLabel": "Your price for the {type}",
   "@briefPriceLabel": {

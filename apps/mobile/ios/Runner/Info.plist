@@ -78,6 +78,8 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Shoot uses your location only when you tap "Use my location" to mark where your shoot is.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Shoot uses the camera so you can take a photo of your profile picture, ID or trade licence.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -106,6 +106,15 @@ final class AccountHomeModel {
       ],
       finishAutoOpen: readBool(finish, 'autoOpen'),
       about: readStringList(_json, 'about'),
+      offers: switch (readNullableObject(_json, 'offers')) {
+        final o? => OffersNextUp(
+          count: readInt(o, 'count'),
+          reference: readString(o, 'reference'),
+          sentence: readString(o, 'sentence'),
+          matchPath: readString(o, 'matchPath'),
+        ),
+        null => null,
+      },
     );
   }
 }

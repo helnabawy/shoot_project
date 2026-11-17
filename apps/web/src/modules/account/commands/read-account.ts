@@ -5,6 +5,7 @@ import { dubaiToday } from '@shoot/domain/booking'
 import type { SiteSetting } from '@/payload-types'
 import type { ActorContext } from '@/shared/api/actor'
 import { problem, type Problem } from '@/shared/api/problem'
+import { accessKey, matchPath } from '@/modules/booking'
 import { countOpenBriefs, readBookings, readBriefs } from '../queries'
 
 const HOME_BRIEFS = 5
@@ -32,10 +33,24 @@ export async function readAccount(ctx: ActorContext): Promise<AccountHomeV1 | Pr
     upNext: pick && picked ? { kind: pick.kind, booking: picked.summary } : null,
     places: { bookings: { waiting: waitingCount(rows), open: openCount(rows, dubaiToday(ctx.now())) }, briefs: { open: openBriefs } },
     briefs: briefs.items,
+    ...(await offersNextUp(ctx, briefs.items)),
     finish: {
       items: finishItems({ phone: user.username ?? null, name: user.name ?? null, email: user.email ?? null }),
       autoOpen: finishAutoOpen({ bookingCount: bookings.length, dismissedAt: dismissed }),
     },
     about,
   }
+}
+
+/**
+ * 022 (board 54): the client's open offers brief with the most offers, and the private link to its offers.
+ * Nothing when there is none, so an older app sees no change.
+ */
+async function offersNextUp(ctx: ActorContext, items: AccountHomeV1['briefs']): Promise<{ offers?: NonNullable<AccountHomeV1['offers']> }> {
+  const top = [...items].filter((b) => b.offers && (b.saidYes ?? 0) > 0 && b.status === 'new').sort((a, b) => (b.saidYes ?? 0) - (a.saidYes ?? 0))[0]
+  if (!top) return {}
+  const { docs } = await ctx.payload.find({ collection: 'briefs', where: { reference: { equals: top.reference } }, limit: 1, depth: 0, overrideAccess: true, showHiddenFields: true, select: { accessSalt: true } })
+  const salt = (docs[0] as { accessSalt?: string | null } | undefined)?.accessSalt
+  if (!salt) return {}
+  return { offers: { count: top.saidYes!, reference: top.reference, sentence: top.sentence, matchPath: matchPath(top.reference, accessKey(salt, 'brief'), ctx.locale) } }
 }

@@ -117,6 +117,7 @@ final class BriefBuilder extends Equatable {
     required this.builder,
     this.signInRequired = false,
     this.offersEnabled = false,
+    this.mapsEnabled = false,
   });
 
   final String locale;
@@ -125,11 +126,20 @@ final class BriefBuilder extends Equatable {
   /// 022: the brief ends with the client's price per type ("Creators offer prices" is on).
   final bool offersEnabled;
 
+  /// 022: the server has a map provider, so the brief marks a place instead of choosing an emirate.
+  final bool mapsEnabled;
+
   /// 021: sending a brief needs a signed-in member (the owner's switch).
   final bool signInRequired;
 
   bool get enabled => builder != null;
 
   @override
-  List<Object?> get props => [locale, builder, signInRequired, offersEnabled];
+  List<Object?> get props => [
+    locale,
+    builder,
+    signInRequired,
+    offersEnabled,
+    mapsEnabled,
+  ];
 }

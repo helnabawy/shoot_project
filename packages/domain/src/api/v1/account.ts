@@ -68,6 +68,8 @@ export const accountHomeV1 = z.object({
   }),
   /** The latest five. */
   briefs: z.array(briefSummaryV1).max(5),
+  /** 022 (additive): the client's open offers brief with the most offers, and where its offers are. */
+  offers: z.object({ count: z.int().positive(), reference: z.string().min(1), sentence: z.string(), matchPath: z.string().startsWith('/') }).optional(),
   finish: z.object({ items: z.array(finishItemV1), autoOpen: z.boolean() }),
   /** "What your account does" (CMS). */
   about: z.array(z.string()),

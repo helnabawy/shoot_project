@@ -485,4 +485,35 @@ void main() {
       expect(_text('حجوزاتك'), findsOneWidget);
     });
   });
+
+  group('OF-US4-S1 offers waiting lead the client account (board 54)', () {
+    testWidgets('Up next says how many offers and opens them', (tester) async {
+      final home = exampleHome('me-account-offers')
+          .copyWith(finishAutoOpen: false);
+      final repository = FakeAccountRepository(home: home);
+      final app = await pumpAccount(tester, repository: repository);
+      expect(find.text('3 offers for your brief'), findsOneWidget);
+      expect(
+        find.textContaining('A wedding photographer in Dubai'),
+        findsWidgets,
+      );
+      await tester.tap(_text('See the offers'));
+      await tester.pumpAndSettle();
+      expect(
+        locationOf(app.router),
+        '/match/B-2026-0311/kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
+      );
+    });
+
+    testWidgets(
+      'a booking to answer still leads; no offers means no offers card',
+      (tester) async {
+        final repository = FakeAccountRepository(
+          home: exampleHome().copyWith(finishAutoOpen: false),
+        );
+        await pumpAccount(tester, repository: repository);
+        expect(find.textContaining('offers for your brief'), findsNothing);
+      },
+    );
+  });
 }

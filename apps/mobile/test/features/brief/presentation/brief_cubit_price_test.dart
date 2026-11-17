@@ -3,6 +3,7 @@ import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
+import 'package:shoot_mobile/features/brief/domain/place.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
 import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
@@ -18,13 +19,28 @@ void main() {
     maxFils: 160000,
   );
 
+  const pin = PlacePin(
+    lat: 24.4672,
+    lng: 54.6031,
+    area: 'Yas Island',
+    emirate: 'Abu Dhabi',
+    source: PlaceSource.search,
+    placeId: 'yas',
+  );
+
   Future<BriefCubit> ready(
     FakeBriefRepository repo, {
     bool offers = true,
+    bool maps = false,
   }) async {
     final c = BriefCubit(
       loadBuilder: () async => Ok(
-        BriefBuilder(locale: 'en', builder: fxConfig(), offersEnabled: offers),
+        BriefBuilder(
+          locale: 'en',
+          builder: fxConfig(),
+          offersEnabled: offers,
+          mapsEnabled: maps,
+        ),
       ),
       repository: repo,
       clock: FixedClock(DateTime.utc(2026, 12, 5, 10)),
@@ -106,6 +122,32 @@ void main() {
       await c.submit();
       expect(repo.recorded, isEmpty);
       expect(c.state.submitting, isFalse);
+    });
+
+    test(
+      'OF-US1-S4 with maps on, sending needs the place marked, and sends it',
+      () async {
+        final repo = FakeBriefRepository()..pricesResult = const Ok([price]);
+        final c = await ready(repo, maps: true);
+        await c.submit();
+        expect(c.state.mapsEnabled, isTrue);
+        await c.submit();
+        expect(repo.recorded, isEmpty);
+        expect(c.state.message, BriefMessage.placeNeeded);
+        c.setPlace(pin);
+        expect(c.state.message, isNull);
+        await c.submit();
+        expect(repo.recorded, hasLength(1));
+        expect(repo.places.single, pin);
+      },
+    );
+
+    test('with maps off, no place is asked or sent', () async {
+      final repo = FakeBriefRepository()..pricesResult = const Ok([price]);
+      final c = await ready(repo);
+      await c.submit();
+      await c.submit();
+      expect(repo.places.single, isNull);
     });
   });
 }

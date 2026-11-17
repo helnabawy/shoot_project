@@ -5,6 +5,7 @@ import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_draft.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
+import 'package:shoot_mobile/features/brief/domain/place.dart';
 import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
 /// A one-line message the bar shows; the words live in ARB.
@@ -18,6 +19,9 @@ enum BriefMessage {
 
   /// 022: a price outside the allowed range.
   budgetRange,
+
+  /// 022: the brief needs a place marked (maps are on).
+  placeNeeded,
 }
 
 enum BriefLoad { idle, loading, ready, off, failed }
@@ -41,6 +45,8 @@ final class BriefState extends Equatable {
     this.offersEnabled = false,
     this.prices = const [],
     this.budgets = const {},
+    this.mapsEnabled = false,
+    this.place,
   });
 
   final BriefLoad load;
@@ -78,6 +84,12 @@ final class BriefState extends Equatable {
   /// 022: the client's price per type (persona slug → fils).
   final Map<String, int> budgets;
 
+  /// 022: maps are on; the brief marks a place (boards 57–63).
+  final bool mapsEnabled;
+
+  /// 022: the place the client marked, if any.
+  final PlacePin? place;
+
   BriefState copyWith({
     BriefLoad? load,
     BriefBuilderConfig? config,
@@ -94,6 +106,8 @@ final class BriefState extends Equatable {
     bool? offersEnabled,
     List<BriefPrice>? prices,
     Map<String, int>? budgets,
+    bool? mapsEnabled,
+    Object? place = _unset,
   }) => BriefState(
     load: load ?? this.load,
     config: config ?? this.config,
@@ -116,6 +130,8 @@ final class BriefState extends Equatable {
     offersEnabled: offersEnabled ?? this.offersEnabled,
     prices: prices ?? this.prices,
     budgets: budgets ?? this.budgets,
+    mapsEnabled: mapsEnabled ?? this.mapsEnabled,
+    place: identical(place, _unset) ? this.place : place as PlacePin?,
   );
 
   @override
@@ -135,6 +151,8 @@ final class BriefState extends Equatable {
     offersEnabled,
     prices,
     budgets,
+    mapsEnabled,
+    place,
   ];
 }
 
@@ -183,6 +201,7 @@ class BriefCubit extends Cubit<BriefState> {
                   config: config,
                   signInRequired: value.signInRequired,
                   offersEnabled: value.offersEnabled,
+                  mapsEnabled: value.mapsEnabled,
                 ),
         );
       case Err():
@@ -358,11 +377,18 @@ class BriefCubit extends Cubit<BriefState> {
     if (state.offersEnabled && state.prices.isEmpty) return _loadPrices(config);
     // 021 (BS-US4-S1): signed out while sending needs sign-in: keep the draft, ask for sign-in.
     if (state.signInRequired && !_isSignedIn()) return _askSignIn();
+    // 022 (board 58): with maps on, an offers brief needs its place marked before it is sent.
+    if (state.offersEnabled && state.mapsEnabled && state.place == null) {
+      return emit(
+        state.copyWith(message: BriefMessage.placeNeeded, messageToken: null),
+      );
+    }
     emit(state.copyWith(submitting: true, message: null, messageToken: null));
     final result = await _repository.record(
       config,
       state.draft,
       budgets: state.offersEnabled ? state.budgets : null,
+      place: state.offersEnabled && state.mapsEnabled ? state.place : null,
     );
     if (isClosed) return;
     switch (result) {
@@ -406,6 +432,10 @@ class BriefCubit extends Cubit<BriefState> {
         emit(_failed(failure));
     }
   }
+
+  /// 022: the place the client marked (or took back).
+  void setPlace(PlacePin? place) =>
+      emit(state.copyWith(place: place, message: null));
 
   /// 022: the client's price for one type, kept within its range (whole AED).
   void setBudget(String persona, int fils) {

@@ -12,6 +12,7 @@ import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
 import 'package:shoot_mobile/core/widgets/creator_card.dart';
+import 'package:shoot_mobile/core/widgets/message_banner.dart';
 import 'package:shoot_mobile/core/widgets/money.dart';
 import 'package:shoot_mobile/core/widgets/secondary_button.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
@@ -192,6 +193,17 @@ class _Offers extends StatelessWidget {
     );
     return QmBody(
       content: [
+        // 022 (board 48): an offer moved while the client was on the details step.
+        if (state.moved case final name?)
+          Padding(
+            key: const ValueKey('qm:offerMoved'),
+            padding: const EdgeInsetsDirectional.fromSTEB(20, 4, 20, 8),
+            child: MessageBanner(
+              text:
+                  '${l10n.qmOffersChangedTitle(name)}. ${l10n.qmOffersChangedIntro}',
+              tone: BannerTone.attention,
+            ),
+          ),
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(20, 4, 20, 0),
           child: Column(
