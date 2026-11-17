@@ -479,6 +479,136 @@
       "x": 1320,
       "y": 10860,
       "is_interactive": true
+    },
+    "S01p-brief-price.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "44 · Brief · name your price",
+      "w": 360,
+      "x": 0,
+      "y": 13280,
+      "is_interactive": true
+    },
+    "S02o-offers-waiting.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "45 · Offers · waiting",
+      "w": 360,
+      "x": 440,
+      "y": 13280
+    },
+    "S02p-offers.dc.html": {
+      "h": 860,
+      "page": "screens",
+      "radius": 28,
+      "title": "46 · Offers · choose one",
+      "w": 360,
+      "x": 880,
+      "y": 13280,
+      "is_interactive": true
+    },
+    "S02q-offers-two-types.dc.html": {
+      "h": 860,
+      "page": "screens",
+      "radius": 28,
+      "title": "47 · Offers · two types, one waiting",
+      "w": 360,
+      "x": 1320,
+      "y": 13280
+    },
+    "S02r-offer-changed.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "48 · Offers · price changed",
+      "w": 360,
+      "x": 1760,
+      "y": 13280
+    },
+    "S03o-details-offer.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "49 · Details · after an offer",
+      "w": 360,
+      "x": 2200,
+      "y": 13280
+    },
+    "S04o-quote-fee.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "50 · Quotation · offer and fee",
+      "w": 360,
+      "x": 2640,
+      "y": 13280
+    },
+    "S07h-inbox-price.dc.html": {
+      "h": 1160,
+      "page": "screens",
+      "radius": 28,
+      "title": "51 · Creator inbox · with the price",
+      "w": 360,
+      "x": 3080,
+      "y": 13280
+    },
+    "S07i-offer-sheet.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "52 · Offer another price",
+      "w": 360,
+      "x": 3520,
+      "y": 13280,
+      "is_interactive": true
+    },
+    "S07j-account-creator-offers.dc.html": {
+      "h": 780,
+      "page": "screens",
+      "radius": 28,
+      "title": "53 · My account · creator · briefs with price",
+      "w": 360,
+      "x": 3960,
+      "y": 13280
+    },
+    "S07k-account-client-offers.dc.html": {
+      "h": 860,
+      "page": "screens",
+      "radius": 28,
+      "title": "54 · My account · client · offers",
+      "w": 360,
+      "x": 4400,
+      "y": 13280
+    },
+    "S02p-offers-ar.dc.html": {
+      "h": 860,
+      "page": "screens",
+      "radius": 28,
+      "title": "55 · Offers · Arabic dark",
+      "w": 360,
+      "x": 0,
+      "y": 14560
+    },
+    "S07h-inbox-price-ar.dc.html": {
+      "h": 940,
+      "page": "screens",
+      "radius": 28,
+      "title": "56 · Creator inbox · Arabic dark",
+      "w": 360,
+      "x": 440,
+      "y": 14560
+    },
+    "S01q-brief-place.dc.html": {
+      "h": 820,
+      "page": "screens",
+      "radius": 28,
+      "title": "57 · Brief · mark the place",
+      "w": 360,
+      "x": 880,
+      "y": 14560,
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -521,7 +651,8 @@
     "s-note-flow",
     "s-note-accounts",
     "s-note-new",
-    "s-note-motion"
+    "s-note-motion",
+    "n022"
   ],
   "notes": {
     "note-a": {
@@ -713,6 +844,14 @@
       "x": 2200,
       "y": 0,
       "text": "Motion and graphics (10 Nov), on all 43 screens. Press Play on a board to see it.\n\nRise: content arrives in order.\nFocus: photo slots sharpen in.\nGlint: a sheen crosses the blue action once, 2.4 s after it arrives. Every 7 s on the landing only.\nRoll: totals roll up.\nTick: confirmations draw themselves.\nKey light: loops on the landing only. On the learning steps and the confirmed booking it settles once, inside 5 s. The splash plays once, in 2 s. Every other screen gets a still warm light in the corner.\n\nOnly the landing loops, and its Pause control stops all of it. Every other screen is still within 5 s, so a board plays its motion once after you press Play. All of it stands still under reduced motion. Scene tiles are stand-ins for photos, never invented work."
+    },
+    "n022": {
+      "x": 0,
+      "y": 12980,
+      "text": "022 · Creator offers (switch on): client names a price, creators accept or counter",
+      "kind": "title1",
+      "maxW": 4760,
+      "page": "screens"
     }
   },
   "order": [
@@ -764,7 +903,21 @@
     "S04c-expired.dc.html",
     "S01-landing-wide.dc.html",
     "S09b-signin-code-ar.dc.html",
-    "S04-quotation-ar.dc.html"
+    "S04-quotation-ar.dc.html",
+    "S01p-brief-price.dc.html",
+    "S02o-offers-waiting.dc.html",
+    "S02p-offers.dc.html",
+    "S02q-offers-two-types.dc.html",
+    "S02r-offer-changed.dc.html",
+    "S03o-details-offer.dc.html",
+    "S04o-quote-fee.dc.html",
+    "S07h-inbox-price.dc.html",
+    "S07i-offer-sheet.dc.html",
+    "S07j-account-creator-offers.dc.html",
+    "S07k-account-client-offers.dc.html",
+    "S02p-offers-ar.dc.html",
+    "S07h-inbox-price-ar.dc.html",
+    "S01q-brief-place.dc.html"
   ],
   "pages": [
     {

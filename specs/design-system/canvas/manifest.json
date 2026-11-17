@@ -135,7 +135,8 @@
       ],
       "boxes": {
         "header": ".hd",
-        "wordmark": ".wm"
+        "wordmark": ".wm",
+        "topHit": ".top"
       },
       "sha256": "8d4ba263000005141b53c0f1449bf5a3df60373b6f744b7be33d1eab891d6bd5"
     },
@@ -934,6 +935,314 @@
         "topHit": ".top"
       },
       "sha256": "e3f02d4b92053993384bbe9c877fbc349ab191de579c62ed06985ead3e9d3b4c"
+    },
+    {
+      "id": "44",
+      "title": "Brief · name your price",
+      "board": "S01p-brief-price.dc.html",
+      "w": 360,
+      "h": 780,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top"
+      },
+      "sha256": "8d0251fad9b3c2f0d17dd6bb9a59bacec7979f2a14d0ed87e3c42020bf52fee2",
+      "changedSinceLastExport": true
+    },
+    {
+      "id": "45",
+      "title": "Offers · waiting",
+      "board": "S02o-offers-waiting.dc.html",
+      "w": 360,
+      "h": 780,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "h1": ".h1"
+      },
+      "sha256": "bbf61a54e42b44f93a678ed495c3c80fd3e700729716923c57da11c37676c80f",
+      "changedSinceLastExport": true
+    },
+    {
+      "id": "46",
+      "title": "Offers · choose one",
+      "board": "S02p-offers.dc.html",
+      "w": 360,
+      "h": 860,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "h1": ".h1",
+        "topHit": ".top"
+      },
+      "sha256": "b31c6af5473b8ea8a6bc15135393bed912e44dc6530c7a6cb147f09820a9a09f",
+      "changedSinceLastExport": true
+    },
+    {
+      "id": "47",
+      "title": "Offers · two types, one waiting",
+      "board": "S02q-offers-two-types.dc.html",
+      "w": 360,
+      "h": 860,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "h1": ".h1"
+      },
+      "sha256": "98b96efba1914759f0c01e2fedb649225874f05226f4b106508df6b6470bd7cc",
+      "changedSinceLastExport": true
+    },
+    {
+      "id": "48",
+      "title": "Offers · price changed",
+      "board": "S02r-offer-changed.dc.html",
+      "w": 360,
+      "h": 780,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "h1": ".h1",
+        "topHit": ".top"
+      },
+      "sha256": "92ab64de7047052ad399801d5eb9a79841a0ae281be5d821a590b9b1c1b1c462",
+      "changedSinceLastExport": true
+    },
+    {
+      "id": "49",
+      "title": "Details · after an offer",
+      "board": "S03o-details-offer.dc.html",
+      "w": 360,
+      "h": 780,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "h1": ".h1",
+        "topHit": ".top"
+      },
+      "sha256": "066fc83e356a1b1711117411436db0b22480c6b8b980107d310d9265ce4db6b5"
+    },
+    {
+      "id": "50",
+      "title": "Quotation · offer and fee",
+      "board": "S04o-quote-fee.dc.html",
+      "w": 360,
+      "h": 780,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "h1": ".h1",
+        "topHit": ".top"
+      },
+      "sha256": "199781b3e1a06829789877a5a432cafadd331e75bbe3477a55a1a3043fd930e0",
+      "changedSinceLastExport": true
+    },
+    {
+      "id": "51",
+      "title": "Creator inbox · with the price",
+      "board": "S07h-inbox-price.dc.html",
+      "w": 360,
+      "h": 1160,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "h1": ".h1",
+        "topHit": ".top"
+      },
+      "sha256": "64c209ca5b9613d34f15fcb81e471cf6bfa2406ed851300e5da14385541339fd"
+    },
+    {
+      "id": "52",
+      "title": "Offer another price",
+      "board": "S07i-offer-sheet.dc.html",
+      "w": 360,
+      "h": 780,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "h1": ".h1",
+        "topHit": ".top"
+      },
+      "sha256": "7d5895d50dc8dc3f7a383e059f16608e80b6c36e3123036f31bfb01432481103",
+      "changedSinceLastExport": true
+    },
+    {
+      "id": "53",
+      "title": "My account · creator · briefs with price",
+      "board": "S07j-account-creator-offers.dc.html",
+      "w": 360,
+      "h": 780,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top"
+      },
+      "sha256": "e18916d0b1ba2b0f1018eb3105bb1a2e96a4b25bfe4bae3c6f355a0ff40b37e1",
+      "changedSinceLastExport": true
+    },
+    {
+      "id": "54",
+      "title": "My account · client · offers",
+      "board": "S07k-account-client-offers.dc.html",
+      "w": 360,
+      "h": 860,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top"
+      },
+      "sha256": "35fa3a8dc1904a0658c824a350d28fb55e95ec1682aa9eb8d75d032849b6b633",
+      "changedSinceLastExport": true
+    },
+    {
+      "id": "55",
+      "title": "Offers · Arabic dark",
+      "board": "S02p-offers-ar.dc.html",
+      "w": 360,
+      "h": 860,
+      "target": "mobile",
+      "feature": null,
+      "variants": [
+        "ar-dark"
+      ],
+      "variantOf": "46",
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "h1": ".h1",
+        "topHit": ".top"
+      },
+      "sha256": "f91db4bf51be7cd5391b1102520547d2098d5d1a2ee9e0224c37f2b477ad61ba",
+      "changedSinceLastExport": true
+    },
+    {
+      "id": "56",
+      "title": "Creator inbox · Arabic dark",
+      "board": "S07h-inbox-price-ar.dc.html",
+      "w": 360,
+      "h": 940,
+      "target": "mobile",
+      "feature": null,
+      "variants": [
+        "ar-dark"
+      ],
+      "variantOf": "51",
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "h1": ".h1",
+        "topHit": ".top"
+      },
+      "sha256": "c069051d8ed2aa9a94771cbaeba2b53687ee4623b1a8aec9546cf7498c1b4b9b"
+    },
+    {
+      "id": "57",
+      "title": "Brief · mark the place",
+      "board": "S01q-brief-place.dc.html",
+      "w": 360,
+      "h": 820,
+      "target": "mobile",
+      "feature": "022-creator-offers",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top"
+      },
+      "sha256": "b007737e0ea4c7de8bb3e31eadb882b5c3694ffcc2e1e44d4f1281983fd0771d"
     }
   ]
 }

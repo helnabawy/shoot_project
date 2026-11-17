@@ -28,13 +28,19 @@ const FEATURE = [
   [['27', '28', '29', '30', '31', '32'], '014-creator-account'],
   [['33', '34', '35', '36', '38'], '015-mobile-content'],
   [['37', '39'], '007-mobile-foundation'],
+  [['44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '57'], '022-creator-offers'],
 ]
 const featureOf = (id) => FEATURE.find(([ids]) => ids.includes(id))?.[1] ?? null
 
 // Text-heavy boards: anti-aliasing differs more between Chromium and Skia's test rasteriser.
 const TEXT_HEAVY = new Set(['33', '34', '35', '36'])
 // Designer-made variants of another screen: used to validate the derived dark/Arabic references.
-const DESIGNER_VARIANT = { '42': { of: '21', variant: 'ar-dark' }, '43': { of: '13', variant: 'ar-dark' } }
+const DESIGNER_VARIANT = {
+  '42': { of: '21', variant: 'ar-dark' },
+  '43': { of: '13', variant: 'ar-dark' },
+  '55': { of: '46', variant: 'ar-dark' },
+  '56': { of: '51', variant: 'ar-dark' },
+}
 
 // Selectors whose boxes the geometry gate compares (±1 logical px), when the board has them.
 const BOX_CANDIDATES = { header: '.hd', wordmark: '.wm', h1: '.h1', topHit: '.top' }
