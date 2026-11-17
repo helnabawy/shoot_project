@@ -244,7 +244,7 @@ export const endpoints = {
     cache: 'no-store',
     input: matchRequestV1,
     output: matchV1,
-    examples: ['match', 'match-none-free'],
+    examples: ['match', 'match-none-free', 'match-offers-waiting'],
   }),
   // 022: the client declines one offer; the step-2 change stamp (research R9).
   offerDecline: defineEndpoint({

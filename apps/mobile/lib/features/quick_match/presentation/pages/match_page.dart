@@ -261,9 +261,77 @@ class _Offers extends StatelessWidget {
               onAccept: () => onAccept(s, i),
               onDecline: () => onDecline(s, i),
             ),
+          // 022: the creators who can still answer, so waiting shows real people, not nothing.
+          if (page.sections[s].waiting.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(20, 12, 20, 4),
+              child: Text(
+                l10n.qmOffersWaitingFrom(page.sections[s].waiting.length),
+                style: ShootType.meta.copyWith(color: c.mute),
+              ),
+            ),
+            for (final (i, creator) in page.sections[s].waiting.indexed)
+              _WaitingRow(creator: creator, scene: i),
+          ],
         ],
       ],
       bottom: TextLink(label: l10n.qmAskWhatsApp, onTap: onChat),
+    );
+  }
+}
+
+/// A creator who got the brief and has not answered yet; a tap opens their profile.
+class _WaitingRow extends StatelessWidget {
+  const _WaitingRow({required this.creator, required this.scene});
+
+  final MatchCreator creator;
+  final int scene;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final card = creator.card;
+    final where = card.places.isEmpty ? null : card.places.first;
+    return InkWell(
+      key: ValueKey('qm:waiting:${card.code}'),
+      onTap: () => context.push('/creators/${card.code}'),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+        child: Row(
+          spacing: 12,
+          children: [
+            SizedBox.square(
+              dimension: 40,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(ShootRadius.photoTile),
+                child: ShootImage(card.photo, sceneIndex: scene),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    card.name,
+                    style: ShootType.row.copyWith(
+                      color: c.ink,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    ['\u2066${card.displayCode}\u2069', ?where].join(' · '),
+                    style: ShootType.meta.copyWith(color: c.mute),
+                  ),
+                ],
+              ),
+            ),
+            StatusBadge(
+              label: context.l10n.qmOffersAsked,
+              tone: BadgeTone.neutral,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

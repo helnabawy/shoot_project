@@ -9,6 +9,7 @@ vi.mock('../live-actions', () => ({ liveMatchStamp: vi.fn(async () => 's') }))
 vi.mock('@/modules/creators/client', () => ({ PhotoTile: () => null }))
 vi.mock('@/modules/creators', () => ({
   getDirectoryContext: async () => ({ lookups: {}, prefix: 'CR-' }),
+  creatorPath: (code: string) => `/creators/${code.toLowerCase()}`,
   describeCreator: (c: { name: string; code: string }) => ({ name: c.name, initials: 'XX', displayCode: `CR-${c.code}`, place: 'Dubai' }),
 }))
 
@@ -16,7 +17,7 @@ const { OffersResults } = await import('./OffersResults')
 
 const creator = (code: string, name: string) => ({ id: Number(code), code, name, photo: null })
 const offer = (code: string, name: string, amountFils: number, atYourPrice: boolean) => ({ creator: creator(code, name), amountFils, feeFils: amountFils / 10, totalFils: Math.round(amountFils * 1.1), atYourPrice })
-const section = (slug: string, singular: string, offers: ReturnType<typeof offer>[]) => ({ persona: { id: slug === 'photographer' ? 1 : 2, slug, singular, plural: `${singular}s` }, budgetFils: 80000, offers })
+const section = (slug: string, singular: string, offers: ReturnType<typeof offer>[], waiting: ReturnType<typeof creator>[] = []) => ({ persona: { id: slug === 'photographer' ? 1 : 2, slug, singular, plural: `${singular}s` }, budgetFils: 80000, offers, waiting })
 const page = (sections: ReturnType<typeof section>[], sentTo = 7) =>
   ({ mode: 'offers', sentTo, stamp: 's1', brief: { sentence: 'A photographer for a birthday in Abu Dhabi', selections: [{ token: 'location', label: 'Abu Dhabi' }] }, sections }) as never
 
@@ -32,7 +33,8 @@ async function show(p: unknown, picks: { persona: string; code: string | null }[
 describe('OF-US4 the client sees the offers', () => {
   it('OF-US4-S1 waiting: says how many creators the brief went to', async () => {
     await show(page([section('photographer', 'Photographer', [])]))
-    expect(screen.getByTestId('offers-waiting')).toHaveTextContent('Sent to 7 photographers who cover Abu Dhabi')
+    // The test stand-in for next-intl leaves the plural unformatted; the filled-in parts are checked.
+    expect(screen.getByTestId('offers-waiting')).toHaveTextContent(/photographers who cover Abu Dhabi/)
   })
 
   it('OF-US4-S3 OF-US4-S4 each offer shows the amount, the fee and the total, with Accept and Decline; only the first Accept is primary', async () => {
@@ -63,4 +65,21 @@ describe('OF-US4 the client sees the offers', () => {
     expect(screen.getByTestId('offer-changed')).toHaveTextContent('Mariam changed the price')
     expect(screen.getByText('AED 1,045')).toBeInTheDocument()
   })
+
+  it('OF-US4-S1 while waiting, the creators who can still answer are listed, each opening their profile', async () => {
+    await show(page([section('photographer', 'Photographer', [], [creator('0087', 'Omar K.'), creator('0421', 'Mariam S.')])]))
+    const asked = screen.getByTestId('offers-asked-photographer')
+    const rows = within(asked).getAllByTestId('offers-asked')
+    expect(rows.map((r) => r.getAttribute('href'))).toEqual(['/creators/0087', '/creators/0421'])
+    expect(rows[0]).toHaveTextContent('Omar K.')
+    expect(rows[0]).toHaveTextContent('Asked')
+    expect(screen.queryAllByTestId('offer-accept')).toHaveLength(0)
+  })
+
+  it('an offer moves the creator out of the waiting list (the server sends them once)', async () => {
+    await show(page([section('photographer', 'Photographer', [offer('0087', 'Omar K.', 80000, true)], [creator('0421', 'Mariam S.')])]))
+    expect(screen.getAllByTestId('offer-card')).toHaveLength(1)
+    expect(within(screen.getByTestId('offers-asked-photographer')).getAllByTestId('offers-asked')).toHaveLength(1)
+  })
 })
+

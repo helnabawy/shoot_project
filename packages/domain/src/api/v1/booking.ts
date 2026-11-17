@@ -46,6 +46,8 @@ export const matchSectionV1 = z.object({
   budgetFils: z.int().positive().optional(),
   /** 022 (additive): current offers, lowest total first. */
   offers: z.array(matchOfferV1).optional(),
+  /** 022 (additive): creators free for this type who have not answered yet; they can still offer. */
+  waiting: z.array(matchCreatorV1).max(8).optional(),
 })
 
 export const matchV1 = z.object({

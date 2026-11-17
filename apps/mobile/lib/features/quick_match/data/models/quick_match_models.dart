@@ -67,6 +67,12 @@ final class MatchPageModel {
                 readList(s, 'creators', (c) => _creator(asObject(c))),
               ),
               budgetFils: readNullableInt(s, 'budgetFils'),
+              // 022, additive: an older server leaves it out.
+              waiting: s['waiting'] == null
+                  ? const []
+                  : List.unmodifiable(
+                      readList(s, 'waiting', (c) => _creator(asObject(c))),
+                    ),
               offers: offers == null
                   ? null
                   : List.unmodifiable(

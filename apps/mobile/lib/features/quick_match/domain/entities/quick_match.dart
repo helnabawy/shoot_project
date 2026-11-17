@@ -89,6 +89,7 @@ final class MatchSection extends Equatable {
     required this.creators,
     this.budgetFils,
     this.offers,
+    this.waiting = const [],
   });
 
   final MatchPersona persona;
@@ -104,6 +105,9 @@ final class MatchSection extends Equatable {
   /// 022: current offers, lowest total first, in the same order as [creators]; `null` in the fixed flow.
   final List<MatchOffer>? offers;
 
+  /// 022: creators free for this type who have not answered yet; they can still offer.
+  final List<MatchCreator> waiting;
+
   @override
   List<Object?> get props => [
     persona,
@@ -112,6 +116,7 @@ final class MatchSection extends Equatable {
     creators,
     budgetFils,
     offers,
+    waiting,
   ];
 }
 

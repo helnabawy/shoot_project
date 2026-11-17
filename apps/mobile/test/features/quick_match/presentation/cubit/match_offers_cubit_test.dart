@@ -193,5 +193,19 @@ void main() {
         await cubit.close();
       },
     );
+
+    test(
+      'OF-US4-S1 waiting: the creators who can still answer come with the page',
+      () {
+        final page = MatchPageModel.fromJson(
+          loadExample('match-offers-waiting'),
+        ).toEntity();
+        final section = page.sections.first;
+        expect(section.offers, isEmpty);
+        expect(section.waiting.single.card.name, isNotEmpty);
+        // An older server sends no list: nothing to show, nothing breaks.
+        expect(offersPage().sections.first.waiting, isEmpty);
+      },
+    );
   });
 }

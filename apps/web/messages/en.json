@@ -952,9 +952,11 @@
       "pickFromOffers": "Choose another offer from the offers list."
     },
     "waitingTitle": "Waiting for offers",
-    "waitingIntro": "Sent to {count} {types} who cover {emirate}. They see the area, not your pin. Offers appear here as they answer.",
+    "waitingIntro": "{count, plural, one {Sent to # {type} who covers {emirate}. They see the area, not your pin. Their offer appears here as they answer.} other {Sent to # {types} who cover {emirate}. They see the area, not your pin. Offers appear here as they answer.}}",
     "waitingNone": "No offers yet",
     "waitingAuto": "This page updates by itself",
+    "waitingFrom": "{count, plural, one {Waiting to hear from # creator} other {Waiting to hear from # creators}}",
+    "askedBadge": "Asked",
     "yourPrice": "Your price",
     "serviceFee": "Service fee",
     "serviceFeeHint": "{percent}% of the offer you accept",
