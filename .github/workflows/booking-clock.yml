@@ -10,11 +10,13 @@ on:
 
 jobs:
   tick:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 2
     if: ${{ vars.SITE_URL != '' }}
     steps:
-      - run: curl --fail-with-body -sS -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/bookings"
+      # A block scalar: the ": " inside the header is not valid in a plain YAML value.
+      - run: |
+          curl --fail-with-body -sS -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/bookings"
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           SITE_URL: ${{ vars.SITE_URL }}
