@@ -204,7 +204,7 @@ export const endpoints = {
     cache: 'no-store',
     input: noInput,
     output: accountHomeV1,
-    examples: ['me-account', 'me-account-empty', 'me-account-offers'],
+    examples: ['me-account', 'me-account-empty', 'me-account-offers', 'me-account-confirmed'],
   }),
   meBookings: defineEndpoint({
     id: 'meBookings',
@@ -289,7 +289,7 @@ export const endpoints = {
     cache: 'no-store',
     input: quotationAddressV1,
     output: bookingViewV1,
-    examples: ['booking-view-quoted', 'booking-view-confirmed', 'booking-view-delivered', 'booking-view-expired', 'booking-view-lapsed'],
+    examples: ['booking-view-quoted', 'booking-view-confirmed', 'booking-view-delivered', 'booking-view-expired', 'booking-view-lapsed', 'booking-view-contact'],
   }),
   quotationAccept: defineEndpoint({
     id: 'quotationAccept',
@@ -409,7 +409,7 @@ export const endpoints = {
   creatorIdentityUpload: defineEndpoint({ ...mine, id: 'creatorIdentityUpload', method: 'PUT', path: '/api/mobile/v1/me/creator/identity/{kind}', input: z.object({ params: creatorKindParamV1, body: uploadV1 }), output: myProfileV1, examples: ['creator-identity-result'], requestExamples: ['creator-upload-identity'] }),
   creatorAvailability: defineEndpoint({ ...mineRead, id: 'creatorAvailability', path: '/api/mobile/v1/me/creator/availability', output: availabilityV1, examples: ['creator-availability'] }),
   creatorAvailabilitySet: defineEndpoint({ ...mine, id: 'creatorAvailabilitySet', method: 'PUT', path: '/api/mobile/v1/me/creator/availability/{date}', input: z.object({ params: creatorDateParamV1, body: availabilitySetV1 }), output: availabilityV1, examples: ['creator-availability-set-result'], requestExamples: ['creator-availability-set'] }),
-  creatorBookings: defineEndpoint({ ...mineRead, id: 'creatorBookings', path: '/api/mobile/v1/me/creator/bookings', output: creatorBookingsV1, examples: ['creator-bookings'] }),
+  creatorBookings: defineEndpoint({ ...mineRead, id: 'creatorBookings', path: '/api/mobile/v1/me/creator/bookings', output: creatorBookingsV1, examples: ['creator-bookings', 'creator-bookings-contact'] }),
   creatorBookingAnswer: defineEndpoint({ ...mine, id: 'creatorBookingAnswer', method: 'POST', path: '/api/mobile/v1/me/creator/bookings/{ref}/answer', input: z.object({ params: creatorRefParamV1, body: answerV1 }), output: creatorBookingsV1, examples: ['creator-bookings-answered'], requestExamples: ['creator-answer'] }),
   creatorBookingDeliver: defineEndpoint({ ...mine, id: 'creatorBookingDeliver', method: 'POST', path: '/api/mobile/v1/me/creator/bookings/{ref}/deliver', input: z.object({ params: creatorRefParamV1 }), output: creatorBookingsV1, examples: ['creator-bookings-delivered'] }),
   creatorUpdateRead: defineEndpoint({ ...mine, id: 'creatorUpdateRead', method: 'POST', path: '/api/mobile/v1/me/creator/updates/{id}/read', input: z.object({ params: creatorIdParamV1 }), output: creatorBookingsV1, examples: ['creator-bookings-read'] }),

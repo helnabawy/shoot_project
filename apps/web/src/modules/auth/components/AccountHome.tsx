@@ -283,3 +283,57 @@ export function PlaceRow({
     </li>
   )
 }
+
+/** A confirmed booking as one row on the account home (025): its day, where, who it is with and its state. */
+export interface ConfirmedRow {
+  reference: string
+  state: string
+  date: string | null
+  dateLabel: string
+  place: string
+  /** "With Hosam" for a client, "For Layla" for a creator; empty when there is no name. */
+  who: string
+  href: string
+}
+
+/**
+ * Confirmed bookings (025 US3), on the ground under Up next: each row is the link to its booking, so a
+ * confirmed quotation is one tap from the account. Absent when there are none.
+ */
+export async function ConfirmedBookings({ rows }: { rows: ConfirmedRow[] }) {
+  if (!rows.length) return null
+  const [t, tb] = await Promise.all([getTranslations('account.confirmed'), getTranslations('booking')])
+  return (
+    <section aria-labelledby="account-confirmed-title" className="mt-10" data-testid="account-confirmed">
+      <h2 id="account-confirmed-title" className="group-label px-1 pb-2">
+        {t('title')}
+      </h2>
+      <ul className="-mx-3 divide-y divide-hair border-y border-hair">
+        {rows.map((r) => (
+          <li key={r.reference} className="py-1">
+            <Link href={r.href} className={rowClass('open')} data-testid="account-confirmed-row" data-reference={r.reference}>
+              <RowContent
+                glyph={dayTile(r.date)}
+                label={
+                  <>
+                    <span className="block font-semibold text-ink">{[r.dateLabel, r.place].filter(Boolean).join(' · ') || <Bidi>{r.reference}</Bidi>}</span>
+                    <span className="block text-[13px] text-mute [&:lang(ar)]:text-[14px]">
+                      {r.who ? <>{r.who} · </> : null}
+                      <Bidi>{r.reference}</Bidi>
+                    </span>
+                  </>
+                }
+                trailing={
+                  <span className="inline-flex items-center gap-2">
+                    {tb(`state.${r.state}` as never)}
+                    <ChevronIcon width={14} height={14} className="text-mute/70" />
+                  </span>
+                }
+              />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

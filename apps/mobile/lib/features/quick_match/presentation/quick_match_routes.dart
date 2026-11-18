@@ -152,6 +152,39 @@ List<RouteBase> quickMatchRoutes({
   ];
 }
 
+/// Feature 025: stands in for the private key when a signed-in client opens their own booking
+/// from the account (`/account/bookings/{ref}`): the server lets the booking's owner in without
+/// it and sends the real key back in the answer.
+const ownerKey = 'me';
+
+/// A client's own booking at `/account/bookings/{ref}`: the booking screen, read as its owner.
+class OwnBookingPage extends StatelessWidget {
+  const OwnBookingPage({
+    super.key,
+    required this.ref,
+    required this.create,
+    required this.links,
+    this.openUrl = openInBrowser,
+  });
+
+  final String ref;
+  final BookingViewCubit Function() create;
+  final WebsiteLinks links;
+  final UrlOpener openUrl;
+
+  @override
+  Widget build(BuildContext context) => _BookingScope(
+    key: ValueKey('own:$ref'),
+    create: create,
+    child: BookingPage(
+      ref: ref,
+      accessKey: ownerKey,
+      links: links,
+      openUrl: openUrl,
+    ),
+  );
+}
+
 class _BookingScope extends StatefulWidget {
   const _BookingScope({super.key, required this.create, required this.child});
 

@@ -66,3 +66,21 @@ describe('QM-FR-002 availability list', () => {
     expect(screen.getByText('Booked')).toBeInTheDocument()
   })
 })
+
+describe('025 the booked creator reaches the client', () => {
+  const contact = { name: 'Layla', role: '', phone: '+971501234567', display: '+971 50 123 4567', telHref: 'tel:+971501234567', whatsappHref: 'https://wa.me/971501234567?text=Hi' }
+
+  it('BC-US2-S1 a confirmed part shows Call with the number and Message on WhatsApp, as plain rows', () => {
+    renderWithLocale(<CreatorBookingRow view={view({ state: 'paid', awaitingAnswer: false, contact })} locale="en" />)
+    expect(screen.getByTestId('contact-call')).toHaveAttribute('href', 'tel:+971501234567')
+    expect(screen.getByTestId('contact-call')).toHaveTextContent('+971 50 123 4567')
+    expect(screen.getByTestId('contact-call')).toHaveAccessibleName('Call: Contact Layla')
+    expect(screen.getByTestId('contact-whatsapp')).toHaveAttribute('href', 'https://wa.me/971501234567?text=Hi')
+    expect(screen.getByTestId('creator-booking')).toHaveAttribute('id', 'b-Q-22222')
+  })
+
+  it('BC-US2-S1 no contact, no rows', () => {
+    renderWithLocale(<CreatorBookingRow view={view({ state: 'paid', awaitingAnswer: false, contact: null })} locale="en" />)
+    expect(screen.queryByTestId('booking-contact')).toBeNull()
+  })
+})

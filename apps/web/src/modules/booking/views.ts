@@ -4,6 +4,7 @@ import { formatBriefDate } from '@shoot/domain/brief/message'
 import { onlinePaymentAllowed } from '@shoot/domain/payments'
 import { formatMoney } from '@shoot/domain/pricing'
 import { getTranslations } from 'next-intl/server'
+import type { Payload } from 'payload'
 import { whatsappHref } from '@/modules/contact/whatsapp'
 import { describeCreator, type DirectoryContext } from '@/modules/creators'
 import type { Booking, SiteSetting } from '@/payload-types'
@@ -12,6 +13,8 @@ import { env } from '@/shared/lib/env'
 import { getPaymentProvider } from '@/shared/payments'
 import type { Locale } from '@/shared/lib/locale'
 import type { BookingStatusProps } from './components/BookingStatus'
+import type { ContactView } from './components/ContactRows'
+import { creatorContactsFor } from './contact'
 import type { CreatorBookingView } from './components/CreatorBookingRow'
 import type { MatchResultsProps } from './components/MatchResults'
 import type { QuotationViewProps } from './components/QuotationView'
@@ -90,7 +93,7 @@ const NAME = (rel: unknown, key: string) => (rel && typeof rel === 'object' ? St
 /** The quotation page's view: the frozen document plus the booking's state and its one client action. */
 export async function quotationView(
   access: QuotationAccess,
-  options: { locale: Locale; key: string; now: Date; settings: SiteSetting; replacements: BookingStatusProps['replacements']; prefix: string },
+  options: { locale: Locale; key: string; now: Date; settings: SiteSetting; replacements: BookingStatusProps['replacements']; prefix: string; /** 025: who is signed in, and the client to read contact with. */ viewerId?: number | null; payload?: Payload },
 ): Promise<{ view: Omit<QuotationViewProps, 'status' | 'notice' | 'error'>; status: BookingStatusProps }> {
   const { locale, now } = options
   const t = await getTranslations({ locale, namespace: 'quote' })
@@ -118,6 +121,8 @@ export async function quotationView(
   // Only a creator who declined or did not answer is replaced by the client; "let us choose" is the team's job.
   const lapsedTypes = toAssignments(assignments).filter((a) => a.status === 'declined' || a.status === 'lapsed').map((a) => a.personaId)
   const replacementSentence = (type: string) => t('status.lapsed', { type })
+  // 025: the booked creators' contact, for the booking's own signed-in client only (never the link alone).
+  const contacts = isCurrent && options.payload ? await creatorContactsFor(options.payload, booking, options.viewerId, locale, reference) : []
 
   return {
     view: {
@@ -135,6 +140,7 @@ export async function quotationView(
       total: money(quotation.totalFils),
       terms: (qm?.quotationTerms ?? null) as QuotationViewProps['terms'],
       whatsappHref: whatsappHref(options.settings.whatsappNumber, t('whatsappMessage', { reference })) ?? '#',
+      contacts,
     },
     status: {
       state,
@@ -162,8 +168,8 @@ export async function quotationView(
   }
 }
 
-/** The creator's rows (QM-US3): the client's first name only, never a phone number. */
-export function creatorBookingViews(bookings: Booking[], profileIds: number[], locale: Locale, locationName: (slug: string) => string): CreatorBookingView[] {
+/** The creator's rows (QM-US3): the client's first name; their number only through `contacts` (025: a confirmed part of a paid booking). */
+export function creatorBookingViews(bookings: Booking[], profileIds: number[], locale: Locale, locationName: (slug: string) => string, contacts: ReadonlyMap<number, ContactView> = new Map()): CreatorBookingView[] {
   const mine = profileIds.map(String)
   const rows: CreatorBookingView[] = []
   for (const b of bookings) {
@@ -188,6 +194,8 @@ export function creatorBookingViews(bookings: Booking[], profileIds: number[], l
         clientFirstName: (b.client?.name ?? '').split(' ')[0] ?? '',
         respondBy: a.respondBy ? formatDateTime(a.respondBy, locale) : null,
         exactPlace: exactPlaceOf(brief, b.state, a.status),
+        // 025: the client's contact, once this creator's own part is confirmed.
+        contact: a.status === 'confirmed' ? (contacts.get(b.id) ?? null) : null,
       })
     }
   }

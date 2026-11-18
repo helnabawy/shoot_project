@@ -150,6 +150,34 @@ class _Body extends StatelessWidget {
                   ),
                   const SizedBox(height: 28),
                 ],
+                // Feature 025: confirmed bookings, one tap from the account.
+                if (home.confirmed.isNotEmpty) ...[
+                  _Section(
+                    label: l10n.accountConfirmed,
+                    rows: [
+                      for (final b in home.confirmed)
+                        TwoLineRow(
+                          key: ValueKey('account:confirmed:${b.reference}'),
+                          title: bookingTitle(context, b),
+                          meta: bookingMeta(context, b),
+                          leading: const IconTile(
+                            ShootIcons.calendar,
+                            iconSize: 15,
+                            tone: IconTileTone.tile,
+                          ),
+                          minHeight: 68,
+                          padding: const EdgeInsetsDirectional.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          metaMaxLines: 1,
+                          trailing: BookingBadge(b.status),
+                          onTap: () => context.go(bookingPath(b.reference)),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 28),
+                ],
                 _Section(
                   label: l10n.accountInYourAccount,
                   rows: [

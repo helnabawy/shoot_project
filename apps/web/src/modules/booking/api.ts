@@ -60,7 +60,7 @@ async function act(ctx: ActorContext, params: Params, run: (access: QuotationAcc
   const result = await run(access)
   if (!result.ok) return refused(result)
   const fresh = await accessOf(ctx, params)
-  return fresh ? quotationView(fresh, { locale: ctx.locale, now: ctx.now() }) : notFound()
+  return fresh ? quotationView(fresh, { locale: ctx.locale, now: ctx.now(), viewerId: ctx.user?.id }) : notFound()
 }
 
 /** `GET match/{ref}/{key}`: step 2, the creators free on the brief's day (or another day, or duration). */
@@ -146,7 +146,7 @@ export const getQuotationV1 = defineHandler({
   ...endpoints.quotationView,
   run: async (ctx, { params }) => {
     const access = await accessOf(ctx, params)
-    return access ? quotationView(access, { locale: ctx.locale, now: ctx.now() }) : notFound()
+    return access ? quotationView(access, { locale: ctx.locale, now: ctx.now(), viewerId: ctx.user?.id }) : notFound()
   },
 })
 

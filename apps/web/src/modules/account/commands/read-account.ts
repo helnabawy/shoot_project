@@ -9,6 +9,7 @@ import { accessKey, matchPath } from '@/modules/booking'
 import { countOpenBriefs, readBookings, readBriefs } from '../queries'
 
 const HOME_BRIEFS = 5
+const CONFIRMED: readonly string[] = ['awaitingPayment', 'paid', 'scheduled']
 
 /** "What your account does", from the CMS in the caller's language (FR-027). */
 async function aboutLines(ctx: ActorContext): Promise<string[]> {
@@ -27,6 +28,12 @@ export async function readAccount(ctx: ActorContext): Promise<AccountHomeV1 | Pr
   const rows = bookings.map((b) => b.row)
   const pick = pickUpNext(rows)
   const picked = pick ? bookings.find((b) => b.summary.reference === pick.reference) : undefined
+  // 025 (US3): confirmed, paid and scheduled bookings, soonest shoot first; absent when there are none.
+  const confirmed = bookings
+    .map((b) => b.summary)
+    .filter((b) => CONFIRMED.includes(b.status))
+    .sort((a, b) => (a.date ?? '9999').localeCompare(b.date ?? '9999'))
+    .slice(0, 3)
   const dismissed = (user as { accountFinishDismissedAt?: string | null }).accountFinishDismissedAt ?? null
   return {
     person: { name: user.name ?? null, phone: user.username ?? null },
@@ -34,6 +41,7 @@ export async function readAccount(ctx: ActorContext): Promise<AccountHomeV1 | Pr
     places: { bookings: { waiting: waitingCount(rows), open: openCount(rows, dubaiToday(ctx.now())) }, briefs: { open: openBriefs } },
     briefs: briefs.items,
     ...(await offersNextUp(ctx, briefs.items)),
+    ...(confirmed.length ? { confirmed } : {}),
     finish: {
       items: finishItems({ phone: user.username ?? null, name: user.name ?? null, email: user.email ?? null }),
       autoOpen: finishAutoOpen({ bookingCount: bookings.length, dismissedAt: dismissed }),

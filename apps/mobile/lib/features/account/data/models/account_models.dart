@@ -115,6 +115,11 @@ final class AccountHomeModel {
         ),
         null => null,
       },
+      confirmed: readOptionalList(
+        _json,
+        'confirmed',
+        (i) => bookingFromJson(asObject(i)),
+      ),
     );
   }
 }

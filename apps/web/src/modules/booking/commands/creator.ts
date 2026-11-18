@@ -11,6 +11,7 @@ import type { Booking, Brief, User } from '@/payload-types'
 import { getDirectoryContext, getLocations } from '@/modules/creators'
 import type { ActorContext } from '@/shared/api/actor'
 import { problem, type Problem } from '@/shared/api/problem'
+import { clientContactsFor } from '../contact'
 import { blockDateFor, releaseDates } from '../effects'
 import { myProfileIds } from '../queries'
 import { toAssignments, toRows } from '../rows'
@@ -19,7 +20,8 @@ import { applyChange, applyTransition } from '../transitions'
 /**
  * The creator's side of bookings and availability for the app (feature 014): the same rules and writes as
  * the website's `respondToAssignment`, `markDelivered` and `toggleBlockedDate`, returning the wire views.
- * A creator sees only their own assignments and the client's first name, never a phone number.
+ * A creator sees only their own assignments and the client's first name; the client's number only once
+ * the booking is paid and their own part is confirmed (feature 025).
  */
 
 export const AVAILABILITY_DAYS = 90
@@ -60,6 +62,7 @@ async function requestsOf(ctx: ActorContext, user: User): Promise<{ requests: Bo
   const [bookings, directory, locations] = await Promise.all([bookingsOf(ctx, user, profileIds), getDirectoryContext(ctx.locale), getLocations(ctx.locale)])
   const place = new Map(locations.map((l) => [l.slug, l.name]))
   const now = ctx.now()
+  const contacts = await clientContactsFor(ctx.payload, bookings, profileIds, ctx.locale)
   const requests: BookingRequestV1[] = []
   // 023: the creator home also shows each booking's start time and length.
   const details = new Map<string, RequestDetails>()
@@ -83,6 +86,7 @@ async function requestsOf(ctx: ActorContext, user: User): Promise<{ requests: Bo
         answer,
         canDeliver: b.state === 'scheduled' && Boolean(b.date) && (b.date as string) < dubaiToday(now),
         paid: ['paid', 'scheduled', 'delivered', 'completed'].includes(b.state),
+        ...(a.status === 'confirmed' && contacts.has(b.id) ? { contact: (({ name, role, phone, whatsappHref }) => ({ name, role, phone, whatsappUrl: whatsappHref }))(contacts.get(b.id)!) } : {}),
       })
     }
   }

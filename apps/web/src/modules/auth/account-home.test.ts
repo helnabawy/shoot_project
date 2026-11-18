@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { pickNextUp, placeStatus, type AccountBooking, type AccountJob } from './account-home'
+import { confirmedRows, pickNextUp, placeStatus, splitConfirmed, type AccountBooking, type AccountJob } from './account-home'
 
 const today = '2026-11-08'
 const job = (over: Partial<AccountJob> = {}): AccountJob => ({ reference: 'S-1', state: 'scheduled', awaitingAnswer: false, date: '2026-11-20', ...over })
@@ -72,5 +72,33 @@ describe('account home: one-line status of each place', () => {
     expect(placeStatus({ today, waiting: 0, unread: 3, jobs: [], bookings: [] })).toEqual({ key: 'updates', count: 3 })
     expect(placeStatus({ today, waiting: 0, unread: 0, jobs: [job(), job({ state: 'completed' })], bookings: [booking(), booking({ state: 'quoted' }), booking({ date: '2026-01-01' })] })).toEqual({ key: 'open', count: 3 })
     expect(placeStatus({ today, waiting: 0, unread: 0, jobs: [], bookings: [booking({ state: 'cancelled' })] })).toEqual({ key: 'none', count: 0 })
+  })
+})
+
+describe('025 confirmed bookings are one tap away', () => {
+  const rows = [
+    booking({ reference: 'quoted', state: 'quoted', date: '2026-11-09' }),
+    booking({ reference: 'late', state: 'paid', date: '2026-12-20' }),
+    booking({ reference: 'soon', state: 'confirmed', date: '2026-11-12' }),
+    booking({ reference: 'open-date', state: 'scheduled', date: null }),
+    booking({ reference: 'mid', state: 'scheduled', date: '2026-11-30' }),
+    booking({ reference: 'done', state: 'completed', date: '2026-10-01' }),
+    booking({ reference: 'delivered', state: 'delivered', date: '2026-11-01' }),
+  ]
+
+  it('BC-US3-S1 the client account lists up to three confirmed, paid or scheduled bookings, soonest shoot first', () => {
+    expect(confirmedRows(rows).map((r) => r.reference)).toEqual(['soon', 'mid', 'late'])
+    expect(confirmedRows([booking({ state: 'quoted' }), booking({ state: 'accepted' })])).toEqual([])
+  })
+
+  it('BC-US3-S2 the creator account lists their confirmed jobs the same way, never a request still waiting', () => {
+    const jobs = [job({ reference: 'waiting', state: 'accepted', awaitingAnswer: true }), job({ reference: 'b', state: 'paid', date: '2026-11-25' }), job({ reference: 'a', state: 'confirmed', date: '2026-11-11' })]
+    expect(confirmedRows(jobs).map((j) => j.reference)).toEqual(['a', 'b'])
+  })
+
+  it('BC-US3-S3 the bookings page leads with Confirmed; everything else follows in its own order', () => {
+    const { confirmed, rest } = splitConfirmed(rows)
+    expect(confirmed.map((r) => r.reference)).toEqual(['soon', 'mid', 'late', 'open-date'])
+    expect(rest.map((r) => r.reference)).toEqual(['quoted', 'done', 'delivered'])
   })
 })

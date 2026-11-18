@@ -1,4 +1,4 @@
-import type { BookingState } from '@shoot/domain/booking'
+import { isConfirmedBooking, type BookingState } from '@shoot/domain/booking'
 import type { ProfileStatus } from '@shoot/domain/creators'
 
 /** Feature 019: open client briefs that match the creator, and the soonest one. */
@@ -94,3 +94,16 @@ export function placeStatus(input: { today: string; waiting: number; unread: num
   const count = upcomingJobs(jobs, today).length + openBookings(bookings, today).length
   return count ? ({ key: 'open', count } as const) : ({ key: 'none', count: 0 } as const)
 }
+
+const byDay = (a: { date: string | null }, b: { date: string | null }) => (a.date ?? '9999').localeCompare(b.date ?? '9999')
+
+/**
+ * 025 (US3): bookings that are agreed and still ahead (confirmed, paid, scheduled), soonest shoot first; the
+ * rest keep their order. The bookings page leads with `confirmed`; the account home shows its first three.
+ */
+export function splitConfirmed<T extends { state: BookingState; date: string | null }>(rows: T[]): { confirmed: T[]; rest: T[] } {
+  return { confirmed: rows.filter((r) => isConfirmedBooking(r.state)).sort(byDay), rest: rows.filter((r) => !isConfirmedBooking(r.state)) }
+}
+
+export const CONFIRMED_ON_HOME = 3
+export const confirmedRows = <T extends { state: BookingState; date: string | null }>(rows: T[]): T[] => splitConfirmed(rows).confirmed.slice(0, CONFIRMED_ON_HOME)

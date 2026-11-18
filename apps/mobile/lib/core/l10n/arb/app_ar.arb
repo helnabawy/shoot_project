@@ -1019,5 +1019,10 @@
   "ntOfferLost": "حجز العميل مبدعاً آخر",
   "ntOther": "تحديث جديد",
   "ntEarlier": "سابقاً",
-  "pushBannerDismiss": "إغلاق"
+  "pushBannerDismiss": "إغلاق",
+  "contactTitle": "تواصل مع {name}",
+  "contactClientTitle": "تواصل مع عميلك",
+  "contactCall": "اتصال",
+  "contactWhatsapp": "واتساب",
+  "accountConfirmed": "الحجوزات المؤكدة"
 }

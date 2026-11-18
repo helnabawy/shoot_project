@@ -12,6 +12,7 @@ import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_tokens.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
+import 'package:shoot_mobile/core/widgets/contact_block.dart';
 import 'package:shoot_mobile/core/widgets/message_banner.dart';
 import 'package:shoot_mobile/core/widgets/money.dart';
 import 'package:shoot_mobile/core/widgets/quote_lines.dart';
@@ -83,12 +84,12 @@ class _BookingPageState extends State<BookingPage> with WidgetsBindingObserver {
 
   void _pdf() {
     final language = Localizations.localeOf(context).languageCode;
+    // 025: a booking opened from the account has no key in its address; the owner's answer has it.
+    final key =
+        context.read<BookingViewCubit>().state.view?.key ?? widget.accessKey;
     unawaited(
       widget.openUrl(
-        widget.links.address(
-          '/q/${widget.ref}/${widget.accessKey}',
-          languageCode: language,
-        ),
+        widget.links.address('/q/${widget.ref}/$key', languageCode: language),
       ),
     );
   }
@@ -140,6 +141,7 @@ class _BookingPageState extends State<BookingPage> with WidgetsBindingObserver {
               onChat: () => _chat(state.view!),
               onPdf: _pdf,
               onReport: () => unawaited(_report()),
+              openUrl: widget.openUrl,
               onPay: () => unawaited(
                 context.read<BookingViewCubit>().pay(
                   (url) async => widget.openUrl(url),
@@ -160,7 +162,10 @@ class _Ready extends StatelessWidget {
     required this.onPdf,
     required this.onReport,
     required this.onPay,
+    required this.openUrl,
   });
+
+  final UrlOpener openUrl;
 
   final BookingViewState state;
   final BookingView view;
@@ -415,6 +420,17 @@ class _Ready extends StatelessWidget {
                         SummaryRow(
                           label: p.type,
                           value: p.name ?? l10n.qmWeChoose,
+                        ),
+                      // Feature 025: the booked creators, for the booking's own client.
+                      for (final contact in view.contacts)
+                        Padding(
+                          padding: const EdgeInsetsDirectional.symmetric(
+                            vertical: 4,
+                          ),
+                          child: ContactBlock(
+                            contact: contact,
+                            openUrl: openUrl,
+                          ),
                         ),
                       QuoteLines(
                         lines: [

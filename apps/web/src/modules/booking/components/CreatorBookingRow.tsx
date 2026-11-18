@@ -3,6 +3,7 @@ import { Bidi } from '@/shared/ui/Bidi'
 import { cx, GlyphTile, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
 import { CheckIcon, CloseIcon } from '@/shared/ui/icons'
 import { markDelivered, respondToAssignment } from '../actions'
+import { ContactRows, type ContactView } from './ContactRows'
 
 export interface CreatorBookingView {
   bookingId: number
@@ -21,11 +22,13 @@ export interface CreatorBookingView {
   respondBy: string | null
   /** 022 (FR-005c): the exact place, once this creator is booked; `null` before. */
   exactPlace?: { address: string; directionsUrl: string } | null
+  /** 025: the client's contact, once the booking is paid and this creator's part is confirmed; `null` before. */
+  contact?: ContactView | null
 }
 
 /**
  * A booking request as the creator sees it (surface brief account-bookings): date, place, brief, price and the
- * client's first name, never their phone. Pending: Confirm is the one action, Decline secondary.
+ * client's first name; their number only once this creator is booked (025). Pending: Confirm is the one action, Decline secondary.
  */
 export function CreatorBookingRow({ view, locale, primary = true }: { view: CreatorBookingView; locale: string; primary?: boolean }) {
   const t = useTranslations('booking')
@@ -37,7 +40,7 @@ export function CreatorBookingRow({ view, locale, primary = true }: { view: Crea
     </>
   )
   return (
-    <div className="border-b border-hair pb-2 last:border-b-0" data-testid="creator-booking" data-reference={view.reference}>
+    <div id={`b-${view.reference}`} className="scroll-mt-24 border-b border-hair pb-2 last:border-b-0" data-testid="creator-booking" data-reference={view.reference}>
       <div className={rowClass('open', false)}>
         <RowContent
           glyph={<span className="tabular-nums">{view.date.slice(8, 10)}</span>}
@@ -66,6 +69,7 @@ export function CreatorBookingRow({ view, locale, primary = true }: { view: Crea
           trailing={view.awaitingAnswer ? null : t(`state.${view.state}` as never)}
         />
       </div>
+      {view.contact ? <ContactRows contact={view.contact} side="client" /> : null}
       {view.awaitingAnswer ? (
         <>
           <form action={respondToAssignment}>

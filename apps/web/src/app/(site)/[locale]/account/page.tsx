@@ -3,8 +3,10 @@ import { joinList } from '@shoot/domain/personas'
 import { formatMoney } from '@shoot/domain/pricing'
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { pickNextUp, placeStatus } from '@/modules/auth/account-home'
+import { confirmedRows, pickNextUp, placeStatus } from '@/modules/auth/account-home'
 import {
+  ConfirmedBookings,
+  type ConfirmedRow,
   NextUpPanel,
   PlaceRow,
   profileStatusTitle,
@@ -99,7 +101,8 @@ export default async function AccountPage({ params }: Props) {
   )
   const placeName = (slug: string) => locations.find((l) => l.slug === slug)?.name ?? slug
 
-  const jobs: JobView[] = creatorBookingViews(assigned, profileIds, locale, placeName).map((v) => ({
+  const creatorViews = creatorBookingViews(assigned, profileIds, locale, placeName)
+  const jobs: JobView[] = creatorViews.map((v) => ({
     reference: v.reference,
     state: v.state as BookingState,
     awaitingAnswer: v.awaitingAnswer,
@@ -127,6 +130,19 @@ export default async function AccountPage({ params }: Props) {
   const next = pickNextUp({ today, provider, profileStatus, jobs, bookings, briefs: openBriefs, offers })
   const waiting = jobs.filter((j) => j.awaitingAnswer).length
   const bookingStatus = placeStatus({ today, waiting, unread: 0, jobs, bookings })
+  // 025 (US3): confirmed bookings, one tap away. A creator's open in their bookings list; a client's as the quotation.
+  const tc = await getTranslations('account.confirmed')
+  const creatorNames = (b: (typeof mine)[number]) =>
+    [...new Set((b.assignments ?? []).map((a) => (a.creator && typeof a.creator === 'object' ? (a.creator.displayName ?? '') : '')).filter(Boolean))].join(locale === 'ar' ? ' و' : ' and ')
+  const confirmed: ConfirmedRow[] = provider
+    ? confirmedRows(jobs).map((j) => {
+        const name = creatorViews.find((v) => v.reference === j.reference)?.clientFirstName ?? ''
+        return { reference: j.reference, state: j.state, date: j.date, dateLabel: j.dateLabel, place: j.place, who: name ? tc('for', { name }) : '', href: `${localizeHref('/account/bookings', locale)}#b-${j.reference}` }
+      })
+    : confirmedRows(bookings).map((b) => {
+        const name = creatorNames(mine.find((m) => m.reference === b.reference)!)
+        return { reference: b.reference, state: b.state, date: b.date, dateLabel: b.dateLabel, place: b.place, who: name ? tc('with', { name }) : '', href: memberBookingPath(b.reference, locale) }
+      })
   const daysOff = availability ? availability.blocks.filter((b) => b.kind === 'blocked').length : 0
 
   return (
@@ -201,6 +217,7 @@ export default async function AccountPage({ params }: Props) {
             brief: `${localizeHref('/', locale)}#brief`,
           }}
         />
+        <ConfirmedBookings rows={confirmed} />
         {briefs.length || next.kind !== 'brief' ? (
           <div className="mt-10">
             <MyBriefs briefs={briefs} locale={locale} offerNew={next.kind !== 'brief'} saidYes={yes} />

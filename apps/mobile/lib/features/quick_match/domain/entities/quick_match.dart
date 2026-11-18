@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:shoot_mobile/core/contact/booking_contact.dart';
 import 'package:shoot_mobile/core/content/creator_card.dart';
 import 'package:shoot_mobile/core/media/image_ref.dart';
 
@@ -417,6 +418,8 @@ final class BookingView extends Equatable {
     required this.replacements,
     required this.holdReason,
     required this.whatsappUrl,
+    this.contacts = const [],
+    this.key,
   });
 
   final String reference;
@@ -441,6 +444,13 @@ final class BookingView extends Equatable {
   final String? holdReason;
   final String? whatsappUrl;
 
+  /// Feature 025: the booked creators' contact, only for the booking's signed-in client while the
+  /// booking is paid, scheduled or delivered; empty otherwise.
+  final List<BookingContact> contacts;
+
+  /// Feature 025: the booking's private key, only for its signed-in client.
+  final String? key;
+
   @override
   List<Object?> get props => [
     reference,
@@ -462,6 +472,8 @@ final class BookingView extends Equatable {
     replacements,
     holdReason,
     whatsappUrl,
+    contacts,
+    key,
   ];
 }
 

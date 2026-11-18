@@ -43,6 +43,7 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'me-account': (json) => AccountHomeModel.fromJson(json).toEntity(),
   'me-account-empty': (json) => AccountHomeModel.fromJson(json).toEntity(),
   'me-account-offers': (json) => AccountHomeModel.fromJson(json).toEntity(),
+  'me-account-confirmed': (json) => AccountHomeModel.fromJson(json).toEntity(),
   'me-bookings': (json) => BookingListModel.fromJson(json).toEntity(),
   'me-briefs': (json) => BriefListModel.fromJson(json).toEntity(),
   'me-updated': SessionUser.fromMe,
@@ -85,6 +86,8 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'creator-sample-removed': (json) => MyProfileModel.fromJson(json).toEntity(),
   'creator-identity-result': (json) => MyProfileModel.fromJson(json).toEntity(),
   'creator-bookings': (json) => CreatorBookingsModel.fromJson(json).toEntity(),
+  'creator-bookings-contact': (json) =>
+      CreatorBookingsModel.fromJson(json).toEntity(),
   'creator-bookings-answered': (json) =>
       CreatorBookingsModel.fromJson(json).toEntity(),
   'creator-bookings-delivered': (json) =>
@@ -154,6 +157,7 @@ final Map<String, Object Function(Json json)> apiDecoders = {
       BookingViewModel.fromJson(json).toEntity(),
   'booking-view-confirmed': (json) =>
       BookingViewModel.fromJson(json).toEntity(),
+  'booking-view-contact': (json) => BookingViewModel.fromJson(json).toEntity(),
   'booking-view-delivered': (json) =>
       BookingViewModel.fromJson(json).toEntity(),
   'booking-view-completed': (json) =>

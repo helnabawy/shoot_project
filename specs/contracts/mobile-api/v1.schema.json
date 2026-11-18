@@ -1382,6 +1382,32 @@
                   "client": {
                     "type": "string"
                   },
+                  "contact": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "phone": {
+                        "pattern": "^\\+[1-9]\\d{7,14}$",
+                        "type": "string"
+                      },
+                      "role": {
+                        "type": "string"
+                      },
+                      "whatsappUrl": {
+                        "pattern": "^https:\\/\\/\\S+$",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "role",
+                      "phone",
+                      "whatsappUrl"
+                    ],
+                    "type": "object"
+                  },
                   "date": {
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                     "type": "string"
@@ -1526,6 +1552,32 @@
                   },
                   "client": {
                     "type": "string"
+                  },
+                  "contact": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "phone": {
+                        "pattern": "^\\+[1-9]\\d{7,14}$",
+                        "type": "string"
+                      },
+                      "role": {
+                        "type": "string"
+                      },
+                      "whatsappUrl": {
+                        "pattern": "^https:\\/\\/\\S+$",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "role",
+                      "phone",
+                      "whatsappUrl"
+                    ],
+                    "type": "object"
                   },
                   "date": {
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -1828,6 +1880,32 @@
                 "client": {
                   "type": "string"
                 },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
+                },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                   "type": "string"
@@ -1905,6 +1983,32 @@
                 },
                 "client": {
                   "type": "string"
+                },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
                 },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -2020,6 +2124,32 @@
                 },
                 "client": {
                   "type": "string"
+                },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
                 },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -2140,6 +2270,32 @@
                 "client": {
                   "type": "string"
                 },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
+                },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                   "type": "string"
@@ -2217,6 +2373,32 @@
                 },
                 "client": {
                   "type": "string"
+                },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
                 },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -2332,6 +2514,32 @@
                 },
                 "client": {
                   "type": "string"
+                },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
                 },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -2436,6 +2644,32 @@
                 "client": {
                   "type": "string"
                 },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
+                },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                   "type": "string"
@@ -2513,6 +2747,32 @@
                 },
                 "client": {
                   "type": "string"
+                },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
                 },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -2628,6 +2888,32 @@
                 },
                 "client": {
                   "type": "string"
+                },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
                 },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -9163,6 +9449,32 @@
                 "client": {
                   "type": "string"
                 },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
+                },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                   "type": "string"
@@ -9240,6 +9552,32 @@
                 },
                 "client": {
                   "type": "string"
+                },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
                 },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -9355,6 +9693,32 @@
                 },
                 "client": {
                   "type": "string"
+                },
+                "contact": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "pattern": "^\\+[1-9]\\d{7,14}$",
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "whatsappUrl": {
+                      "pattern": "^https:\\/\\/\\S+$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role",
+                    "phone",
+                    "whatsappUrl"
+                  ],
+                  "type": "object"
                 },
                 "date": {
                   "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -17843,6 +18207,98 @@
             "maxItems": 5,
             "type": "array"
           },
+          "confirmed": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "date": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "occasion": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "place": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "professional": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "reference": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "startTime": {
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{2}:\\d{2}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "awaitingAcceptance",
+                    "waitingProfessional",
+                    "awaitingPayment",
+                    "paid",
+                    "scheduled",
+                    "delivered",
+                    "completed",
+                    "cancelled",
+                    "expired",
+                    "onHold",
+                    "declined"
+                  ],
+                  "type": "string"
+                },
+                "totalFils": {
+                  "anyOf": [
+                    {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "reference",
+                "status",
+                "occasion",
+                "place",
+                "date",
+                "startTime",
+                "professional",
+                "totalFils"
+              ],
+              "type": "object"
+            },
+            "maxItems": 3,
+            "type": "array"
+          },
           "finish": {
             "additionalProperties": false,
             "properties": {
@@ -23124,6 +23580,36 @@
           "canReport": {
             "type": "boolean"
           },
+          "contacts": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "phone": {
+                  "pattern": "^\\+[1-9]\\d{7,14}$",
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "whatsappUrl": {
+                  "pattern": "^https:\\/\\/\\S+$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "role",
+                "phone",
+                "whatsappUrl"
+              ],
+              "type": "object"
+            },
+            "maxItems": 8,
+            "type": "array"
+          },
           "holdReason": {
             "type": [
               "string",
@@ -23133,6 +23619,11 @@
           "issuedAt": {
             "format": "date-time",
             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+            "type": "string"
+          },
+          "key": {
+            "maxLength": 64,
+            "minLength": 1,
             "type": "string"
           },
           "lines": {
@@ -23621,6 +24112,36 @@
           "canReport": {
             "type": "boolean"
           },
+          "contacts": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "phone": {
+                  "pattern": "^\\+[1-9]\\d{7,14}$",
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "whatsappUrl": {
+                  "pattern": "^https:\\/\\/\\S+$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "role",
+                "phone",
+                "whatsappUrl"
+              ],
+              "type": "object"
+            },
+            "maxItems": 8,
+            "type": "array"
+          },
           "holdReason": {
             "type": [
               "string",
@@ -23630,6 +24151,11 @@
           "issuedAt": {
             "format": "date-time",
             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+            "type": "string"
+          },
+          "key": {
+            "maxLength": 64,
+            "minLength": 1,
             "type": "string"
           },
           "lines": {
@@ -24447,6 +24973,36 @@
           "canReport": {
             "type": "boolean"
           },
+          "contacts": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "phone": {
+                  "pattern": "^\\+[1-9]\\d{7,14}$",
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "whatsappUrl": {
+                  "pattern": "^https:\\/\\/\\S+$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "role",
+                "phone",
+                "whatsappUrl"
+              ],
+              "type": "object"
+            },
+            "maxItems": 8,
+            "type": "array"
+          },
           "holdReason": {
             "type": [
               "string",
@@ -24456,6 +25012,11 @@
           "issuedAt": {
             "format": "date-time",
             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+            "type": "string"
+          },
+          "key": {
+            "maxLength": 64,
+            "minLength": 1,
             "type": "string"
           },
           "lines": {
@@ -24958,6 +25519,36 @@
           "canReport": {
             "type": "boolean"
           },
+          "contacts": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "phone": {
+                  "pattern": "^\\+[1-9]\\d{7,14}$",
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "whatsappUrl": {
+                  "pattern": "^https:\\/\\/\\S+$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "role",
+                "phone",
+                "whatsappUrl"
+              ],
+              "type": "object"
+            },
+            "maxItems": 8,
+            "type": "array"
+          },
           "holdReason": {
             "type": [
               "string",
@@ -24967,6 +25558,11 @@
           "issuedAt": {
             "format": "date-time",
             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+            "type": "string"
+          },
+          "key": {
+            "maxLength": 64,
+            "minLength": 1,
             "type": "string"
           },
           "lines": {
@@ -25455,6 +26051,36 @@
           "canReport": {
             "type": "boolean"
           },
+          "contacts": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "phone": {
+                  "pattern": "^\\+[1-9]\\d{7,14}$",
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "whatsappUrl": {
+                  "pattern": "^https:\\/\\/\\S+$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "role",
+                "phone",
+                "whatsappUrl"
+              ],
+              "type": "object"
+            },
+            "maxItems": 8,
+            "type": "array"
+          },
           "holdReason": {
             "type": [
               "string",
@@ -25464,6 +26090,11 @@
           "issuedAt": {
             "format": "date-time",
             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+            "type": "string"
+          },
+          "key": {
+            "maxLength": 64,
+            "minLength": 1,
             "type": "string"
           },
           "lines": {

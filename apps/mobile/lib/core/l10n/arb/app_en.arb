@@ -4336,5 +4336,30 @@
   "pushBannerDismiss": "Dismiss",
   "@pushBannerDismiss": {
     "description": "Closes the in-app banner of a notification that arrived while the app was open."
+  },
+  "contactTitle": "Contact {name}",
+  "@contactTitle": {
+    "description": "Feature 025: heading of the contact block on a confirmed booking; name is the creator's display name or the client's first name.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactClientTitle": "Contact your client",
+  "@contactClientTitle": {
+    "description": "Feature 025: heading of the contact block when the client has no name."
+  },
+  "contactCall": "Call",
+  "@contactCall": {
+    "description": "Feature 025: secondary button that opens the phone app with the other person's number."
+  },
+  "contactWhatsapp": "WhatsApp",
+  "@contactWhatsapp": {
+    "description": "Feature 025: secondary button that opens a WhatsApp chat with the other person."
+  },
+  "accountConfirmed": "Confirmed bookings",
+  "@accountConfirmed": {
+    "description": "Feature 025: group label on the client's account home: confirmed, paid and scheduled bookings."
   }
 }

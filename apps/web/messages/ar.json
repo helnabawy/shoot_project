@@ -260,7 +260,12 @@
     },
     "offersCount": "{count, plural, zero {لا عروض} one {عرض واحد} two {عرضان} few {# عروض} many {# عرضًا} other {# عرض}}",
     "saidYes": "{count, plural, one {وافق محترف واحد} two {وافق محترفان} few {وافق # محترفين} other {وافق # محترفًا}}",
-    "notificationsLink": "الإشعارات"
+    "notificationsLink": "الإشعارات",
+    "confirmed": {
+      "title": "الحجوزات المؤكدة",
+      "with": "مع {name}",
+      "for": "لـ {name}"
+    }
   },
   "home": {
     "howItWorks": "كيف نعمل",
@@ -849,7 +854,19 @@
       "venue": "أخبرنا أين ستكون الجلسة.",
       "signInRequired": "سجّل الدخول لقبول عرض السعر.",
       "otherAccount": "عرض السعر هذا يخص حساباً آخر. سجّل الدخول بالرقم الذي أُنشئ به."
-    }
+    },
+    "contact": {
+      "creator": "تواصل مع {name}",
+      "client": "تواصل مع {name}",
+      "clientNoName": "تواصل مع عميلك",
+      "call": "اتصال",
+      "whatsapp": "رسالة على واتساب",
+      "message": "مرحباً {name}، أتواصل معك بخصوص الحجز {reference}.",
+      "messageNoName": "مرحباً، أتواصل معك بخصوص الحجز {reference}."
+    },
+    "confirmedGroup": "مؤكدة",
+    "otherRequests": "طلبات أخرى",
+    "otherBookings": "عروض الأسعار والحجوزات السابقة"
   },
   "availability": {
     "metaTitle": "التوفر",

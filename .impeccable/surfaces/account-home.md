@@ -23,7 +23,7 @@ Land, see the one thing that needs you, act on it in one tap; otherwise go to a 
 THESIS: a settings window in The Brief Bar world. The start column is who you are and where you can go; the end column is the one panel (Up next) and your briefs.
 
 - Start column (300 px from 1024 px, sticky under the toolbar): the 64 px initials tile, the name as the h1, the profession in ink, the email in mute; "In your account" rows (Bookings, and for creators My profile and Availability), each with a one-line status and a chevron; Log out last, mute, alone.
-- End column: Up next, the page's only panel and only Top Hit, then "Your briefs" as rows on the ground. "Start a brief" is a row there unless the Top Hit already says it; with no briefs and that Top Hit, the section is absent.
+- End column: Up next, the page's only panel and only Top Hit, then "Confirmed bookings" (feature 025: up to three confirmed, paid or scheduled bookings, soonest first, each row the link to its booking; absent when none), then "Your briefs" as rows on the ground. "Start a brief" is a row there unless the Top Hit already says it; with no briefs and that Top Hit, the section is absent.
 - Phones: one column ordered name, Up next, places, briefs, Log out (CSS `order`; the start column is `display: contents` below 1024 px), so the Top Hit stays above the fold and Log out stays last.
 
 ## Proof and constraints

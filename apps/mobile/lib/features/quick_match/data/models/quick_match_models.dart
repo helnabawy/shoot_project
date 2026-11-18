@@ -1,3 +1,4 @@
+import 'package:shoot_mobile/core/contact/booking_contact.dart';
 import 'package:shoot_mobile/core/content/creator_card.dart';
 import 'package:shoot_mobile/core/media/image_ref.dart';
 import 'package:shoot_mobile/core/network/json_read.dart';
@@ -196,6 +197,15 @@ final class BookingViewModel {
         ),
         holdReason: readNullableString(json, 'holdReason'),
         whatsappUrl: readNullableString(json, 'whatsappUrl'),
+        // Feature 025 (additive): absent for anyone but the booking's signed-in client.
+        contacts: List.unmodifiable(
+          readOptionalList(
+            json,
+            'contacts',
+            (c) => BookingContact.fromJson(asObject(c)),
+          ),
+        ),
+        key: readNullableString(json, 'key'),
       ),
     );
   }

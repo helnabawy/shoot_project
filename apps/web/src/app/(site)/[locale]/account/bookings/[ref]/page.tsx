@@ -24,5 +24,5 @@ export default async function MemberBookingPage({ params, searchParams }: Props)
   const user = await requireUser(raw as Locale, `/account/bookings/${ref}`)
   const access = await getQuotationAccess(ref, null, user.id, raw === 'ar' ? 'ar' : 'en')
   if (!access) notFound()
-  return <QuotationPage access={access} locale={raw as Locale} keyParam="" error={error} promo={promo} payment={payment} />
+  return <QuotationPage access={access} locale={raw as Locale} keyParam="" error={error} promo={promo} payment={payment} viewerId={user.id} />
 }

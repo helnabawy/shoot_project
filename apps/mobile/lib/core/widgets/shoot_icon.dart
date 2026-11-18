@@ -103,6 +103,12 @@ enum ShootIcons {
     '<path d="M10.3 20.5a2 2 0 0 0 3.4 0"/>',
   ),
 
+  /// A handset (feature 025: call the other side of a confirmed booking).
+  phone(
+    '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2'
+    'A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+  ),
+
   /// Leaving through a door (the menu's Log out); the arrow points to the inline end.
   logOut(
     '<path d="M10 4H5v16h5"/><path d="m15 8 4 4-4 4M19 12H9"/>',

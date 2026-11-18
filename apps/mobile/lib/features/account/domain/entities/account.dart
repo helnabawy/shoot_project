@@ -147,6 +147,7 @@ final class AccountHome extends Equatable {
     required this.finishAutoOpen,
     required this.about,
     this.offers,
+    this.confirmed = const [],
   });
 
   final String? name;
@@ -162,6 +163,9 @@ final class AccountHome extends Equatable {
 
   /// 022: offers waiting on a brief; leads when there is no booking to answer.
   final OffersNextUp? offers;
+
+  /// Feature 025: confirmed, paid and scheduled bookings, soonest shoot first (at most three).
+  final List<BookingSummary> confirmed;
 
   FinishItem? item(FinishKey key) {
     for (final item in finishItems) {
@@ -188,6 +192,7 @@ final class AccountHome extends Equatable {
     finishAutoOpen: finishAutoOpen ?? this.finishAutoOpen,
     about: about,
     offers: offers,
+    confirmed: confirmed,
   );
 
   @override
@@ -203,6 +208,7 @@ final class AccountHome extends Equatable {
     finishAutoOpen,
     about,
     offers,
+    confirmed,
   ];
 }
 

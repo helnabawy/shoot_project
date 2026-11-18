@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { bookingViewV1, detailsV1, matchV1, quotationIssuedV1, reportRequestV1, START_TIME } from './booking'
+import { z } from 'zod'
+import { bookingContactV1, bookingViewV1, detailsV1, matchV1, quotationIssuedV1, reportRequestV1, START_TIME } from './booking'
 
 const details = { date: '2026-12-12', startTime: '18:30', duration: '2h', venue: 'Dubai Marina' }
 
@@ -27,7 +28,17 @@ describe('MQ booking contract shapes', () => {
   })
 
   it('MQ-US4-S6 no shape carries a phone number or a payment detail', () => {
-    const keys = JSON.stringify([bookingViewV1.toJSONSchema?.() ?? Object.keys(bookingViewV1.shape), Object.keys(quotationIssuedV1.shape), Object.keys(matchV1.shape)])
+    // Feature 025: the one exception is `contacts`, sent only to the two sides of a paid booking.
+    const { contacts, ...rest } = bookingViewV1.shape
+    const keys = JSON.stringify([z.object(rest).toJSONSchema(), Object.keys(quotationIssuedV1.shape), Object.keys(matchV1.shape)])
     expect(keys).not.toMatch(/phone|whatsapp"|card|iban|payment/i)
+    expect(contacts.safeParse(undefined).success).toBe(true)
+  })
+
+  it('BC-US1-S1 a contact is a name, a role, an E.164 number and a WhatsApp link', () => {
+    const contact = { name: 'Omar K.', role: 'Photographer', phone: '+971501234567', whatsappUrl: 'https://wa.me/971501234567?text=Hi' }
+    expect(bookingContactV1.safeParse(contact).success).toBe(true)
+    expect(bookingContactV1.safeParse({ ...contact, phone: '0501234567' }).success).toBe(false)
+    expect(bookingContactV1.safeParse({ ...contact, whatsappUrl: 'tel:+971501234567' }).success).toBe(false)
   })
 })

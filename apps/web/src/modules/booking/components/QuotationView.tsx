@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import { Bidi } from '@/shared/ui/Bidi'
 import { BriefBar, GlyphTile, ResultGroup, RowContent, rowClass } from '@/shared/ui/bar'
 import { CheckIcon, WhatsAppIcon } from '@/shared/ui/icons'
+import { ContactRows, contactLabel, type ContactView } from './ContactRows'
 import { PrintButton } from './PrintButton'
 
 export interface QuoteLineView {
@@ -28,6 +29,8 @@ export interface QuotationViewProps {
   /** The status sentence and the one action for the current state (BookingStatus). */
   status: ReactNode
   whatsappHref: string
+  /** 025: the booked creators' contact, only for the booking's signed-in client in a sharing state. */
+  contacts?: ContactView[]
   /** Promo feedback after step 3 ("That code has expired."). */
   notice?: string | null
   error?: string | null
@@ -38,6 +41,7 @@ export interface QuotationViewProps {
 /** The quotation document and the booking's status (surface brief quotation); prints as itself on A4. */
 export function QuotationView(props: QuotationViewProps) {
   const t = useTranslations('quote')
+  const tc = useTranslations('booking.contact')
   return (
     <article aria-labelledby="quote-heading" className="quote-doc">
       <BriefBar as="div" className="print:shadow-none print:border-0" data-floating-hide>
@@ -78,6 +82,12 @@ export function QuotationView(props: QuotationViewProps) {
         ) : null}
 
         <div className="print:hidden">{props.status}</div>
+
+        {(props.contacts ?? []).map((c) => (
+          <ResultGroup key={c.phone} className="print:hidden" label={[contactLabel(tc as never, c, 'creator'), c.role].filter(Boolean).join(' · ')}>
+            <ContactRows contact={c} side="creator" />
+          </ResultGroup>
+        ))}
 
         <ResultGroup label={t('brief')}>
           <p dir="auto" className="px-4 pb-2 text-[15px] text-ink">

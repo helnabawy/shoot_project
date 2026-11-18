@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:shoot_mobile/core/contact/booking_contact.dart';
 import 'package:shoot_mobile/core/media/image_ref.dart';
 import 'package:shoot_mobile/features/creator_account/domain/entities/inbox.dart';
 
@@ -403,6 +404,7 @@ final class BookingRequest extends Equatable {
     required this.answer,
     required this.canDeliver,
     required this.paid,
+    this.contact,
   });
 
   final String ref;
@@ -418,6 +420,10 @@ final class BookingRequest extends Equatable {
   final bool canDeliver;
   final bool paid;
 
+  /// Feature 025: the client's contact, once the booking is paid and this creator's part is
+  /// confirmed; `null` before and after.
+  final BookingContact? contact;
+
   @override
   List<Object?> get props => [
     ref,
@@ -432,6 +438,7 @@ final class BookingRequest extends Equatable {
     answer,
     canDeliver,
     paid,
+    contact,
   ];
 }
 

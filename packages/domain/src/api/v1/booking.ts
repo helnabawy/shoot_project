@@ -139,6 +139,20 @@ export const pickAnotherRequestV1 = z.object({
 export const NEXT_STEPS = ['accept', 'waitProfessional', 'chooseAnother', 'pay', 'shootDay', 'confirmDelivery', 'freshQuotation', 'contactTeam', 'none'] as const
 export const PROGRESS_KEYS = ['briefSent', 'confirmed', 'paid', 'shootDay', 'delivered', 'completed'] as const
 
+/**
+ * Feature 025: the other side of a paid booking (until delivered), sent only to the booking's signed-in client (its booked
+ * creators) or to a creator whose own part is confirmed (the client). `phone` is the verified number in E.164.
+ */
+export const bookingContactV1 = z.object({
+  name: z.string(),
+  /** The professional type for a creator; empty for the client. */
+  role: z.string(),
+  phone: z.string().regex(/^\+[1-9]\d{7,14}$/),
+  /** The WhatsApp chat with that person, a first line naming the booking written in. */
+  whatsappUrl: z.string().regex(/^https:\/\/\S+$/),
+})
+export type BookingContactV1 = z.infer<typeof bookingContactV1>
+
 export const bookingViewV1 = z.object({
   locale: localeV1,
   reference: z.string(),
@@ -172,6 +186,10 @@ export const bookingViewV1 = z.object({
   replacements: z.array(z.object({ persona: z.object({ slug: z.string(), singular: z.string() }), creators: z.array(creatorCardV1) })),
   holdReason: z.string().nullable(),
   whatsappUrl: z.string().regex(/^https:\/\/\S+$/).nullable(),
+  /** 025 (additive): the booked creators' contact, only for the booking's signed-in client in a sharing state. */
+  contacts: z.array(bookingContactV1).max(8).optional(),
+  /** 025 (additive): the booking's private key, only for its signed-in client (the app opens `/q/{reference}/{key}`). */
+  key: z.string().min(1).max(64).optional(),
 })
 export type BookingViewV1 = z.infer<typeof bookingViewV1>
 

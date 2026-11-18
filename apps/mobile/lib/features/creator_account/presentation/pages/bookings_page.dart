@@ -7,6 +7,8 @@ import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/routing/app_routes.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
+import 'package:shoot_mobile/core/web/website_links.dart';
+import 'package:shoot_mobile/core/widgets/contact_block.dart';
 import 'package:shoot_mobile/core/widgets/empty_state.dart';
 import 'package:shoot_mobile/core/widgets/secondary_button.dart';
 import 'package:shoot_mobile/core/widgets/shoot_field.dart';
@@ -136,7 +138,11 @@ class BookingsView extends StatelessWidget {
     required this.onCalendar,
     this.onAllBookings,
     this.only,
+    this.openUrl = openInBrowser,
   });
+
+  /// Opens a call or a WhatsApp chat with a client (feature 025).
+  final UrlOpener openUrl;
 
   final BookingsState state;
   final String? only;
@@ -211,6 +217,7 @@ class _Loaded extends StatelessWidget {
               _RequestCard(
                 request: r,
                 busy: state.busyRef == r.ref,
+                openUrl: view.openUrl,
                 onDeliver: r.canDeliver ? () => view.onDeliver(r.ref) : null,
               ),
           ],
@@ -235,7 +242,8 @@ class _Loaded extends StatelessWidget {
 }
 
 /// One booking, to the point: the day, what the creator must do and by when, the client's own
-/// words, then where, for whom, as what and the reference. Never a phone number or a price.
+/// words, then where, for whom, as what and the reference. Never a price; the client's number only
+/// once the booking is paid and this creator's part is confirmed (feature 025).
 class _RequestCard extends StatelessWidget {
   const _RequestCard({
     required this.request,
@@ -245,8 +253,10 @@ class _RequestCard extends StatelessWidget {
     this.onConfirm,
     this.onDecline,
     this.onDeliver,
+    this.openUrl = openInBrowser,
   });
 
+  final UrlOpener openUrl;
   final BookingRequest request;
   final bool primary;
   final bool busy;
@@ -314,6 +324,10 @@ class _RequestCard extends StatelessWidget {
             value: r.quotation ?? r.ref,
             label: l10n.caFactReference,
           ),
+          if (r.contact case final contact?) ...[
+            const SizedBox(height: 12),
+            ContactBlock(contact: contact, openUrl: openUrl),
+          ],
           if (onConfirm != null) ...[
             const SizedBox(height: 12),
             primary

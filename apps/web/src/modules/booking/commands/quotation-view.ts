@@ -11,6 +11,8 @@ import { wireContext } from '@/shared/api/wire'
 import { env } from '@/shared/lib/env'
 import { getPaymentProvider } from '@/shared/payments'
 import type { Locale } from '@/shared/lib/locale'
+import { creatorContactsFor } from '../contact'
+import { accessKey } from '../keys'
 import { getMatchPage } from '../match'
 import type { QuotationAccess } from '../queries'
 import { idOf, toAssignments } from '../rows'
@@ -19,7 +21,8 @@ import { getPayloadClient } from '@/shared/lib/payload'
 /**
  * The booking behind a private link as the app's one screen model (012 US3 to US5, research R9):
  * the state as it stands now, the price lines stored at issue, the progress, what the person can do
- * next, and a WhatsApp link. Never a phone number, a payment detail or the key's salt (FR-034).
+ * next, and a WhatsApp link. Never a payment detail or the key's salt (FR-034); a phone number only as
+ * `contacts`, for the booking's own signed-in client in a sharing state (feature 025).
  */
 
 const NAME = (rel: unknown, key: string) => (rel && typeof rel === 'object' ? String((rel as Record<string, unknown>)[key] ?? '') : '')
@@ -46,7 +49,7 @@ export function nextStepFor(state: BookingState, lapsed: boolean): BookingViewV1
   }
 }
 
-export async function quotationView(access: QuotationAccess, options: { locale: Locale; now: Date }): Promise<BookingViewV1> {
+export async function quotationView(access: QuotationAccess, options: { locale: Locale; now: Date; /** 025: the signed-in member, if any. */ viewerId?: number | null }): Promise<BookingViewV1> {
   const { locale, now } = options
   const payload = await getPayloadClient()
   const { quotation, booking, current } = access
@@ -72,6 +75,9 @@ export async function quotationView(access: QuotationAccess, options: { locale: 
   }
 
   const reference = current.reference
+  // 025: contact and the private key go only to the booking's own signed-in client, never to the link alone.
+  const owner = options.viewerId != null && booking.member != null && Number(idOf(booking.member)) === options.viewerId
+  const contacts = owner && isCurrent ? await creatorContactsFor(payload, booking, options.viewerId, locale, reference) : []
   const total = formatMoney(current.totalFils, locale)
   const text = state === 'confirmed' ? t('receiptMessage', { reference, total }) : t('whatsappMessage', { reference })
   const brief = typeof booking.brief === 'object' ? booking.brief : null
@@ -113,5 +119,7 @@ export async function quotationView(access: QuotationAccess, options: { locale: 
     replacements,
     holdReason: state === 'on-hold' ? (booking.holdReason ?? null) : null,
     whatsappUrl: whatsappHref(settings.whatsappNumber, text),
+    ...(contacts.length ? { contacts: contacts.map((c) => ({ name: c.name, role: c.role, phone: c.phone, whatsappUrl: c.whatsappHref })) } : {}),
+    ...(owner && booking.accessSalt ? { key: accessKey(booking.accessSalt, 'booking') } : {}),
   }
 }

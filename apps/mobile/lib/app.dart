@@ -83,6 +83,17 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
       ...accountRoutes(
         createAccount: getIt.call<AccountCubit>,
         createBookings: getIt.call<BookingsCubit>,
+        // Feature 025: a client's booking opened from the account is the booking screen. The
+        // server lets the signed-in owner in without the private key (`ownerKey`).
+        booking: (context, ref) => OwnBookingPage(
+          ref: ref,
+          create: () => BookingViewCubit(
+            repository: getIt<QuickMatchRepository>(),
+            ref: ref,
+            key: ownerKey,
+          ),
+          links: getIt<WebsiteLinks>(),
+        ),
         creator: creatorAccountPages(
           session: getIt<SessionCubit>(),
           createAccount: getIt.call<creator_account.AccountCubit>,

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { IDENTITY_DOCUMENTS, MAX_IDENTITY_BYTES, PROFILE_STEPS, SOCIAL_PLATFORMS } from '../../creators'
+import { bookingContactV1 } from './booking'
 import { imageV1 } from './common'
 import { briefsSummaryV1 } from './inbox'
 
@@ -142,6 +143,8 @@ export const bookingRequestV1 = z.object({
   answer: z.enum(['pending', 'confirmed', 'declined', 'lapsed']),
   canDeliver: z.boolean(),
   paid: z.boolean(),
+  /** 025 (additive): the client's contact, only once the booking is paid and this creator's part is confirmed. */
+  contact: bookingContactV1.optional(),
 })
 export type BookingRequestV1 = z.infer<typeof bookingRequestV1>
 

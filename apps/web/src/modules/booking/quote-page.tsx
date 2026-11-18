@@ -22,7 +22,10 @@ export async function QuotationPage({
   promo,
   payment,
   guest = false,
+  viewerId = null,
 }: {
+  /** 025: the signed-in member, so the booking's own client sees their creators' contact. */
+  viewerId?: number | null
   /** 021 amendment: nobody is signed in (Accept asks for sign-in first). */
   guest?: boolean
   access: QuotationAccess
@@ -78,6 +81,8 @@ export async function QuotationPage({
     settings,
     replacements,
     prefix: ctx.prefix,
+    viewerId,
+    payload: await getPayloadClient(),
   })
   const known = (key: string) => {
     try {

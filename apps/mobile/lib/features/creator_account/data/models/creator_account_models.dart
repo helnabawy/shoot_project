@@ -1,3 +1,4 @@
+import 'package:shoot_mobile/core/contact/booking_contact.dart';
 import 'package:shoot_mobile/core/media/image_ref.dart';
 import 'package:shoot_mobile/core/network/json_read.dart';
 import 'package:shoot_mobile/features/creator_account/data/models/inbox_models.dart';
@@ -54,6 +55,10 @@ BookingRequest _request(Json o) => BookingRequest(
   answer: RequestAnswer.fromWire(readString(o, 'answer')),
   canDeliver: readBool(o, 'canDeliver'),
   paid: readBool(o, 'paid'),
+  contact: switch (readNullableObject(o, 'contact')) {
+    final c? => BookingContact.fromJson(c),
+    null => null,
+  },
 );
 
 BookingRequest? _nullableRequest(Json json, String key) {

@@ -260,7 +260,12 @@
     },
     "offersCount": "{count, plural, one {# offer} other {# offers}}",
     "saidYes": "{count, plural, one {A creator said yes} other {# creators said yes}}",
-    "notificationsLink": "Notifications"
+    "notificationsLink": "Notifications",
+    "confirmed": {
+      "title": "Confirmed bookings",
+      "with": "With {name}",
+      "for": "For {name}"
+    }
   },
   "home": {
     "howItWorks": "How it works",
@@ -849,7 +854,19 @@
       "venue": "Tell us where the shoot will be.",
       "signInRequired": "Log in to accept your quotation.",
       "otherAccount": "This quotation belongs to another account. Log in with the number it was made with."
-    }
+    },
+    "contact": {
+      "creator": "Contact {name}",
+      "client": "Contact {name}",
+      "clientNoName": "Contact your client",
+      "call": "Call",
+      "whatsapp": "Message on WhatsApp",
+      "message": "Hi {name}, this is about booking {reference}.",
+      "messageNoName": "Hi, this is about booking {reference}."
+    },
+    "confirmedGroup": "Confirmed",
+    "otherRequests": "Other requests",
+    "otherBookings": "Quotations and earlier bookings"
   },
   "availability": {
     "metaTitle": "Availability",
