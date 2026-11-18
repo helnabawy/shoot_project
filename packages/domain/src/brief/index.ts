@@ -5,3 +5,4 @@ export { validateBrief, checkSlot, splitMultiValue, joinMultiValue, MULTI_SEPARA
 export * from './message'
 export * from './fingerprint'
 export * from './reference'
+export * from './time'

@@ -5,6 +5,7 @@ import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/features/brief/data/brief_data.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_draft.dart';
 import 'package:shoot_mobile/features/brief/domain/brief_receipt.dart';
+import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
 import '../../../helpers/brief_fixtures.dart';
 import '../../../helpers/scripted_adapter.dart';
@@ -31,6 +32,51 @@ void main() {
         {'token': 'location', 'value': 'dubai'},
       ]);
       expect(body['date'], '2026-12-06');
+    },
+  );
+
+  test(
+    'BT-US2-S1 a start time goes as a selection, but not without a date',
+    () {
+      final config = BriefBuilderConfig(
+        sentence: '{persona} on {date} at {time}',
+        slots: [
+          fxConfig().slots.first,
+          fxConfig().slots.firstWhere((s) => s.kind == SlotKind.date),
+          const BuilderSlot(
+            token: 'time',
+            kind: SlotKind.time,
+            groupLabel: 'Start time',
+            placeholder: 'any time',
+            defaultValue: '',
+            required: false,
+            allowCustom: false,
+            multiple: false,
+            options: [],
+          ),
+        ],
+        submitLabel: '',
+        helperText: '',
+        whatsappTemplate: '',
+        successMessage: '',
+        steps: const [],
+      );
+      const values = {
+        'persona': ['photographer'],
+        'time': ['16-00'],
+      };
+      final dated = briefRecordBody(
+        config,
+        const BriefDraft(values: values, date: '2026-12-06'),
+      );
+      expect(dated['selections'], [
+        {'token': 'persona', 'value': 'photographer'},
+        {'token': 'time', 'value': '16-00'},
+      ]);
+      final anyDate = briefRecordBody(config, const BriefDraft(values: values));
+      expect(anyDate['selections'], [
+        {'token': 'persona', 'value': 'photographer'},
+      ]);
     },
   );
 

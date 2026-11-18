@@ -64,6 +64,7 @@ BriefBuilderConfig testConfig() => BriefBuilderConfig(
 );
 
 void main() {
+  timeGroup();
   final engine = BriefEngine(testConfig());
   const empty = BriefDraft();
 
@@ -153,5 +154,77 @@ void main() {
     expect(engine.takeBack(d).valuesOf('occasion'), isEmpty);
     expect(engine.takeBack(d).valuesOf('persona'), ['photo']);
     expect(engine.reopen(d, 'persona').valuesOf('persona'), isEmpty);
+  });
+}
+
+/// 026: the server adds a start time step right after the date.
+BriefBuilderConfig timedConfig({bool timeRequired = false}) =>
+    BriefBuilderConfig(
+      sentence: 'I need {persona} on {date} at {time} in {location}.',
+      slots: [
+        slot('persona', SlotKind.persona, options: [opt('photo')]),
+        slot('date', SlotKind.date, required: false),
+        slot(
+          'time',
+          SlotKind.time,
+          required: timeRequired,
+          options: [opt('09-00'), opt('16-00')],
+        ),
+        slot('location', SlotKind.options, options: [opt('dubai')]),
+      ],
+      submitLabel: 'go',
+      helperText: '',
+      whatsappTemplate: '',
+      successMessage: '',
+      steps: const [],
+    );
+
+void timeGroup() {
+  final now = DateTime.utc(2026, 11, 18, 8);
+  final e = BriefEngine(timedConfig(timeRequired: true));
+  BriefDraft dated() => e
+      .setDate(
+        e.choose(const BriefDraft(), 'persona', 'photo').draft,
+        '2026-11-19',
+        now,
+      )
+      .draft;
+
+  group('026 the start time step', () {
+    test('BT-US1-S5 after the date the next step is the time, counted', () {
+      expect(e.nextStep(dated())?.token, 'time');
+      expect(e.askedSlots(dated()).map((s) => s.token), [
+        'persona',
+        'date',
+        'time',
+        'location',
+      ]);
+      expect(e.firstMissing(dated())?.token, 'time');
+    });
+
+    test('BT-US1-S4 any date waives the time: not asked, not counted, '
+        'not missing, a picked time dropped', () {
+      final timed = e.choose(dated(), 'time', '16-00').draft;
+      final reopened = e.reopen(timed, 'date');
+      final anyDate = e.skip(e.setDate(reopened, null, now).draft, 'date');
+      expect(anyDate.valuesOf('time'), isEmpty);
+      expect(e.timeWaived(anyDate), isTrue);
+      expect(e.nextStep(anyDate)?.token, 'location');
+      expect(e.firstMissing(anyDate)?.token, 'location');
+      expect(e.askedSlots(anyDate).map((s) => s.token), [
+        'persona',
+        'date',
+        'location',
+      ]);
+      expect(e.search(anyDate, '09'), isEmpty);
+      expect(e.search(dated(), '09').single.slot.token, 'time');
+    });
+
+    test('BT-US1-S3 an optional time is skipped with "any time"', () {
+      final optional = BriefEngine(timedConfig());
+      final skipped = optional.skip(dated(), 'time');
+      expect(optional.nextStep(skipped)?.token, 'location');
+      expect(optional.isAnswered(optional.slot('time')!, skipped), isFalse);
+    });
   });
 }

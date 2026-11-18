@@ -1,3 +1,4 @@
+import { isolateLtr, withTimeToken } from '@shoot/domain/brief/time'
 import type { LandingPage, OptionSet } from '@/payload-types'
 import type { AudiencePersona } from '../personas/queries'
 import type { BriefBuilderConfig, BuilderOption, BuilderSlot } from './types'
@@ -67,5 +68,58 @@ function lowerFor(text: string, locale: string): string {
     return text.toLocaleLowerCase(locale)
   } catch {
     return text.toLocaleLowerCase()
+  }
+}
+
+/** Feature 026: the start time step as the site settings set it, with the words already resolved. */
+export interface BriefTimeSettings {
+  enabled: boolean
+  required: boolean
+  /** The option set of times (populated), or an id / null when not chosen. */
+  times: OptionSet | number | null | undefined
+  groupLabel: string
+  /** The words of the skip row and of an unset time ("any time"). */
+  anyTime: string
+  /** Joining words before the time in the sentence ("at"). */
+  connector: string
+}
+
+/** The token of the time step; the owner's sentence never uses it for anything else (checked below). */
+export const TIME_TOKEN = 'time'
+
+/**
+ * Adds the start time step right after the date (FR-002): a slot of kind `time`, the token in the sentence
+ * and the WhatsApp template. Off, without an active time or without a date step, the same config comes back
+ * (BT-US3-S1), so everything downstream is exactly as before.
+ */
+export function withBriefTime(config: BriefBuilderConfig, time: BriefTimeSettings): BriefBuilderConfig
+export function withBriefTime(config: BriefBuilderConfig | null, time: BriefTimeSettings): BriefBuilderConfig | null
+export function withBriefTime(config: BriefBuilderConfig | null, time: BriefTimeSettings): BriefBuilderConfig | null {
+  if (!config || !time.enabled || !time.times || typeof time.times !== 'object') return config
+  const dateIndex = config.slots.findIndex((s) => s.kind === 'date')
+  const date = config.slots[dateIndex]
+  if (!date || !config.sentence.includes(`{${date.token}}`) || config.slots.some((s) => s.token === TIME_TOKEN)) return config
+  const options: BuilderOption[] = (time.times.options ?? [])
+    .filter((o) => o.active !== false)
+    .sort((a, b) => (a.order ?? 100) - (b.order ?? 100))
+    .map((o) => ({ value: o.value, label: o.label, sentenceLabel: config.locale === 'ar' ? isolateLtr(o.label) : o.label, glyph: o.glyph, personas: [] }))
+  if (!options.length) return config
+  const slot: BuilderSlot = {
+    token: TIME_TOKEN,
+    kind: 'time',
+    groupLabel: time.groupLabel,
+    placeholder: time.anyTime,
+    defaultValue: '',
+    required: time.required,
+    allowCustom: false,
+    multiple: false,
+    options,
+  }
+  const insert = (template: string) => withTimeToken(template, { dateToken: date.token, timeToken: TIME_TOKEN, connector: time.connector })
+  return {
+    ...config,
+    sentence: insert(config.sentence),
+    whatsappTemplate: insert(config.whatsappTemplate),
+    slots: [...config.slots.slice(0, dateIndex + 1), slot, ...config.slots.slice(dateIndex + 1)],
   }
 }

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { briefBuilderFixture } from '../../../tests/fixtures/brief-builder'
+import { withBriefTime } from './config'
 import { chosenPersonas, composeMessage, composeSentence, parseBrief, readSlotValues } from './submit'
 
 const form = (entries: Record<string, string>) => {
@@ -114,5 +115,50 @@ describe('FR-063 several professional types in one brief', () => {
     expect(chosenPersonas(briefBuilderFixture(), { persona: 'videographer' })).toEqual(['videographer'])
     expect(chosenPersonas(briefBuilderFixture(), {})).toEqual([])
     expect(chosenPersonas({ ...config, slots: config.slots.filter((s) => s.kind !== 'persona') }, {})).toEqual([])
+  })
+})
+
+describe('026 a start time in the brief', () => {
+  const times = { id: 7, name: 'Start times', slug: 'start-times', options: [{ value: '16-00', label: '16:00', active: true }, { value: 'evening', label: 'in the evening', active: true }] }
+  const timed = (required = false) =>
+    withBriefTime(briefBuilderFixture('en'), { enabled: true, required, times: times as never, groupLabel: 'Start time', anyTime: 'any time', connector: 'at' })!
+  const answers = { persona: 'photographer', occasion: 'wedding', duration: '2h', location: 'dubai' }
+
+  it('BT-US2-S1 keeps the time with the date: label, sentence and start time', () => {
+    const config = timed()
+    const result = parseBrief(config, form({ ...answers, date: '2026-11-19', time: '16-00' }), { today: '2026-11-07' })
+    if (!result.ok) throw new Error('expected a valid brief')
+    expect(result.brief.startTime).toBe('16:00')
+    expect(result.brief.labels.time).toBe('16:00')
+    expect(composeSentence(config, result.brief.labels, result.brief.values)).toBe('I need a photographer for a wedding on Thu 19 Nov at 16:00 for 2 hours in Dubai.')
+  })
+
+  it('BT-US2-S1 a time that is not in the list is refused; one with no clock value gives no start time', () => {
+    const config = timed()
+    expect(parseBrief(config, form({ ...answers, date: '2026-11-19', time: '17-00' }), { today: '2026-11-07' })).toEqual({ ok: false, errors: { time: 'brief.errors.notAnOption' } })
+    const evening = parseBrief(config, form({ ...answers, date: '2026-11-19', time: 'evening' }), { today: '2026-11-07' })
+    expect(evening.ok && evening.brief.startTime).toBeNull()
+  })
+
+  it('BT-US1-S3 "any time" leaves the time out; a required time must be chosen', () => {
+    const result = parseBrief(timed(), form({ ...answers, date: '2026-11-19' }), { today: '2026-11-07' })
+    if (!result.ok) throw new Error('expected a valid brief')
+    expect(result.brief.startTime).toBeNull()
+    expect(composeSentence(timed(), result.brief.labels, result.brief.values)).toBe('I need a photographer for a wedding on Thu 19 Nov for 2 hours in Dubai.')
+    expect(parseBrief(timed(true), form({ ...answers, date: '2026-11-19' }), { today: '2026-11-07' })).toEqual({ ok: false, errors: { time: 'brief.errors.required' } })
+  })
+
+  it('BT-US1-S4 with any date the time is waived, even when required, and a time sent anyway is dropped', () => {
+    const result = parseBrief(timed(true), form({ ...answers, time: '16-00' }), { today: '2026-11-07' })
+    if (!result.ok) throw new Error('expected a valid brief')
+    expect(result.brief.values.time).toBe('')
+    expect(result.brief.startTime).toBeNull()
+    expect(composeSentence(timed(true), result.brief.labels, result.brief.values)).toBe('I need a photographer for a wedding for 2 hours in Dubai.')
+  })
+
+  it('BT-US3-S1 without the step a brief has no start time', () => {
+    const result = parseBrief(briefBuilderFixture('en'), form({ ...answers, date: '2026-11-19', time: '16-00' }), { today: '2026-11-07' })
+    expect(result.ok && result.brief.startTime).toBeNull()
+    expect(result.ok && 'time' in result.brief.values).toBe(false)
   })
 })

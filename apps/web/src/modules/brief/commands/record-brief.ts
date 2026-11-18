@@ -107,7 +107,7 @@ export async function recordBrief(ctx: ActorContext, input: BriefRecordV1): Prom
         overrideAccess: false,
         user: ctx.user ?? undefined,
         // `creatorResolved` lets the briefs hook keep the creator; REST callers cannot set it.
-        context: { visitorId: ctx.visitorKey, ...(creator ? { creatorResolved: true } : {}), ...(salt ? { accessSalt: salt } : {}) },
+        context: { visitorId: ctx.visitorKey, ...(creator ? { creatorResolved: true } : {}), ...(salt ? { accessSalt: salt } : {}), ...(brief.startTime ? { startTime: brief.startTime } : {}) },
       })
       reference = created.reference ?? ''
       if (terms.mode === 'offers') await saveOfferTerms(payload, created.id, terms, selections)

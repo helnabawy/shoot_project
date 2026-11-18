@@ -8,6 +8,8 @@ export interface BriefLabels {
   pickADate: string
   /** The skip row of an optional date step. */
   anyDate: string
+  /** 026: the prompt of the start time step. */
+  pickATime: string
   chooseOne: string
   /** Hint on a group that takes several choices (FR-063). */
   pickAny: string
@@ -76,6 +78,7 @@ export function briefLabelsFrom(t: Translate, raw: Translate = t): BriefLabels {
     set: t('brief.set'),
     pickADate: t('brief.pickADate'),
     anyDate: t('brief.anyDate'),
+    pickATime: t('brief.time.pick'),
     chooseOne: t('brief.chooseOne'),
     pickAny: t('brief.pickAny'),
     orType: t('brief.orType'),

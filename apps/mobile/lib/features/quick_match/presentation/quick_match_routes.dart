@@ -37,6 +37,7 @@ final class QuickMatchFlow {
       picks: picks,
       date: match.state.date ?? page.date ?? page.briefDate ?? '',
       duration: page.duration ?? '',
+      startTime: page.briefStartTime,
     );
   }
 

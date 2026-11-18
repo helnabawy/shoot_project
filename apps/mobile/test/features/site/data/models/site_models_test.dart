@@ -113,6 +113,23 @@ void main() {
       expect(brief.builder!.slots.first.groupLabel, 'المحترف');
     });
 
+    test('BT-US1-S5 a start time step decodes as SlotKind.time', () {
+      final json = loadExample('brief-builder');
+      final builder = Map<String, Object?>.of(
+        json['builder']! as Map<String, Object?>,
+      );
+      final slots = List<Object?>.of(builder['slots']! as List<Object?>);
+      slots.add({
+        ...(slots.first! as Map<String, Object?>),
+        'token': 'time',
+        'kind': 'time',
+      });
+      builder['slots'] = slots;
+      final brief = BriefBuilderModel.fromJson({...json, 'builder': builder})
+          .toEntity();
+      expect(brief.builder!.slots.last.kind, SlotKind.time);
+    });
+
     test('a switched-off builder decodes to null', () {
       final brief = BriefBuilderModel.fromJson({
         'locale': 'en',

@@ -73,6 +73,8 @@ export async function matchView(payload: Payload, input: MatchInput): Promise<Ma
       sentence: brief.sentence ?? '',
       date: page.facts.date,
       duration: page.facts.duration?.value ?? null,
+      // 026 (additive): the app's step 3 starts with the brief's time.
+      startTime: brief.startTime || null,
     },
     date: input.date !== undefined ? input.date : page.facts.date,
     priceOnRequest: !page.total.ok,

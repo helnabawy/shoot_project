@@ -156,12 +156,16 @@ final class MatchPage extends Equatable {
     this.offersMode = false,
     this.sentTo = 0,
     this.closed = false,
+    this.briefStartTime,
   });
 
   final String reference;
   final String sentence;
   final String? briefDate;
   final String? duration;
+
+  /// 026: the start time chosen with the brief (`HH:MM`); step 3 starts with it.
+  final String? briefStartTime;
 
   /// The day shown; `null` is "any date".
   final String? date;
@@ -204,6 +208,7 @@ final class MatchPage extends Equatable {
     offersMode,
     sentTo,
     closed,
+    briefStartTime,
   ];
 }
 

@@ -17,6 +17,15 @@ describe('MQ booking contract shapes', () => {
     expect(detailsV1.safeParse({ ...details, note: 'x'.repeat(301) }).success).toBe(false)
   })
 
+  it('BT-US2-S2 step 2 carries the brief\'s start time, optional for older servers', () => {
+    const brief = matchV1.shape.brief
+    const base = { reference: 'B-1', sentence: 's', date: null, duration: null }
+    expect(brief.parse({ ...base, startTime: '16:00' }).startTime).toBe('16:00')
+    expect(brief.safeParse({ ...base, startTime: null }).success).toBe(true)
+    expect(brief.safeParse(base).success).toBe(true)
+    expect(brief.safeParse({ ...base, startTime: '4pm' }).success).toBe(false)
+  })
+
   it('reads 24-hour times only', () => {
     expect(['00:00', '09:05', '23:59'].every((t) => START_TIME.test(t))).toBe(true)
     expect(['24:00', '9:05', '12:60', ''].some((t) => START_TIME.test(t))).toBe(false)

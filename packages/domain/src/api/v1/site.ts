@@ -71,7 +71,8 @@ export const builderOptionV1 = z.object({
   personaSlugs: z.array(z.string()),
 })
 
-export const slotKindV1 = z.enum(['persona', 'options', 'date', 'number'])
+/** 026 (additive): `time`, the start time list after the date; older apps read an unknown kind as a list. */
+export const slotKindV1 = z.enum(['persona', 'options', 'date', 'number', 'time'])
 
 export const builderSlotV1 = z.object({
   token: z.string(),

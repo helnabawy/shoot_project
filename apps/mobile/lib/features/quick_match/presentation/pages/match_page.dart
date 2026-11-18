@@ -77,6 +77,7 @@ class _MatchScreenState extends State<MatchScreen> {
       picks: picks,
       date: state.date ?? page.date ?? page.briefDate ?? '',
       duration: page.duration ?? '',
+      startTime: page.briefStartTime,
     );
     unawaited(context.push('/match/${widget.ref}/${widget.accessKey}/details'));
   }

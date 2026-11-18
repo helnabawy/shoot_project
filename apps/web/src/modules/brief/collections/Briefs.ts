@@ -47,6 +47,8 @@ const prepareBrief: CollectionBeforeChangeHook = async ({ data, req, operation }
     fingerprint: briefFingerprint(selections, visitorKey(req)),
     // Only the server action supplies a Quick Match salt (research §2); REST callers cannot set it.
     accessSalt: typeof req.context?.accessSalt === 'string' ? req.context.accessSalt : null,
+    // 026: the start time the server read from the brief's answers; REST callers cannot set it.
+    startTime: typeof req.context?.startTime === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(req.context.startTime) ? req.context.startTime : null,
   }
 }
 
@@ -95,7 +97,11 @@ export const Briefs: CollectionConfig = {
         ] },
       ],
     },
-    { name: 'date', type: 'date', admin: { date: { pickerAppearance: 'dayOnly' } } },
+    { type: 'row', fields: [
+      { name: 'date', type: 'date', admin: { width: '50%', date: { pickerAppearance: 'dayOnly' } } },
+      // Feature 026: the start time chosen with the date (HH:MM, 24 h); set by the server only.
+      { name: 'startTime', type: 'text', maxLength: 5, access: serverOnly, admin: { width: '50%', readOnly: true, description: 'HH:MM, 24 h. Empty: any time.' } },
+    ] },
     {
       name: 'locale',
       type: 'select',

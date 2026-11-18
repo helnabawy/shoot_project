@@ -44,6 +44,8 @@ final class MatchPageModel {
         sentence: readString(brief, 'sentence'),
         briefDate: readNullableString(brief, 'date'),
         duration: readNullableString(brief, 'duration'),
+        // 026, additive: an older server leaves it out.
+        briefStartTime: readNullableString(brief, 'startTime'),
         date: readNullableString(json, 'date'),
         priceOnRequest: readBool(json, 'priceOnRequest'),
         durations: List.unmodifiable(

@@ -96,6 +96,12 @@ export const optionSets: { slug: string; name: L; options: SeedOption[] }[] = [
     ],
   },
   {
+    // Feature 026: the start times the brief offers once "Ask for a start time" is on (value HH-MM, 24 h).
+    slug: 'start-times',
+    name: { en: 'Start times', ar: 'أوقات البدء' },
+    options: Array.from({ length: 15 }, (_, i) => String(i + 7).padStart(2, '0')).map((hh) => opt(`${hh}-00`, hh, `${hh}:00`, `${hh}:00`)),
+  },
+  {
     slug: 'locations',
     name: { en: 'Emirates', ar: 'الإمارات' },
     options: [
@@ -141,6 +147,14 @@ export const siteSettings = {
     providerLabel: { en: "I'm a creator", ar: 'أنا مبدع' },
   },
   briefLimitPerHour: 5,
+  // Feature 026: off by default; the list is linked by the seed (`start-times`).
+  briefTime: {
+    enabled: false,
+    required: false,
+    groupLabel: { en: 'Start time', ar: 'وقت البدء' },
+    anyTime: { en: 'any time', ar: 'أي وقت' },
+    connector: { en: 'at', ar: 'الساعة' },
+  },
   creatorCodePrefix: 'CR',
   autoPublishEdits: false,
   directoryPageSize: 24,

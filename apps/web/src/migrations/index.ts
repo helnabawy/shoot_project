@@ -23,6 +23,7 @@ import * as migration_20261114_202819_brief_sign_in from './20261114_202819_brie
 import * as migration_20261115_080721_brief_sign_in_off from './20261115_080721_brief_sign_in_off';
 import * as migration_20261117_151302_creator_offers from './20261117_151302_creator_offers';
 import * as migration_20261118_130000_provider_label_creator from './20261118_130000_provider_label_creator';
+import * as migration_20261118_184004_brief_time from './20261118_184004_brief_time';
 
 export const migrations = [
   {
@@ -149,5 +150,10 @@ export const migrations = [
     up: migration_20261118_130000_provider_label_creator.up,
     down: migration_20261118_130000_provider_label_creator.down,
     name: '20261118_130000_provider_label_creator',
+  },
+  {
+    up: migration_20261118_184004_brief_time.up,
+    down: migration_20261118_184004_brief_time.down,
+    name: '20261118_184004_brief_time'
   },
 ];

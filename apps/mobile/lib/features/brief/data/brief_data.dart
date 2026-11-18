@@ -20,7 +20,9 @@ Map<String, Object?> briefRecordBody(
   return {
     'selections': [
       for (final slot in config.slots)
-        if (slot.kind != SlotKind.date)
+        // 026: a start time goes only with a date.
+        if (slot.kind != SlotKind.date &&
+            !(slot.kind == SlotKind.time && draft.date == null))
           for (final value in draft.valuesOf(slot.token))
             {'token': slot.token, 'value': value},
     ],

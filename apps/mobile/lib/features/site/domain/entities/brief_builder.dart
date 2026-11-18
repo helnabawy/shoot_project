@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 /// What a slot of the brief sentence asks for. A value this build does not
-/// know reads as [unknown].
-enum SlotKind { persona, options, date, number, unknown }
+/// know reads as [unknown]. [time] (026) is the start time list the server
+/// adds right after the date.
+enum SlotKind { persona, options, date, number, time, unknown }
 
 /// One option of a slot: its stored [value] and its words in the list and in
 /// the sentence.

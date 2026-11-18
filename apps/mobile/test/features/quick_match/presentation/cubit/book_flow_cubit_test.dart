@@ -4,6 +4,7 @@ import 'package:shoot_mobile/core/auth/session_cubit.dart';
 import 'package:shoot_mobile/core/auth/session_store.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
+import 'package:shoot_mobile/features/quick_match/data/models/quick_match_models.dart';
 import 'package:shoot_mobile/features/quick_match/domain/entities/quick_match.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/book_flow_cubit.dart';
 import 'package:shoot_mobile/features/sign_in/domain/entities/otp_challenge.dart';
@@ -12,6 +13,7 @@ import 'package:shoot_mobile/features/sign_in/domain/repositories/auth_repositor
 import 'package:shoot_mobile/features/sign_in/domain/usecases/request_code.dart';
 import 'package:shoot_mobile/features/sign_in/domain/usecases/verify_code.dart';
 
+import '../../../../helpers/api_examples.dart';
 import '../../../../helpers/auth_fixtures.dart';
 import '../../../../helpers/quick_match_fixtures.dart';
 import '../../../../helpers/sign_in_harness.dart';
@@ -68,6 +70,46 @@ void main() {
       expect(cubit.state.duration, '2h');
       expect(cubit.state.picks, picks);
     });
+
+    test('BT-US2-S2 the brief\'s start time fills step 3, and a time the '
+        'person changed is kept', () {
+      final cubit = make()
+        ..begin(
+          picks: picks,
+          date: '2026-12-20',
+          duration: '2h',
+          startTime: '16:00',
+        );
+      expect(cubit.state.startTime, '16:00');
+      cubit
+        ..startTimeChanged('18:30')
+        ..begin(
+          picks: picks,
+          date: '2026-12-21',
+          duration: '2h',
+          startTime: '16:00',
+        );
+      expect(cubit.state.startTime, '18:30');
+      expect(cubit.state.date, '2026-12-21');
+    });
+
+    test(
+      'BT-US2-S2 step 2 decodes the brief\'s start time; missing is null',
+      () {
+        final json = loadExample('match');
+        final brief = Map<String, Object?>.of(
+          json['brief']! as Map<String, Object?>,
+        );
+        expect(MatchPageModel.fromJson(json).toEntity().briefStartTime, isNull);
+        brief['startTime'] = '16:00';
+        expect(
+          MatchPageModel.fromJson({...json, 'brief': brief})
+              .toEntity()
+              .briefStartTime,
+          '16:00',
+        );
+      },
+    );
 
     test('MQ-US2-S2 changing the duration keeps the rest', () {
       final cubit = filled()..durationChanged('3h');

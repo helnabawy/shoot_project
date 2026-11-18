@@ -1,6 +1,7 @@
 import { joinSentence, omitTokens, parseSentence } from '@shoot/domain/brief/sentence'
 import { formatBriefDate, renderBriefMessage, type CreatorMessage, type ReferenceMessage } from '@shoot/domain/brief/message'
 import { optionsForSlot } from '@shoot/domain/brief/options'
+import { startTimeOf } from '@shoot/domain/brief/time'
 import { joinMultiValue, splitMultiValue, validateBrief, type SlotRule } from '@shoot/domain/brief/validate'
 import { joinList } from '@shoot/domain/personas'
 import type { BriefBuilderConfig, BuilderSlot } from './types'
@@ -15,6 +16,14 @@ export interface ParsedBrief {
   /** Every professional type chosen, in the visitor's order (FR-063). */
   personaSlugs: string[]
   date: string | null
+  /** 026: the start time (`HH:MM`) the client chose with a date, or null. */
+  startTime: string | null
+}
+
+/** 026: the start time step is waived without a date: it is not asked and a time is not kept (FR-004). */
+export function timeWaived(config: BriefBuilderConfig, values: Readonly<Record<string, string | undefined>>): boolean {
+  const date = config.slots.find((s) => s.kind === 'date')
+  return !date || !(values[date.token] ?? '').trim()
 }
 
 function personaSlot(config: BriefBuilderConfig): BuilderSlot | undefined {
@@ -66,11 +75,12 @@ export function slotRules(
   custom: Record<string, boolean> = {},
 ): SlotRule[] {
   const personas = chosenPersonas(config, values)
+  const waived = timeWaived(config, values)
   return config.slots.map((slot) => {
     const allowed =
       slot.kind === 'persona'
         ? slot.options.map((o) => o.value)
-        : slot.kind === 'options'
+        : slot.kind === 'options' || slot.kind === 'time'
           ? optionsForSlot(
               slot.options.map((o, i) => ({ value: o.value, label: o.label, order: i, active: true, personas: o.personas })),
               personas,
@@ -80,7 +90,7 @@ export function slotRules(
     return {
       token: slot.token,
       kind: slot.kind,
-      required: slot.required,
+      required: slot.required && !(slot.kind === 'time' && waived),
       multiple: slot.multiple,
       allowCustom: slot.allowCustom && Boolean(custom[slot.token]),
       allowedValues: allowed,
@@ -103,12 +113,17 @@ export function resolveBrief(
   { values, custom }: { values: Record<string, string>; custom: Record<string, boolean> },
   options: { today?: string } = {},
 ): { ok: true; brief: ParsedBrief } | { ok: false; errors: Record<string, string> } {
+  // 026: a time without a date is dropped before it is checked (an older app may still send one).
+  const waived = timeWaived(config, values)
+  if (waived) values = Object.fromEntries(Object.entries(values).map(([token, v]) => [token, config.slots.find((s) => s.token === token)?.kind === 'time' ? '' : v]))
   const errors = validateBrief(slotRules(config, values, custom), values, { today: options.today })
   if (Object.keys(errors).length > 0) return { ok: false, errors }
   const labels: Record<string, string> = {}
   let date: string | null = null
+  let startTime: string | null = null
   for (const slot of config.slots) {
     const value = values[slot.token] ?? ''
+    if (slot.kind === 'time') startTime = startTimeOf(value)
     if (slot.kind === 'date') {
       date = value || null
       labels[slot.token] = value ? formatBriefDate(value, config.locale) : slot.placeholder
@@ -120,13 +135,19 @@ export function resolveBrief(
   }
   return {
     ok: true,
-    brief: { values, custom, labels, personaSlugs: chosenPersonas(config, values), date },
+    brief: { values, custom, labels, personaSlugs: chosenPersonas(config, values), date, startTime },
   }
 }
 
 /** Leaves out optional parts the visitor did not set, with their joining words. */
 const withoutUnset = (config: BriefBuilderConfig, template: string, values: Record<string, string>) =>
-  joinSentence(omitTokens(parseSentence(template), (name) => !config.slots.find((s) => s.token === name)?.required && !values[name]))
+  joinSentence(
+    omitTokens(parseSentence(template), (name) => {
+      const slot = config.slots.find((s) => s.token === name)
+      // 026: an unset time is always left out (it may be required, but is waived without a date).
+      return (!slot?.required || slot.kind === 'time') && !values[name]
+    }),
+  )
 
 /** The sentence as the visitor saw it. */
 export const composeSentence = (config: BriefBuilderConfig, labels: Record<string, string>, values: Record<string, string> = {}) =>

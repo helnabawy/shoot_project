@@ -83,4 +83,10 @@ describe('briefBuilderV1', () => {
     const slots = value.builder.slots.map((s, i) => (i === 0 ? { ...s, kind: 'colour' } : s))
     expect(briefBuilderV1.safeParse({ ...value, builder: { ...value.builder, slots } }).success).toBe(false)
   })
+
+  it('BT-US1-S5 carries a start time step as slot kind time (additive)', () => {
+    const value = example('brief-builder') as { locale: string; builder: { slots: { kind: string }[] } }
+    const slots = [...value.builder.slots, { ...value.builder.slots[0], token: 'time', kind: 'time' }]
+    expect(briefBuilderV1.safeParse({ ...value, builder: { ...value.builder, slots } }).success).toBe(true)
+  })
 })

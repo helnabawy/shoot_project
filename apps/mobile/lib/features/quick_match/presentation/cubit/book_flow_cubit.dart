@@ -194,15 +194,24 @@ final class BookFlowCubit extends Cubit<BookFlowState> {
       .toIso8601String()
       .substring(0, 10);
 
-  /// Carries the brief's choices over into step 3 (FR-010).
+  /// Carries the brief's choices over into step 3 (FR-010). 026: the brief's start time fills an
+  /// empty time; one the person entered is kept.
   void begin({
     required List<Pick> picks,
     required String date,
     required String duration,
+    String? startTime,
   }) {
+    final time =
+        state.startTime.isEmpty &&
+            startTime != null &&
+            _time.hasMatch(startTime)
+        ? startTime
+        : state.startTime;
     if (state.picks == picks &&
         state.date == date &&
-        state.duration == duration) {
+        state.duration == duration &&
+        state.startTime == time) {
       return;
     }
     emit(
@@ -210,6 +219,7 @@ final class BookFlowCubit extends Cubit<BookFlowState> {
         picks: picks,
         date: date,
         duration: duration,
+        startTime: time,
         errors: const {},
       ),
     );

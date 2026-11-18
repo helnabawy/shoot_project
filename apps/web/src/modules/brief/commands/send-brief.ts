@@ -139,7 +139,7 @@ export async function recordPrepared(
         overrideAccess: false,
         user: user ?? undefined,
         // `creatorResolved` lets the briefs hook keep the creator; REST callers cannot set it.
-        context: { visitorId: visitor, ...(creator ? { creatorResolved: true } : {}), ...(salt ? { accessSalt: salt } : {}) },
+        context: { visitorId: visitor, ...(creator ? { creatorResolved: true } : {}), ...(salt ? { accessSalt: salt } : {}), ...(brief.startTime ? { startTime: brief.startTime } : {}) },
       })
       reference = created.reference ?? ''
       if (terms.mode === 'offers') await saveOfferTerms(payload, created.id, terms, selections)

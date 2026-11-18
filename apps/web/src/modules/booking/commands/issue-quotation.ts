@@ -155,7 +155,12 @@ async function saveQuotation(
         member: user ?? (brief.member ? Number(idOf(brief.member)) : null),
         accessSalt: salt,
         client: { name: input.client.name, whatsapp: input.client.whatsapp, locale },
-        details: input.details ? { startTime: input.details.startTime, duration: input.details.duration, venue: input.details.venue, note: input.details.note ?? null } : undefined,
+        details: input.details
+          ? { startTime: input.details.startTime, duration: input.details.duration, venue: input.details.venue, note: input.details.note ?? null }
+          : // 026 (FR-008): the website asks no time in step 3; the brief's start time is kept.
+            briefStartTime(input.brief)
+            ? { startTime: briefStartTime(input.brief) }
+            : undefined,
         date,
         location: page.facts.location?.value ?? null,
         personas: assigned.map((a) => Number(a.personaId)),
@@ -195,3 +200,6 @@ async function saveQuotation(
 
   return { ok: true, reference, key: accessKey(salt, 'booking'), promoNote }
 }
+
+/** 026: the start time the client chose with the brief (`HH:MM`), or null. */
+export const briefStartTime = (brief: { startTime?: string | null }): string | null => brief.startTime || null

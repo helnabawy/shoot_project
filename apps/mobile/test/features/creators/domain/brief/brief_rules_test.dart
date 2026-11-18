@@ -28,6 +28,7 @@ BriefCreator _creator({List<String>? personas, List<String>? places}) {
 }
 
 void main() {
+  timeTests();
   final config = _config();
 
   group('MC-US2-S7 a step that filters creators starts on the creator\'s option (FR-036)', () {
@@ -280,4 +281,74 @@ BriefCreator _withPresets(Map<String, String> presets) {
     places: omar.places,
     presets: presets,
   );
+}
+
+/// 026: the example builder with a required start time after the date.
+BriefBuilderConfig _timed() {
+  final c = _config();
+  final at = c.slots.indexWhere((s) => s.kind == SlotKind.date);
+  return BriefBuilderConfig(
+    sentence: c.sentence.replaceFirst('{date}', '{date} at {time}'),
+    slots: [...c.slots]
+      ..insert(
+        at + 1,
+        const BuilderSlot(
+          token: 'time',
+          kind: SlotKind.time,
+          groupLabel: 'Start time',
+          placeholder: 'any time',
+          defaultValue: '',
+          required: true,
+          allowCustom: false,
+          multiple: false,
+          options: [
+            BuilderOption(
+              value: '16-00',
+              label: '16:00',
+              sentenceLabel: '16:00',
+              glyph: '16',
+              personaSlugs: [],
+            ),
+          ],
+        ),
+      ),
+    submitLabel: c.submitLabel,
+    helperText: c.helperText,
+    whatsappTemplate: c.whatsappTemplate.replaceFirst(
+      '{date}',
+      '{date} at {time}',
+    ),
+    successMessage: c.successMessage,
+    steps: c.steps,
+  );
+}
+
+void timeTests() {
+  group('026 the start time in a "Book with …" brief', () {
+    final rules = BriefRules(_timed());
+    final time = rules.config.slots.firstWhere((s) => s.kind == SlotKind.time);
+    final date = rules.config.slots.firstWhere((s) => s.kind == SlotKind.date);
+
+    test('BT-US1-S5 the time lists its options and prints its words', () {
+      expect(rules.options(time, const {}).single.value, '16-00');
+      expect(rules.labelFor(time, const {'time': '16-00'}), '16:00');
+      expect(rules.keepValid(const {'time': '17-00'}), isEmpty);
+    });
+
+    test('BT-US1-S4 a required time is asked only with a date', () {
+      final base = {
+        for (final s in rules.config.slots)
+          if (s.kind != SlotKind.date && s.kind != SlotKind.time)
+            s.token: rules.options(s, const {}).firstOrNull?.value ?? '',
+      };
+      expect(rules.nextOpen(base)?.kind, isNot(SlotKind.time));
+      final dated = {...base, date.token: '2099-01-02'};
+      expect(rules.nextOpen(dated)?.token, 'time');
+      expect(
+        rules.openCount({...dated, 'time': '16-00'}),
+        rules.openCount(base),
+      );
+      expect(rules.message(base), isNot(contains(' at ')));
+    });
+  });
 }

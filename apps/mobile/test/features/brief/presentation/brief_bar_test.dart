@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shoot_mobile/core/motion/ambient_pause.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_bar.dart';
 import 'package:shoot_mobile/features/brief/presentation/brief_cubit.dart';
+import 'package:shoot_mobile/features/site/domain/entities/brief_builder.dart';
 
 import '../../../helpers/brief_fixtures.dart';
 import '../../../helpers/ml_harness.dart';
@@ -47,6 +48,7 @@ Future<BriefCubit> pumpBar(
 }
 
 void main() {
+  timeTests();
   testWidgets(
     'ML-US1-S1 the bar opens like the website: search prompt, first step, actions, no answers',
     (tester) async {
@@ -193,4 +195,105 @@ void main() {
     expect(cubit.state.receipt, isNotNull);
     await tester.pumpWidget(const SizedBox());
   });
+}
+
+/// 026: the example builder as the server sends it with "Ask for a start time" on.
+BriefBuilder timedBuilder({bool arabic = false}) {
+  final base = exampleBuilder(arabic: arabic);
+  final config = base.builder!;
+  final time = BuilderSlot(
+    token: 'time',
+    kind: SlotKind.time,
+    groupLabel: arabic ? 'وقت البدء' : 'Start time',
+    placeholder: arabic ? 'أي وقت' : 'any time',
+    defaultValue: '',
+    required: false,
+    allowCustom: false,
+    multiple: false,
+    options: [
+      for (final t in ['09:00', '16:00'])
+        BuilderOption(
+          value: t.replaceAll(':', '-'),
+          label: t,
+          sentenceLabel: arabic ? '\u2066$t\u2069' : t,
+          glyph: t.substring(0, 2),
+          personaSlugs: const [],
+        ),
+    ],
+  );
+  final at = config.slots.indexWhere((s) => s.kind == SlotKind.date);
+  return BriefBuilder(
+    locale: base.locale,
+    builder: BriefBuilderConfig(
+      sentence: config.sentence.replaceFirst(
+        '{date}',
+        arabic ? '{date} الساعة {time}' : '{date} at {time}',
+      ),
+      slots: [...config.slots]..insert(at + 1, time),
+      submitLabel: config.submitLabel,
+      helperText: config.helperText,
+      whatsappTemplate: config.whatsappTemplate,
+      successMessage: config.successMessage,
+      steps: config.steps,
+    ),
+  );
+}
+
+void timeTests() {
+  for (final arabic in [false, true]) {
+    testWidgets(
+      'BT-US1-S5 the app asks the start time after the date, counted, '
+      'times read left to right (${arabic ? 'ar' : 'en'})',
+      (tester) async {
+        final cubit = makeBrief(builder: timedBuilder(arabic: arabic));
+        await cubit.load();
+        await tester.pumpApp(host(cubit), locale: Locale(arabic ? 'ar' : 'en'));
+        cubit
+          ..choose('persona', 'photographer')
+          ..choose('occasion', 'wedding')
+          ..choose('location', 'dubai')
+          ..setDate('2026-12-06');
+        await tester.pump(const Duration(milliseconds: 100));
+        expect(cubit.state.active, 'time');
+        expect(
+          find.byKey(const ValueKey('briefBar:option:time:16-00')),
+          findsOneWidget,
+        );
+        expect(find.text('\u206616:00\u2069'), findsOneWidget);
+        if (!arabic) expect(find.text('5 of 5'), findsOneWidget);
+        await tester.tap(
+          find.byKey(const ValueKey('briefBar:option:time:16-00')),
+        );
+        await tester.pump(const Duration(milliseconds: 100));
+        expect(cubit.state.draft.valuesOf('time'), ['16-00']);
+        expect(
+          find.byKey(const ValueKey('briefBar:slot:time')),
+          findsOneWidget,
+        );
+        await tester.pumpWidget(const SizedBox());
+      },
+    );
+  }
+
+  testWidgets(
+    'BT-US1-S4 with any date the app does not ask the time and drops one picked',
+    (tester) async {
+      final cubit = makeBrief(builder: timedBuilder());
+      await cubit.load();
+      await tester.pumpApp(host(cubit));
+      cubit
+        ..choose('persona', 'photographer')
+        ..choose('occasion', 'wedding')
+        ..choose('location', 'dubai')
+        ..setDate('2026-12-06')
+        ..choose('time', '16-00')
+        ..reopen('date')
+        ..skip('date');
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(cubit.state.draft.valuesOf('time'), isEmpty);
+      expect(cubit.state.active, isNull);
+      expect(find.byKey(const ValueKey('briefBar:slot:time')), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 }

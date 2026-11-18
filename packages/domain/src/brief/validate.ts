@@ -1,7 +1,8 @@
 // Framework-free and dependency-free so the browser bundle can use the same rules as the
 // server without shipping a schema library (constitution Principle II: JS budget).
 
-export type SlotKind = 'persona' | 'options' | 'date' | 'number'
+/** `time` (feature 026): the start time, an option list the server adds after the date. */
+export type SlotKind = 'persona' | 'options' | 'date' | 'number' | 'time'
 
 export interface SlotRule {
   token: string

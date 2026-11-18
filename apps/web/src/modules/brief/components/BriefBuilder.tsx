@@ -25,6 +25,7 @@ import {
   CalendarIcon,
   CheckIcon,
   ChevronDownIcon,
+  ClockIcon,
   CommandIcon,
   ForwardIcon,
   WhatsAppIcon,
@@ -195,6 +196,10 @@ export function BriefBuilder({
   }
 
   const personas = chosenPersonas(config, values)
+  // 026 (FR-004): answered "any date", the start time step is waived: not asked, not counted, not sent.
+  const dateSlot = order.find((s) => s.kind === 'date')
+  const timeWaived = !dateSlot || (!values[dateSlot.token] && Boolean(skipped[dateSlot.token]))
+  const waived = (slot: BuilderSlot) => slot.kind === 'time' && timeWaived
   const hasValue = (slot: BuilderSlot) => {
     const value = values[slot.token] ?? ''
     if (value === CUSTOM_VALUE) return Boolean(custom[slot.token])
@@ -203,6 +208,7 @@ export function BriefBuilder({
   // A locked step is answered from the start, even when its list takes several choices and would wait for Continue.
   const answered = (slot: BuilderSlot) =>
     isLocked(slot) ||
+    waived(slot) ||
     Boolean(skipped[slot.token]) || (hasValue(slot) && (!needsContinue(slot) || Boolean(confirmed[slot.token])))
   const isChosen = (slot: BuilderSlot, value: string) => {
     const current = values[slot.token] ?? ''
@@ -221,10 +227,11 @@ export function BriefBuilder({
     for (const slot of order) {
       const value = values[slot.token] ?? ''
       const typed = value === CUSTOM_VALUE
-      result.values[slot.token] = typed ? (custom[slot.token] ?? '') : skipped[slot.token] ? '' : value
+      result.values[slot.token] = typed ? (custom[slot.token] ?? '') : skipped[slot.token] || waived(slot) ? '' : value
       result.custom[slot.token] = typed
     }
     return result
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `waived` reads `values`, already listed
   }, [complete, order, values, custom, skipped])
   // 003 US1-S7: the matches shown in the bar once complete.
   // 022: with creator offers on, the price step replaces the preview of who is free (offers come later).
@@ -306,6 +313,7 @@ export function BriefBuilder({
   function select(slot: BuilderSlot, value: string, advance = true) {
     setValues((existing) => {
       const next = { ...existing, [slot.token]: value }
+      if (slot.kind === 'date' && !value) clearTime(next)
       if (slot.kind === 'persona') {
         // A new professional drops answers it does not offer, so their steps are asked again (FR-048).
         const chosen = chosenPersonas(config, next)
@@ -322,6 +330,13 @@ export function BriefBuilder({
     setClientErrors(({ [slot.token]: _removed, ...rest }) => rest)
     setDismissed(true)
     setQuery('')
+  }
+
+  /** 026: a start time without a date is not kept. */
+  function clearTime(next: Record<string, string>, when = true): Record<string, string> {
+    if (!when) return next
+    for (const other of config.slots) if (other.kind === 'time') next[other.token] = ''
+    return next
   }
 
   /** Ticks or unticks one value of a step that takes several (FR-063). */
@@ -343,7 +358,8 @@ export function BriefBuilder({
 
   /** An optional step answered with "any" (e.g. "any date"). */
   function skip(slot: BuilderSlot) {
-    setValues((v) => ({ ...v, [slot.token]: '' }))
+    // "Any date" drops a start time picked before (026).
+    setValues((v) => clearTime({ ...v, [slot.token]: '' }, slot.kind === 'date'))
     setSkipped((s) => ({ ...s, [slot.token]: true }))
     setEditing(null)
     setQuery('')
@@ -418,7 +434,8 @@ export function BriefBuilder({
   }
 
   const matches = (o: BuilderOption) => !query || normalise(o.label).includes(normalise(query))
-  const promptFor = (slot: BuilderSlot) => (slot.kind === 'date' ? labels.pickADate : slot.placeholder || labels.chooseOne)
+  const promptFor = (slot: BuilderSlot) =>
+    slot.kind === 'date' ? labels.pickADate : slot.kind === 'time' ? labels.pickATime : slot.placeholder || labels.chooseOne
   // While a step already has an answer (several choices, or a reopened step) its word stays in the
   // sentence and the caret waits right after it.
   const placeholder = !started
@@ -568,6 +585,8 @@ export function BriefBuilder({
           )}
           data-state={error ? 'attention' : 'set'}
           aria-current={active ? 'step' : undefined}
+          // A time reads left to right in Arabic too (026, FR-007).
+          dir={slot.kind === 'time' ? 'ltr' : undefined}
         >
           {labelFor(slot)}
         </a>,
@@ -584,7 +603,7 @@ export function BriefBuilder({
     order.some((s) => (s.kind === 'persona' || s.kind === 'options') && visibleOptions(s, personas).some(matches))
   let shownBefore = 0
   let stepNo = 0
-  const askedSteps = order.filter((s) => !isLocked(s)).length
+  const askedSteps = order.filter((s) => !isLocked(s) && !waived(s)).length
   const groups: ReactNode[] = []
   for (const slot of order) {
     if (isLocked(slot)) {
@@ -592,7 +611,7 @@ export function BriefBuilder({
       groups.push(<input key={slot.token} type="hidden" name={slot.token} value={locked?.value} />)
       continue
     }
-    stepNo += 1
+    if (!waived(slot)) stepNo += 1
     const groupId = `${uid}-group-${slot.token}`
     const error = errors[slot.token]
     const isCurrent = !query && current?.token === slot.token && !showTopHit
@@ -634,6 +653,8 @@ export function BriefBuilder({
                 <CheckIcon width={15} height={15} />
               ) : slot.kind === 'date' ? (
                 <CalendarIcon width={16} height={16} />
+              ) : slot.kind === 'time' ? (
+                <ClockIcon width={16} height={16} />
               ) : (
                 <ForwardIcon width={15} height={15} />
               )
@@ -710,7 +731,7 @@ export function BriefBuilder({
       // The visitor's own words are offered for the asked step when nothing in any list matches.
       const offerCustom =
         slot.allowCustom && query.trim().length > 1 && !typedIsOption && !anyMatch && current?.token === slot.token
-      shown = query ? visible.length > 0 || offerCustom : isCurrent
+      shown = waived(slot) ? false : query ? visible.length > 0 || offerCustom : isCurrent
       const selected = values[slot.token]
       // Without a search, the step lists its first rows plus the chosen ones; the rest sit behind "more".
       const head = query ? all : all.filter((o, i) => i < STEP_ROWS || isChosen(slot, o.value))
@@ -746,7 +767,7 @@ export function BriefBuilder({
             />
             <RowContent
               glyph={isSet ? <CheckIcon width={15} height={15} /> : option.glyph}
-              label={option.label}
+              label={slot.kind === 'time' ? <bdi dir="ltr">{option.label}</bdi> : option.label}
               state={isSet ? 'set' : 'open'}
               trailing={isSet ? labels.set : null}
             />

@@ -25,7 +25,11 @@ export const OptionSets: CollectionConfig = {
         const used = (landing.briefBuilder?.slots ?? []).some(
           (s) => s.optionSet && String(typeof s.optionSet === 'object' ? s.optionSet.id : s.optionSet) === String(id),
         )
-        return used ? ['the brief builder on the Landing Page'] : []
+        // 026: the start time step's list in the Site settings.
+        const settings = await req.payload.findGlobal({ slug: 'site-settings', depth: 0, req })
+        const times = settings.briefTime?.times
+        const timesUsed = times != null && String(typeof times === 'object' ? times.id : times) === String(id)
+        return [...(used ? ['the brief builder on the Landing Page'] : []), ...(timesUsed ? ['the start time step in the Site settings'] : [])]
       }),
     ],
   },

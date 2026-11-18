@@ -119,6 +119,14 @@ settings row (unread count; the push switch is now labelled "Alerts"); website `
 on `/account`; API `GET me/notifications`, `POST me/notifications/{id}/read` (`modules/booking/notices.ts`,
 `api-notices.ts`); the v1 `updates` field and `creatorUpdateRead` stay for older apps. Open in its `tasks.md`: the
 device walkthrough and a design board.
+Feature 026 (`specs/026-brief-time/`, test-id prefix `BT-`) is implemented: behind the site-settings switch "Ask for
+a start time" (`briefTime`, tab "Start time", **default off**) the server adds a step of slot kind `time` right after
+the date (`withBriefTime` in `modules/brief/config.ts`: slot, `{time}` in the sentence and WhatsApp template with the
+owner's joining words); the times are an option set (`start-times`, values `HH-MM`, created by migration
+`brief_time`); "any date" waives it on every channel; the brief keeps `startTime` (`HH:MM`, set through the hook's
+context), step 2's API carries `brief.startTime`, the app's step 3 starts with it and a website booking keeps it in
+`details.startTime`. Rules in `packages/domain/src/brief/time.ts`; app `SlotKind.time` in `BriefEngine` and the
+creators' `BriefRules`. Open in its `tasks.md`: the owner's confirmation, browser and device walkthroughs, e2e.
 `specs/ROADMAP.md` has the screens per feature:
 
 | # | Feature (test-id prefix) | What |

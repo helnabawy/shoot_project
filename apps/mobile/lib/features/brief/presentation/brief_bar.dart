@@ -196,8 +196,9 @@ class _BriefBarState extends State<BriefBar> {
           else
             _StepList(
               slot: active!,
-              stepNo: engine.slots.indexOf(active) + 1,
-              total: engine.slots.length,
+              // 026: a start time waived by "any date" is not counted.
+              stepNo: engine.askedSlots(draft).indexOf(active) + 1,
+              total: engine.askedSlots(draft).length,
               state: state,
               engine: engine,
               onChoose: widget.onChoose,
@@ -683,7 +684,10 @@ class _StepList extends StatelessWidget {
             for (final o in engine.visibleOptions(slot, draft))
               _OptionRow(
                 key: ValueKey('briefBar:option:${slot.token}:${o.value}'),
-                label: o.label,
+                // 026: a time reads left to right in Arabic too.
+                label: slot.kind == SlotKind.time
+                    ? '\u2066${o.label}\u2069'
+                    : o.label,
                 text: o.glyph,
                 on: chosen.contains(o.value),
                 onTap: () => onChoose(slot.token, o.value),

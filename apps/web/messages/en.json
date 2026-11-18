@@ -117,6 +117,12 @@
       "raise": "Raise by AED 50",
       "loading": "Working out the usual price…",
       "currency": "AED"
+    },
+    "time": {
+      "groupLabel": "Start time",
+      "anyTime": "any time",
+      "connector": "at",
+      "pick": "pick a time"
     }
   },
   "auth": {

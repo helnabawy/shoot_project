@@ -58,6 +58,8 @@ export const matchV1 = z.object({
     date: isoDay.nullable(),
     /** The `durations` option value priced: the query's, else the brief's; `null` when there is none. */
     duration: z.string().nullable(),
+    /** 026 (additive): the start time the client chose with the brief (`HH:MM`); missing or `null` when none. */
+    startTime: z.string().regex(START_TIME).nullable().optional(),
   }),
   /** The day shown: the query's, else the brief's; `null` is "any date". */
   date: isoDay.nullable(),

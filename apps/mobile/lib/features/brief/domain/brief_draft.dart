@@ -87,6 +87,30 @@ final class BriefEngine {
     return [base[i], ...base.sublist(0, i), ...base.sublist(i + 1)];
   }
 
+  BuilderSlot? get dateSlot {
+    for (final s in slots) {
+      if (s.kind == SlotKind.date) return s;
+    }
+    return null;
+  }
+
+  /// 026 (FR-004): answered "any date", the start time step is waived: not asked, not counted, not
+  /// sent.
+  bool timeWaived(BriefDraft draft) {
+    final date = dateSlot;
+    return date == null ||
+        (draft.date == null && draft.skipped.contains(date.token));
+  }
+
+  bool _waived(BuilderSlot s, BriefDraft draft) =>
+      s.kind == SlotKind.time && timeWaived(draft);
+
+  /// The steps the person is asked, in order (the step count).
+  List<BuilderSlot> askedSlots(BriefDraft draft) => [
+    for (final s in slots)
+      if (!_waived(s, draft)) s,
+  ];
+
   bool isAnswered(BuilderSlot s, BriefDraft draft) {
     if (s.kind == SlotKind.date) return draft.date != null;
     return draft.valuesOf(s.token).isNotEmpty;
@@ -95,6 +119,7 @@ final class BriefEngine {
   /// The first slot that is neither answered nor skipped, or `null` when every step is done.
   BuilderSlot? nextStep(BriefDraft draft) {
     for (final s in slots) {
+      if (_waived(s, draft)) continue;
       if (!isAnswered(s, draft) && !draft.skipped.contains(s.token)) return s;
     }
     return null;
@@ -103,7 +128,7 @@ final class BriefEngine {
   /// The first required slot still unanswered, or `null` when the brief can be sent.
   BuilderSlot? firstMissing(BriefDraft draft) {
     for (final s in slots) {
-      if (s.required && !isAnswered(s, draft)) return s;
+      if (s.required && !_waived(s, draft) && !isAnswered(s, draft)) return s;
     }
     return null;
   }
@@ -167,11 +192,18 @@ final class BriefEngine {
     );
   }
 
-  BriefDraft skip(BriefDraft draft, String token) => BriefDraft(
-    values: draft.values,
-    skipped: {...draft.skipped, token},
-    date: draft.date,
-  );
+  /// Skips [token]. "Any date" clears a date chosen before and drops a start time (026).
+  BriefDraft skip(BriefDraft draft, String token) {
+    final isDate = slot(token)?.kind == SlotKind.date;
+    return BriefDraft(
+      values: isDate ? _withoutTime(draft.values) : draft.values,
+      skipped: {...draft.skipped, token},
+      date: isDate ? null : draft.date,
+    );
+  }
+
+  Map<String, List<String>> _withoutTime(Map<String, List<String>> values) =>
+      Map.of(values)..removeWhere((t, _) => slot(t)?.kind == SlotKind.time);
 
   /// Sets the date (`null` clears it). A date before today in the business time zone is refused:
   /// the draft is returned unchanged and `dateRefused` is true.
@@ -246,7 +278,7 @@ final class BriefEngine {
     if (q.isEmpty) return const [];
     return [
       for (final s in slots)
-        if (s.kind != SlotKind.date)
+        if (s.kind != SlotKind.date && !_waived(s, draft))
           for (final o in visibleOptions(s, draft))
             if (o.label.toLowerCase().contains(q)) (slot: s, option: o),
     ];

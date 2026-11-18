@@ -615,6 +615,10 @@ export interface Brief {
       }[]
     | null;
   date?: string | null;
+  /**
+   * HH:MM, 24 h. Empty: any time.
+   */
+  startTime?: string | null;
   locale?: ('en' | 'ar') | null;
   member?: (number | null) | User;
   contact?: {
@@ -2163,6 +2167,7 @@ export interface BriefsSelect<T extends boolean = true> {
         id?: T;
       };
   date?: T;
+  startTime?: T;
   locale?: T;
   member?: T;
   contact?:
@@ -3178,6 +3183,32 @@ export interface SiteSetting {
    * How many briefs one anonymous visitor may send per hour.
    */
   briefLimitPerHour?: number | null;
+  briefTime?: {
+    /**
+     * On: after the date, the brief asks what time the shoot starts, from the times below, and the time joins the sentence, the WhatsApp message and the booking. A brief with "any date" is not asked. Off: the brief is exactly as before.
+     */
+    enabled?: boolean | null;
+    /**
+     * The option set clients choose from, e.g. "Start times". Give each option the value HH-MM in 24 hours (16-00 for 4 pm) and the label clients read (16:00, 4 pm). Order and Active work as in every option set.
+     */
+    times?: (number | null) | OptionSet;
+    /**
+     * Off: clients may answer "any time".
+     */
+    required?: boolean | null;
+    /**
+     * Above the times, e.g. "Start time".
+     */
+    groupLabel?: string | null;
+    /**
+     * The skip row, e.g. "any time".
+     */
+    anyTime?: string | null;
+    /**
+     * Before the time in the sentence, e.g. "at" (… on Thu 19 Nov at 16:00).
+     */
+    connector?: string | null;
+  };
   quickMatch?: {
     /**
      * On: after the brief, visitors see who is free and get a quotation. Off: the brief goes to WhatsApp, as before.
@@ -3453,6 +3484,16 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   directoryPageSize?: T;
   briefNeedsSignIn?: T;
   briefLimitPerHour?: T;
+  briefTime?:
+    | T
+    | {
+        enabled?: T;
+        times?: T;
+        required?: T;
+        groupLabel?: T;
+        anyTime?: T;
+        connector?: T;
+      };
   quickMatch?:
     | T
     | {

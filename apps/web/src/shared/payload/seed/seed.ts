@@ -102,7 +102,12 @@ export async function seed(payload: Payload, options: SeedOptions = {}): Promise
   }
   log(`Option sets: ${Object.keys(optionSetIds).join(', ')}`)
 
-  const settingsTree = { ...siteSettings, activePersonas: personas.map((p) => personaIds[p.slug]), quickMatch: quickMatchSettings }
+  const settingsTree = {
+    ...siteSettings,
+    activePersonas: personas.map((p) => personaIds[p.slug]),
+    quickMatch: quickMatchSettings,
+    briefTime: { ...siteSettings.briefTime, times: optionSetIds['start-times'] },
+  }
   const settingsEn = await payload.updateGlobal({
     slug: 'site-settings',
     data: pickLocale(settingsTree, 'en') as never,

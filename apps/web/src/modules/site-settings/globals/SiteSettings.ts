@@ -202,6 +202,51 @@ export const SiteSettings: GlobalConfig = {
             },
           ],
         },
+        {
+          // Feature 026: a start time step right after the date in the brief. Off: the brief is exactly as before.
+          label: 'Start time',
+          fields: [
+            {
+              name: 'briefTime',
+              type: 'group',
+              label: false,
+              fields: [
+                {
+                  name: 'enabled',
+                  type: 'checkbox',
+                  defaultValue: false,
+                  label: 'Ask for a start time',
+                  admin: {
+                    description:
+                      'On: after the date, the brief asks what time the shoot starts, from the times below, and the time joins the sentence, the WhatsApp message and the booking. A brief with "any date" is not asked. Off: the brief is exactly as before.',
+                  },
+                },
+                {
+                  name: 'times',
+                  type: 'relationship',
+                  relationTo: 'option-sets',
+                  label: 'Times',
+                  admin: {
+                    description:
+                      'The option set clients choose from, e.g. "Start times". Give each option the value HH-MM in 24 hours (16-00 for 4 pm) and the label clients read (16:00, 4 pm). Order and Active work as in every option set.',
+                  },
+                },
+                {
+                  name: 'required',
+                  type: 'checkbox',
+                  defaultValue: false,
+                  label: 'Clients must choose a time',
+                  admin: { description: 'Off: clients may answer "any time".' },
+                },
+                { type: 'row', fields: [
+                  { name: 'groupLabel', type: 'text', localized: true, label: 'Step label', admin: { width: '34%', description: 'Above the times, e.g. "Start time".' } },
+                  { name: 'anyTime', type: 'text', localized: true, label: 'Any time words', admin: { width: '33%', description: 'The skip row, e.g. "any time".' } },
+                  { name: 'connector', type: 'text', localized: true, label: 'Joining words', admin: { width: '33%', description: 'Before the time in the sentence, e.g. "at" (… on Thu 19 Nov at 16:00).' } },
+                ] },
+              ],
+            },
+          ],
+        },
         quickMatchTab,
       ],
     },

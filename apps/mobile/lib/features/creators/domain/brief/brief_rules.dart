@@ -125,7 +125,10 @@ final class BriefRules {
   /// The options [slot] offers now: those that apply to the chosen types, and with a creator,
   /// only what the creator offers (their types; the emirates they work in).
   List<BuilderOption> options(BuilderSlot slot, Map<String, String> values) {
-    if (slot.kind != SlotKind.persona && slot.kind != SlotKind.options) {
+    // 026: the start time is a list like any option slot.
+    if (slot.kind != SlotKind.persona &&
+        slot.kind != SlotKind.options &&
+        slot.kind != SlotKind.time) {
       return const [];
     }
     final chosen = _chosenPersonas(values);
@@ -203,12 +206,24 @@ final class BriefRules {
     return next;
   }
 
+  /// 026 (FR-004): without a date the start time is not asked, so a required time is not missing.
+  bool _waived(BuilderSlot slot, Map<String, String> values) {
+    if (slot.kind != SlotKind.time) return false;
+    for (final s in config.slots) {
+      if (s.kind == SlotKind.date) return (values[s.token] ?? '').isEmpty;
+    }
+    return true;
+  }
+
+  bool _missing(BuilderSlot slot, Map<String, String> values) =>
+      slot.required && slot.kind != SlotKind.date && !_waived(slot, values);
+
   /// The first required slot with no valid answer, or `null` when the brief is complete.
   BuilderSlot? nextOpen(Map<String, String> values, {String? today}) {
     for (final slot in config.slots) {
       final value = values[slot.token] ?? '';
       if (value.isEmpty) {
-        if (slot.required && slot.kind != SlotKind.date) return slot;
+        if (_missing(slot, values)) return slot;
         continue;
       }
       if (_valueError(slot, value, values, today: today) != null) return slot;
@@ -222,7 +237,7 @@ final class BriefRules {
     for (final slot in config.slots) {
       final value = values[slot.token] ?? '';
       if (value.isEmpty
-          ? slot.required && slot.kind != SlotKind.date
+          ? _missing(slot, values)
           : _valueError(slot, value, values, today: today) != null) {
         n++;
       }
@@ -268,7 +283,7 @@ final class BriefRules {
       case SlotKind.number:
         final n = int.tryParse(value);
         return n != null && n >= 1 && n <= 999 ? null : 'numberInvalid';
-      case SlotKind.persona || SlotKind.options:
+      case SlotKind.persona || SlotKind.options || SlotKind.time:
         final parts = slot.multiple ? split(value) : [value];
         if (parts.isEmpty) return 'required';
         final allowed = {for (final o in options(slot, values)) o.value};
@@ -339,7 +354,7 @@ final class BriefRules {
         return formatDate == null ? value : formatDate(value);
       case SlotKind.number || SlotKind.unknown:
         return value;
-      case SlotKind.persona || SlotKind.options:
+      case SlotKind.persona || SlotKind.options || SlotKind.time:
         final labels = <String>[];
         for (final part in slot.multiple ? split(value) : [value]) {
           final match = slot.options.where((o) => o.value == part);
@@ -361,7 +376,10 @@ final class BriefRules {
     final template = _joinParts(
       _omit(_parse(config.whatsappTemplate), (name) {
         final slot = _slot(name);
-        return slot != null && !slot.required && (values[name] ?? '').isEmpty;
+        // 026: an unset time is always left out (waived without a date).
+        return slot != null &&
+            (!slot.required || slot.kind == SlotKind.time) &&
+            (values[name] ?? '').isEmpty;
       }),
     );
     final lines = [template];
