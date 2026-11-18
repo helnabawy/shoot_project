@@ -22,7 +22,8 @@ const siteCsp = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob:${s3Host ? ` https://${s3Host}` : ''}`,
+  // tile.openstreetmap.org: the place step's map tiles (022).
+  `img-src 'self' data: blob: https://tile.openstreetmap.org${s3Host ? ` https://${s3Host}` : ''}`,
   "font-src 'self' data:",
   "connect-src 'self'",
   "frame-ancestors 'self'",

@@ -117,7 +117,7 @@ export function CodeStep({
               {(['seeker', 'provider'] as const).map((value) => (
                 <label key={value} className={cx(rowClass(role === value ? 'set' : 'open'), 'cursor-pointer')}>
                   <input type="radio" name="role" value={value} checked={role === value} onChange={() => setRole(value)} className="sr-only" />
-                  <span className="min-w-0 text-[16px] leading-[1.375]">
+                  <span className="col-span-full min-w-0 text-[16px] leading-[1.375]">
                     {t(value === 'seeker' ? 'auth.otp.roleSeeker' : 'auth.otp.roleProvider', { list: list('or') })}
                   </span>
                 </label>

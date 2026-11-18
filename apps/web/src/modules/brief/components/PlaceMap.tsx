@@ -40,6 +40,9 @@ export default function PlaceMap({
       map.current = L.map(box.current, { center: start, zoom: pin ? 15 : focus ? 11 : 7, attributionControl: true })
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
+        // The match pages send no Referer (their path holds a private key) and OpenStreetMap refuses tile requests
+        // without one. 'origin' sends the site's address only, never the path.
+        referrerPolicy: 'origin',
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map.current)
       map.current.on('click', (e) => pick.current(e.latlng.lat, e.latlng.lng))
