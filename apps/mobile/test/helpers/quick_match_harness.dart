@@ -31,6 +31,7 @@ Future<GoRouter> pumpQuickMatch(
   bool signedIn = false,
   RecordingOpener? opener,
   Locale locale = const Locale('en'),
+  List<RouteBase> extraRoutes = const [],
 }) async {
   // A phone, as the boards: 360 × 780.
   tester.view.physicalSize = const Size(360, 780);
@@ -65,13 +66,16 @@ Future<GoRouter> pumpQuickMatch(
   final router = createAppRouter(
     initialLocation: location,
     isDebug: false,
-    routes: quickMatchRoutes(
-      flows: flows,
-      createBooking: (ref, key) =>
-          BookingViewCubit(repository: repository, ref: ref, key: key),
-      links: links,
-      openUrl: recorder.call,
-    ),
+    routes: [
+      ...quickMatchRoutes(
+        flows: flows,
+        createBooking: (ref, key) =>
+            BookingViewCubit(repository: repository, ref: ref, key: key),
+        links: links,
+        openUrl: recorder.call,
+      ),
+      ...extraRoutes,
+    ],
     home: (_) => const Text('home'),
   );
   addTearDown(router.dispose);

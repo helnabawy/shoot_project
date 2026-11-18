@@ -895,6 +895,7 @@
   "qmOffersGroup": "{type} · سعرك {price}",
   "qmOffersNone": "لا عروض بعد. تتحدّث هذه الصفحة تلقائياً.",
   "qmOfferAccept": "اقبل عرض {name}",
+  "qmOfferProfile": "{name}، عرض الملف الشخصي",
   "qmOfferDecline": "ارفض",
   "qmOfferChosen": "تم الاختيار",
   "qmOfferYourPrice": "بسعرك",

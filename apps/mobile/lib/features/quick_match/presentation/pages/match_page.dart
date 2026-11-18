@@ -121,6 +121,9 @@ class _MatchScreenState extends State<MatchScreen> {
                               context.read<MatchCubit>().decline(s, i),
                             ),
                             onChat: () => _chat(page),
+                            onProfile: (code) => context.push(
+                              '/creators/${Uri.encodeComponent(code)}',
+                            ),
                             onEdit: () => context.go(AppRoutes.home),
                           )
                         : page.noneFree
@@ -173,6 +176,7 @@ class _Offers extends StatelessWidget {
     required this.onAccept,
     required this.onDecline,
     required this.onChat,
+    required this.onProfile,
     required this.onEdit,
   });
 
@@ -180,6 +184,9 @@ class _Offers extends StatelessWidget {
   final void Function(int section, int index) onAccept;
   final void Function(int section, int index) onDecline;
   final VoidCallback onChat;
+
+  /// 022 (FR-016d): opens an offering creator's profile over step 2, which keeps its state.
+  final ValueChanged<String> onProfile;
   final VoidCallback onEdit;
 
   @override
@@ -260,6 +267,7 @@ class _Offers extends StatelessWidget {
               chosen: state.chosen[page.sections[s].persona.slug] == i,
               onAccept: () => onAccept(s, i),
               onDecline: () => onDecline(s, i),
+              onProfile: () => onProfile(offer.creator.code),
             ),
         ],
       ],
@@ -275,6 +283,7 @@ class _OfferCard extends StatelessWidget {
     required this.chosen,
     required this.onAccept,
     required this.onDecline,
+    required this.onProfile,
   });
 
   final MatchOffer offer;
@@ -282,6 +291,7 @@ class _OfferCard extends StatelessWidget {
   final bool chosen;
   final VoidCallback onAccept;
   final VoidCallback onDecline;
+  final VoidCallback onProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -306,22 +316,49 @@ class _OfferCard extends StatelessWidget {
               Row(
                 spacing: 10,
                 children: [
+                  // FR-016d: who is offering opens their profile; Accept and Decline stay the actions.
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          card.name,
-                          style: ShootType.row.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: c.ink,
+                    child: Semantics(
+                      link: true,
+                      label: l10n.qmOfferProfile(card.name),
+                      onTap: onProfile,
+                      excludeSemantics: true,
+                      child: GestureDetector(
+                        onTap: onProfile,
+                        behavior: HitTestBehavior.opaque,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(minHeight: 44),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                spacing: 4,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      card.name,
+                                      style: ShootType.row.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: c.ink,
+                                      ),
+                                    ),
+                                  ),
+                                  ShootIcon(
+                                    ShootIcons.chevron,
+                                    size: 14,
+                                    color: c.mute,
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                card.displayCode,
+                                style: ShootType.meta.copyWith(color: c.mute),
+                              ),
+                            ],
                           ),
                         ),
-                        Text(
-                          card.displayCode,
-                          style: ShootType.meta.copyWith(color: c.mute),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                   StatusBadge(

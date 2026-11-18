@@ -3,14 +3,14 @@ import type { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { whatsappHref } from '@/modules/contact/whatsapp'
-import { creatorPath, getCreatorProfile, ProfileView } from '@/modules/creators'
+import { backToOffers, creatorPath, getCreatorProfile, ProfileView } from '@/modules/creators'
 import { excerpt } from '@/modules/creators/summary'
 import { getSiteSettings } from '@/modules/site-settings/queries'
 import { localizeHref } from '@/shared/i18n/href'
 import type { Locale } from '@/shared/lib/locale'
 import { alternates } from '@/shared/lib/seo'
 
-type Props = { params: Promise<{ locale: string; code: string }> }
+type Props = { params: Promise<{ locale: string; code: string }>; searchParams: Promise<{ back?: string | string[] }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, code } = await params
@@ -35,8 +35,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function CreatorPage({ params }: Props) {
+export default async function CreatorPage({ params, searchParams }: Props) {
   const { locale: raw, code } = await params
+  // 022 (FR-016d): opened from the client's offers page; only a same-site step-2 path is kept.
+  const back = backToOffers((await searchParams).back) ?? undefined
   setRequestLocale(raw)
   const locale = raw as Locale
   const normalised = normaliseCode(code)
@@ -44,7 +46,7 @@ export default async function CreatorPage({ params }: Props) {
   const page = normalised ? await getCreatorProfile(normalised, locale) : null
   if (!normalised || !page) notFound()
   // Any other spelling of the code (a prefix, upper case) goes to the one canonical address.
-  if (code !== normalised.toLowerCase()) permanentRedirect(creatorPath(normalised, locale))
+  if (code !== normalised.toLowerCase()) permanentRedirect(creatorPath(normalised, locale, back))
 
   const [t, settings] = await Promise.all([getTranslations({ locale, namespace: 'creators.profile' }), getSiteSettings(locale)])
   const { view, displayCode, canBook } = page
@@ -67,7 +69,7 @@ export default async function CreatorPage({ params }: Props) {
 
   return (
     <>
-      <ProfileView view={view} displayCode={displayCode} canBook={canBook} bookHref={localizeHref(`/book/${view.code.toLowerCase()}`, locale)} askHref={askHref} />
+      <ProfileView view={view} displayCode={displayCode} canBook={canBook} bookHref={localizeHref(`/book/${view.code.toLowerCase()}`, locale)} askHref={askHref} backHref={back} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
     </>
   )

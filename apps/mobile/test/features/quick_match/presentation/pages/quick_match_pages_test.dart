@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
@@ -80,6 +81,58 @@ void main() {
         expect(find.textContaining('Waiting to hear from'), findsNothing);
         expect(find.text('Asked'), findsNothing);
         expect(find.text(name), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'OF-US4-S11 the creator on an offer opens their profile; back returns to the same offers',
+      (tester) async {
+        final raw = loadExample('match-offers-declined');
+        when(
+          () => repository.getMatch(
+            any(),
+            any(),
+            date: any(named: 'date'),
+            duration: any(named: 'duration'),
+          ),
+        ).thenAnswer((_) async => Ok(MatchPageModel.fromJson(raw).toEntity()));
+        when(() => repository.matchStamp(any(), any()))
+            .thenAnswer((_) async => const Ok('s'));
+        final router = await pumpQuickMatch(
+          tester,
+          repository: repository,
+          location: match,
+          extraRoutes: [
+            GoRoute(
+              path: '/creators/:code',
+              builder: (_, state) =>
+                  Text('profile ${state.pathParameters['code']}'),
+            ),
+          ],
+        );
+        await tester.pump(const Duration(milliseconds: 500));
+        final profile = find.bySemanticsLabel(
+          RegExp(r'^Omar K\., see profile'),
+        );
+        expect(profile, findsOneWidget);
+        expect(find.text('Accept Omar'), findsOneWidget);
+
+        await tester.tap(find.text('Omar K.'));
+        await tester.pump(const Duration(milliseconds: 500));
+        expect(find.text('profile 0087'), findsOneWidget);
+
+        router.pop();
+        await tester.pump(const Duration(milliseconds: 500));
+        expect(find.text('Accept Omar'), findsOneWidget);
+        // The offers came back as they were: step 2 was not loaded again.
+        verify(
+          () => repository.getMatch(
+            any(),
+            any(),
+            date: any(named: 'date'),
+            duration: any(named: 'duration'),
+          ),
+        ).called(1);
       },
     );
   });

@@ -9,7 +9,7 @@ vi.mock('../live-actions', () => ({ liveMatchStamp: vi.fn(async () => 's') }))
 vi.mock('@/modules/creators/client', () => ({ PhotoTile: () => null }))
 vi.mock('@/modules/creators', () => ({
   getDirectoryContext: async () => ({ lookups: {}, prefix: 'CR-' }),
-  creatorPath: (code: string) => `/creators/${code.toLowerCase()}`,
+  creatorPath: (code: string, _locale: string, back?: string) => `/creators/${code.toLowerCase()}${back ? `?back=${encodeURIComponent(back)}` : ''}`,
   describeCreator: (c: { name: string; code: string }) => ({ name: c.name, initials: 'XX', displayCode: `CR-${c.code}`, place: 'Dubai' }),
 }))
 
@@ -74,5 +74,26 @@ describe('OF-US4 the client sees the offers', () => {
     expect(screen.queryByText('Omar K.')).toBeNull()
     expect(screen.queryByText('Asked')).toBeNull()
   })
+
 })
 
+describe('OF-US4-S11 the client can open the profile of each creator who offered', () => {
+  it('the photo, name and code link to the profile, with the way back to these offers and picks', async () => {
+    await show(page([section('photographer', 'Photographer', [offer('0087', 'Omar K.', 80000, true), offer('0421', 'Mariam S.', 95000, false)])]), [{ persona: 'photographer', code: '0087' }])
+    const links = screen.getAllByTestId('offer-profile')
+    expect(links).toHaveLength(2)
+    const back = encodeURIComponent('/match/B-22222/k?pick=photographer%3A0087')
+    expect(links[1]).toHaveAttribute('href', `/creators/0421?back=${back}`)
+    expect(within(links[1]!).getByText('Mariam S.')).toBeInTheDocument()
+    expect(within(links[1]!).getByText('CR-0421')).toBeInTheDocument()
+    expect(links[1]).toHaveAccessibleName(/Mariam S\..*profile/)
+    // Accept and Decline stay outside the link: one primary action, unchanged.
+    expect(within(links[0]!).queryByTestId('offer-accept')).toBeNull()
+    expect(screen.getAllByTestId('offer-accept')).toHaveLength(2)
+  })
+
+  it('without picks the way back is the bare offers page', async () => {
+    await show(page([section('photographer', 'Photographer', [offer('0087', 'Omar K.', 80000, true)])]))
+    expect(screen.getByTestId('offer-profile')).toHaveAttribute('href', `/creators/0087?back=${encodeURIComponent('/match/B-22222/k')}`)
+  })
+})

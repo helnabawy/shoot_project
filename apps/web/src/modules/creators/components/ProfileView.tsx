@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl'
 import type { ReactNode } from 'react'
 import { Bidi } from '@/shared/ui/Bidi'
 import { BriefBar, ResultGroup, ResultRow, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
-import { CheckIcon, ClockIcon, FlagIcon, ForwardIcon, GlobeIcon, ImageIcon, PinIcon, TagIcon, UserIcon, WhatsAppIcon } from '@/shared/ui/icons'
+import { CheckIcon, ChevronIcon, ClockIcon, FlagIcon, ForwardIcon, GlobeIcon, ImageIcon, PinIcon, TagIcon, UserIcon, WhatsAppIcon } from '@/shared/ui/icons'
 import type { ProfileView as Profile } from '../profile'
 import { PhotoTile } from './PhotoTile'
 import { SampleGallery } from './SampleGallery'
@@ -46,15 +46,20 @@ export function ProfileView({
   canBook,
   bookHref,
   askHref,
+  backHref,
 }: {
   view: Profile
   displayCode: string
   canBook: boolean
   bookHref: string
   askHref: string
+  /** 022 (FR-016d): opened from the client's offers page; going back to it is then the one primary action. */
+  backHref?: string
 }) {
   const t = useTranslations('creators.profile')
   const images = view.samples.filter((s) => s.kind === 'image')
+  // From the offers, booking this creator anew would start a second flow beside the offer: not offered.
+  const book = canBook && !backHref
   const hasAbout = view.languages.length > 0 || view.yearsExperience != null || Boolean(view.nationality)
   return (
     <div
@@ -88,13 +93,15 @@ export function ProfileView({
 
           <div className="border-t border-hair pt-1 pb-2">
             <ResultGroup label={t('topHit')} className="pb-1">
-              {canBook ? (
+              {backHref ? (
+                <TopHit label={t('backToOffers')} href={backHref} glyph={<ChevronIcon width={16} height={16} className="rotate-180" />} testId="profile-back" />
+              ) : book ? (
                 <TopHit label={t('book', { name: view.name })} href={bookHref} testId="profile-book" />
               ) : (
                 <TopHit label={t('ask')} href={askHref} external glyph={<WhatsAppIcon width={16} height={16} />} testId="profile-ask-whatsapp" />
               )}
             </ResultGroup>
-            {canBook || view.social.length || view.samples.length ? (
+            {book || backHref || view.social.length || view.samples.length ? (
               <ResultGroup label={t('actions')} className="pt-1">
                 {/* Phones only: the work sits under the panel, so the panel points at it. */}
                 {view.samples.length ? (
@@ -102,7 +109,7 @@ export function ProfileView({
                     <RowContent glyph={<ImageIcon width={16} height={16} />} label={t('seeWork')} trailing={t('workCount', { count: view.samples.length })} />
                   </a>
                 ) : null}
-                {canBook ? (
+                {book || backHref ? (
                   <a href={askHref} target="_blank" rel="noopener noreferrer" className={rowClass('open')} data-testid="profile-ask-whatsapp">
                     <RowContent glyph={<WhatsAppIcon width={16} height={16} />} label={t('ask')} />
                   </a>

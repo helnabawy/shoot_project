@@ -129,4 +129,27 @@ describe('CP-US2-S1 profile', () => {
     expect(screen.getByText('الأعمال')).toBeInTheDocument()
     expect(document.querySelector('[dir="rtl"]')).not.toBeNull()
   })
+
+  describe('OF-US4-S11 opened from the offers page', () => {
+    const backHref = '/match/B-22222/k?pick=photographer%3A0087'
+
+    it('the one primary action goes back to the offers; Book is not offered, WhatsApp stays a row', () => {
+      render({ backHref })
+      expect(screen.getByTestId('profile-back')).toHaveAttribute('href', backHref)
+      expect(screen.getByTestId('profile-back')).toHaveTextContent('Back to your offers')
+      expect(screen.queryByTestId('profile-book')).toBeNull()
+      expect(screen.getAllByTestId('profile-ask-whatsapp')).toHaveLength(1)
+    })
+
+    it('reads in Arabic', () => {
+      render({ backHref: `/ar${backHref}` }, 'ar')
+      expect(screen.getByTestId('profile-back')).toHaveTextContent('العودة إلى العروض')
+    })
+
+    it('without a way back the profile is unchanged', () => {
+      render()
+      expect(screen.queryByTestId('profile-back')).toBeNull()
+      expect(screen.getByTestId('profile-book')).toBeInTheDocument()
+    })
+  })
 })

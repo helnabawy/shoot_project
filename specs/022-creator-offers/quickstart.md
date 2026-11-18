@@ -51,6 +51,7 @@ Validation guide. Every scenario id below must have a test whose name contains i
 | OF-US4-S8 | Brief in an emirate with no creators | "No one free" + WhatsApp |
 | OF-US4-S9 | Client member with app push | Push on B's offer opens step 2 |
 | OF-US4-S10 | Client opens step 2; A and B have not answered | No list of creators, only "Sent to N" |
+| OF-US4-S11 | Client taps A's name on an offer | A's profile; back returns to the same offers |
 | OF-US5-S1 | Accept A, details, quotation | `offers.test.ts`, `offers-quote.int.test.ts`, `QuotationView.test.tsx` |
 | OF-US5-S2 | — | No add-ons, no promo field; date, duration and emirate fixed (board 49) |
 | OF-US5-S3 | Signed out, Accept | Sign-in, back to quotation (021) |
@@ -147,6 +148,7 @@ Read by `pnpm check:scenarios` (T002): each file must exist and carry the id in 
 | OF-US4-S8 | No match: "no one free" + WhatsApp | `offers-match.int.test.ts` |
 | OF-US4-S9 | Push on a new offer opens step 2 | `offers-answers.int.test.ts` |
 | OF-US4-S10 | Step 2 does not list unanswered creators | `offers-match.int.test.ts`, `OffersResults.test.tsx`, `match_offers_cubit_test.dart` |
+| OF-US4-S11 | An offer opens the creator's profile, back returns | `OffersResults.test.tsx`, `paths.test.ts`, `ProfileView.test.tsx`, `quick_match_pages_test.dart` |
 | OF-US5-S1 | Quotation: offer lines + fee line + total | `offers.test.ts`, `offers-quote.int.test.ts`, `QuotationView.test.tsx` |
 | OF-US5-S2 | No add-ons or promo; place fixed | `offers-quote.int.test.ts`, `DetailsForm.offers.test.tsx` |
 | OF-US5-S3 | Sign-in to accept (021) | `offers-quote.int.test.ts` |

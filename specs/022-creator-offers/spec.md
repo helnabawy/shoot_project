@@ -41,6 +41,10 @@ creators priced).
   additive only) but the server no longer sends it, so released apps hide the list too.
 - Q: Should the brief now go to every creator, not only those who match it? → A: No ("keep matching
   only"): it still goes to every live creator who matches its type, emirate and date (FR-016, US2).
+- Q: Can the client see who is offering before accepting? → A: Yes (asked the same day): each offer's
+  photo, name and code open that creator's public profile, and closing it returns to the offers as they
+  were. Adds FR-016d and US4 scenario 11. Accept and Decline stay the card's actions; the creator `code`
+  is already in the v1 offer, so the API does not change.
 
 ### Analysis 2026-11-17
 
@@ -216,6 +220,9 @@ continues to details.
 10. **Given** a sent brief that matching creators have not answered yet, **When** the client opens the
    offers page, **Then** it does not list those creators (no names, codes or "Asked" rows); it shows
    only the count from scenario 1, and a creator appears only with their offer (amended 2026-11-18).
+11. **Given** an offer from A on the offers page, **When** the client opens A's photo, name or code,
+   **Then** A's public profile opens (website `/creators/{code}`, app `/creators/:code`), and going back
+   returns to the offers page with the same offers and choices (amended 2026-11-18).
 
 ---
 
@@ -366,6 +373,10 @@ setting while briefs already sent keep the mode and fee they started with.
   matched, it MUST offer WhatsApp to the team.
 - **FR-016c**: The offers page MUST NOT list the creators who have not answered; the client sees a
   creator only once that creator offers (amended 2026-11-18).
+- **FR-016d**: Each offer MUST link the creator's photo, name and code to their public profile; on the
+  website the profile then offers a way back to the same offers page (with the client's choices) as its one
+  primary action and does not offer "Book with {name}" (owner, 2026-11-18), in the app the profile is pushed
+  over step 2. Accept and Decline stay the offer's actions (amended 2026-11-18).
 - **FR-016a**: Offers MUST be shown as a list in which every offer's Accept and Decline are visible
   at once (not a swipe rail showing one creator at a time); only the first (lowest total) offer's
   Accept is the screen's primary action.

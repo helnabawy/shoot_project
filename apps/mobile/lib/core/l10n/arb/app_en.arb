@@ -3686,6 +3686,15 @@
       }
     }
   },
+  "qmOfferProfile": "{name}, see profile",
+  "@qmOfferProfile": {
+    "description": "022 (FR-016d): screen-reader label of an offer's creator, which opens their profile.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "qmOfferDecline": "Decline",
   "@qmOfferDecline": {
     "description": "022: decline one offer."

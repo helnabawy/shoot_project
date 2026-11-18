@@ -2,17 +2,17 @@ import Link from 'next/link'
 import { formatPicks, withPick, type Pick } from '@shoot/domain/booking'
 import { formatMoney } from '@shoot/domain/pricing'
 import { getTranslations } from 'next-intl/server'
-import { describeCreator, getDirectoryContext } from '@/modules/creators'
+import { creatorPath, describeCreator, getDirectoryContext } from '@/modules/creators'
 import { PhotoTile } from '@/modules/creators/client'
 import type { Locale } from '@/shared/lib/locale'
 import { LiveRefresh } from '@/shared/components/LiveRefresh'
 import { Bidi } from '@/shared/ui/Bidi'
 import { BriefBar, cx, ResultGroup, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
-import { CalendarIcon, ClockIcon, WhatsAppIcon } from '@/shared/ui/icons'
+import { CalendarIcon, ChevronIcon, ClockIcon, WhatsAppIcon } from '@/shared/ui/icons'
 import { declineOfferAction } from '../actions'
 import { liveMatchStamp } from '../live-actions'
 import type { MatchPage } from '../match'
-import { detailsPath } from '../paths'
+import { detailsPath, matchPath } from '../paths'
 
 /**
  * 022 step 2 (US4, boards 45–47): the offers for each professional type, lowest total first, as a list in which
@@ -47,6 +47,8 @@ export async function OffersResults({
   const anyOffer = page.sections.some((s) => s.offers?.length)
   const noOneMatched = page.sentTo === 0 && !anyOffer
   const check = liveMatchStamp.bind(null, refKey.ref, refKey.key, locale)
+  // 022 (FR-016d): a profile opened from an offer leads back to this page with the client's picks.
+  const back = `${matchPath(refKey.ref, refKey.key, locale)}${picks.length ? `?pick=${encodeURIComponent(formatPicks(picks))}` : ''}`
   const moved = changed ? page.sections.flatMap((s) => s.offers ?? []).find((o) => o.creator.code === changed) : undefined
 
   return (
@@ -114,14 +116,25 @@ export async function OffersResults({
                   return (
                     <li key={offer.creator.id} data-testid="offer-card" data-code={offer.creator.code} className="flex flex-col gap-3 rounded-[14px] border border-hair bg-panel-solid p-3">
                       <div className="flex items-center gap-2.5">
-                        <PhotoTile photo={offer.creator.photo} initials={view.initials} />
-                        <div className="min-w-0 flex-1">
-                          <p className="font-semibold text-ink">{view.name}</p>
-                          <p className="text-[13px] text-mute">
-                            <Bidi>{view.displayCode}</Bidi>
-                            {view.place ? ` · ${view.place}` : ''}
-                          </p>
-                        </div>
+                        {/* FR-016d: who is offering opens their profile; Accept and Decline stay the card's actions. */}
+                        <Link
+                          href={creatorPath(offer.creator.code, locale, back)}
+                          data-testid="offer-profile"
+                          aria-label={t('profile', { name: view.name })}
+                          className="group -m-1 flex min-h-[44px] min-w-0 flex-1 items-center gap-2.5 rounded-[10px] p-1 transition-colors duration-100 hover:bg-ink/[0.04] focus-visible:outline-2 focus-visible:outline-[var(--focus)]"
+                        >
+                          <PhotoTile photo={offer.creator.photo} initials={view.initials} />
+                          <span className="min-w-0 flex-1">
+                            <span className="flex items-center gap-1 font-semibold text-ink">
+                              <span className="break-words group-hover:underline">{view.name}</span>
+                              <ChevronIcon width={14} height={14} className="shrink-0 text-mute" />
+                            </span>
+                            <span className="block text-[13px] text-mute">
+                              <Bidi>{view.displayCode}</Bidi>
+                              {view.place ? ` · ${view.place}` : ''}
+                            </span>
+                          </span>
+                        </Link>
                         <span className={cx('rounded-full px-2.5 py-0.5 text-[13px] font-medium', offer.atYourPrice ? 'bg-success text-on-success' : 'bg-tile text-tile-ink')}>
                           {chosen ? t('chosen') : offer.atYourPrice ? t('atYourPrice') : t('theirPrice')}
                         </span>
