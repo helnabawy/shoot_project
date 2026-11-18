@@ -6,7 +6,7 @@ export const settingsFixture = {
   whatsappNumber: '+971500000000',
   whatsappDefaultMessage: "Hi! I'd like to book a shoot.",
   expectedReplyTime: 'shortly',
-  labels: { providerLabel: "I'm a {persona.singular}", seekerLabel: 'I need a {persona.singular}' },
+  labels: { providerLabel: "I'm a creator", seekerLabel: 'I need a {persona.singular}' },
 } as unknown as SiteSetting
 
 export const personasFixture = [

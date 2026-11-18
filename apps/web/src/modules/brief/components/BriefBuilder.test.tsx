@@ -13,7 +13,7 @@ const props = (locale: 'en' | 'ar' = 'en', personas?: string[], options: { multi
   config: briefBuilderFixture(locale, personas, options),
   whatsappHref: 'https://wa.me/971500000000',
   providerHref: '/register?type=provider',
-  providerLabel: "I'm a photographer",
+  providerLabel: "I'm a creator",
   sourcePath: '/',
   labels: testBriefLabels(locale),
 })
@@ -237,7 +237,7 @@ describe('US8 step-by-step brief (FR-067)', () => {
   it('keeps the WhatsApp alternative and the provider action', () => {
     renderWithLocale(<BriefBuilder {...props()} />)
     expect(screen.getByTestId('whatsapp-secondary')).toHaveAttribute('href', 'https://wa.me/971500000000')
-    expect(screen.getByRole('link', { name: /I'm a photographer/ })).toHaveAttribute('href', '/register?type=provider')
+    expect(screen.getByRole('link', { name: /I'm a creator/ })).toHaveAttribute('href', '/register?type=provider')
   })
 
   it('FR-068 the WhatsApp alternative carries the finished brief, the default message before', async () => {

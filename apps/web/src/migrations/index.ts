@@ -22,6 +22,7 @@ import * as migration_20261114_195200_payment_attention_template from './2026111
 import * as migration_20261114_202819_brief_sign_in from './20261114_202819_brief_sign_in';
 import * as migration_20261115_080721_brief_sign_in_off from './20261115_080721_brief_sign_in_off';
 import * as migration_20261117_151302_creator_offers from './20261117_151302_creator_offers';
+import * as migration_20261118_130000_provider_label_creator from './20261118_130000_provider_label_creator';
 
 export const migrations = [
   {
@@ -142,6 +143,11 @@ export const migrations = [
   {
     up: migration_20261117_151302_creator_offers.up,
     down: migration_20261117_151302_creator_offers.down,
-    name: '20261117_151302_creator_offers'
+    name: '20261117_151302_creator_offers',
+  },
+  {
+    up: migration_20261118_130000_provider_label_creator.up,
+    down: migration_20261118_130000_provider_label_creator.down,
+    name: '20261118_130000_provider_label_creator',
   },
 ];

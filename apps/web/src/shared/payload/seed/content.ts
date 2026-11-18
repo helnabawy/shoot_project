@@ -138,7 +138,7 @@ export const siteSettings = {
   expectedReplyTime: { en: 'shortly', ar: 'قريباً' },
   labels: {
     seekerLabel: { en: 'I need a {persona.singular}', ar: 'أحتاج {persona.singular}' },
-    providerLabel: { en: "I'm a {persona.singular}", ar: 'أنا {persona.singular}' },
+    providerLabel: { en: "I'm a creator", ar: 'أنا مبدع' },
   },
   briefLimitPerHour: 5,
   creatorCodePrefix: 'CR',
