@@ -6,6 +6,7 @@ import { ListingProfileLink as ListingProfileLink_4ba7671da7ecf5935ae2c88cfcabb6
 import { CreatorListingsNote as CreatorListingsNote_64b5a40ee7e260b5f68bfbb9e46bec0f } from '../../../modules/admin/components/CreatorListingsNote'
 import { BriefsExport as BriefsExport_2a918092ae623b8885824544a8d31e6d } from '../../../modules/admin/components/BriefsExport'
 import { BookingsExport as BookingsExport_036952d06e527ee9a61bf3d684bcfdf3 } from '../../../modules/admin/components/BookingsExport'
+import { FilsCell as FilsCell_7c506b52914d377f2ae7671c0001771e } from '../../../modules/admin/components/FilsCell'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -45,6 +46,7 @@ export const importMap = {
   "/modules/admin/components/CreatorListingsNote#CreatorListingsNote": CreatorListingsNote_64b5a40ee7e260b5f68bfbb9e46bec0f,
   "/modules/admin/components/BriefsExport#BriefsExport": BriefsExport_2a918092ae623b8885824544a8d31e6d,
   "/modules/admin/components/BookingsExport#BookingsExport": BookingsExport_036952d06e527ee9a61bf3d684bcfdf3,
+  "/modules/admin/components/FilsCell#FilsCell": FilsCell_7c506b52914d377f2ae7671c0001771e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,

@@ -789,6 +789,7 @@
     "pay": "Pay {total}",
     "paySecure": "Secure payment by card, Apple Pay or Google Pay. You come back here when it's done.",
     "paymentPending": "Payment received. We're confirming it, this takes a few seconds.",
+    "paymentLate": "This is taking longer than usual. If you paid, you don't need to pay again: this page shows paid once it's confirmed. Questions? Ask us on WhatsApp.",
     "paymentCancelled": "Payment not completed. Nothing was charged; you can try again.",
     "signInNext": "Next, we'll send a code to your mobile number to log you in.",
     "feeLine": "Service fee {percent}%",

@@ -18,7 +18,13 @@ export const PaymentSessions: CollectionConfig = {
   fields: [
     { name: 'booking', type: 'relationship', relationTo: 'bookings', required: true, index: true, admin: { readOnly: true } },
     { name: 'revision', type: 'number', required: true, admin: { readOnly: true } },
-    { name: 'amountFils', label: 'Amount (fils)', type: 'number', required: true, admin: { readOnly: true } },
+    {
+      name: 'amountFils',
+      label: 'Amount (AED)',
+      type: 'number',
+      required: true,
+      admin: { readOnly: true, description: 'Stored in fils; shown here in AED.', components: { Cell: '/modules/admin/components/FilsCell#FilsCell' } },
+    },
     { name: 'provider', type: 'select', required: true, defaultValue: 'stripe', options: [{ label: 'Stripe', value: 'stripe' }], admin: { readOnly: true } },
     { name: 'providerSessionId', type: 'text', required: true, unique: true, index: true, admin: { readOnly: true } },
     { name: 'url', type: 'text', required: true, admin: { readOnly: true } },

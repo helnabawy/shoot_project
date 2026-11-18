@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { act, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { renderWithLocale } from '../../../../tests/setup/render'
 import { BookingStatus, type BookingStatusProps } from './BookingStatus'
@@ -44,6 +44,24 @@ describe('020 paying a confirmed booking on the quotation page', () => {
     expect(screen.getByTestId('quote-payment-pending')).toHaveAttribute('role', 'status')
     expect(screen.getByTestId('quote-payment-pending')).toHaveTextContent(/confirming/i)
     expect(screen.queryByTestId('quote-pay')).toBeNull()
+  })
+
+  it('PY-US1-S4 when no confirmation arrives within the polling minute, the page stops promising seconds', () => {
+    vi.useFakeTimers()
+    try {
+      renderWithLocale(<BookingStatus {...confirmed(online, { paymentReturn: 'done' })} />)
+      expect(screen.getByTestId('quote-payment-pending')).toHaveTextContent(/few seconds/i)
+      act(() => {
+        vi.advanceTimersByTime(60_000)
+      })
+      const late = screen.getByTestId('quote-payment-pending')
+      expect(late).toHaveAttribute('data-late', 'true')
+      expect(late).not.toHaveTextContent(/few seconds/i)
+      expect(late).toHaveTextContent(/longer than usual/i)
+      expect(screen.queryByTestId('quote-pay')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('PY-US1-S5 back after leaving the payment page: nothing charged, Pay again', () => {

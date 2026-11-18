@@ -47,11 +47,7 @@ export function BookingStatus({ state, access, sentence, canAccept, payment, rep
       <ResultGroup label={t(`state.${state}` as never)}>
         {waitingForPayment ? (
           // Paid on the provider's page; "paid" shows as soon as its notice is recorded (FR-011).
-          <div role="status" data-testid="quote-payment-pending" className="flex items-start gap-3 px-4 pb-2">
-            <span aria-hidden="true" className="mt-[8px] size-2 shrink-0 animate-pulse rounded-full bg-accent motion-reduce:animate-none" />
-            <p className="text-[15px] text-ink">{t('paymentPending')}</p>
-            <PaymentPending />
-          </div>
+          <PaymentPending pending={t('paymentPending')} late={t('paymentLate')} />
         ) : (
           <p className="px-4 pb-2 text-[15px] text-ink" role="status" dir="auto">
             {sentence}

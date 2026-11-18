@@ -978,6 +978,9 @@ export interface PaymentSession {
   id: number;
   booking: number | Booking;
   revision: number;
+  /**
+   * Stored in fils; shown here in AED.
+   */
   amountFils: number;
   provider: 'stripe';
   providerSessionId: string;
