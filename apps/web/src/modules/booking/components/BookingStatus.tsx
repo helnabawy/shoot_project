@@ -6,7 +6,9 @@ import { payOnline } from '@/modules/payments/actions'
 import { AlertIcon, CloseIcon, LockIcon, WhatsAppIcon } from '@/shared/ui/icons'
 import { acceptQuotation, cancelByClient, confirmDelivery, pickAnotherCreator, reportProblem, requestFreshQuotation } from '../actions'
 import { CreatorPickRow } from './CreatorPickRow'
+import { HistoryTimeline } from './HistoryTimeline'
 import { PaymentPending } from './PaymentPending'
+import { StatusTag } from './StatusTag'
 import type { PickRowView } from './types'
 
 export interface BookingStatusProps {
@@ -44,16 +46,18 @@ export function BookingStatus({ state, access, sentence, canAccept, payment, rep
   const waitingForPayment = Boolean(payment?.online) && paymentReturn === 'done'
   return (
     <div data-testid="booking-status" data-state={state}>
-      <ResultGroup label={t(`state.${state}` as never)}>
-        {waitingForPayment ? (
-          // Paid on the provider's page; "paid" shows as soon as its notice is recorded (FR-011).
-          <PaymentPending pending={t('paymentPending')} late={t('paymentLate')} />
-        ) : (
-          <p className="px-4 pb-2 text-[15px] text-ink" role="status" dir="auto">
-            {sentence}
-          </p>
-        )}
-      </ResultGroup>
+      {/* The state as a tag, then what it means (the owner, 2026-11-18). */}
+      <div className="px-4 pt-2.5 pb-1">
+        <StatusTag state={state} label={t(`state.${state}` as never)} />
+      </div>
+      {waitingForPayment ? (
+        // Paid on the provider's page; "paid" shows as soon as its notice is recorded (FR-011).
+        <PaymentPending pending={t('paymentPending')} late={t('paymentLate')} />
+      ) : (
+        <p className="px-4 pt-1 pb-2 text-[15px] text-ink" role="status" dir="auto">
+          {sentence}
+        </p>
+      )}
 
       {canAccept ? (
         <form action={acceptQuotation} className="pb-2">
@@ -146,14 +150,7 @@ export function BookingStatus({ state, access, sentence, canAccept, payment, rep
 
       {history.length ? (
         <ResultGroup label={t('history')}>
-          <ol className="px-4 pb-2 text-[13px] text-mute">
-            {history.map((h) => (
-              <li key={h.label} className="flex justify-between gap-3 py-0.5 tabular-nums">
-                <span>{h.label}</span>
-                <span>{h.at}</span>
-              </li>
-            ))}
-          </ol>
+          <HistoryTimeline events={history} />
         </ResultGroup>
       ) : null}
     </div>

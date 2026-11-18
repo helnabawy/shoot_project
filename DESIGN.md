@@ -527,6 +527,8 @@ Flutter app only. A person picks one of five accents per device in the Appearanc
 
 **The Material Not Icons Rule.** State is carried by material: weight, a filled ink tile, a peach tint. Not by coloured badges, ticks in green or warning triangles.
 
+**2026-11-18 (owner-directed).** The owner asked for the booking's status as a tag, its history as a timeline, and the booked creator with an avatar and two buttons. The Status Tag (`booking/components/StatusTag.tsx`) keeps this rule's materials: a pill (24 px, 13 px medium, a 6 px dot in the current colour) in the peach tint when the next move is the client's (quoted, confirmed, delivered, on hold), filled ink once settled (paid, scheduled, completed), stone tile otherwise; the word always names the state, no green. The same tag ends every booking row (the bookings list, the creator's rows, the account home's Up next and Confirmed bookings). On a creator's rows the tones follow the creator's next move: peach for a request to answer, ink once paid, stone for a booking the client still has to pay. The History Timeline is 18 px nodes joined by a hairline, stone tiles for past events and an ink node with the label in semibold for the latest. A booked creator is the 44 px Photo Tile, the name in semibold, the type and (once paid, feature 025) the number in Meta, with Call and WhatsApp as two outlined buttons side by side (44 px, 1 px control border, 9 px corners, 15 px medium), at the row's end from 640 px and under it on phones; never red, so the One Red Row Rule holds.
+
 ## Typography
 
 **Display Font:** the system UI stack (SF Pro on Apple, Segoe UI on Windows, Roboto on Android)

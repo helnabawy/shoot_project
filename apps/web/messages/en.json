@@ -863,7 +863,8 @@
       "call": "Call",
       "whatsapp": "Message on WhatsApp",
       "message": "Hi {name}, this is about booking {reference}.",
-      "messageNoName": "Hi, this is about booking {reference}."
+      "messageNoName": "Hi, this is about booking {reference}.",
+      "whatsappShort": "WhatsApp"
     },
     "confirmedGroup": "Confirmed",
     "otherRequests": "Other requests",

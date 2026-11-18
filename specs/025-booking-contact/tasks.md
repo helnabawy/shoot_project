@@ -43,6 +43,12 @@ No new collection, field, migration or package. Tests first in each phase; every
 - [x] T022 `pnpm typecheck && pnpm lint && pnpm test`; `pnpm check:scenarios` (025 added); `dart format`, `flutter analyze`, `flutter test`
 - [x] T023 `impeccable detect` on the changed web components
 
+## Owner refinement (2026-11-18)
+
+- [x] T029 Quotation page: status as a tag (`StatusTag`), history as a timeline (`HistoryTimeline`), each booked creator with avatar, name, type and number, Call and WhatsApp as side-by-side buttons (`ContactButtons`, also on the creator's booking row); tests in `ContactRows.test.tsx`; DESIGN.md and the quotation brief updated; checked locally at 1024 px dark and 360 px Arabic light
+- [x] T031 Status tags on every booking row: `/account/bookings`, the creator's rows, the account home (Up next, Confirmed bookings); creator-side tones; checked at 1024 px dark and 360 px Arabic light
+- [ ] T030 The app's booking screen: the contact block has no avatar yet (needs a board, and a photo in `bookingContactV1`)
+
 ## Open
 
 - [x] T024a The owner decided contact shows from Paid, not Confirmed (2026-11-18); rule, tests and spec updated

@@ -1,10 +1,11 @@
 import { useTranslations } from 'next-intl'
-import { Bidi } from '@/shared/ui/Bidi'
-import { RowContent, rowClass } from '@/shared/ui/bar'
+import { cx } from '@/shared/ui/bar'
 import { PhoneIcon, WhatsAppIcon } from '@/shared/ui/icons'
 
 /** Feature 025: the other side of a paid booking, as the server allows it to be read. */
 export interface ContactView {
+  /** The creator profile, for the client's view; absent for the client. */
+  creatorId?: number
   name: string
   /** The professional type for a creator; empty for the client. */
   role: string
@@ -16,34 +17,24 @@ export interface ContactView {
   whatsappHref: string
 }
 
-/** "Contact Hosam" for a creator, "Contact Layla" (or "your client") for a client. */
-export function contactLabel(t: (key: string, values?: Record<string, string>) => string, contact: ContactView, side: 'creator' | 'client'): string {
-  if (side === 'creator') return t('creator', { name: contact.name })
-  return contact.name ? t('client', { name: contact.name }) : t('clientNoName')
-}
+const button =
+  'inline-flex min-h-11 items-center justify-center gap-2 rounded-[var(--radius-row)] border border-control-border px-3.5 text-[15px] font-medium text-ink transition-colors duration-100 hover:bg-ink/[0.045] active:bg-ink/[0.08] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus)]'
 
 /**
- * Call and WhatsApp for one person (025 FR-004): two ordinary rows, the number at the end of the Call row,
- * left-to-right in both languages. Never the Top Hit: the booking's one action stays its own.
+ * Call and WhatsApp side by side (the owner, 2026-11-18): two quiet outlined buttons, never the red Top Hit, so
+ * the booking's one action stays its own. `who` names the person for screen readers ("Call Hosam").
  */
-export function ContactRows({ contact, side }: { contact: ContactView; side: 'creator' | 'client' }) {
+export function ContactButtons({ contact, who, className }: { contact: ContactView; who: string; className?: string }) {
   const t = useTranslations('booking.contact')
-  const who = contactLabel(t as never, contact, side)
   return (
-    <div data-testid="booking-contact" data-side={side}>
-      <a href={contact.telHref} className={rowClass('open')} aria-label={`${t('call')}: ${who}`} data-testid="contact-call">
-        <RowContent
-          glyph={<PhoneIcon width={15} height={15} />}
-          label={t('call')}
-          trailing={
-            <span className="tabular-nums">
-              <Bidi>{contact.display}</Bidi>
-            </span>
-          }
-        />
+    <div data-testid="booking-contact" className={cx('grid grid-cols-2 gap-2 print:hidden', className)}>
+      <a href={contact.telHref} className={button} aria-label={`${t('call')} ${who}`} data-testid="contact-call">
+        <PhoneIcon width={16} height={16} aria-hidden="true" />
+        {t('call')}
       </a>
-      <a href={contact.whatsappHref} target="_blank" rel="noopener noreferrer" className={rowClass('open')} aria-label={`${t('whatsapp')}: ${who}`} data-testid="contact-whatsapp">
-        <RowContent glyph={<WhatsAppIcon width={15} height={15} />} label={t('whatsapp')} />
+      <a href={contact.whatsappHref} target="_blank" rel="noopener noreferrer" className={button} aria-label={`${t('whatsappShort')} ${who}`} data-testid="contact-whatsapp">
+        <WhatsAppIcon width={16} height={16} aria-hidden="true" />
+        {t('whatsappShort')}
       </a>
     </div>
   )

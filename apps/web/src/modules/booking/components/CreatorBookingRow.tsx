@@ -3,7 +3,8 @@ import { Bidi } from '@/shared/ui/Bidi'
 import { cx, GlyphTile, RowContent, rowClass, TopHit } from '@/shared/ui/bar'
 import { CheckIcon, CloseIcon } from '@/shared/ui/icons'
 import { markDelivered, respondToAssignment } from '../actions'
-import { ContactRows, type ContactView } from './ContactRows'
+import { ContactButtons, type ContactView } from './ContactRows'
+import { StatusTag } from './StatusTag'
 
 export interface CreatorBookingView {
   bookingId: number
@@ -55,6 +56,11 @@ export function CreatorBookingRow({ view, locale, primary = true }: { view: Crea
               <span className="block text-[13px] text-mute">
                 {t('client', { name: view.clientFirstName })} · <Bidi>{view.price}</Bidi>
               </span>
+              {view.contact ? (
+                <span className="block text-[13px] text-mute" data-testid="creator-client-phone">
+                  <bdi dir="ltr" className="tabular-nums">{view.contact.display}</bdi>
+                </span>
+              ) : null}
               {view.exactPlace ? (
                 <span className="block text-[13px] text-ink" data-testid="creator-exact-place">
                   <span dir="auto">{view.exactPlace.address}</span>{' '}
@@ -66,10 +72,10 @@ export function CreatorBookingRow({ view, locale, primary = true }: { view: Crea
               {view.awaitingAnswer && view.respondBy ? <span className="block text-[13px] font-medium text-ink">{t('respondBy', { time: view.respondBy })}</span> : null}
             </>
           }
-          trailing={view.awaitingAnswer ? null : t(`state.${view.state}` as never)}
+          trailing={view.awaitingAnswer ? null : <StatusTag state={view.state} side="creator" label={t(`state.${view.state}` as never)} />}
         />
       </div>
-      {view.contact ? <ContactRows contact={view.contact} side="client" /> : null}
+      {view.contact ? <ContactButtons contact={view.contact} who={view.contact.name || view.clientFirstName} className="mx-4 mt-1 mb-2" /> : null}
       {view.awaitingAnswer ? (
         <>
           <form action={respondToAssignment}>

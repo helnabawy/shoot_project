@@ -5,6 +5,7 @@ import type { ProfileStatus } from '@shoot/domain/creators'
 import { BriefBar, ResultGroup, rowClass, RowContent, TopHit } from '@/shared/ui/bar'
 import { Bidi } from '@/shared/ui/Bidi'
 import { CalendarIcon, ChevronIcon, DocumentIcon, PlusIcon, UserIcon } from '@/shared/ui/icons'
+import { StatusTag } from '@/modules/booking/components/StatusTag'
 import type { AccountBooking, AccountJob, NextUp } from '../account-home'
 
 /** A booking as one line of the account page: its day, place, brief and price, already formatted. */
@@ -162,7 +163,7 @@ export async function NextUpPanel({
               {j.sentence}
             </span>,
           ]}
-          trailing={tb(`state.${j.state}` as never)}
+          trailing={<StatusTag state={j.state} side="creator" label={tb(`state.${j.state}` as never)} />}
         />
       )
       action = { label: t('jobAction'), href: hrefs.bookings }
@@ -217,7 +218,7 @@ export async function NextUpPanel({
               ) : null}
             </span>,
           ]}
-          trailing={next.kind === 'booking' ? tb(`state.${b.state}` as never) : null}
+          trailing={next.kind === 'booking' ? <StatusTag state={b.state} label={tb(`state.${b.state}` as never)} /> : null}
         />
       )
       action = {
@@ -294,6 +295,8 @@ export interface ConfirmedRow {
   /** "With Hosam" for a client, "For Layla" for a creator; empty when there is no name. */
   who: string
   href: string
+  /** Whose next move the tag weighs: the client's (default) or the creator's. */
+  side?: 'client' | 'creator'
 }
 
 /**
@@ -325,7 +328,7 @@ export async function ConfirmedBookings({ rows }: { rows: ConfirmedRow[] }) {
                 }
                 trailing={
                   <span className="inline-flex items-center gap-2">
-                    {tb(`state.${r.state}` as never)}
+                    <StatusTag state={r.state} side={r.side} label={tb(`state.${r.state}` as never)} />
                     <ChevronIcon width={14} height={14} className="text-mute/70" />
                   </span>
                 }

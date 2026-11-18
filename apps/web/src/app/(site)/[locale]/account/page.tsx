@@ -137,7 +137,7 @@ export default async function AccountPage({ params }: Props) {
   const confirmed: ConfirmedRow[] = provider
     ? confirmedRows(jobs).map((j) => {
         const name = creatorViews.find((v) => v.reference === j.reference)?.clientFirstName ?? ''
-        return { reference: j.reference, state: j.state, date: j.date, dateLabel: j.dateLabel, place: j.place, who: name ? tc('for', { name }) : '', href: `${localizeHref('/account/bookings', locale)}#b-${j.reference}` }
+        return { reference: j.reference, state: j.state, date: j.date, dateLabel: j.dateLabel, place: j.place, who: name ? tc('for', { name }) : '', href: `${localizeHref('/account/bookings', locale)}#b-${j.reference}`, side: 'creator' as const }
       })
     : confirmedRows(bookings).map((b) => {
         const name = creatorNames(mine.find((m) => m.reference === b.reference)!)

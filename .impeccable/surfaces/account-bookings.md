@@ -17,7 +17,7 @@ Seeker: find a booking and open it (each row is the link). Provider: answer pend
 
 ## Proof and constraints
 
-Providers see the client's first name, the date, the emirate, the brief sentence and the price. The client's phone shows only once the booking is paid and the provider's own part of it is confirmed (feature 025), as two plain rows under the booking: Call (the number at the end, left-to-right) and Message on WhatsApp; never before, never as the Top Hit. Confirmed bookings (confirmed, paid, scheduled) lead as their own group for both roles. Respond-by time is real (from the booking), shown as a time, not a ticking timer. Works without JavaScript (one form per row).
+Providers see the client's first name, the date, the emirate, the brief sentence and the price. The client's phone shows only once the booking is paid and the provider's own part of it is confirmed (feature 025), as two plain rows under the booking: Call (the number at the end, left-to-right) and Message on WhatsApp; never before, never as the Top Hit. Confirmed bookings (confirmed, paid, scheduled) lead as their own group for both roles. Each row ends with the booking's Status Tag (owner, 2026-11-18; see DESIGN.md), not plain mute text. Respond-by time is real (from the booking), shown as a time, not a ticking timer. Works without JavaScript (one form per row).
 
 ## Direction contract
 

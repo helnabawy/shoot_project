@@ -62,7 +62,7 @@ export async function creatorContactsFor(payload: Payload, booking: BookingLike,
     if (!profile || !owner) continue
     const name = String((profile as { displayName?: string | null }).displayName ?? '') || owner.name
     const contact = view(name, types.join(locale === 'ar' ? ' و' : ' and '), owner.number, t('message', { name: firstName(name), reference }))
-    if (contact) contacts.push(contact)
+    if (contact) contacts.push({ ...contact, creatorId })
   }
   return contacts
 }

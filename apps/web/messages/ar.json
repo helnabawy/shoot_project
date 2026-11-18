@@ -863,7 +863,8 @@
       "call": "اتصال",
       "whatsapp": "رسالة على واتساب",
       "message": "مرحباً {name}، أتواصل معك بخصوص الحجز {reference}.",
-      "messageNoName": "مرحباً، أتواصل معك بخصوص الحجز {reference}."
+      "messageNoName": "مرحباً، أتواصل معك بخصوص الحجز {reference}.",
+      "whatsappShort": "واتساب"
     },
     "confirmedGroup": "مؤكدة",
     "otherRequests": "طلبات أخرى",

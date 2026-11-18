@@ -7,6 +7,7 @@ import { splitConfirmed } from '@/modules/auth/account-home'
 import { requireUser } from '@/modules/auth/session'
 import { clientContactsFor } from '@/modules/booking/contact'
 import { CreatorBookingRow } from '@/modules/booking/components/CreatorBookingRow'
+import { StatusTag } from '@/modules/booking/components/StatusTag'
 import { memberBookingPath } from '@/modules/booking/paths'
 import { getCreatorBookings, getMyBookings, myProfileIds } from '@/modules/booking/queries'
 import { creatorBookingViews, formatDay } from '@/modules/booking/views'
@@ -66,7 +67,7 @@ export default async function BookingsPage({ params, searchParams }: Props) {
             </span>
           </>
         }
-        trailing={t(`state.${b.state}` as never)}
+        trailing={<StatusTag state={b.state} label={t(`state.${b.state}` as never)} />}
       />
     </Link>
   )

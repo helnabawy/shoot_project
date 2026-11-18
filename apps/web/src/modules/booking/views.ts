@@ -6,7 +6,7 @@ import { formatMoney } from '@shoot/domain/pricing'
 import { getTranslations } from 'next-intl/server'
 import type { Payload } from 'payload'
 import { whatsappHref } from '@/modules/contact/whatsapp'
-import { describeCreator, type DirectoryContext } from '@/modules/creators'
+import { describeCreator, initialsOf, photoOf, type DirectoryContext } from '@/modules/creators'
 import type { Booking, SiteSetting } from '@/payload-types'
 import { localizeHref } from '@/shared/i18n/href'
 import { env } from '@/shared/lib/env'
@@ -103,8 +103,8 @@ export async function quotationView(
   const money = (fils: number) => formatMoney(fils, locale)
   const brief = typeof booking.brief === 'object' ? booking.brief : null
   const assignments = booking.assignments ?? []
-  const creators = assignments.map((a) => ({ type: NAME(a.persona, 'singular'), name: NAME(a.creator, 'displayName') || null }))
-  const names = creators.map((c) => c.name).filter(Boolean).join(locale === 'ar' ? ' و' : ' and ')
+  const types = assignments.map((a) => ({ type: NAME(a.persona, 'singular'), name: NAME(a.creator, 'displayName') || null }))
+  const names = types.map((c) => c.name).filter(Boolean).join(locale === 'ar' ? ' و' : ' and ')
   const pending = toAssignments(assignments).find((a) => a.status === 'pending' && a.respondBy)
   const total = money(current.totalFils)
   const date = booking.date ? formatDay(booking.date, locale) : ''
@@ -132,7 +132,7 @@ export async function quotationView(
       validUntil: formatDateTime(quotation.validUntil, locale),
       replacedBy: isCurrent ? null : { reference: current.reference, href: options.key ? quotePath(current.reference, options.key, locale) : memberBookingPath(current.reference, locale) },
       sentence: brief?.sentence ?? '',
-      creators,
+      creators: creatorsOf(assignments, contacts, locale),
       lines: (quotation.lines ?? []).map((l) => {
         const d = (l.deliverables ?? null) as { en?: string[]; ar?: string[] } | null
         return { kind: l.kind, label: locale === 'ar' ? l.labelAr : l.labelEn, amount: money(l.amountFils), deliverables: d?.[locale] ?? [] }
@@ -140,7 +140,6 @@ export async function quotationView(
       total: money(quotation.totalFils),
       terms: (qm?.quotationTerms ?? null) as QuotationViewProps['terms'],
       whatsappHref: whatsappHref(options.settings.whatsappNumber, t('whatsappMessage', { reference })) ?? '#',
-      contacts,
     },
     status: {
       state,
@@ -166,6 +165,41 @@ export async function quotationView(
       history,
     },
   }
+}
+
+/**
+ * "Your professionals" (the owner, 2026-11-18): one entry per booked creator with their photo or initials and
+ * every type they are booked for, plus the contact when the server allows it (025); a type the team still
+ * chooses is an entry of its own without a person.
+ */
+function creatorsOf(assignments: NonNullable<Booking['assignments']>, contacts: ContactView[], locale: Locale): QuotationViewProps['creators'] {
+  const and = locale === 'ar' ? ' و' : ' and '
+  const out: QuotationViewProps['creators'] = []
+  const byCreator = new Map<string, QuotationViewProps['creators'][number]>()
+  for (const a of assignments) {
+    const type = NAME(a.persona, 'singular')
+    const creator = a.creator && typeof a.creator === 'object' ? (a.creator as { id: number; displayName?: string | null; photo?: unknown }) : null
+    if (!creator) {
+      out.push({ type, name: null })
+      continue
+    }
+    const known = byCreator.get(String(creator.id))
+    if (known) {
+      if (!known.type.split(and).includes(type)) known.type = `${known.type}${and}${type}`
+      continue
+    }
+    const name = creator.displayName ?? ''
+    const entry = {
+      type,
+      name: name || null,
+      photo: photoOf(creator.photo as never),
+      initials: initialsOf(name),
+      contact: contacts.find((c) => c.creatorId === creator.id) ?? null,
+    }
+    byCreator.set(String(creator.id), entry)
+    out.push(entry)
+  }
+  return out
 }
 
 /** The creator's rows (QM-US3): the client's first name; their number only through `contacts` (025: a confirmed part of a paid booking). */

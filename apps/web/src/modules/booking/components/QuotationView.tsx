@@ -5,7 +5,8 @@ import type { ReactNode } from 'react'
 import { Bidi } from '@/shared/ui/Bidi'
 import { BriefBar, GlyphTile, ResultGroup, RowContent, rowClass } from '@/shared/ui/bar'
 import { CheckIcon, WhatsAppIcon } from '@/shared/ui/icons'
-import { ContactRows, contactLabel, type ContactView } from './ContactRows'
+import { PhotoTile } from '@/modules/creators/client'
+import { ContactButtons, type ContactView } from './ContactRows'
 import { PrintButton } from './PrintButton'
 
 export interface QuoteLineView {
@@ -22,15 +23,14 @@ export interface QuotationViewProps {
   validUntil: string
   replacedBy: { reference: string; href: string | null } | null
   sentence: string
-  creators: { type: string; name: string | null }[]
+  /** One entry per booked creator (photo or initials, their types), or per type the team still chooses. */
+  creators: { type: string; name: string | null; photo?: { url: string; alt: string } | null; initials?: string; contact?: ContactView | null }[]
   lines: QuoteLineView[]
   total: string
   terms?: SerializedEditorState | null
   /** The status sentence and the one action for the current state (BookingStatus). */
   status: ReactNode
   whatsappHref: string
-  /** 025: the booked creators' contact, only for the booking's signed-in client in a sharing state. */
-  contacts?: ContactView[]
   /** Promo feedback after step 3 ("That code has expired."). */
   notice?: string | null
   error?: string | null
@@ -41,7 +41,6 @@ export interface QuotationViewProps {
 /** The quotation document and the booking's status (surface brief quotation); prints as itself on A4. */
 export function QuotationView(props: QuotationViewProps) {
   const t = useTranslations('quote')
-  const tc = useTranslations('booking.contact')
   return (
     <article aria-labelledby="quote-heading" className="quote-doc">
       <BriefBar as="div" className="print:shadow-none print:border-0" data-floating-hide>
@@ -83,23 +82,40 @@ export function QuotationView(props: QuotationViewProps) {
 
         <div className="print:hidden">{props.status}</div>
 
-        {(props.contacts ?? []).map((c) => (
-          <ResultGroup key={c.phone} className="print:hidden" label={[contactLabel(tc as never, c, 'creator'), c.role].filter(Boolean).join(' · ')}>
-            <ContactRows contact={c} side="creator" />
-          </ResultGroup>
-        ))}
-
         <ResultGroup label={t('brief')}>
           <p dir="auto" className="px-4 pb-2 text-[15px] text-ink">
             {props.sentence}
           </p>
         </ResultGroup>
         <ResultGroup label={t('creators')}>
-          {props.creators.map((c) => (
-            <div key={c.type} className={rowClass('open', false)}>
-              <RowContent glyph={<CheckIcon width={15} height={15} />} label={c.type} trailing={c.name ?? t('weChoose')} />
-            </div>
-          ))}
+          {props.creators.map((c) =>
+            c.name ? (
+              <div key={`${c.name}-${c.type}`} className="mx-1.5 grid gap-x-4 gap-y-2.5 px-2.5 py-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center" data-testid="quote-creator">
+                <div className="grid min-h-11 grid-cols-[44px_minmax(0,1fr)] items-center gap-3">
+                  <PhotoTile photo={c.photo ?? null} initials={c.initials ?? ''} />
+                  <span className="min-w-0">
+                    <span className="block font-semibold text-ink">{c.name}</span>
+                    <span className="block text-[13px] text-mute [&:lang(ar)]:text-[14px]">
+                      {c.type}
+                      {c.contact ? (
+                        <span className="print:hidden">
+                          {' · '}
+                          <bdi dir="ltr" className="tabular-nums" data-testid="quote-creator-phone">
+                            {c.contact.display}
+                          </bdi>
+                        </span>
+                      ) : null}
+                    </span>
+                  </span>
+                </div>
+                {c.contact ? <ContactButtons contact={c.contact} who={c.name} className="sm:w-[248px]" /> : null}
+              </div>
+            ) : (
+              <div key={c.type} className={rowClass('open', false)}>
+                <RowContent glyph={<CheckIcon width={15} height={15} />} label={c.type} trailing={t('weChoose')} />
+              </div>
+            ),
+          )}
         </ResultGroup>
 
         <ResultGroup label={t('lines')}>
