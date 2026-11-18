@@ -198,7 +198,7 @@ class _BriefBarState extends State<BriefBar> {
             if (widget.onProvider != null && firstPersona != null)
               _OptionRow(
                 key: const ValueKey('briefBar:provider'),
-                label: l10n.mlBriefImA(firstPersona.label),
+                label: l10n.mlBriefImA,
                 text: '+',
                 highlight: true,
                 onTap: () => widget.onProvider!(firstPersona.value),

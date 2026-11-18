@@ -3190,14 +3190,9 @@
   "@mlBriefWhatsappInstead": {
     "description": "Brief bar action: talk on WhatsApp instead of building the brief."
   },
-  "mlBriefImA": "I'm a {persona}",
+  "mlBriefImA": "I'm a creator",
   "@mlBriefImA": {
-    "description": "Brief bar action: sign up as a provider of this persona.",
-    "placeholders": {
-      "persona": {
-        "type": "String"
-      }
-    }
+    "description": "Brief bar action: sign up as a provider (any persona)."
   },
   "mlBriefTopHit": "Top hit",
   "@mlBriefTopHit": {

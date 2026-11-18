@@ -70,7 +70,7 @@ describe('US1 hero', () => {
     expect(screen.getByTestId('brief-builder')).toBeInTheDocument()
     // The stage holds only the title and the bar: trust chips are not shown (owner, 2026-11-07).
     expect(screen.queryByText('No account needed')).toBeNull()
-    expect(screen.getByRole('link', { name: "I'm a Photographer" })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: "I'm a creator" })).toHaveAttribute(
       'href',
       '/register?type=provider&persona=photographer',
     )
