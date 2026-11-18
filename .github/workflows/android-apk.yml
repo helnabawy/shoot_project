@@ -14,7 +14,8 @@ name: Android APK
 #             ANDROID_KEY_ALIAS          the key alias                              } signed with a debug
 #             ANDROID_KEY_PASSWORD       the key password                           } key (sideload only)
 #   Secret    FIREBASE_ENV_JSON          the whole firebase.env.json (see apps/mobile/firebase.env.example.json);
-#                                        optional: without it the APK builds with push off
+#                                        required: the APK is always built with
+#                                        --dart-define-from-file=firebase.env.json, so push is on
 
 on:
   push:
@@ -88,13 +89,13 @@ jobs:
           keyPassword=$KEY_PASSWORD
           EOF
 
-      - name: Firebase config (when the secret is set)
+      - name: Firebase config (required for push)
         env:
           FIREBASE_ENV_JSON: ${{ secrets.FIREBASE_ENV_JSON }}
         run: |
           if [ -z "$FIREBASE_ENV_JSON" ]; then
-            echo "::warning::No FIREBASE_ENV_JSON secret: the APK is built with push off."
-            exit 0
+            echo "::error::No FIREBASE_ENV_JSON secret: the APK would build with push off. Add the whole apps/mobile/firebase.env.json as this secret."
+            exit 1
           fi
           printf '%s' "$FIREBASE_ENV_JSON" > firebase.env.json
           if ! jq -e '[.FIREBASE_PROJECT_ID, .FIREBASE_SENDER_ID, .FIREBASE_ANDROID_API_KEY, .FIREBASE_ANDROID_APP_ID] | all(type == "string" and . != "")' firebase.env.json > /dev/null; then
@@ -105,14 +106,16 @@ jobs:
       - name: Build APK
         # The run number is the build number, so every CI APK installs over the previous one.
         run: |
-          firebase=()
-          [ -f firebase.env.json ] && firebase=(--dart-define-from-file=firebase.env.json)
           flutter build apk --release \
             --build-number=${{ github.run_number }} \
             --dart-define=API_BASE_URL="$API_BASE_URL" \
             --dart-define=APP_ENV="$APP_ENV" \
-            "${firebase[@]}"
-          push=$([ -f firebase.env.json ] && echo "push on" || echo "push off")
+            --dart-define-from-file=firebase.env.json
+          # Proof the Firebase values were compiled in: the project id must be in the Dart snapshot.
+          project=$(jq -r .FIREBASE_PROJECT_ID firebase.env.json)
+          unzip -p build/app/outputs/flutter-apk/app-release.apk lib/arm64-v8a/libapp.so | LC_ALL=C grep -q "$project" \
+            || { echo "::error::The APK does not carry the Firebase config ($project): push would be off."; exit 1; }
+          push="push on, Firebase $project"
           name="shoot-${GITHUB_REF_NAME//\//-}-${{ github.run_number }}.apk"
           mv build/app/outputs/flutter-apk/app-release.apk "build/$name"
           echo "APK_NAME=$name" >> "$GITHUB_ENV"
