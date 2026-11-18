@@ -58,7 +58,12 @@ class PushService {
         ..add(
           _messaging.received.listen(
             (data) => _events.add(
-              PushEvent(event: data['event'] ?? '', path: data['path'] ?? ''),
+              PushEvent(
+                event: data['event'] ?? '',
+                path: data['path'] ?? '',
+                title: data['title'] ?? '',
+                body: data['body'] ?? '',
+              ),
             ),
           ),
         )
@@ -125,10 +130,18 @@ class PushService {
   }
 }
 
-/// A notification's `event` and `path`, as the server sends them.
+/// A notification's `event` and `path`, as the server sends them, and its text in the member's
+/// language (empty when it carried none).
 final class PushEvent {
-  const PushEvent({required this.event, required this.path});
+  const PushEvent({
+    required this.event,
+    required this.path,
+    this.title = '',
+    this.body = '',
+  });
 
   final String event;
   final String path;
+  final String title;
+  final String body;
 }

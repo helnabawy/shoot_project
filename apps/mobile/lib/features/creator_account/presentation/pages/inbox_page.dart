@@ -16,6 +16,7 @@ import 'package:shoot_mobile/core/widgets/text_link.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
 import 'package:shoot_mobile/features/creator_account/domain/entities/inbox.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/inbox_cubit.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/widgets/brief_details.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/widgets/creator_parts.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/widgets/offer_sheet.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/widgets/reject_sheet.dart';
@@ -99,10 +100,18 @@ class InboxView extends StatelessWidget {
     required this.onReject,
     required this.onWithdraw,
     this.onOffer,
+    this.onOpenPlace = openPlaceInMaps,
+    this.mapTiles = true,
     this.focusRef,
   });
 
   final InboxState state;
+
+  /// Opens a brief's area in the phone's maps app (the public point, never the pin).
+  final ValueChanged<BriefPlace>? onOpenPlace;
+
+  /// `false` (tests) draws the plain map instead of fetching OpenStreetMap tiles.
+  final bool mapTiles;
 
   /// 022 (SC-002): the reference of the brief to show first.
   final String? focusRef;
@@ -173,6 +182,8 @@ class _Loaded extends StatelessWidget {
               onAccept: () => view.onAccept(item),
               onReject: () => view.onReject(item),
               onOffer: view.onOffer == null ? null : () => view.onOffer!(item),
+              onOpenPlace: view.onOpenPlace,
+              mapTiles: view.mapTiles,
             ),
           if (inbox.accepted.isNotEmpty) ...[
             GroupText(
@@ -266,9 +277,9 @@ class _Loaded extends StatelessWidget {
   }
 }
 
-/// One open brief, so the creator can decide on the spot: what it is, the client's own words, when,
-/// where, as what and when it came in, then the two answers and what each one does. Never anything
-/// about who the client is (FR-004).
+/// One open brief, so the creator can decide on the spot: what it is and when it came in, the client's own
+/// words, then the facts that decide it (when, for how long, as what, where on a map), the client's price,
+/// and the two answers. Never anything about who the client is (FR-004).
 class _BriefCard extends StatelessWidget {
   const _BriefCard({
     required this.item,
@@ -278,6 +289,8 @@ class _BriefCard extends StatelessWidget {
     required this.onAccept,
     required this.onReject,
     this.onOffer,
+    this.onOpenPlace,
+    this.mapTiles = true,
   });
 
   final BriefItem item;
@@ -287,6 +300,8 @@ class _BriefCard extends StatelessWidget {
   final VoidCallback onAccept;
   final VoidCallback onReject;
   final VoidCallback? onOffer;
+  final ValueChanged<BriefPlace>? onOpenPlace;
+  final bool mapTiles;
 
   /// 022: "Accept {price}" on an offers brief, "I can do this" otherwise.
   String _acceptLabel(BuildContext context) => switch (item.offer) {
@@ -300,6 +315,8 @@ class _BriefCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final c = context.colors;
+    final place = item.offer?.place;
+    final duration = item.duration;
     return ShootPanel(
       padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 14),
       child: Column(
@@ -311,52 +328,79 @@ class _BriefCard extends StatelessWidget {
             ),
             style: ShootType.heading.copyWith(color: c.ink),
           ),
+          const SizedBox(height: 4),
+          Text(
+            '${l10n.inboxFactSent} ${formatDay(context, item.sentAt.toLocal())} · ${item.ref}',
+            style: ShootType.num(ShootType.meta).copyWith(color: c.mute),
+          ),
           if (item.sentence.isNotEmpty) ...[
             const SizedBox(height: 12),
             ClientWords(item.sentence),
           ],
-          const SizedBox(height: 8),
-          CreatorFact(
+          const SizedBox(height: 10),
+          BriefDetail(
             icon: ShootIcons.calendar,
             value: when,
             label: l10n.inboxFactWhen,
           ),
-          if (item.offer?.place case final place?)
-            CreatorFact(
-              icon: ShootIcons.pin,
-              value: [
-                '${place.area}${Localizations.localeOf(context).languageCode == 'ar' ? '، ' : ', '}${place.emirate}',
-                if (place.distanceKm case final km?)
-                  l10n.inboxOfferDistance(km)
-                else
-                  l10n.inboxOfferSetBase,
-              ].join(' · '),
-              label: l10n.caFactWhere,
-            )
-          else if (item.emirate.isNotEmpty)
-            CreatorFact(
-              icon: ShootIcons.pin,
-              value: item.emirate,
-              label: l10n.caFactWhere,
+          if (duration != null && duration.isNotEmpty)
+            BriefDetail(
+              icon: ShootIcons.clock,
+              value: duration,
+              label: l10n.inboxFactDuration,
             ),
           if (item.profession.isNotEmpty)
-            CreatorFact(
+            BriefDetail(
               icon: ShootIcons.camera,
               value: item.profession,
               label: l10n.caFactAs,
             ),
-          CreatorFact(
-            icon: ShootIcons.lines,
-            value: '${formatDay(context, item.sentAt.toLocal())} · ${item.ref}',
-            label: l10n.inboxFactSent,
-          ),
-          if (item.offer case final offer?)
-            CreatorFact(
-              icon: ShootIcons.lines,
-              value: Money.format(offer.budgetFils / 100),
-              label: l10n.inboxFactPrice,
+          if (place != null) ...[
+            const SizedBox(height: 8),
+            BriefPlaceView(
+              place: place,
+              tiles: mapTiles,
+              onOpen: onOpenPlace == null ? null : () => onOpenPlace!(place),
             ),
-          const SizedBox(height: 12),
+          ] else if (item.emirate.isNotEmpty)
+            BriefDetail(
+              icon: ShootIcons.pin,
+              value: item.emirate,
+              label: l10n.caFactWhere,
+            ),
+          if (item.offer case final offer?) ...[
+            const SizedBox(height: 10),
+            DecoratedBox(
+              key: const Key('inbox-client-price'),
+              decoration: BoxDecoration(
+                border: BorderDirectional(top: BorderSide(color: c.hair)),
+              ),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(top: 12),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.inboxFactPrice,
+                        style: ShootType.meta.copyWith(color: c.mute),
+                      ),
+                    ),
+                    Money(
+                      amount: offer.budgetFils / 100,
+                      style: ShootType.title.copyWith(
+                        fontSize: 22,
+                        color: c.ink,
+                        letterSpacing: -0.44,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 14),
           if (item.offer != null && onOffer != null) ...[
             SecondaryButton(
               label: l10n.inboxOfferAnother,

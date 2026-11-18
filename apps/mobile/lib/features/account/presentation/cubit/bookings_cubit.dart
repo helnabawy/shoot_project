@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
+import 'package:shoot_mobile/core/push/push_service.dart';
 import 'package:shoot_mobile/features/account/domain/entities/account.dart';
 import 'package:shoot_mobile/features/account/domain/usecases/account_use_cases.dart';
 
@@ -89,12 +90,59 @@ final class BookingsState extends Equatable {
 
 /// Your bookings (26): Upcoming and Past, paged as the person scrolls; the Briefs tab lists all
 /// briefs. Reading again (pull to refresh, reopening) shows a changed state's new badge (US2-S6).
+/// A push that arrives while the app is open reloads the lists quietly (no system banner shows).
 class BookingsCubit extends Cubit<BookingsState> {
-  BookingsCubit({required this._getBookings, required this._getBriefs})
-    : super(const BookingsState());
+  BookingsCubit({
+    required this._getBookings,
+    required this._getBriefs,
+    Stream<PushEvent>? pushEvents,
+  }) : super(const BookingsState()) {
+    _push = pushEvents?.listen((_) => unawaited(refresh()));
+  }
 
   final GetBookings _getBookings;
   final GetBriefs _getBriefs;
+  StreamSubscription<PushEvent>? _push;
+
+  /// Reloads the first page of bookings (and briefs, once read) keeping the lists on screen.
+  Future<void> refresh() async {
+    if (state.status == ListStatus.loading || state.loadingMore) return;
+    switch (await _getBookings()) {
+      case Ok(:final value):
+        if (isClosed) return;
+        emit(
+          state.copyWith(
+            status: ListStatus.ready,
+            upcoming: value.upcoming,
+            past: value.past,
+            page: value.page,
+            hasMore: value.hasMore,
+          ),
+        );
+      case Err():
+        break;
+    }
+    if (state.briefsStatus != ListStatus.ready) return;
+    switch (await _getBriefs()) {
+      case Ok(:final value):
+        if (isClosed) return;
+        emit(
+          state.copyWith(
+            briefs: value.items,
+            briefsPage: value.page,
+            briefsHasMore: value.hasMore,
+          ),
+        );
+      case Err():
+        break;
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    await _push?.cancel();
+    return super.close();
+  }
 
   void selectTab(BookingsTab tab) {
     if (tab == state.tab) return;

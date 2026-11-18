@@ -1,5 +1,5 @@
 import 'server-only'
-import { acceptorsFirst, dubaiToday, feeOf, isBriefOpen, matchCreators, nearbyDates, offerStamp, sortOffers, type MatchFilter } from '@shoot/domain/booking'
+import { acceptorsFirst, dubaiToday, feeOf, isBriefOpen, matchCreators, matchingEmirate, nearbyDates, offerStamp, sortOffers, type MatchFilter } from '@shoot/domain/booking'
 import type { CreatorSummary } from '@shoot/domain/creators'
 import { quotePrice, type QuoteResult } from '@shoot/domain/pricing'
 import { getTranslations } from 'next-intl/server'
@@ -174,11 +174,13 @@ export async function getMatchPage(brief: BriefRecord, locale: Locale, now: Date
   const today = dubaiToday(now)
   const window = date ? Array.from({ length: 15 }, (_, i) => new Date(Date.parse(`${date}T00:00:00Z`) + (i - 7) * 86_400_000).toISOString().slice(0, 10)) : []
   const blocks = await unavailableOn(window)
+  // 022 (FR-007, amended 2026-11-18): an offers brief takes offers from creators in every emirate.
+  const mode = (brief as { offers?: { mode?: string | null } | null }).offers?.mode
   const freeFor = (personaId: string, day: string | null) =>
-    matchCreators(creators, { personaId, emirateId: emirate, blocked: day ? (blocks.get(day) ?? new Set()) : new Set(), filters: facts.filters, categoryId: facts.categoryId })
+    matchCreators(creators, { personaId, emirateId: matchingEmirate(emirate, mode), blocked: day ? (blocks.get(day) ?? new Set()) : new Set(), filters: facts.filters, categoryId: facts.categoryId })
 
   // 022: an offers brief lists the current offers per type instead of everyone free (FR-013, FR-016a).
-  const offerMode = (brief as { offers?: { mode?: string | null } | null }).offers?.mode === 'offers'
+  const offerMode = mode === 'offers'
   if (offerMode) return offersPage(brief, facts, personas, creators, freeFor, date, rules, base)
 
   // 019: creators who said yes come first (US2-S3); one who is no longer free is simply not listed (US2-S8).

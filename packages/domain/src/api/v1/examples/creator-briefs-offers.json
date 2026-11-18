@@ -8,6 +8,7 @@
       "sentence": "I need a photographer for a birthday party in Dubai on 20 Nov",
       "emirate": "Dubai",
       "date": "2026-11-20",
+      "duration": "2 hours",
       "sentAt": "2026-11-13T09:12:00.000Z",
       "answer": null,
       "reason": null,
@@ -24,7 +25,11 @@
         "area": "Yas Island",
         "emirate": "Abu Dhabi",
         "mapUrl": null,
-        "distanceKm": 22
+        "distanceKm": 22,
+        "point": {
+          "lat": 24.47,
+          "lng": 54.61
+        }
       }
     },
     {

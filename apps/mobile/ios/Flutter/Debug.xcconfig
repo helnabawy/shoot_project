@@ -3,3 +3,7 @@
 
 // App links (feature 008): the staging website host in Runner.entitlements (associated domains).
 APP_LINK_HOST=staging.shoot.ae
+
+// App push (feature 019): the APNs environment in Runner.entitlements; it must match the
+// provisioning profile (a development profile).
+APS_ENVIRONMENT=development

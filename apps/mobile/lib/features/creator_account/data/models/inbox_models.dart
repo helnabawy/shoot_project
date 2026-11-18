@@ -16,6 +16,7 @@ BriefItem briefItemFromJson(Json json) => BriefItem(
     final d? => parseDay(d),
     null => null,
   },
+  duration: readNullableString(json, 'duration'),
   sentAt: DateTime.parse(readString(json, 'sentAt')),
   answer: BriefAnswer.fromWire(readNullableString(json, 'answer')),
   reason: readNullableString(json, 'reason'),
@@ -43,8 +44,18 @@ BriefOffer? _offerFromJson(Json json) {
             emirate: readString(place, 'emirate'),
             mapUrl: readNullableString(place, 'mapUrl'),
             distanceKm: readNullableInt(place, 'distanceKm'),
+            point: _pointFromJson(readNullableObject(place, 'point')),
           ),
   );
+}
+
+/// The area's public point; `null` when absent or incomplete.
+({double lat, double lng})? _pointFromJson(Json? json) {
+  if (json == null) return null;
+  final lat = readNullableNum(json, 'lat');
+  final lng = readNullableNum(json, 'lng');
+  if (lat == null || lng == null) return null;
+  return (lat: lat.toDouble(), lng: lng.toDouble());
 }
 
 final class CreatorInboxModel {

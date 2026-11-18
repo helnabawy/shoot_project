@@ -31,10 +31,11 @@ async function show(p: unknown, picks: { persona: string; code: string | null }[
 }
 
 describe('OF-US4 the client sees the offers', () => {
-  it('OF-US4-S1 waiting: says how many creators the brief went to', async () => {
+  it('OF-US4-S1 OF-US2-S2 waiting: says how many creators the brief went to, not limited to the emirate', async () => {
     await show(page([section('photographer', 'Photographer', [])]))
     // The test stand-in for next-intl leaves the plural unformatted; the filled-in parts are checked.
-    expect(screen.getByTestId('offers-waiting')).toHaveTextContent(/photographers who cover Abu Dhabi/)
+    expect(screen.getByTestId('offers-waiting')).toHaveTextContent(/photographers\. They see the area/)
+    expect(screen.getByTestId('offers-waiting')).not.toHaveTextContent(/Abu Dhabi/)
   })
 
   it('OF-US4-S3 OF-US4-S4 each offer shows the amount, the fee and the total, with Accept and Decline; only the first Accept is primary', async () => {

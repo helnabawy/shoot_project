@@ -12,6 +12,7 @@ import 'package:shoot_mobile/core/l10n/app_locales.dart';
 import 'package:shoot_mobile/core/l10n/l10n.dart';
 import 'package:shoot_mobile/core/l10n/locale_cubit.dart';
 import 'package:shoot_mobile/core/push/push_ask_sheet.dart';
+import 'package:shoot_mobile/core/push/push_banner.dart';
 import 'package:shoot_mobile/core/push/push_cubit.dart';
 import 'package:shoot_mobile/core/push/push_service.dart';
 import 'package:shoot_mobile/core/routing/app_router.dart';
@@ -257,7 +258,14 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
               textHeightBehavior: const TextHeightBehavior(
                 leadingDistribution: TextLeadingDistribution.even,
               ),
-              child: child!,
+              // A push that arrives while the app is open shows as a banner at the top.
+              child: PushBannerHost(
+                events: getIt<PushService>().events,
+                open: _router.go,
+                currentPath: () =>
+                    _router.routerDelegate.currentConfiguration.uri.path,
+                child: child!,
+              ),
             ),
           );
         },

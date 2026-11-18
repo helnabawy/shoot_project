@@ -30,7 +30,7 @@ Validation guide. Every scenario id below must have a test whose name contains i
 | OF-US2-S1a | Creator with no starting point | Area and map, no distance, link to set it |
 | OF-US2-S1b | After the booking is confirmed | A's booking shows the exact pin, address and Directions |
 | OF-SC-008 | Read every creator endpoint before booking | No `lat`, `lng` or `address` of the pin anywhere |
-| OF-US2-S2 | — | `offers-answers.int.test.ts` |
+| OF-US2-S2 | Brief for Dubai; abu serves only Abu Dhabi, vera is a videographer | abu gets it and can offer, vera gets nothing |
 | OF-US2-S3 | — | `offers-answers.int.test.ts` |
 | OF-US2-S4 | A's inbox open while a new brief is sent | `mobile-api-offers.int.test.ts`, `inbox_offers_cubit_test.dart`, `of-us4-offers.spec.ts` |
 | OF-US3-S1 | A: Accept AED 800 | `offers-answers.int.test.ts`, `inbox_offers_cubit_test.dart` |
@@ -127,7 +127,7 @@ Read by `pnpm check:scenarios` (T002): each file must exist and carry the id in 
 | OF-US2-S1 | Card with price, area, rough map, no contact or pin | `place.test.ts`, `offers-answers.int.test.ts`, `BriefCard.offers.test.tsx`, `inbox_offers_cubit_test.dart` |
 | OF-US2-S1a | No starting point: no distance, link to set it | `BriefCard.offers.test.tsx` |
 | OF-US2-S1b | Booked creator sees the exact pin and Directions | `offers-place-privacy.int.test.ts` |
-| OF-US2-S2 | Non-matching creators get nothing | `offers-answers.int.test.ts` |
+| OF-US2-S2 | Every emirate gets it; non-matching types get nothing | `offers.test.ts`, `offers-answers.int.test.ts`, `offers-match.int.test.ts` |
 | OF-US2-S3 | One push with type, emirate, date, price | `offers-answers.int.test.ts` |
 | OF-US2-S4 | Inbox updates without reload | `mobile-api-offers.int.test.ts`, `inbox_offers_cubit_test.dart`, `of-us4-offers.spec.ts` |
 | OF-US3-S1 | Accept at the client's price | `offers-answers.int.test.ts`, `inbox_offers_cubit_test.dart` |

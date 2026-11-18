@@ -8,6 +8,7 @@ import 'package:shoot_mobile/features/creator_account/presentation/cubit/account
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/inbox_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/pages/account_page.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/pages/inbox_page.dart';
+import 'package:shoot_mobile/features/creator_account/presentation/widgets/brief_details.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/widgets/reject_sheet.dart';
 
 import '../../../helpers/pump_app.dart';
@@ -26,6 +27,7 @@ void main() {
     List<String>? log,
     Locale locale = const Locale('en'),
     String? focusRef,
+    ValueChanged<BriefPlace>? onOpenPlace,
   }) async {
     phone(tester);
     await tester.pumpApp(
@@ -36,11 +38,91 @@ void main() {
         onAccept: (i) => log?.add('accept ${i.ref}'),
         onReject: (i) => log?.add('reject ${i.ref}'),
         onWithdraw: (i) => log?.add('withdraw ${i.ref}'),
+        onOffer: (i) => log?.add('offer ${i.ref}'),
+        onOpenPlace: onOpenPlace ?? (p) => log?.add('map ${p.area}'),
+        mapTiles: false,
       ),
       locale: locale,
     );
     await tester.pump(const Duration(seconds: 2));
   }
+
+  group('the brief card details', () {
+    testWidgets(
+      'Duration sits right under When, the area shows on a map and the price stands out',
+      (tester) async {
+        await show(tester, InboxLoaded(inboxExample('creator-briefs-offers')));
+        final card = find.byKey(const Key('inbox-place'));
+        expect(card, findsOneWidget);
+        expect(find.byType(BriefMap), findsOneWidget);
+        expect(find.text('Duration'), findsOneWidget);
+        expect(find.text('2 hours'), findsOneWidget);
+        final whenY = tester.getTopLeft(find.text('When').first).dy;
+        final durationY = tester.getTopLeft(find.text('Duration')).dy;
+        final asY = tester.getTopLeft(find.text('As').first).dy;
+        final placeY = tester.getTopLeft(card).dy;
+        expect(whenY < durationY && durationY < asY && asY < placeY, isTrue);
+        expect(find.text('Yas Island, Abu Dhabi'), findsOneWidget);
+        expect(
+          find.text('About 22 km from you · exact place after booking'),
+          findsOneWidget,
+        );
+        expect(find.text('Open in Maps'), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byKey(const Key('inbox-client-price')),
+            matching: find.text('AED 800'),
+          ),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets('a tap on the place opens it in the maps app', (tester) async {
+      final opened = <BriefPlace>[];
+      await show(
+        tester,
+        InboxLoaded(inboxExample('creator-briefs-offers')),
+        onOpenPlace: opened.add,
+      );
+      await tester.tap(find.byKey(const Key('inbox-place')));
+      expect(opened.single.area, 'Yas Island');
+      expect(opened.single.point, (lat: 24.47, lng: 54.61));
+    });
+
+    testWidgets('a brief without a duration shows no Duration row', (
+      tester,
+    ) async {
+      await show(tester, InboxLoaded(inboxExample()));
+      expect(find.text('Duration'), findsNothing);
+      expect(find.byType(BriefMap), findsNothing);
+    });
+
+    test('the maps address uses the public point, per platform', () {
+      const place = BriefPlace(
+        area: 'Yas Island',
+        emirate: 'Abu Dhabi',
+        point: (lat: 24.47, lng: 54.61),
+      );
+      expect(
+        mapsUriFor(place, platform: TargetPlatform.iOS).toString(),
+        'https://maps.apple.com/?q=Yas+Island%2C+Abu+Dhabi&ll=24.47%2C54.61',
+      );
+      expect(
+        mapsUriFor(place, platform: TargetPlatform.android).toString(),
+        'geo:24.47,54.61?q=24.47%2C54.61(Yas%20Island%2C%20Abu%20Dhabi)',
+      );
+      expect(
+        mapsUriFor(place, platform: TargetPlatform.fuchsia).toString(),
+        'https://www.google.com/maps/search/?api=1&query=24.47%2C54.61',
+      );
+      const noPoint = BriefPlace(area: 'Yas Island', emirate: 'Abu Dhabi');
+      expect(
+        mapsUriFor(noPoint, platform: TargetPlatform.android).toString(),
+        'geo:0,0?q=Yas%20Island%2C%20Abu%20Dhabi',
+      );
+    });
+  });
 
   group('BI-US1 the inbox screen', () {
     testWidgets(

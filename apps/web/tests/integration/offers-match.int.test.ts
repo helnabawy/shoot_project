@@ -37,7 +37,7 @@ describe('OF-US4 the client sees the offers and chooses', () => {
     await announceBrief(await getTestPayload(), (await briefByRef(b.ref)).id as number)
     const p = await page(b)
     expect(p.mode).toBe('offers')
-    expect(p.sentTo).toBe(2)
+    expect(p.sentTo).toBe(3)
     expect(p.sections[0]!.offers).toEqual([])
     expect(p.sections[0]!.creators).toEqual([])
     expect(p.sections[0]!.budgetFils).toBe(await budgetOf(b.ref))
@@ -88,8 +88,8 @@ describe('OF-US4 the client sees the offers and chooses', () => {
     expect((await page(b)).sections[0]!.offers!.map((o) => o.creator.code)).not.toContain(world.creators.omar!.code)
   })
 
-  it('OF-US4-S8 no creator in the emirate: nobody was told, the page shows no one', async () => {
-    const b = await send({ location: 'fujairah' })
+  it('OF-US4-S8 no creator matches (none shoots as asked): nobody was told, the page shows no one', async () => {
+    const b = await send({ shotBy: 'woman' })
     await announceBrief(await getTestPayload(), (await briefByRef(b.ref)).id as number)
     const p = await page(b)
     expect(p.sentTo).toBe(0)
@@ -132,6 +132,12 @@ describe('OF-US4 the client sees the offers and chooses', () => {
     } finally {
       await payload.update({ collection: 'creator-profiles', id: sara.id, data: { personas: before } as never, overrideAccess: true, context: quiet })
     }
+  })
+
+  it('OF-US2-S2 OF-US4-S3 an offer from a creator in another emirate is listed for the client', async () => {
+    const b = await send()
+    await answerBrief(await actor('abu'), b.ref, { persona: photo, decision: 'accept' })
+    expect((await page(b)).sections[0]!.offers!.map((o) => o.creator.code)).toContain(world.creators.abu!.code)
   })
 
   it('OF-US4-S10 step 2 does not list the creators who have not answered', async () => {

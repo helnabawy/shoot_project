@@ -103,6 +103,9 @@
                 "declined": {
                   "type": "boolean"
                 },
+                "duration": {
+                  "type": "string"
+                },
                 "emirate": {
                   "type": "string"
                 },
@@ -159,6 +162,33 @@
                       "type": [
                         "string",
                         "null"
+                      ]
+                    },
+                    "point": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "lat": {
+                              "maximum": 90,
+                              "minimum": -90,
+                              "type": "number"
+                            },
+                            "lng": {
+                              "maximum": 180,
+                              "minimum": -180,
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "lat",
+                            "lng"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -278,6 +308,9 @@
                 "declined": {
                   "type": "boolean"
                 },
+                "duration": {
+                  "type": "string"
+                },
                 "emirate": {
                   "type": "string"
                 },
@@ -334,6 +367,33 @@
                       "type": [
                         "string",
                         "null"
+                      ]
+                    },
+                    "point": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "lat": {
+                              "maximum": 90,
+                              "minimum": -90,
+                              "type": "number"
+                            },
+                            "lng": {
+                              "maximum": 180,
+                              "minimum": -180,
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "lat",
+                            "lng"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -473,6 +533,9 @@
                 "declined": {
                   "type": "boolean"
                 },
+                "duration": {
+                  "type": "string"
+                },
                 "emirate": {
                   "type": "string"
                 },
@@ -529,6 +592,33 @@
                       "type": [
                         "string",
                         "null"
+                      ]
+                    },
+                    "point": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "lat": {
+                              "maximum": 90,
+                              "minimum": -90,
+                              "type": "number"
+                            },
+                            "lng": {
+                              "maximum": 180,
+                              "minimum": -180,
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "lat",
+                            "lng"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -2660,6 +2750,9 @@
                 "declined": {
                   "type": "boolean"
                 },
+                "duration": {
+                  "type": "string"
+                },
                 "emirate": {
                   "type": "string"
                 },
@@ -2716,6 +2809,33 @@
                       "type": [
                         "string",
                         "null"
+                      ]
+                    },
+                    "point": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "lat": {
+                              "maximum": 90,
+                              "minimum": -90,
+                              "type": "number"
+                            },
+                            "lng": {
+                              "maximum": 180,
+                              "minimum": -180,
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "lat",
+                            "lng"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -2835,6 +2955,9 @@
                 "declined": {
                   "type": "boolean"
                 },
+                "duration": {
+                  "type": "string"
+                },
                 "emirate": {
                   "type": "string"
                 },
@@ -2891,6 +3014,33 @@
                       "type": [
                         "string",
                         "null"
+                      ]
+                    },
+                    "point": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "lat": {
+                              "maximum": 90,
+                              "minimum": -90,
+                              "type": "number"
+                            },
+                            "lng": {
+                              "maximum": 180,
+                              "minimum": -180,
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "lat",
+                            "lng"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -3030,6 +3180,9 @@
                 "declined": {
                   "type": "boolean"
                 },
+                "duration": {
+                  "type": "string"
+                },
                 "emirate": {
                   "type": "string"
                 },
@@ -3086,6 +3239,33 @@
                       "type": [
                         "string",
                         "null"
+                      ]
+                    },
+                    "point": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "lat": {
+                              "maximum": 90,
+                              "minimum": -90,
+                              "type": "number"
+                            },
+                            "lng": {
+                              "maximum": 180,
+                              "minimum": -180,
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "lat",
+                            "lng"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -26720,6 +26900,9 @@
                 "declined": {
                   "type": "boolean"
                 },
+                "duration": {
+                  "type": "string"
+                },
                 "emirate": {
                   "type": "string"
                 },
@@ -26776,6 +26959,33 @@
                       "type": [
                         "string",
                         "null"
+                      ]
+                    },
+                    "point": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "lat": {
+                              "maximum": 90,
+                              "minimum": -90,
+                              "type": "number"
+                            },
+                            "lng": {
+                              "maximum": 180,
+                              "minimum": -180,
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "lat",
+                            "lng"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -26895,6 +27105,9 @@
                 "declined": {
                   "type": "boolean"
                 },
+                "duration": {
+                  "type": "string"
+                },
                 "emirate": {
                   "type": "string"
                 },
@@ -26951,6 +27164,33 @@
                       "type": [
                         "string",
                         "null"
+                      ]
+                    },
+                    "point": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "lat": {
+                              "maximum": 90,
+                              "minimum": -90,
+                              "type": "number"
+                            },
+                            "lng": {
+                              "maximum": 180,
+                              "minimum": -180,
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "lat",
+                            "lng"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -27090,6 +27330,9 @@
                 "declined": {
                   "type": "boolean"
                 },
+                "duration": {
+                  "type": "string"
+                },
                 "emirate": {
                   "type": "string"
                 },
@@ -27146,6 +27389,33 @@
                       "type": [
                         "string",
                         "null"
+                      ]
+                    },
+                    "point": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "lat": {
+                              "maximum": 90,
+                              "minimum": -90,
+                              "type": "number"
+                            },
+                            "lng": {
+                              "maximum": 180,
+                              "minimum": -180,
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "lat",
+                            "lng"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },

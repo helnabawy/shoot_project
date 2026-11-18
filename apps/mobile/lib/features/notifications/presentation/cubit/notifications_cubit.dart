@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
+import 'package:shoot_mobile/core/push/push_service.dart';
 import 'package:shoot_mobile/features/notifications/domain/entities/notice.dart';
 import 'package:shoot_mobile/features/notifications/domain/repositories/notifications_repository.dart';
 
@@ -47,11 +50,30 @@ final class NotificationsLoaded extends NotificationsState {
   List<Object?> get props => [notices, failure];
 }
 
-/// Notifications (feature 024): the member's latest notices; opening one marks it read.
+/// Notifications (feature 024): the member's latest notices; opening one marks it read. A push that
+/// arrives while the app is open reloads the list quietly (no system banner shows).
 class NotificationsCubit extends Cubit<NotificationsState> {
-  NotificationsCubit(this._repository) : super(const NotificationsLoading());
+  NotificationsCubit(this._repository, {Stream<PushEvent>? pushEvents})
+    : super(const NotificationsLoading()) {
+    _push = pushEvents?.listen((_) => unawaited(refresh()));
+  }
 
   final NotificationsRepository _repository;
+  StreamSubscription<PushEvent>? _push;
+
+  /// Reloads keeping the list on screen (no loading state).
+  Future<void> refresh() async {
+    if (state is NotificationsLoading) return;
+    if (await _repository.notices() case Ok(:final value)) {
+      if (!isClosed) emit(NotificationsLoaded(value));
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    await _push?.cancel();
+    return super.close();
+  }
 
   Future<void> load() async {
     emit(const NotificationsLoading());

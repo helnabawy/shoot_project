@@ -39,8 +39,13 @@ creators priced).
   how many creators the brief went to (FR-016); a creator appears to the client only once they offer.
   Adds FR-016c and US4 scenario 10. The optional `waiting` field of the v1 contract stays (v1 changes are
   additive only) but the server no longer sends it, so released apps hide the list too.
-- Q: Should the brief now go to every creator, not only those who match it? → A: No ("keep matching
-  only"): it still goes to every live creator who matches its type, emirate and date (FR-016, US2).
+- Q: Should the brief now go to every creator, not only those who match it? → A: First "keep matching
+  only", then the owner amended it the same day: an offers brief is **not limited to the client's
+  emirate**. It goes to every live creator who offers the type, is free on the date and satisfies every
+  filtering slot, in any emirate; creators see the area and their distance and price for it. The
+  fixed-price flow (switch off) still matches by emirate. Amends US2 (scenario 2), FR-007, the edge cases
+  on the map fallback and a creator's starting point, and the waiting text ("Sent to N photographers",
+  no emirate).
 - Q: Can the client see who is offering before accepting? → A: Yes (asked the same day): each offer's
   photo, name and code open that creator's public profile, and closing it returns to the offers as they
   were. Adds FR-016d and US4 scenario 11. Accept and Decline stay the card's actions; the creator `code`
@@ -113,15 +118,16 @@ suggested price, refuses an amount outside the range, and is saved with the chos
 
 ### User Story 2 - Matching creators get the brief with its price (Priority: P1)
 
-When the brief is sent, every live creator who matches it (offers the professional type, serves the
-emirate, is free on the date, satisfies every filtering slot) gets a push and finds it at the top of
+When the brief is sent, every live creator who matches it (offers the professional type, is free on
+the date, satisfies every filtering slot, in any emirate since 2026-11-18) gets a push and finds it at the top of
 their inbox and Up next, now showing the client's price for their professional type.
 
 **Why this priority**: Creators must see the price to accept or counter; the broadcast already exists
 (feature 019) and only gains the price.
 
-**Independent Test**: Send a brief for Abu Dhabi; a matching Abu Dhabi creator receives a push and sees
-the card with the price; a Dubai-only creator and a creator blocked on the date receive nothing.
+**Independent Test**: Send a brief for Abu Dhabi; a matching Abu Dhabi creator and a Dubai-only
+photographer both receive a push and see the card with the price; a videographer and a creator
+blocked on the date receive nothing.
 
 **Acceptance Scenarios**:
 
@@ -135,8 +141,10 @@ the card with the price; a Dubai-only creator and a creator blocked on the date 
 1b. **Given** the client accepted this creator's quotation and the booking is confirmed, **Then** the
    creator's booking shows the exact pin, the address the client confirmed in details, and a way to
    open directions in their maps app.
-2. **Given** a creator who serves only another emirate, or is blocked or booked on the date,
-   **When** the brief is sent, **Then** they get no push and the brief is not in their inbox.
+2. **Given** a creator who does not offer the type, or is blocked or booked on the date,
+   **When** the brief is sent, **Then** they get no push and the brief is not in their inbox. A
+   creator who serves only another emirate does get it, can offer, and their offer is listed for the
+   client (amended 2026-11-18).
 3. **Given** a creator who has push on, **When** a matching brief is sent, **Then** they get one
    push whose text includes the professional type, emirate, date and price, and tapping it opens
    their inbox.
@@ -297,12 +305,12 @@ setting while briefs already sent keep the mode and fee they started with.
 - Arabic: prices, ranges and fees read correctly right to left with Arabic labels and Western digits as
   elsewhere on the site; the map and place search show Arabic names when the site is in Arabic.
 - The map cannot load (no network, key refused): the place step says so and offers choosing the
-  emirate and typing the area instead; such a brief broadcasts by emirate only and creators see no
-  map or distance.
+  emirate and typing the area instead; such a brief goes to creators in every emirate like any other
+  and creators see no map or distance.
 - A pin in the sea, the desert far from any road, or outside the UAE: the client is asked to move it
   to a reachable place in the emirates served.
-- A creator's starting point is in another emirate: the distance is still shown; matching stays by the
-  emirates they serve.
+- A creator's starting point is in another emirate: the distance is still shown; in offers mode the
+  brief reaches them whatever emirates they serve (amended 2026-11-18).
 
 ## Requirements *(mandatory)*
 
@@ -341,9 +349,10 @@ setting while briefs already sent keep the mode and fee they started with.
 
 **Broadcast**
 
-- **FR-007**: Sending the brief MUST notify every live creator who matches it (same rules as today's
-  matching), in-app and by push, with the client's price for their type; creators who do not match
-  MUST NOT be notified.
+- **FR-007**: Sending the brief MUST notify every live creator who matches it (today's matching rules
+  except the emirate: since 2026-11-18 an offers brief reaches creators in every emirate), in-app and
+  by push, with the client's price for their type; creators who do not match MUST NOT be notified.
+  The creator's inbox, answering and the client's offers list use the same rule.
 - **FR-008**: The creator's inbox card and Up next MUST show the client's price; the client's name and
   contact details MUST never be shown before a booking.
 

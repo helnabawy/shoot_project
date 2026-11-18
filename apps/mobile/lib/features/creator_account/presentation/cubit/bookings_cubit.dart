@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoot_mobile/core/error/failures.dart';
 import 'package:shoot_mobile/core/error/result.dart';
+import 'package:shoot_mobile/core/push/push_service.dart';
 import 'package:shoot_mobile/core/time/clock.dart';
 import 'package:shoot_mobile/features/creator_account/domain/entities/creator_account.dart';
 import 'package:shoot_mobile/features/creator_account/domain/repositories/creator_account_repository.dart';
@@ -90,12 +93,38 @@ final class BookingsLoaded extends BookingsState {
 }
 
 /// Bookings (screen 32): answer requests and mark delivered (notices moved to Notifications, 024).
+/// A push that arrives while the app is open reloads the list quietly (no system banner shows).
 class BookingsCubit extends Cubit<BookingsState> {
-  BookingsCubit({required this._repository, required this._clock})
-    : super(const BookingsLoading());
+  BookingsCubit({
+    required this._repository,
+    required this._clock,
+    Stream<PushEvent>? pushEvents,
+  }) : super(const BookingsLoading()) {
+    _push = pushEvents?.listen((_) => unawaited(refresh()));
+  }
 
   final CreatorAccountRepository _repository;
   final Clock _clock;
+  StreamSubscription<PushEvent>? _push;
+
+  /// Reloads keeping the list on screen; skipped while loading or while an answer is being sent.
+  Future<void> refresh() async {
+    final s = state;
+    if (s is BookingsLoading || (s is BookingsLoaded && s.busyRef != null)) {
+      return;
+    }
+    if (await _repository.bookings() case Ok(:final value)) {
+      final now = state;
+      if (isClosed || (now is BookingsLoaded && now.busyRef != null)) return;
+      emit(BookingsLoaded(bookings: value, now: _clock.now()));
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    await _push?.cancel();
+    return super.close();
+  }
 
   Future<void> load() async {
     emit(const BookingsLoading());

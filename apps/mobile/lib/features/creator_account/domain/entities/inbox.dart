@@ -45,6 +45,7 @@ final class BriefItem extends Equatable {
     required this.answer,
     required this.reason,
     required this.outcome,
+    this.duration,
     this.offer,
   });
 
@@ -57,6 +58,9 @@ final class BriefItem extends Equatable {
 
   /// `null`: the date is to be agreed.
   final DateTime? date;
+
+  /// How long the shoot is, as the content area words it ("2 hours"); `null` from an older server.
+  final String? duration;
   final DateTime sentAt;
   final BriefAnswer? answer;
   final String? reason;
@@ -77,6 +81,7 @@ final class BriefItem extends Equatable {
     sentence,
     emirate,
     date,
+    duration,
     sentAt,
     answer,
     reason,
@@ -137,6 +142,7 @@ final class BriefPlace extends Equatable {
     required this.emirate,
     this.mapUrl,
     this.distanceKm,
+    this.point,
   });
 
   final String area;
@@ -144,8 +150,12 @@ final class BriefPlace extends Equatable {
   final String? mapUrl;
   final int? distanceKm;
 
+  /// The area's public point (the centre of its 0.02° cell), never the client's pin: what the small
+  /// map shows and what "Open in Maps" opens.
+  final ({double lat, double lng})? point;
+
   @override
-  List<Object?> get props => [area, emirate, mapUrl, distanceKm];
+  List<Object?> get props => [area, emirate, mapUrl, distanceKm, point];
 }
 
 final class RejectReason extends Equatable {

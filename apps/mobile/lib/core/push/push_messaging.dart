@@ -25,7 +25,8 @@ abstract interface class PushMessaging {
   /// The `data` of the notification that launched the app, once.
   Future<Map<String, String>?> initialOpen();
 
-  /// Feature 022: the `data` of a notification that arrived while the app was open (no banner).
+  /// Feature 022: the `data` of a notification that arrived while the app was open (no system
+  /// banner), with its `title` and `body` added when the data does not carry them.
   Stream<Map<String, String>> get received;
 
   /// `ios` or `android`, as the API names them.
@@ -78,7 +79,14 @@ final class FirebasePushMessaging implements PushMessaging {
       if (Firebase.apps.isEmpty) {
         await Firebase.initializeApp(options: firebaseOptionsFromEnvironment());
       }
-      _messaging = FirebaseMessaging.instance;
+      final messaging = _messaging = FirebaseMessaging.instance;
+      // iOS: no system banner while the app is open (the app shows its own and reloads the open
+      // list); a sound still plays. The choice is kept by iOS, so it is set on every start.
+      if (Platform.isIOS) {
+        await messaging.setForegroundNotificationPresentationOptions(
+          sound: true,
+        );
+      }
       return true;
     } on Object {
       // No GoogleService-Info.plist / google-services.json in this build: push stays off.
@@ -127,7 +135,13 @@ final class FirebasePushMessaging implements PushMessaging {
   @override
   Stream<Map<String, String>> get received => _messaging == null
       ? const Stream.empty()
-      : FirebaseMessaging.onMessage.map(_data);
+      : FirebaseMessaging.onMessage.map(
+          (m) => {
+            if (m.notification?.title case final String t) 'title': t,
+            if (m.notification?.body case final String b) 'body': b,
+            ..._data(m),
+          },
+        );
 
   @override
   String get platform => Platform.isIOS ? 'ios' : 'android';

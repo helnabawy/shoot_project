@@ -1,6 +1,6 @@
 import 'server-only'
 import type { BriefItemV1, BriefsSummaryV1, CreatorBriefsV1 } from '@shoot/domain/api/v1'
-import { addDays, briefMatchesCreator, offerRange as offerRangeOf, dubaiToday, inboxSections, isBriefOpen, MAX_OFFER_CHANGES, offerStamp, placeForCreator, type InboxAnswer, type InboxBrief, type InboxEntry, type Point } from '@shoot/domain/booking'
+import { addDays, briefMatchesCreator, matchingEmirate, offerRange as offerRangeOf, dubaiToday, inboxSections, isBriefOpen, MAX_OFFER_CHANGES, offerStamp, placeForCreator, type InboxAnswer, type InboxBrief, type InboxEntry, type Point } from '@shoot/domain/booking'
 import type { CreatorSummary } from '@shoot/domain/creators'
 import type { Payload, Where } from 'payload'
 import { briefFacts, DURATION_SET, LOCATION_SET, myProfileIds, readQuickMatch, unavailableOn } from '@/modules/booking'
@@ -56,6 +56,19 @@ function occasionOf(brief: Brief, slots: readonly Slot[]): string {
     return (set.options ?? []).find((o) => o.value === selection.value)?.label ?? selection.label ?? selection.value
   }
   return ''
+}
+
+/** How long the shoot is: the duration option's label, or what the client typed (additive, shown under When). */
+function durationOf(brief: Brief, slots: readonly Slot[]): string | undefined {
+  for (const slot of slots) {
+    const set = slot.optionSet && typeof slot.optionSet === 'object' ? (slot.optionSet as OptionSet) : null
+    if (set?.slug !== DURATION_SET) continue
+    const selection = (brief.selections ?? []).find((s) => s.token === slot.token)
+    if (!selection?.value) return undefined
+    if (selection.custom) return selection.value
+    return (set.options ?? []).find((o) => o.value === selection.value)?.label ?? selection.label ?? selection.value
+  }
+  return undefined
 }
 
 /** The rejection reasons, from the content area, in order (FR-008). */
@@ -130,11 +143,13 @@ function itemsOf(read: Read): Item[] {
     const facts = briefFacts(brief, slots)
     const emirate = facts.location && !facts.location.custom ? (locations.find((l) => l.slug === facts.location?.value && !l.parentId) ?? null) : null
     const mine = bookings.filter((b) => idOf(b.brief) === String(brief.id))
+    const duration = durationOf(brief, slots)
     const inbox: InboxBrief = {
       id: String(brief.id),
       status: brief.status ?? 'new',
       personaIds: facts.personaIds,
-      emirateId: emirate?.id ?? null,
+      // 022 (FR-007, amended 2026-11-18): an offers brief reaches creators in every emirate.
+      emirateId: matchingEmirate(emirate?.id ?? null, (brief as { offers?: { mode?: string | null } | null }).offers?.mode),
       date: facts.date,
       createdAt: brief.createdAt,
       namedCreatorId: brief.creator ? idOf(brief.creator) : null,
@@ -171,6 +186,7 @@ function itemsOf(read: Read): Item[] {
             sentence: brief.sentence ?? '',
             emirate: emirate?.name ?? (facts.location?.custom ? facts.location.value : ''),
             date: facts.date,
+            ...(duration ? { duration } : {}),
             sentAt: brief.createdAt,
             answer: current?.decision ?? null,
             reason: current?.decision === 'rejected' ? (row?.reason ?? null) : null,
@@ -225,7 +241,15 @@ function offerFields(
     revisionsLeft: Math.max(0, MAX_OFFER_CHANGES - (r?.revisions ?? 0)),
     declined: r?.clientDecision === 'declined',
     ...(seen
-      ? { place: { area: seen.area, emirate: emirateName, mapUrl: seen.publicLat !== null && seen.publicLng !== null ? maps.staticMapUrl(seen.publicLat, seen.publicLng, locale) : null, distanceKm: seen.distanceKm } }
+      ? {
+          place: {
+            area: seen.area,
+            emirate: emirateName,
+            mapUrl: seen.publicLat !== null && seen.publicLng !== null ? maps.staticMapUrl(seen.publicLat, seen.publicLng, locale) : null,
+            distanceKm: seen.distanceKm,
+            point: seen.publicLat !== null && seen.publicLng !== null ? { lat: seen.publicLat, lng: seen.publicLng } : null,
+          },
+        }
       : {}),
   }
 }

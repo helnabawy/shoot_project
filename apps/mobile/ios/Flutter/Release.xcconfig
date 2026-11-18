@@ -3,3 +3,7 @@
 
 // App links (feature 008): the production website host in Runner.entitlements (associated domains).
 APP_LINK_HOST=shoot.ae
+
+// App push (feature 019): the APNs environment in Runner.entitlements; it must match the
+// provisioning profile (an App Store or Ad Hoc profile).
+APS_ENVIRONMENT=production

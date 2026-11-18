@@ -81,7 +81,6 @@ export async function OffersResults({
               count: page.sentTo,
               type: page.sections.map((s) => s.persona.singular.toLowerCase()).join(', '),
               types: page.sections.map((s) => s.persona.plural.toLowerCase()).join(', '),
-              emirate: (page.brief.selections ?? []).find((s) => s.token === 'location')?.label ?? '',
             })}
           </p>
         </div>

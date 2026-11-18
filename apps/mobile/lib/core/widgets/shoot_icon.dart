@@ -94,6 +94,9 @@ enum ShootIcons {
   /// A tick drawn as board 25 draws it (`M20 7 9 18l-5-5`).
   tick('<path d="M20 7 9 18l-5-5"/>'),
 
+  /// A clock face (how long a shoot is).
+  clock('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+
   /// 024: a bell (Notifications).
   bell(
     '<path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 8 2.5 8h-17S6 15 6 9"/>'

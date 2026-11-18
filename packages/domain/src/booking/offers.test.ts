@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  matchingEmirate,
   canChange,
   canWithdraw,
   feeOf,
@@ -137,5 +138,14 @@ describe('offerStamp', () => {
     expect(offerStamp(['b1', 'c1:80000:0', 'c2:95000:1'])).toBe(a)
     expect(offerStamp(['b1', 'c1:80000:0', 'c2:95000:2'])).not.toBe(a)
     expect(a).toMatch(/^[0-9a-z]+$/)
+  })
+})
+
+describe('OF-US2-S2 offers go to every emirate (amended 2026-11-18)', () => {
+  it('an offers brief matches creators in any emirate; a fixed-price brief keeps its emirate', () => {
+    expect(matchingEmirate('7', 'offers')).toBeNull()
+    expect(matchingEmirate('7', 'fixed')).toBe('7')
+    expect(matchingEmirate('7', null)).toBe('7')
+    expect(matchingEmirate(null, undefined)).toBeNull()
   })
 })

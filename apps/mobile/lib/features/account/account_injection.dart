@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shoot_mobile/core/push/push_service.dart';
 import 'package:shoot_mobile/features/account/data/datasources/account_remote_data_source.dart';
 import 'package:shoot_mobile/features/account/data/repositories/account_repository_impl.dart';
 import 'package:shoot_mobile/features/account/domain/repositories/account_repository.dart';
@@ -33,6 +34,9 @@ void registerAccountFeature(GetIt getIt) {
       () => BookingsCubit(
         getBookings: getIt<GetBookings>(),
         getBriefs: getIt<GetBriefs>(),
+        pushEvents: getIt.isRegistered<PushService>()
+            ? getIt<PushService>().events
+            : null,
       ),
     );
 }

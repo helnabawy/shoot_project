@@ -883,6 +883,9 @@
   "inboxOfferDistance": "حوالي {km} كم منك · الموقع الدقيق بعد الحجز",
   "inboxOfferSetBase": "حدّد نقطة انطلاقك لرؤية المسافة",
   "inboxFactPrice": "سعر العميل",
+  "inboxFactDuration": "المدة",
+  "inboxOpenMap": "افتح في الخرائط",
+  "inboxMapOf": "خريطة {area}",
   "qmOffersWaiting": "بانتظار العروض",
   "qmOffersCount": "{count, plural, =1{عرض واحد} =2{عرضان} few{{count} عروض} many{{count} عرضاً} other{{count} عرض}}",
   "qmDetailsFixedNote": "سعّر المبدعون هذا اليوم والمدة والمكان. لتغييرها أرسل طلبًا جديدًا.",
@@ -1015,5 +1018,6 @@
   "ntOfferDeclined": "رفض العميل عرضك",
   "ntOfferLost": "حجز العميل مبدعاً آخر",
   "ntOther": "تحديث جديد",
-  "ntEarlier": "سابقاً"
+  "ntEarlier": "سابقاً",
+  "pushBannerDismiss": "إغلاق"
 }

@@ -50,6 +50,11 @@ describe('OF-SC-008 no exact place in any creator read before booking', () => {
     const inbox = await creatorInbox(ctx, abu.id)
     const item = inbox?.open.find((i) => i.ref === ref)
     expect(item?.place?.area).toBe('Yas Island')
+    // The map and "Open in Maps" get the public point (the cell centre), never the pin.
+    expect(item?.place?.point).toEqual({ lat: expect.any(Number), lng: expect.any(Number) })
+    expect(item?.place?.point).not.toEqual({ lat: YAS.lat, lng: YAS.lng })
+    // How long, under When.
+    expect(item?.duration).toBeTruthy()
     expect(leaks(inbox)).toEqual([])
     expect(leaks(await briefsSummary(ctx, abu.id))).toEqual([])
 

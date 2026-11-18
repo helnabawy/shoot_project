@@ -1,5 +1,5 @@
 import 'server-only'
-import { briefMatchesCreator, renderTemplate } from '@shoot/domain/booking'
+import { briefMatchesCreator, matchingEmirate, renderTemplate } from '@shoot/domain/booking'
 import { formatMoney } from '@shoot/domain/pricing'
 import { formatBriefDate } from '@shoot/domain/brief/message'
 import type { Payload } from 'payload'
@@ -39,7 +39,9 @@ export async function announceBrief(payload: Payload, briefId: number): Promise<
     const facts = briefFacts(brief, landing.briefBuilder?.slots ?? [])
     const emirate = facts.location && !facts.location.custom ? (locations.find((l) => l.slug === facts.location?.value && !l.parentId)?.id ?? null) : null
     const blocks = facts.date ? ((await unavailableOn([facts.date])).get(facts.date) ?? new Set<string>()) : new Set<string>()
-    const input = { personaIds: facts.personaIds, emirateId: emirate, date: facts.date, namedCreatorId: brief.creator ? String(relId(brief.creator)) : null, filters: facts.filters }
+    // 022 (FR-007, amended 2026-11-18): an offers brief reaches creators in every emirate.
+    const mode = (brief as { offers?: { mode?: string | null } | null }).offers?.mode
+    const input = { personaIds: facts.personaIds, emirateId: matchingEmirate(emirate, mode), date: facts.date, namedCreatorId: brief.creator ? String(relId(brief.creator)) : null, filters: facts.filters }
     const matched = creators
       .map((c) => ({ creator: c, personas: briefMatchesCreator(c, input, blocks.has(c.id) && facts.date ? new Set([facts.date]) : new Set()) }))
       .filter((m) => m.personas.length)

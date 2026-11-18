@@ -45,17 +45,20 @@ describe('OF-US2 OF-US3 creators answer with a price', () => {
     expect(json).not.toMatch(/whatsapp|\+971|fee|Layla/i)
   })
 
-  it('OF-US2-S2 a creator in another emirate does not see it', async () => {
+  it('OF-US2-S2 a creator in another emirate gets it too and can offer; a creator of another type does not', async () => {
     const { ref } = await send()
-    const inbox = await creatorInbox({ payload: await getTestPayload(), locale: 'en', now: new Date() }, (world.creators.abu!.user as { id: number }).id)
-    expect(inbox?.open.map((i) => i.ref) ?? []).not.toContain(ref)
+    const inboxOf = async (key: string) => (await creatorInbox({ payload: await getTestPayload(), locale: 'en', now: new Date() }, (world.creators[key]!.user as { id: number }).id))?.open.map((i) => i.ref) ?? []
+    expect(await inboxOf('abu')).toContain(ref)
+    expect(await inboxOf('vera')).not.toContain(ref)
+    expect(isInbox(await answerBrief(await actor('abu'), ref, { persona: photo, decision: 'accept' }))).toBe(true)
   })
 
   it('OF-US2-S3 the announcement records how many creators it went to', async () => {
     const { ref } = await send()
     const { announceBrief } = await import('@/modules/inbox')
     await announceBrief(await getTestPayload(), (await briefByRef(ref)).id as number)
-    expect(((await briefByRef(ref)).offers as { sentTo?: number }).sentTo).toBe(2)
+    // sara and omar in Dubai and abu in Abu Dhabi: every emirate (OF-US2-S2).
+    expect(((await briefByRef(ref)).offers as { sentTo?: number }).sentTo).toBe(3)
   })
 
   it('OF-US3-S1 OF-US3-S8 accepting without an amount offers the client price', async () => {

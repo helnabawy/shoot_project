@@ -3610,6 +3610,23 @@
   "@inboxFactPrice": {
     "description": "022: fact label for the client's price."
   },
+  "inboxFactDuration": "Duration",
+  "@inboxFactDuration": {
+    "description": "Creator inbox brief card: label of the shoot length row, under When."
+  },
+  "inboxOpenMap": "Open in Maps",
+  "@inboxOpenMap": {
+    "description": "Creator inbox brief card: opens the brief's area in the phone's maps app (the area only, never the exact place)."
+  },
+  "inboxMapOf": "Map of {area}",
+  "@inboxMapOf": {
+    "description": "Screen-reader label of the small map of the brief's area.",
+    "placeholders": {
+      "area": {
+        "type": "String"
+      }
+    }
+  },
   "qmOffersWaiting": "Waiting for offers",
   "@qmOffersWaiting": {
     "description": "022: step 2 before any offer."
@@ -4315,5 +4332,9 @@
   "ntEarlier": "Earlier",
   "@ntEarlier": {
     "description": "Group label: notices already read."
+  },
+  "pushBannerDismiss": "Dismiss",
+  "@pushBannerDismiss": {
+    "description": "Closes the in-app banner of a notification that arrived while the app was open."
   }
 }

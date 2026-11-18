@@ -6,6 +6,14 @@ import type { Localized, PriceLine } from '../pricing/types'
  * the client pays the chosen offers plus a platform fee. Amounts are fils (AED × 100).
  */
 
+/**
+ * The emirate a brief matches creators by (FR-007, amended 2026-11-18): an offers brief goes to creators
+ * in every emirate, who see the area and their distance and price for it; a fixed-price brief keeps its emirate.
+ */
+export function matchingEmirate(emirateId: string | null, mode: string | null | undefined): string | null {
+  return mode === 'offers' ? null : emirateId
+}
+
 /** Offers mode needs Quick Match and the "Creators offer prices" switch (FR-001). */
 export function offersOn(settings: { quickMatchEnabled?: boolean | null; offersEnabled?: boolean | null }): boolean {
   return settings.quickMatchEnabled === true && settings.offersEnabled === true

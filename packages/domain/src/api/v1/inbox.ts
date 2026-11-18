@@ -21,6 +21,8 @@ export const briefItemV1 = z.object({
   emirate: z.string(),
   /** `null`: the date is to be agreed. */
   date: day.nullable(),
+  /** Additive: how long the shoot is, the duration option's label in the request language ("2 hours"). */
+  duration: z.string().optional(),
   sentAt: isoDate,
   answer: z.enum(['accepted', 'rejected']).nullable(),
   /** The rejection reason's value, when rejected with one. */
@@ -38,7 +40,14 @@ export const briefItemV1 = z.object({
   declined: z.boolean().optional(),
   /** 022 (additive): the place as a creator may see it before booking: never the pin or the address. */
   place: z
-    .object({ area: z.string(), emirate: z.string(), mapUrl: z.string().nullable(), distanceKm: z.int().nonnegative().nullable() })
+    .object({
+      area: z.string(),
+      emirate: z.string(),
+      mapUrl: z.string().nullable(),
+      distanceKm: z.int().nonnegative().nullable(),
+      /** Additive: the area's public point (the centre of its 0.02° cell, as the static map shows), to open in a maps app. Never the pin. */
+      point: z.object({ lat: z.number().min(-90).max(90), lng: z.number().min(-180).max(180) }).nullable().optional(),
+    })
     .optional(),
 })
 export type BriefItemV1 = z.infer<typeof briefItemV1>

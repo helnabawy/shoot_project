@@ -46,6 +46,9 @@ void registerCreatorAccountFeature(GetIt getIt) {
       () => BookingsCubit(
         repository: getIt<CreatorAccountRepository>(),
         clock: getIt<Clock>(),
+        pushEvents: getIt.isRegistered<PushService>()
+            ? getIt<PushService>().events
+            : null,
       ),
     )
     ..registerFactory(
