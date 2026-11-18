@@ -8,8 +8,13 @@ RouteBase menuRoute({
   required SiteLoader loadSite,
   required WebsiteLinks links,
   PushCubit Function()? createPush,
+  NoticesLoader? loadNotices,
 }) => GoRoute(
   path: '/menu',
-  builder: (context, state) =>
-      MenuPage(loadSite: loadSite, links: links, createPush: createPush),
+  builder: (context, state) => MenuPage(
+    loadSite: loadSite,
+    links: links,
+    createPush: createPush,
+    loadNotices: loadNotices,
+  ),
 );

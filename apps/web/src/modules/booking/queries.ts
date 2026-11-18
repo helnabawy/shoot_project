@@ -60,12 +60,6 @@ export async function getCreatorBookings(user: User): Promise<Booking[]> {
   return docs
 }
 
-export async function getMyNotifications(user: User) {
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({ collection: 'notifications', where: { readAt: { exists: false } }, sort: '-createdAt', limit: 20, depth: 0, overrideAccess: false, user })
-  return docs
-}
-
 /** The provider's profile and unavailable dates from `from` on. */
 export async function getMyAvailability(user: User, from: string) {
   const [profileId] = await myProfileIds(user.id)

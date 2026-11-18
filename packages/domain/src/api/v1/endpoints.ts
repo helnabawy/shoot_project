@@ -21,6 +21,7 @@ import {
   visibilityV1,
 } from './creator-account'
 import { creatorHomeV1 } from './creator-home'
+import { noticeIdParamV1, noticesV1 } from './notifications'
 import {
   bookingViewV1,
   checkoutV1,
@@ -412,6 +413,9 @@ export const endpoints = {
   creatorBookingAnswer: defineEndpoint({ ...mine, id: 'creatorBookingAnswer', method: 'POST', path: '/api/mobile/v1/me/creator/bookings/{ref}/answer', input: z.object({ params: creatorRefParamV1, body: answerV1 }), output: creatorBookingsV1, examples: ['creator-bookings-answered'], requestExamples: ['creator-answer'] }),
   creatorBookingDeliver: defineEndpoint({ ...mine, id: 'creatorBookingDeliver', method: 'POST', path: '/api/mobile/v1/me/creator/bookings/{ref}/deliver', input: z.object({ params: creatorRefParamV1 }), output: creatorBookingsV1, examples: ['creator-bookings-delivered'] }),
   creatorUpdateRead: defineEndpoint({ ...mine, id: 'creatorUpdateRead', method: 'POST', path: '/api/mobile/v1/me/creator/updates/{id}/read', input: z.object({ params: creatorIdParamV1 }), output: creatorBookingsV1, examples: ['creator-bookings-read'] }),
+  // 024: the member's own in-app notices (specs/024-notifications).
+  notices: defineEndpoint({ ...mineRead, id: 'notices', path: '/api/mobile/v1/me/notifications', output: noticesV1, examples: ['notices'] }),
+  noticeRead: defineEndpoint({ ...mine, id: 'noticeRead', method: 'POST', path: '/api/mobile/v1/me/notifications/{id}/read', input: z.object({ params: noticeIdParamV1 }), output: noticesV1, examples: ['notices-read'] }),
   // 019: the creator brief inbox and app push (specs/019-creator-brief-inbox/contracts/mobile-api.md).
   creatorBriefs: defineEndpoint({ ...mineRead, id: 'creatorBriefs', path: '/api/mobile/v1/me/creator/briefs', output: creatorBriefsV1, examples: ['creator-briefs', 'creator-briefs-offers'] }),
   answerCreatorBrief: defineEndpoint({ ...mine, id: 'answerCreatorBrief', method: 'POST', path: '/api/mobile/v1/me/creator/briefs/{ref}/answer', input: z.object({ params: briefRefParamV1, body: briefAnswerRequestV1 }), output: creatorBriefsV1, examples: ['creator-briefs-answered'], requestExamples: ['creator-brief-answer', 'creator-brief-reject'] }),

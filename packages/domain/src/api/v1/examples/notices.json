@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "id": "12",
+      "event": "brief-accepted",
+      "audience": "client",
+      "ref": "B-7K2QX",
+      "path": "/match/B-7K2QX/k3y",
+      "createdAt": "2026-11-18T09:30:00.000Z",
+      "read": false
+    },
+    {
+      "id": "7",
+      "event": "accepted",
+      "audience": "creator",
+      "ref": "B-2026-0142",
+      "path": "/account/bookings",
+      "createdAt": "2026-11-12T07:00:00.000Z",
+      "read": false
+    },
+    {
+      "id": "5",
+      "event": "paid",
+      "audience": "creator",
+      "ref": "B-2026-0120",
+      "path": null,
+      "createdAt": "2026-11-10T12:00:00.000Z",
+      "read": true
+    }
+  ],
+  "unread": 2
+}

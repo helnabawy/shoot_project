@@ -41,6 +41,9 @@ abstract final class AppRoutes {
   /// 019: the creator brief inbox.
   static const accountInbox = '/account/inbox';
 
+  /// 024: the member's notices, opened from the menu's settings.
+  static const accountNotifications = '/account/notifications';
+
   /// 021: sign-in for a brief ends here; the kept brief is sent and the landing shows.
   static const briefSend = '/brief/send';
 
@@ -121,6 +124,13 @@ abstract final class AppRoutes {
       example: '/account/finish',
       auth: true,
       built: true,
+    ),
+    AppRoute(
+      accountNotifications,
+      owner: '024',
+      example: '/account/notifications',
+      built: true,
+      auth: true,
     ),
     AppRoute(
       accountInbox,

@@ -31,6 +31,7 @@ import {
 import { issueQuotation } from './commands/issue-quotation'
 import { blockDateFor, releaseDates } from './effects'
 import { getBriefByKey } from './match'
+import { readNotice } from './notices'
 import { notify } from './notify'
 import { detailsPath, matchPath, quotePath } from './paths'
 import { getQuotationAccess, myProfileIds } from './queries'
@@ -262,14 +263,15 @@ export async function toggleBlockedDate(form: FormData): Promise<void> {
   revalidatePath(path)
 }
 
-/** Marks one in-app notice as read. */
-export async function markNotificationRead(form: FormData): Promise<void> {
+/** 024: marks one of the member's notices read and opens what it is about, else back to Notifications. */
+export async function openNotification(form: FormData): Promise<void> {
   const locale = localeOf(form)
   const user = await getCurrentUser()
-  if (!user) back(localizeHref('/login', locale))
+  if (!user) back(`${localizeHref('/login', locale)}?next=/account/notifications`)
   const payload = await getPayloadClient()
-  await payload.update({ collection: 'notifications', id: Number(str(form, 'id')), data: { readAt: new Date().toISOString() }, user, overrideAccess: false }).catch(() => null)
-  back(ACCOUNT_BOOKINGS(locale))
+  const done = await readNotice(payload, user, str(form, 'id'), new Date())
+  const path = 'path' in done ? done.path : null
+  back(localizeHref(path ?? '/account/notifications', locale))
 }
 
 /** 022 (US4-S5): the client declines one offer on step 2; back to the offers list with the choices kept. */

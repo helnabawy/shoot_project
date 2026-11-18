@@ -8,7 +8,6 @@ import 'package:shoot_mobile/core/routing/app_routes.dart';
 import 'package:shoot_mobile/core/theme/app_theme.dart';
 import 'package:shoot_mobile/core/theme/shoot_type.dart';
 import 'package:shoot_mobile/core/widgets/empty_state.dart';
-import 'package:shoot_mobile/core/widgets/icon_tile.dart';
 import 'package:shoot_mobile/core/widgets/secondary_button.dart';
 import 'package:shoot_mobile/core/widgets/shoot_field.dart';
 import 'package:shoot_mobile/core/widgets/shoot_icon.dart';
@@ -22,7 +21,7 @@ import 'package:shoot_mobile/features/creator_account/presentation/cubit/booking
 import 'package:shoot_mobile/features/creator_account/presentation/widgets/creator_parts.dart';
 
 /// Screen 32 at `/account/bookings` (and `/account/bookings/:ref` for one booking, opened from a
-/// notice or a push), built to board `S07d-creator-bookings`. Each request leads with the day and
+/// notice or a push; notices themselves are listed on Notifications, feature 024), built to board `S07d-creator-bookings`. Each request leads with the day and
 /// the client's own words; the request with the nearest deadline carries the one primary action.
 class BookingsPage extends StatelessWidget {
   const BookingsPage({super.key, required this.create, this.ref});
@@ -53,11 +52,6 @@ class BookingsPage extends StatelessWidget {
               if (reason != null) await cubit.decline(ref, reason: reason);
             },
             onDeliver: cubit.markDelivered,
-            onOpenUpdate: (update) {
-              unawaited(cubit.markRead(update.id));
-              final target = updateTarget(update);
-              if (target != null) unawaited(context.push(target));
-            },
             onAllBookings: () => context.canPop()
                 ? context.pop()
                 : context.go(AppRoutes.accountBookings),
@@ -67,15 +61,6 @@ class BookingsPage extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Where a notice leads: its booking, or the brief inbox for a brief; `null` when it has neither.
-String? updateTarget(BookingUpdate update) {
-  if (update.ref case final ref? when ref.isNotEmpty) {
-    return '${AppRoutes.accountBookings}/${Uri.encodeComponent(ref)}';
-  }
-  if (update.event.startsWith('brief')) return AppRoutes.accountInbox;
-  return null;
 }
 
 /// The decline sheet: an optional reason. `null` when closed without sending.
@@ -148,7 +133,6 @@ class BookingsView extends StatelessWidget {
     required this.onConfirm,
     required this.onDecline,
     required this.onDeliver,
-    required this.onOpenUpdate,
     required this.onCalendar,
     this.onAllBookings,
     this.only,
@@ -160,9 +144,6 @@ class BookingsView extends StatelessWidget {
   final ValueChanged<String> onConfirm;
   final ValueChanged<String> onDecline;
   final ValueChanged<String> onDeliver;
-
-  /// A notice was tapped: mark it read and open what it is about.
-  final ValueChanged<BookingUpdate> onOpenUpdate;
   final VoidCallback onCalendar;
 
   /// From one opened booking back to the whole list.
@@ -194,7 +175,6 @@ class _Loaded extends StatelessWidget {
     final lapsed = state.lapsed.where(_shown).toList();
     final upcoming = state.bookings.upcoming.where(_shown).toList();
     final done = state.bookings.done.where(_shown).toList();
-    final unread = one ? const <BookingUpdate>[] : state.unread;
     final nothing =
         waiting.isEmpty && lapsed.isEmpty && upcoming.isEmpty && done.isEmpty;
     return CreatorShell(
@@ -202,7 +182,7 @@ class _Loaded extends StatelessWidget {
         children: [
           CreatorTitle(one ? l10n.caBookingTitle(view.only!) : l10n.caBookings),
           if (state.failure != null) FailureLine(state.failure!),
-          if (nothing && unread.isEmpty)
+          if (nothing)
             EmptyState(
               mark: ShootIcon(
                 ShootIcons.calendar,
@@ -222,26 +202,6 @@ class _Loaded extends StatelessWidget {
                 onConfirm: () => view.onConfirm(r.ref),
                 onDecline: () => view.onDecline(r.ref),
               ),
-          ],
-          if (unread.isNotEmpty) ...[
-            GroupText(l10n.caUpdates),
-            ShootPanel(
-              padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
-              child: Column(
-                children: [
-                  for (final (i, u) in unread.indexed)
-                    ShootRow(
-                      leading: IconTile(_noticeIcon(u)),
-                      label: _noticeText(context, u),
-                      trailing: MetaText(formatTime(context, u.createdAt)),
-                      chevron: updateTarget(u) != null,
-                      divider: i == 0 ? RowDivider.none : RowDivider.top,
-                      minHeight: 56,
-                      onTap: () => view.onOpenUpdate(u),
-                    ),
-                ],
-              ),
-            ),
           ],
           for (final r in lapsed)
             MetaText('${formatDay(context, r.date)} · ${l10n.caLapsedLine}'),
@@ -271,33 +231,6 @@ class _Loaded extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  ShootIcons _noticeIcon(BookingUpdate u) => switch (u.event) {
-    'brief-new' || 'brief-accepted' => ShootIcons.search,
-    'paid' || 'completed' => ShootIcons.check,
-    'cancelled' => ShootIcons.close,
-    _ => ShootIcons.calendar,
-  };
-
-  String _noticeText(BuildContext context, BookingUpdate u) {
-    final l10n = context.l10n;
-    final ref = u.ref ?? '';
-    final request = [
-      ...state.bookings.waiting,
-      ...state.bookings.upcoming,
-      ...state.bookings.done,
-    ].where((r) => r.ref == u.ref).firstOrNull;
-    return switch (u.event) {
-      'accepted' || 'reassigned' when request != null => l10n.caNoticeRequest(
-        formatDay(context, request.date),
-      ),
-      'paid' => l10n.caNoticePaid(ref),
-      'cancelled' => l10n.caNoticeCancelled(ref),
-      'completed' => l10n.caNoticeCompleted(ref),
-      'brief-new' => l10n.caNoticeBrief,
-      _ => l10n.caUpdateOther(ref),
-    };
   }
 }
 

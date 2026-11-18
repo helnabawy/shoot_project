@@ -129,8 +129,6 @@ void main() {
       });
       await repo.deliver('B-1');
       expect(adapter.lastRequest!.path, endsWith('/bookings/B-1/deliver'));
-      await repo.markUpdateRead('7');
-      expect(adapter.lastRequest!.path, endsWith('/updates/7/read'));
       await repo.bookings();
       expect(adapter.lastRequest!.method, 'GET');
     },

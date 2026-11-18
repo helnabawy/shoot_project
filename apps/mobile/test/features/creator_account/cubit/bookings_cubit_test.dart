@@ -141,23 +141,6 @@ void main() {
     expect(at(c).deliverable, isEmpty);
   });
 
-  test(
-    'MW-US2-S7 marking an update read removes it from the new ones',
-    () async {
-      final readAll = CreatorBookings(
-        updates: const [],
-        waiting: bookingsExample().waiting,
-        upcoming: const [],
-        done: const [],
-      );
-      when(() => repo.markUpdateRead('7')).thenAnswer((_) async => Ok(readAll));
-      final c = await loaded(bookingsExample());
-      expect(at(c).unread, hasLength(1));
-      await c.markRead('7');
-      expect(at(c).unread, isEmpty);
-    },
-  );
-
   test('a failed first read is a failure state', () async {
     when(() => repo.bookings())
         .thenAnswer((_) async => const Err(NetworkFailure()));

@@ -1,0 +1,14 @@
+{
+  "items": [
+    {
+      "id": "12",
+      "event": "brief-accepted",
+      "audience": "client",
+      "ref": "B-7K2QX",
+      "path": "/match/B-7K2QX/k3y",
+      "createdAt": "2026-11-18T09:30:00.000Z",
+      "read": true
+    }
+  ],
+  "unread": 0
+}

@@ -94,6 +94,12 @@ enum ShootIcons {
   /// A tick drawn as board 25 draws it (`M20 7 9 18l-5-5`).
   tick('<path d="M20 7 9 18l-5-5"/>'),
 
+  /// 024: a bell (Notifications).
+  bell(
+    '<path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 8 2.5 8h-17S6 15 6 9"/>'
+    '<path d="M10.3 20.5a2 2 0 0 0 3.4 0"/>',
+  ),
+
   /// Leaving through a door (the menu's Log out); the arrow points to the inline end.
   logOut(
     '<path d="M10 4H5v16h5"/><path d="m15 8 4 4-4 4M19 12H9"/>',

@@ -28,9 +28,13 @@ import 'package:shoot_mobile/core/widgets/shoot_icon_button.dart';
 import 'package:shoot_mobile/core/widgets/shoot_row.dart';
 import 'package:shoot_mobile/core/widgets/shoot_scaffold.dart';
 import 'package:shoot_mobile/core/widgets/wordmark.dart';
+import 'package:shoot_mobile/features/notifications/domain/entities/notice.dart';
 import 'package:shoot_mobile/features/site/domain/entities/site_info.dart';
 
 typedef SiteLoader = Future<Result<SiteInfo>> Function();
+
+/// 024: the member's notices, for the unread count on the Notifications row.
+typedef NoticesLoader = Future<Result<Notices>> Function();
 
 /// Screen 06, built to board `S01m-menu`: the one place for the rest of the app. The groups follow
 /// FR-040, with You above Browse; there is no "Start a brief" here (the owner removed it). Opened with `push`, so closing it (or the
@@ -43,6 +47,7 @@ class MenuPage extends StatefulWidget {
     required this.links,
     this.open = openInBrowser,
     this.createPush,
+    this.loadNotices,
   });
 
   /// Site settings, for the WhatsApp number and default message.
@@ -54,6 +59,9 @@ class MenuPage extends StatefulWidget {
 
   /// 019: the push switch, shown to a signed-in member when given.
   final PushCubit Function()? createPush;
+
+  /// 024: the Notifications row, shown to a signed-in member when given.
+  final NoticesLoader? loadNotices;
 
   @override
   State<MenuPage> createState() => _MenuPageState();
@@ -266,6 +274,11 @@ class _MenuPageState extends State<MenuPage> {
                                       .select,
                                 ),
                               ),
+                              if (session is SignedIn &&
+                                  widget.loadNotices != null) ...[
+                                const SizedBox(height: 8),
+                                _NoticesSetting(load: widget.loadNotices!),
+                              ],
                               if (session is SignedIn &&
                                   widget.createPush != null) ...[
                                 const SizedBox(height: 8),
@@ -500,6 +513,81 @@ class _PushSetting extends StatelessWidget {
                     ? null
                     : (on) => context.read<PushCubit>().set(enabled: on),
               ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 024: "Notifications" with the unread count; opens `/account/notifications`.
+class _NoticesSetting extends StatefulWidget {
+  const _NoticesSetting({required this.load});
+
+  final NoticesLoader load;
+
+  @override
+  State<_NoticesSetting> createState() => _NoticesSettingState();
+}
+
+class _NoticesSettingState extends State<_NoticesSetting> {
+  int? _unread;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_refresh());
+  }
+
+  Future<void> _refresh() async {
+    final result = await widget.load();
+    if (!mounted) return;
+    if (result case Ok(:final value)) setState(() => _unread = value.unread);
+  }
+
+  Future<void> _open() async {
+    await context.push(AppRoutes.accountNotifications);
+    // Back from the screen: what was read there is no longer counted.
+    await _refresh();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final c = context.colors;
+    final unread = _unread ?? 0;
+    return _Setting(
+      label: l10n.ntTitle,
+      child: Semantics(
+        button: true,
+        label: unread > 0
+            ? '${l10n.ntTitle}, ${l10n.ntNewCount(unread)}'
+            : l10n.ntTitle,
+        excludeSemantics: true,
+        child: InkWell(
+          key: const Key('menu-notifications'),
+          onTap: () => unawaited(_open()),
+          borderRadius: BorderRadius.circular(ShootRadius.row),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 44),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (unread > 0)
+                  Flexible(
+                    child: Text(
+                      l10n.ntNewCount(unread),
+                      overflow: TextOverflow.ellipsis,
+                      style: ShootType.meta.copyWith(
+                        color: c.ink,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                const SizedBox(width: ShootSpace.s2),
+                ShootIcon(ShootIcons.chevron, size: 18, color: c.mute),
+              ],
             ),
           ),
         ),

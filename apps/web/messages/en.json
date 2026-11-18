@@ -229,7 +229,8 @@
       "updates": "{count, plural, one {# new update} other {# new updates}}",
       "open": "{count, plural, one {# open} other {# open}}",
       "none": "None yet",
-      "daysOff": "{count, plural, =0 {Free every day} one {# day off} other {# days off}}"
+      "daysOff": "{count, plural, =0 {Free every day} one {# day off} other {# days off}}",
+      "allRead": "All read"
     },
     "next": {
       "label": "Up next",
@@ -258,7 +259,8 @@
       "briefsAndOffers": "Briefs and offers"
     },
     "offersCount": "{count, plural, one {# offer} other {# offers}}",
-    "saidYes": "{count, plural, one {A creator said yes} other {# creators said yes}}"
+    "saidYes": "{count, plural, one {A creator said yes} other {# creators said yes}}",
+    "notificationsLink": "Notifications"
   },
   "home": {
     "howItWorks": "How it works",
@@ -1044,5 +1046,12 @@
     "menuBook": "Book a shoot",
     "menuHome": "Creator home",
     "stepsDone": "{done} of {total} steps done"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "metaTitle": "Notifications",
+    "empty": "Nothing yet. News about your bookings and briefs shows here.",
+    "new": "New",
+    "open": "Open"
   }
 }

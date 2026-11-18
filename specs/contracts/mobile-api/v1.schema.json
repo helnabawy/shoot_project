@@ -19129,6 +19129,194 @@
       },
       "path": "/api/mobile/v1/navigation"
     },
+    "noticeRead": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "params": {
+            "properties": {
+              "id": {
+                "pattern": "^\\d+$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "type": "object"
+      },
+      "method": "POST",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "audience": {
+                  "enum": [
+                    "client",
+                    "creator"
+                  ],
+                  "type": "string"
+                },
+                "createdAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "event": {
+                  "type": "string"
+                },
+                "id": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "format": "starts_with",
+                      "pattern": "^\\/.*",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "read": {
+                  "type": "boolean"
+                },
+                "ref": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "event",
+                "audience",
+                "ref",
+                "path",
+                "createdAt",
+                "read"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "unread": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "unread"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/notifications/{id}/read"
+    },
+    "notices": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {},
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "audience": {
+                  "enum": [
+                    "client",
+                    "creator"
+                  ],
+                  "type": "string"
+                },
+                "createdAt": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                  "type": "string"
+                },
+                "event": {
+                  "type": "string"
+                },
+                "id": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "path": {
+                  "anyOf": [
+                    {
+                      "format": "starts_with",
+                      "pattern": "^\\/.*",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "read": {
+                  "type": "boolean"
+                },
+                "ref": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "event",
+                "audience",
+                "ref",
+                "path",
+                "createdAt",
+                "read"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "unread": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "unread"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/notifications"
+    },
     "offerDecline": {
       "auth": "optional",
       "cache": "no-store",

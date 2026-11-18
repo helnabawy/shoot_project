@@ -674,7 +674,7 @@ class _StepList extends StatelessWidget {
           if (slot.kind == SlotKind.date)
             _OptionRow(
               key: const ValueKey('briefBar:pickDate'),
-              label: draft.date ?? slot.placeholder,
+              label: draft.date ?? l10n.mlBriefPickADate,
               icon: ShootIcons.calendar,
               on: draft.date != null,
               onTap: onPickDate,

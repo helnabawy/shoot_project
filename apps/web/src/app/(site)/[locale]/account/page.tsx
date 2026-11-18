@@ -21,9 +21,9 @@ import {
   getCreatorBookings,
   getMyAvailability,
   getMyBookings,
-  getMyNotifications,
   myProfileIds,
 } from '@/modules/booking/queries'
+import { myNoticeRows } from '@/modules/booking/notices'
 import { creatorBookingViews, formatDay } from '@/modules/booking/views'
 import { getLocations } from '@/modules/creators'
 import { getMyProfile } from '@/modules/creators/my-profile'
@@ -34,7 +34,7 @@ import { getAllPersonas } from '@/modules/personas/queries'
 import { localizeHref } from '@/shared/i18n/href'
 import type { Locale } from '@/shared/lib/locale'
 import { getPayloadClient } from '@/shared/lib/payload'
-import { CalendarIcon, DocumentIcon, UserIcon } from '@/shared/ui/icons'
+import { BellIcon, CalendarIcon, DocumentIcon, UserIcon } from '@/shared/ui/icons'
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -76,7 +76,7 @@ export default async function AccountPage({ params }: Props) {
     getMyBookings(user),
     getCreatorBookings(user),
     myProfileIds(user.id),
-    getMyNotifications(user),
+    myNoticeRows(await getPayloadClient(), user),
     getLocations(locale),
     provider ? getMyProfile(user) : Promise.resolve(null),
     provider ? getMyAvailability(user, today) : Promise.resolve(null),
@@ -126,7 +126,7 @@ export default async function AccountPage({ params }: Props) {
   const offers = provider ? null : await offersNextUp(briefs, yes, locale)
   const next = pickNextUp({ today, provider, profileStatus, jobs, bookings, briefs: openBriefs, offers })
   const waiting = jobs.filter((j) => j.awaitingAnswer).length
-  const bookingStatus = placeStatus({ today, waiting, unread: notices.length, jobs, bookings })
+  const bookingStatus = placeStatus({ today, waiting, unread: 0, jobs, bookings })
   const daysOff = availability ? availability.blocks.filter((b) => b.kind === 'blocked').length : 0
 
   return (
@@ -154,6 +154,17 @@ export default async function AccountPage({ params }: Props) {
                 </span>
               }
               testId="account-bookings-link"
+            />
+            <PlaceRow
+              href={localizeHref('/account/notifications', locale)}
+              glyph={<BellIcon width={15} height={15} />}
+              label={t('notificationsLink')}
+              status={
+                <span className={notices.unread ? 'font-medium text-ink' : undefined}>
+                  {notices.unread ? t('place.updates', { count: notices.unread }) : t('place.allRead')}
+                </span>
+              }
+              testId="account-notifications-link"
             />
             {provider ? (
               <>

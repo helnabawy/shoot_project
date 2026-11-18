@@ -65,11 +65,6 @@ final class BookingsLoaded extends BookingsState {
       if (r.canDeliver) r,
   ];
 
-  List<BookingUpdate> get unread => [
-    for (final u in bookings.updates)
-      if (!u.read) u,
-  ];
-
   static int _byDeadline(BookingRequest a, BookingRequest b) {
     final x = a.respondBy;
     final y = b.respondBy;
@@ -94,7 +89,7 @@ final class BookingsLoaded extends BookingsState {
   List<Object?> get props => [bookings, now, busyRef, failure];
 }
 
-/// Bookings (screen 32): answer requests, mark delivered, mark updates read.
+/// Bookings (screen 32): answer requests and mark delivered (notices moved to Notifications, 024).
 class BookingsCubit extends Cubit<BookingsState> {
   BookingsCubit({required this._repository, required this._clock})
     : super(const BookingsLoading());
@@ -136,7 +131,4 @@ class BookingsCubit extends Cubit<BookingsState> {
 
   Future<void> markDelivered(String ref) =>
       _run(ref, () => _repository.deliver(ref));
-
-  Future<void> markRead(String updateId) =>
-      _run(updateId, () => _repository.markUpdateRead(updateId));
 }

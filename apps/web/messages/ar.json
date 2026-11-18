@@ -229,7 +229,8 @@
       "updates": "{count, plural, one {تحديث جديد} two {تحديثان جديدان} few {# تحديثات جديدة} other {# تحديثاً جديداً}}",
       "open": "{count, plural, one {حجز مفتوح} two {حجزان مفتوحان} few {# حجوزات مفتوحة} other {# حجزاً مفتوحاً}}",
       "none": "لا شيء بعد",
-      "daysOff": "{count, plural, =0 {متاح كل يوم} one {يوم إجازة واحد} two {يوما إجازة} few {# أيام إجازة} other {# يوم إجازة}}"
+      "daysOff": "{count, plural, =0 {متاح كل يوم} one {يوم إجازة واحد} two {يوما إجازة} few {# أيام إجازة} other {# يوم إجازة}}",
+      "allRead": "كلها مقروءة"
     },
     "next": {
       "label": "التالي",
@@ -258,7 +259,8 @@
       "briefsAndOffers": "الطلبات والعروض"
     },
     "offersCount": "{count, plural, zero {لا عروض} one {عرض واحد} two {عرضان} few {# عروض} many {# عرضًا} other {# عرض}}",
-    "saidYes": "{count, plural, one {وافق محترف واحد} two {وافق محترفان} few {وافق # محترفين} other {وافق # محترفًا}}"
+    "saidYes": "{count, plural, one {وافق محترف واحد} two {وافق محترفان} few {وافق # محترفين} other {وافق # محترفًا}}",
+    "notificationsLink": "الإشعارات"
   },
   "home": {
     "howItWorks": "كيف نعمل",
@@ -1044,5 +1046,12 @@
     "menuBook": "احجز تصويراً",
     "menuHome": "الصفحة الرئيسية للمبدع",
     "stepsDone": "{done} من {total} خطوات مكتملة"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "metaTitle": "الإشعارات",
+    "empty": "لا شيء بعد. أخبار حجوزاتك وطلباتك تظهر هنا.",
+    "new": "جديد",
+    "open": "فتح"
   }
 }

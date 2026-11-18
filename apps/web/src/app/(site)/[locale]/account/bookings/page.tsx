@@ -4,9 +4,8 @@ import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { requireUser } from '@/modules/auth/session'
 import { CreatorBookingRow } from '@/modules/booking/components/CreatorBookingRow'
-import { NotificationList } from '@/modules/booking/components/NotificationList'
 import { memberBookingPath } from '@/modules/booking/paths'
-import { getCreatorBookings, getMyBookings, getMyNotifications, myProfileIds } from '@/modules/booking/queries'
+import { getCreatorBookings, getMyBookings, myProfileIds } from '@/modules/booking/queries'
 import { creatorBookingViews, formatDay } from '@/modules/booking/views'
 import { getLocations } from '@/modules/creators'
 import { localizeHref } from '@/shared/i18n/href'
@@ -31,13 +30,12 @@ export default async function BookingsPage({ params, searchParams }: Props) {
   setRequestLocale(raw)
   const locale = raw as Locale
   const user = await requireUser(locale, '/account/bookings')
-  const [t, all, mine, assigned, profileIds, notices, locations] = await Promise.all([
+  const [t, all, mine, assigned, profileIds, locations] = await Promise.all([
     getTranslations({ locale, namespace: 'booking' }),
     getTranslations({ locale }),
     getMyBookings(user),
     getCreatorBookings(user),
     myProfileIds(user.id),
-    getMyNotifications(user),
     getLocations(locale),
   ])
   const placeName = (slug: string) => locations.find((l) => l.slug === slug)?.name ?? slug
@@ -53,7 +51,7 @@ export default async function BookingsPage({ params, searchParams }: Props) {
         </p>
       ) : null}
       <BriefBar as="div" data-floating-hide>
-        <NotificationList items={notices.map((n) => ({ id: n.id, text: n.text }))} locale={locale} />
+        {/* 024: notices moved to /account/notifications. */}
         {profileIds.length ? (
           <ResultGroup label={t('assigned')}>
             {creatorRows.length ? creatorRows.map((row, i) => <CreatorBookingRow key={`${row.bookingId}-${row.personaId}`} view={row} locale={locale} primary={i === creatorRows.findIndex((r) => r.awaitingAnswer || r.state === 'scheduled')} />) : (

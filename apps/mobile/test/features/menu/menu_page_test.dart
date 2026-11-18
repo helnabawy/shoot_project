@@ -14,6 +14,7 @@ import 'package:shoot_mobile/core/theme/theme_mode_cubit.dart';
 import 'package:shoot_mobile/core/web/website_links.dart';
 import 'package:shoot_mobile/core/widgets/segmented_control.dart';
 import 'package:shoot_mobile/features/menu/presentation/menu_page.dart';
+import 'package:shoot_mobile/features/notifications/domain/entities/notice.dart';
 
 import '../../core/push/fakes.dart';
 import '../../helpers/auth_fixtures.dart';
@@ -33,6 +34,7 @@ Future<(RecordingOpener, RecordingOpener, InMemoryPreferencesStore)> pumpMenu(
   bool whatsappInstalled = true,
   SessionCubit? session,
   PushCubit Function()? createPush,
+  NoticesLoader? loadNotices,
 }) async {
   final site = FakeSiteRepository();
   final web = RecordingOpener();
@@ -55,6 +57,7 @@ Future<(RecordingOpener, RecordingOpener, InMemoryPreferencesStore)> pumpMenu(
       '/register',
       '/account',
       '/account/bookings',
+      '/account/notifications',
     ],
     routes: [
       GoRoute(
@@ -67,6 +70,7 @@ Future<(RecordingOpener, RecordingOpener, InMemoryPreferencesStore)> pumpMenu(
             return whatsappInstalled || uri.scheme == 'https';
           },
           createPush: createPush,
+          loadNotices: loadNotices,
         ),
       ),
     ],
@@ -203,7 +207,7 @@ void main() {
     await pumpMenu(tester, session: session, createPush: () => PushCubit(push));
     final toggle = find.byKey(const Key('menu-push-switch'));
     await tester.ensureVisible(toggle);
-    expect(find.text('Notifications'), findsOneWidget);
+    expect(find.text('Alerts'), findsOneWidget);
     await tester.tap(toggle);
     await tester.pumpAndSettle();
     verify(() => push.setEnabled(enabled: false)).called(1);
@@ -257,13 +261,63 @@ void main() {
         // As tall as the accent row, with the switch centred in it.
         expect(row.height, accent.height);
         expect(sw.center.dy, closeTo(row.center.dy, 0.5));
-        final label = tester.getRect(
-          find.text(rtl ? 'الإشعارات' : 'Notifications'),
-        );
+        final label = tester.getRect(find.text(rtl ? 'التنبيهات' : 'Alerts'));
         expect(label.center.dy, closeTo(row.center.dy, 0.5));
       },
     );
   }
+
+  group('NT-US2-S1 the Notifications row in the settings', () {
+    SessionCubit signedIn() {
+      final session = SessionCubit(
+        store: MemorySessionStore(),
+        api: MockAuthApi(),
+        clock: examplesClock,
+        restored: exampleSession(exp: DateTime.utc(2030)),
+        storeRead: true,
+      );
+      addTearDown(session.close);
+      return session;
+    }
+
+    var unread = 2;
+    Future<Result<Notices>> load() async =>
+        Ok(Notices(items: const [], unread: unread));
+
+    for (final locale in const [Locale('en'), Locale('ar')]) {
+      testWidgets(
+        'shows the unread count and opens Notifications (${locale.languageCode})',
+        (tester) async {
+          unread = 2;
+          await pumpMenu(
+            tester,
+            locale: locale,
+            session: signedIn(),
+            loadNotices: load,
+          );
+          final row = find.byKey(const Key('menu-notifications'));
+          await tester.ensureVisible(row);
+          final ar = locale.languageCode == 'ar';
+          expect(find.text(ar ? 'الإشعارات' : 'Notifications'), findsOneWidget);
+          expect(find.text(ar ? 'اثنان جديدان' : '2 new'), findsOneWidget);
+          // Back from the screen, the count is read again.
+          unread = 0;
+          await tester.tap(row);
+          await tester.pumpAndSettle();
+          expect(find.text('stub:/account/notifications'), findsOneWidget);
+          GoRouter.of(tester.element(find.text('stub:/account/notifications')))
+              .pop();
+          await tester.pumpAndSettle();
+          expect(find.text(ar ? 'اثنان جديدان' : '2 new'), findsNothing);
+        },
+      );
+    }
+
+    testWidgets('is not shown when signed out', (tester) async {
+      await pumpMenu(tester, loadNotices: load);
+      expect(find.byKey(const Key('menu-notifications')), findsNothing);
+    });
+  });
 
   testWidgets('BI-US6-S3 the switch is not shown when signed out', (
     tester,

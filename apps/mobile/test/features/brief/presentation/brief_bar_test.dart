@@ -126,6 +126,14 @@ void main() {
     expect(cubit.state.active, 'date');
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.byKey(const ValueKey('briefBar:skip')), findsOneWidget);
+    // The picker row and the skip row read differently (web brief.pickADate).
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('briefBar:pickDate')),
+        matching: find.text('pick a date'),
+      ),
+      findsOneWidget,
+    );
     await tester.tap(find.byKey(const ValueKey('briefBar:skip')));
     await tester.pump();
     expect(cubit.state.active, isNull);

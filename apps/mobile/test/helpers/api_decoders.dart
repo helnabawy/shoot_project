@@ -11,6 +11,7 @@ import 'package:shoot_mobile/features/creator_home/data/models/creator_home_mode
 import 'package:shoot_mobile/features/creators/data/models/creator_models.dart';
 import 'package:shoot_mobile/features/landing/data/models/landing_model.dart';
 import 'package:shoot_mobile/features/links/data/models/resolution_model.dart';
+import 'package:shoot_mobile/features/notifications/data/models/notices_model.dart';
 import 'package:shoot_mobile/features/quick_match/data/models/quick_match_models.dart';
 import 'package:shoot_mobile/features/sign_in/data/models/otp_models.dart';
 import 'package:shoot_mobile/features/site/data/models/audience_model.dart';
@@ -96,6 +97,8 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'creator-account': (json) => CreatorAccountModel.fromJson(json).toEntity(),
   // 023: the creator home.
   'creator-home': (json) => CreatorHomeModel.fromJson(json).toEntity(),
+  'notices': (json) => NoticesModel.fromJson(json).toEntity(),
+  'notices-read': (json) => NoticesModel.fromJson(json).toEntity(),
   'creator-home-clear': (json) => CreatorHomeModel.fromJson(json).toEntity(),
   'creator-home-not-live': (json) => CreatorHomeModel.fromJson(json).toEntity(),
   // 019: the creator brief inbox and app push.

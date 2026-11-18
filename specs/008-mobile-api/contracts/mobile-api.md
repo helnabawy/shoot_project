@@ -79,6 +79,8 @@ Cache:
 | `creatorBookingAnswer` | `POST /me/creator/bookings/{ref}/answer` | req | no-store | — | `creatorBookingsV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
 | `creatorBookingDeliver` | `POST /me/creator/bookings/{ref}/deliver` | req | no-store | — | `creatorBookingsV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
 | `creatorUpdateRead` | `POST /me/creator/updates/{id}/read` | req | no-store | — | `creatorBookingsV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
+| `notices` | `GET /me/notifications` | req | no-store | — | `noticesV1` | `booking` notices (024) | — |
+| `noticeRead` | `POST /me/notifications/{id}/read` | req | no-store | — | `noticesV1` | `booking` notices (024) | not your notice (404) |
 | `creatorBriefs` | `GET /me/creator/briefs` | req | no-store | — | `creatorBriefsV1` | `inbox` queries (019) | not a creator (403) |
 | `creatorBriefsStamp` | `GET /me/creator/briefs/stamp` | req | no-store | — | `stampV1` | `inbox` `inboxStamp` (022) | not a creator (403) |
 | `creatorHome` | `GET /me/creator/home` | req | no-store | — | `creatorHomeV1` | `creator-home` queries (023) | not a creator (403) |

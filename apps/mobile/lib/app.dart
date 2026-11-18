@@ -43,6 +43,9 @@ import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/landing/presentation/landing_cubit.dart';
 import 'package:shoot_mobile/features/landing/presentation/landing_page.dart';
 import 'package:shoot_mobile/features/menu/menu_routes.dart';
+import 'package:shoot_mobile/features/notifications/domain/repositories/notifications_repository.dart';
+import 'package:shoot_mobile/features/notifications/presentation/cubit/notifications_cubit.dart';
+import 'package:shoot_mobile/features/notifications/presentation/notifications_routes.dart';
 import 'package:shoot_mobile/features/quick_match/domain/repositories/quick_match_repository.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/booking_view_cubit.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/quick_match_routes.dart';
@@ -74,6 +77,8 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         links: getIt<WebsiteLinks>(),
       ),
       ...creatorsRoutesFrom(getIt, myCode: _myCreatorCode),
+      // Feature 024: before the account routes, so `/account/notifications` is matched first.
+      notificationsRoute(create: getIt.call<NotificationsCubit>),
       ...accountRoutes(
         createAccount: getIt.call<AccountCubit>,
         createBookings: getIt.call<BookingsCubit>,
@@ -115,6 +120,7 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
         loadSite: getIt<SiteRepository>().getSite,
         links: getIt<WebsiteLinks>(),
         createPush: getIt.call<PushCubit>,
+        loadNotices: getIt<NotificationsRepository>().notices,
       ),
       // Feature 015's `/{slug}` page route stays last so it never shadows another route.
       editorPageRoute(getIt<ContentDeps>()),

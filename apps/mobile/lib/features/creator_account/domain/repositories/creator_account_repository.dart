@@ -66,6 +66,4 @@ abstract interface class CreatorAccountRepository {
   });
 
   Future<Result<CreatorBookings>> deliver(String ref);
-
-  Future<Result<CreatorBookings>> markUpdateRead(String id);
 }

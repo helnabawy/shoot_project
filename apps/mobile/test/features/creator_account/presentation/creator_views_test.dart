@@ -153,7 +153,6 @@ void main() {
           onConfirm: (r) => log?.add('confirm $r'),
           onDecline: (r) => log?.add('decline $r'),
           onDeliver: (r) => log?.add('deliver $r'),
-          onOpenUpdate: (u) => log?.add('open ${u.id}'),
           onAllBookings: () => log?.add('all'),
           onCalendar: () {},
         ),
@@ -184,32 +183,16 @@ void main() {
       expect(find.textContaining(RegExp(r'\+?971|05\d{8}')), findsNothing);
     });
 
-    testWidgets('MW-US2-S7 tapping an update opens it (and marks it read)', (
-      tester,
-    ) async {
-      final log = <String>[];
-      await show(tester, loaded(), log: log);
-      expect(find.text('Mark as read'), findsNothing);
-      await tester.ensureVisible(find.textContaining('New request for'));
-      await tester.tap(find.textContaining('New request for'));
-      expect(log, ['open 7']);
-    });
-
-    test('MW-US2-S7 an update leads to its booking, a brief to the inbox', () {
-      BookingUpdate update(String event, String? ref) => BookingUpdate(
-        id: '1',
-        event: event,
-        ref: ref,
-        createdAt: DateTime(2026, 11, 14),
-        read: false,
-      );
-      expect(
-        updateTarget(update('accepted', 'Q-AAKMJ')),
-        '/account/bookings/Q-AAKMJ',
-      );
-      expect(updateTarget(update('brief-new', null)), '/account/inbox');
-      expect(updateTarget(update('other', null)), isNull);
-    });
+    testWidgets(
+      'NT-US3-S1 Bookings lists no notices: they are on Notifications (024)',
+      (tester) async {
+        await show(tester, loaded());
+        // The example carries an unread "accepted" notice for B-2026-0142.
+        expect(find.text('UPDATES'), findsNothing);
+        expect(find.textContaining('New request for'), findsNothing);
+        expect(find.text('Mark as read'), findsNothing);
+      },
+    );
 
     testWidgets(
       'MW-US2-S9 one opened booking shows its reference as the title and a way back to all',

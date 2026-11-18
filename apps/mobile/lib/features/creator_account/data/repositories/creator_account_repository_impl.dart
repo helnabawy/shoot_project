@@ -90,8 +90,4 @@ final class CreatorAccountRepositoryImpl implements CreatorAccountRepository {
   @override
   Future<Result<CreatorBookings>> deliver(String ref) =>
       apiResult(() async => (await _remote.deliver(ref)).toEntity());
-
-  @override
-  Future<Result<CreatorBookings>> markUpdateRead(String id) =>
-      apiResult(() async => (await _remote.markUpdateRead(id)).toEntity());
 }

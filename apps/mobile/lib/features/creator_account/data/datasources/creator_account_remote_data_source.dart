@@ -47,8 +47,6 @@ abstract interface class CreatorAccountRemoteDataSource {
   });
 
   Future<CreatorBookingsModel> deliver(String ref);
-
-  Future<CreatorBookingsModel> markUpdateRead(String id);
 }
 
 final class CreatorAccountRemoteDataSourceImpl
@@ -173,14 +171,6 @@ final class CreatorAccountRemoteDataSourceImpl
     apiPost(
       _dio,
       '$_base/bookings/${Uri.encodeComponent(ref)}/deliver',
-    ).then((a) => a.body ?? const {}),
-  );
-
-  @override
-  Future<CreatorBookingsModel> markUpdateRead(String id) => _bookings(
-    apiPost(
-      _dio,
-      '$_base/updates/${Uri.encodeComponent(id)}/read',
     ).then((a) => a.body ?? const {}),
   );
 }

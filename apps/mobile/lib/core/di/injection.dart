@@ -31,6 +31,7 @@ import 'package:shoot_mobile/features/creator_home/creator_home_injection.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/landing/landing_injection.dart';
 import 'package:shoot_mobile/features/links/links_injection.dart';
+import 'package:shoot_mobile/features/notifications/notifications_injection.dart';
 import 'package:shoot_mobile/features/quick_match/quick_match_injection.dart';
 import 'package:shoot_mobile/features/service_health/service_health_injection.dart';
 import 'package:shoot_mobile/features/sign_in/sign_in_injection.dart';
@@ -81,6 +82,7 @@ void configureDependencies(
   registerAccountFeature(getIt);
   registerCreatorAccountFeature(getIt);
   registerCreatorHomeFeature(getIt);
+  registerNotificationsFeature(getIt);
   registerQuickMatchFeature(getIt);
   registerBriefFeature(getIt);
   registerWelcomeFeature(getIt);

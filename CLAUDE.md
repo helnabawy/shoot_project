@@ -112,6 +112,13 @@ Rules in `packages/domain/src/booking/{offers,place}.ts`, modules `apps/web/src/
 app `apps/mobile/lib/core/network/stamp_poller.dart` and the brief, inbox and step 2 screens; maps through `MAPS_PROVIDER`
 (`osm` | `google` | `off`; `osm` is OpenStreetMap with no key, optional `OSM_NOMINATIM_URL`/`OSM_PHOTON_URL`; `google` needs `GOOGLE_MAPS_SERVER_KEY`). Open in its `tasks.md`: the draggable map and app place step, goldens,
 e2e, device walkthrough, the owner's Google Maps keys and fee confirmation.
+Feature 024 (`specs/024-notifications/`, test-id prefix `NT-`) is implemented: every signed-in member's in-app
+notices (client and creator, read and unread, latest 20) on a Notifications screen, moved from the creator's
+Bookings "Updates" group: app `features/notifications/` at `/account/notifications`, opened from the menu's
+settings row (unread count; the push switch is now labelled "Alerts"); website `/account/notifications` with a row
+on `/account`; API `GET me/notifications`, `POST me/notifications/{id}/read` (`modules/booking/notices.ts`,
+`api-notices.ts`); the v1 `updates` field and `creatorUpdateRead` stay for older apps. Open in its `tasks.md`: the
+device walkthrough and a design board.
 `specs/ROADMAP.md` has the screens per feature:
 
 | # | Feature (test-id prefix) | What |

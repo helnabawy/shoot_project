@@ -3210,6 +3210,10 @@
   "@mlBriefTakeBack": {
     "description": "Brief bar: removes the last answer."
   },
+  "mlBriefPickADate": "pick a date",
+  "@mlBriefPickADate": {
+    "description": "The date step's row that opens the date picker (web brief.pickADate)."
+  },
   "mlBriefAnyDate": "Any date",
   "@mlBriefAnyDate": {
     "description": "Brief bar: skips the optional date step."
@@ -3364,9 +3368,9 @@
   "@inboxOutcomeClosed": {
     "description": "An accepted brief that closed."
   },
-  "pushSetting": "Notifications",
+  "pushSetting": "Alerts",
   "@pushSetting": {
-    "description": "Menu switch for app notifications."
+    "description": "Menu switch for app push alerts on this device (the Notifications row is ntTitle)."
   },
   "pushAskTitle": "Hear about new work?",
   "@pushAskTitle": {
@@ -4145,5 +4149,162 @@
         "type": "int"
       }
     }
+  },
+  "ntTitle": "Notifications",
+  "@ntTitle": {
+    "description": "Notifications screen title and the menu row that opens it."
+  },
+  "ntNewCount": "{count, plural, one{{count} new} other{{count} new}}",
+  "@ntNewCount": {
+    "description": "Menu row status: unread notices.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ntEmptyTitle": "Nothing yet",
+  "@ntEmptyTitle": {
+    "description": "Notifications empty state title."
+  },
+  "ntEmptyBody": "News about your bookings and briefs shows here.",
+  "@ntEmptyBody": {
+    "description": "Notifications empty state body."
+  },
+  "ntNew": "New",
+  "@ntNew": {
+    "description": "Marks an unread notice."
+  },
+  "ntUnreadLabel": "{text}, new",
+  "@ntUnreadLabel": {
+    "description": "Screen-reader name of an unread notice.",
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "ntQuoted": "Your quotation {ref} is ready",
+  "@ntQuoted": {
+    "description": "Notice: a quotation was issued.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "ntAcceptedClient": "You accepted {ref}",
+  "@ntAcceptedClient": {
+    "description": "Notice to the client: they accepted a quotation.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "ntRequest": "New booking request {ref}",
+  "@ntRequest": {
+    "description": "Notice to a creator: a client picked them.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "ntConfirmed": "{ref} is confirmed",
+  "@ntConfirmed": {
+    "description": "Notice: the booking is confirmed.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "ntDeclined": "{ref} was declined",
+  "@ntDeclined": {
+    "description": "Notice: a creator declined the booking.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "ntLapsed": "{ref} got no answer in time",
+  "@ntLapsed": {
+    "description": "Notice: the creator did not answer in time.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "ntAdjusted": "{ref} was changed",
+  "@ntAdjusted": {
+    "description": "Notice: the booking was changed.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "ntScheduled": "{ref} is scheduled",
+  "@ntScheduled": {
+    "description": "Notice: the shoot is scheduled.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "ntDelivered": "{ref} is delivered",
+  "@ntDelivered": {
+    "description": "Notice: the work was delivered.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "ntOnHold": "{ref} is on hold",
+  "@ntOnHold": {
+    "description": "Notice: the booking is on hold.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "ntExpired": "{ref} expired",
+  "@ntExpired": {
+    "description": "Notice: the quotation expired.",
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "ntBriefAccepted": "A creator said yes to your brief",
+  "@ntBriefAccepted": {
+    "description": "Notice to the client: a creator accepted their brief."
+  },
+  "ntOfferNew": "A new offer on your brief",
+  "@ntOfferNew": {
+    "description": "Notice to the client: a creator offered a price."
+  },
+  "ntOfferDeclined": "The client declined your offer",
+  "@ntOfferDeclined": {
+    "description": "Notice to a creator: their offer was declined."
+  },
+  "ntOfferLost": "The client booked another creator",
+  "@ntOfferLost": {
+    "description": "Notice to a creator: the brief went to someone else."
+  },
+  "ntOther": "A new update",
+  "@ntOther": {
+    "description": "Notice of an event this app version does not know, with no reference."
+  },
+  "ntEarlier": "Earlier",
+  "@ntEarlier": {
+    "description": "Group label: notices already read."
   }
 }

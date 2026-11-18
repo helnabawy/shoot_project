@@ -158,7 +158,8 @@ describe('QM pages (FR-008, FR-011)', () => {
     expect(find(tree, QuotationView)).toBeTruthy()
     expect((await memberQuotePage.generateMetadata({ params: Promise.resolve({ locale: 'en', ref: q.ref }) } as never)).robots).toMatchObject({ index: false })
     const list = await bookingsPage.default({ params: Promise.resolve({ locale: 'en' }), searchParams: Promise.resolve({ error: 'booking.errors.not-allowed' }) })
-    expect(find(list, NotificationList)).toBeTruthy()
+    // NT-US3-S1 (024): notices moved to /account/notifications; Bookings lists none.
+    expect(find(list, NotificationList)).toBeFalsy()
     const other = await createUser(['member'])
     jar.clear()
     await signIn(payload as never, other.email!)
