@@ -1,0 +1,48 @@
+{
+  "name": "Omar K.",
+  "code": "SH-0087",
+  "professions": [
+    "Photographer"
+  ],
+  "photo": {
+    "alt": "",
+    "width": 480,
+    "height": 480,
+    "sizes": [
+      {
+        "url": "https://shoot.example/media/omar-480.jpg",
+        "width": 480,
+        "height": 480
+      }
+    ]
+  },
+  "mode": "live",
+  "needs": [],
+  "counts": {
+    "toAnswer": 0,
+    "comingUp": 2,
+    "completed": 4
+  },
+  "queue": [],
+  "next": {
+    "ref": "Q-2026-0131",
+    "quotation": "Q-2026-0131",
+    "occasion": "Product shoot",
+    "emirate": "Sharjah",
+    "date": "2026-11-19",
+    "time": "10:00",
+    "length": "2 hours",
+    "paid": true
+  },
+  "today": "free",
+  "reasons": [
+    {
+      "value": "too-far",
+      "label": "Too far"
+    },
+    {
+      "value": "not-my-style",
+      "label": "Not my kind of work"
+    }
+  ]
+}

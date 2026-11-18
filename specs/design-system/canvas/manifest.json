@@ -135,8 +135,7 @@
       ],
       "boxes": {
         "header": ".hd",
-        "wordmark": ".wm",
-        "topHit": ".top"
+        "wordmark": ".wm"
       },
       "sha256": "8d4ba263000005141b53c0f1449bf5a3df60373b6f744b7be33d1eab891d6bd5"
     },
@@ -1358,6 +1357,94 @@
         "topHit": ".top"
       },
       "sha256": "5095bb1007a18586b1083368638df04645bf95d83da0ff0914aa48e7b5577478"
+    },
+    {
+      "id": "64",
+      "title": "Creator home · one request at a time",
+      "board": "S14-creator-home.dc.html",
+      "w": 360,
+      "h": 1120,
+      "target": "mobile",
+      "feature": "023-creator-home",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top",
+        "stats": ".stats",
+        "card": ".panel"
+      },
+      "sha256": "7fb6c35e99d9b121f8416d9a96348cfec54e8b9a2add2d426eff0c49004fd5a9"
+    },
+    {
+      "id": "65",
+      "title": "Creator home · nothing to answer",
+      "board": "S14b-creator-home-clear.dc.html",
+      "w": 360,
+      "h": 780,
+      "target": "mobile",
+      "feature": "023-creator-home",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "stats": ".stats",
+        "card": ".panel"
+      },
+      "sha256": "78f611fd022ca8e32681cb42f15d4b41d67be7fa53ad59a6ff590935ae3a36db"
+    },
+    {
+      "id": "66",
+      "title": "Creator home · Arabic dark",
+      "board": "S14-creator-home-ar.dc.html",
+      "w": 360,
+      "h": 1120,
+      "target": "mobile",
+      "feature": null,
+      "variants": [
+        "ar-dark"
+      ],
+      "variantOf": "64",
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top",
+        "stats": ".stats",
+        "card": ".panel"
+      },
+      "sha256": "ec328b77c06ddf63c28938775309dc74e80c52192158d814644d707ca533b2b0"
+    },
+    {
+      "id": "67",
+      "title": "Creator home · not live yet",
+      "board": "S14c-creator-home-not-live.dc.html",
+      "w": 360,
+      "h": 900,
+      "target": "mobile",
+      "feature": "023-creator-home",
+      "variants": [
+        "en-light",
+        "en-dark",
+        "ar-light",
+        "ar-dark"
+      ],
+      "boxes": {
+        "header": ".hd",
+        "wordmark": ".wm",
+        "topHit": ".top",
+        "card": ".panel"
+      },
+      "sha256": "accee0b7c1d3f2ae3200f26a3e79f337e5942d81dba70e3368c7e6c3e46abd62"
     }
   ]
 }

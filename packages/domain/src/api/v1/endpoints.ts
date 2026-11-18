@@ -20,6 +20,7 @@ import {
   uploadV1,
   visibilityV1,
 } from './creator-account'
+import { creatorHomeV1 } from './creator-home'
 import {
   bookingViewV1,
   checkoutV1,
@@ -395,6 +396,8 @@ export const endpoints = {
   }),
   // 014: the creator's own account (specs/014-creator-account/contracts/mobile-api.md).
   creatorAccount: defineEndpoint({ ...mineRead, id: 'creatorAccount', path: '/api/mobile/v1/me/creator/account', output: creatorAccountV1, examples: ['creator-account', 'creator-account-briefs'] }),
+  // 023: the creator home (specs/023-creator-home/contracts/mobile-api.md).
+  creatorHome: defineEndpoint({ ...mineRead, id: 'creatorHome', path: '/api/mobile/v1/me/creator/home', output: creatorHomeV1, examples: ['creator-home', 'creator-home-clear', 'creator-home-not-live'] }),
   myCreatorProfile: defineEndpoint({ ...mineRead, id: 'myCreatorProfile', path: '/api/mobile/v1/me/creator/profile', output: myProfileV1, examples: ['creator-profile-draft', 'creator-profile-ready', 'creator-profile-review'] }),
   creatorProfileSave: defineEndpoint({ ...mine, id: 'creatorProfileSave', method: 'PATCH', path: '/api/mobile/v1/me/creator/profile', input: z.object({ body: profilePatchV1 }), output: myProfileV1, examples: ['creator-profile-saved'], requestExamples: ['creator-profile-patch'] }),
   creatorProfileSubmit: defineEndpoint({ ...mine, id: 'creatorProfileSubmit', method: 'POST', path: '/api/mobile/v1/me/creator/profile/submit', input: noInput, output: myProfileV1, examples: ['creator-profile-submitted'] }),

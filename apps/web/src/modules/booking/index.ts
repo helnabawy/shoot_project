@@ -22,6 +22,8 @@ export { acceptedFor } from './match'
 export { getQuotationAccess, type QuotationAccess } from './queries'
 export { quotePath } from './paths'
 export { notify } from './notify'
+// 023: the creator home answers a booking request with the same command as the creator's bookings page.
+export { answerRequest, creatorAvailability, homeRequests, type HomeRequest } from './commands/creator'
 // 022: creator offers.
 export { briefFromAnswers, matchStamp, type MatchOffer } from './match'
 export { offerFieldsFromForm, offerTerms, placeOfPin, saveOfferTerms, suggestedPrices } from './offers'

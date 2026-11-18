@@ -1,0 +1,38 @@
+{
+  "name": "Omar K.",
+  "code": "SH-0087",
+  "professions": [
+    "Photographer"
+  ],
+  "photo": null,
+  "mode": "incomplete",
+  "needs": [
+    {
+      "step": "samples",
+      "required": [
+        "samples"
+      ],
+      "recommended": []
+    },
+    {
+      "step": "places",
+      "required": [
+        "cities"
+      ],
+      "recommended": []
+    }
+  ],
+  "queue": [],
+  "next": null,
+  "today": "free",
+  "reasons": [
+    {
+      "value": "too-far",
+      "label": "Too far"
+    },
+    {
+      "value": "not-my-style",
+      "label": "Not my kind of work"
+    }
+  ]
+}

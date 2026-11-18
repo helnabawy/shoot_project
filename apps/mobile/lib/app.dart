@@ -37,6 +37,8 @@ import 'package:shoot_mobile/features/creator_account/presentation/cubit/booking
     as creator_bookings;
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/inbox_cubit.dart';
 import 'package:shoot_mobile/features/creator_account/presentation/cubit/profile_cubit.dart';
+import 'package:shoot_mobile/features/creator_home/presentation/creator_home_routes.dart';
+import 'package:shoot_mobile/features/creator_home/presentation/cubit/creator_home_cubit.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/landing/presentation/landing_cubit.dart';
 import 'package:shoot_mobile/features/landing/presentation/landing_page.dart';
@@ -117,6 +119,14 @@ class _ShootAppState extends State<ShootApp> with WidgetsBindingObserver {
       // Feature 015's `/{slug}` page route stays last so it never shadows another route.
       editorPageRoute(getIt<ContentDeps>()),
     ],
+    // Feature 023: a signed-in creator's `/` is their home (`/?view=client` is the landing).
+    creatorHome: widget.home != null
+        ? null
+        : creatorHomePage(
+            session: getIt<SessionCubit>(),
+            create: getIt.call<CreatorHomeCubit>,
+            clock: getIt<Clock>(),
+          ),
     home:
         widget.home ??
         (_) => LandingPage(

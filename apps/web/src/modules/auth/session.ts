@@ -25,6 +25,8 @@ export async function requireUser(locale: Locale, next: string): Promise<User> {
 export interface SessionSummary {
   name: string
   avatarUrl: string | null
+  /** 023: the header shows creators their own links. */
+  accountType: 'provider' | 'seeker'
 }
 
 export async function getSessionSummary(): Promise<SessionSummary | null> {
@@ -42,5 +44,5 @@ export async function getSessionSummary(): Promise<SessionSummary | null> {
   const photo = docs[0]?.photo
   const avatarUrl =
     photo && typeof photo === 'object' ? (photo.sizes?.thumbnail?.url ?? photo.url ?? null) : null
-  return { name: user.name ?? '', avatarUrl }
+  return { name: user.name ?? '', avatarUrl, accountType: user.accountType === 'provider' ? 'provider' : 'seeker' }
 }

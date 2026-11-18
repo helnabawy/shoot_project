@@ -3860,5 +3860,308 @@
   "problemOffersPickFromOffers": "Choose another offer from the offers list.",
   "@problemOffersPickFromOffers": {
     "description": "022: offers.errors.pickFromOffers."
+  },
+  "chLive": "Live",
+  "@chLive": {
+    "description": "Profile status on the creator home."
+  },
+  "chIncomplete": "Not live yet",
+  "@chIncomplete": {
+    "description": "Profile status on the creator home."
+  },
+  "chReview": "In review",
+  "@chReview": {
+    "description": "Profile status on the creator home."
+  },
+  "chHidden": "Hidden",
+  "@chHidden": {
+    "description": "Profile status on the creator home: paused by the creator or the team."
+  },
+  "chToAnswer": "To answer",
+  "@chToAnswer": {
+    "description": "Creator home count label."
+  },
+  "chComingUp": "Coming up",
+  "@chComingUp": {
+    "description": "Creator home count label."
+  },
+  "chCompleted": "Completed",
+  "@chCompleted": {
+    "description": "Creator home count label."
+  },
+  "chAnswerTitle": "Needs your answer",
+  "@chAnswerTitle": {
+    "description": "Creator home group label above the request card."
+  },
+  "chPosition": "{position} of {total}",
+  "@chPosition": {
+    "description": "Position of the card in the queue.",
+    "placeholders": {
+      "position": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "chKindBooking": "Booking request",
+  "@chKindBooking": {
+    "description": "The card's kind."
+  },
+  "chKindBrief": "New brief",
+  "@chKindBrief": {
+    "description": "The card's kind."
+  },
+  "chTitleLine": "{occasion} in {emirate}",
+  "@chTitleLine": {
+    "description": "The card's title.",
+    "placeholders": {
+      "occasion": {
+        "type": "String"
+      },
+      "emirate": {
+        "type": "String"
+      }
+    }
+  },
+  "chTitleNoOccasion": "{profession} in {emirate}",
+  "@chTitleNoOccasion": {
+    "description": "The card's title when the brief has no occasion.",
+    "placeholders": {
+      "profession": {
+        "type": "String"
+      },
+      "emirate": {
+        "type": "String"
+      }
+    }
+  },
+  "chLabelDate": "Date",
+  "@chLabelDate": {
+    "description": "Card line label."
+  },
+  "chLabelLength": "Length",
+  "@chLabelLength": {
+    "description": "Card line label."
+  },
+  "chLabelClient": "Client",
+  "@chLabelClient": {
+    "description": "Card line label."
+  },
+  "chLabelNeeds": "Needs",
+  "@chLabelNeeds": {
+    "description": "Card line label: the professional type needed."
+  },
+  "chLabelSent": "Sent",
+  "@chLabelSent": {
+    "description": "Card line label."
+  },
+  "chLabelReference": "Reference",
+  "@chLabelReference": {
+    "description": "Card line label."
+  },
+  "chLabelPrice": "Client's price",
+  "@chLabelPrice": {
+    "description": "Card line label."
+  },
+  "chDateToAgree": "To agree",
+  "@chDateToAgree": {
+    "description": "A date that is still to be agreed."
+  },
+  "chAccept": "Accept",
+  "@chAccept": {
+    "description": "The card's one primary action."
+  },
+  "chDecline": "Decline",
+  "@chDecline": {
+    "description": "The card's second action."
+  },
+  "chNoteBooking": "Accepting adds the date to your calendar.",
+  "@chNoteBooking": {
+    "description": "Under the card's buttons, for a booking request."
+  },
+  "chNoteBrief": "Accepting shows you first when the client chooses. Nothing is booked until they do.",
+  "@chNoteBrief": {
+    "description": "Under the card's buttons, for a brief."
+  },
+  "chNoteBriefPrice": "Accepting offers the client's price. Nothing is booked until they choose.",
+  "@chNoteBriefPrice": {
+    "description": "Under the card's buttons, for a brief with a price."
+  },
+  "chPriceInInbox": "Offer another price in your inbox",
+  "@chPriceInInbox": {
+    "description": "Link under a brief that carries the client's price."
+  },
+  "chDeclineHeading": "Decline this request",
+  "@chDeclineHeading": {
+    "description": "Heading of the Decline sheet."
+  },
+  "chReasonLabel": "Why (optional)",
+  "@chReasonLabel": {
+    "description": "The brief's reasons."
+  },
+  "chNoteLabel": "A note for our team (optional)",
+  "@chNoteLabel": {
+    "description": "The brief's note."
+  },
+  "chBookingReasonLabel": "Reason (optional)",
+  "@chBookingReasonLabel": {
+    "description": "The booking's reason."
+  },
+  "chConfirmDecline": "Decline",
+  "@chConfirmDecline": {
+    "description": "Submit of the Decline sheet."
+  },
+  "chNextInLine": "Next in line",
+  "@chNextInLine": {
+    "description": "Label of the following requests."
+  },
+  "chNext": "Next",
+  "@chNext": {
+    "description": "Marks a request that is not the card yet."
+  },
+  "chSeeAll": "See all",
+  "@chSeeAll": {
+    "description": "Row after the following requests when more wait."
+  },
+  "chUpToDate": "You are up to date",
+  "@chUpToDate": {
+    "description": "Empty queue."
+  },
+  "chUpToDateHint": "New requests show here as they arrive.",
+  "@chUpToDateHint": {
+    "description": "Empty queue."
+  },
+  "chNextShoot": "Next shoot",
+  "@chNextShoot": {
+    "description": "Group label."
+  },
+  "chPaid": "Paid",
+  "@chPaid": {
+    "description": "Badge on the next shoot."
+  },
+  "chManage": "Manage",
+  "@chManage": {
+    "description": "Group label."
+  },
+  "chBookings": "Bookings",
+  "@chBookings": {
+    "description": "Manage row."
+  },
+  "chAvailability": "Availability",
+  "@chAvailability": {
+    "description": "Manage row."
+  },
+  "chFreeToday": "Free today",
+  "@chFreeToday": {
+    "description": "Availability row hint."
+  },
+  "chBusyToday": "Busy today",
+  "@chBusyToday": {
+    "description": "Availability row hint."
+  },
+  "chBookedToday": "Booked today",
+  "@chBookedToday": {
+    "description": "Availability row hint."
+  },
+  "chMyProfile": "My profile",
+  "@chMyProfile": {
+    "description": "Manage row."
+  },
+  "chDoThisFirst": "Do this first",
+  "@chDoThisFirst": {
+    "description": "Group label of the missing steps."
+  },
+  "chNotLiveTitle": "Clients can't find you yet",
+  "@chNotLiveTitle": {
+    "description": "Not-live panel title."
+  },
+  "chNotLiveBody": "Finish these steps and our team reviews your profile. Once it is approved, new briefs and booking requests show here.",
+  "@chNotLiveBody": {
+    "description": "Not-live panel body."
+  },
+  "chMissing": "Missing",
+  "@chMissing": {
+    "description": "Tag on a step with something required missing."
+  },
+  "chFinishProfile": "Finish my profile",
+  "@chFinishProfile": {
+    "description": "The not-live panel's one primary action."
+  },
+  "chReviewTitle": "Our team is reviewing your profile",
+  "@chReviewTitle": {
+    "description": "In-review panel title."
+  },
+  "chReviewBody": "We will tell you when it is live. New briefs and booking requests show here after that.",
+  "@chReviewBody": {
+    "description": "In-review panel body."
+  },
+  "chHiddenTitle": "Your profile is hidden",
+  "@chHiddenTitle": {
+    "description": "Hidden panel title."
+  },
+  "chHiddenBody": "Clients can't find or book you while it is hidden. Open your profile to see why.",
+  "@chHiddenBody": {
+    "description": "Hidden panel body."
+  },
+  "chOpenProfile": "Open my profile",
+  "@chOpenProfile": {
+    "description": "Link in the hidden panel."
+  },
+  "chYourProfile": "Your profile",
+  "@chYourProfile": {
+    "description": "Group label of the in-review and hidden panels."
+  },
+  "chNoticeClosed": "That request is no longer open.",
+  "@chNoticeClosed": {
+    "description": "Shown when an answer finds the request gone."
+  },
+  "chNoticeNotSent": "Your answer was not sent. Try again.",
+  "@chNoticeNotSent": {
+    "description": "Shown when an answer could not be sent."
+  },
+  "chMenuBook": "Book a shoot",
+  "@chMenuBook": {
+    "description": "Menu row for creators: the client landing."
+  },
+  "chStepsDone": "{done} of {total} steps done",
+  "@chStepsDone": {
+    "description": "Count of profile steps done, on the not-live panel.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "chSentMinutes": "{count, plural, one{1 minute ago} other{{count} minutes ago}}",
+  "@chSentMinutes": {
+    "description": "Relative time a brief was sent.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chSentHours": "{count, plural, one{1 hour ago} other{{count} hours ago}}",
+  "@chSentHours": {
+    "description": "Relative time a brief was sent.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chSentDays": "{count, plural, one{1 day ago} other{{count} days ago}}",
+  "@chSentDays": {
+    "description": "Relative time a brief was sent.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

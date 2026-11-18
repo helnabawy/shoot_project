@@ -1,0 +1,82 @@
+{
+  "name": "Omar K.",
+  "code": "SH-0087",
+  "professions": [
+    "Photographer"
+  ],
+  "photo": {
+    "alt": "",
+    "width": 480,
+    "height": 480,
+    "sizes": [
+      {
+        "url": "https://shoot.example/media/omar-480.jpg",
+        "width": 480,
+        "height": 480
+      }
+    ]
+  },
+  "mode": "live",
+  "needs": [],
+  "counts": {
+    "toAnswer": 3,
+    "comingUp": 1,
+    "completed": 4
+  },
+  "queue": [
+    {
+      "kind": "booking",
+      "ref": "Q-2026-0142",
+      "occasion": "Wedding",
+      "emirate": "Dubai",
+      "profession": "Photographer",
+      "date": "2026-11-28",
+      "time": "16:00",
+      "length": "4 hours",
+      "client": "Sara M.",
+      "respondBy": "2026-11-18T14:00:00.000Z"
+    },
+    {
+      "kind": "brief",
+      "ref": "B-7K2QX",
+      "persona": "1",
+      "occasion": "Birthday party",
+      "emirate": "Dubai",
+      "profession": "Photographer",
+      "date": "2026-11-20",
+      "sentAt": "2026-11-17T08:00:00.000Z",
+      "budgetFils": 90000
+    },
+    {
+      "kind": "brief",
+      "ref": "B-9QX4M",
+      "persona": "1",
+      "occasion": "Product launch",
+      "emirate": "Abu Dhabi",
+      "profession": "Photographer",
+      "date": null,
+      "sentAt": "2026-11-16T10:30:00.000Z"
+    }
+  ],
+  "next": {
+    "ref": "Q-2026-0131",
+    "quotation": "Q-2026-0131",
+    "occasion": "Product shoot",
+    "emirate": "Sharjah",
+    "date": "2026-11-19",
+    "time": "10:00",
+    "length": "2 hours",
+    "paid": true
+  },
+  "today": "free",
+  "reasons": [
+    {
+      "value": "too-far",
+      "label": "Too far"
+    },
+    {
+      "value": "not-my-style",
+      "label": "Not my kind of work"
+    }
+  ]
+}

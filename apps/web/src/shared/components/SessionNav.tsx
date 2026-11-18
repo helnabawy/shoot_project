@@ -9,6 +9,8 @@ import { RowContent } from '@/shared/ui/bar'
 export interface SessionUser {
   name: string
   avatarUrl: string | null
+  /** 023: lets the header show creators their own links; absent from an older answer. */
+  accountType?: 'provider' | 'seeker'
 }
 
 // One request per page, shared by every island in the header (desktop and phone menu). It is
@@ -87,6 +89,17 @@ export function MemberLink({ href, label, className, row }: { href: string; labe
   if (!user) return null
   return (
     <Link href={href} className={className} aria-current={pathname === href ? 'page' : undefined}>
+      {row ? <RowContent glyph={label.slice(0, 1)} label={label} /> : label}
+    </Link>
+  )
+}
+
+/** 023: a header link shown only to a signed-in creator (the way back to the creator home, the way to the client page). */
+export function ProviderLink({ href, label, className, row }: { href: string; label: string; className?: string; row?: boolean }) {
+  const user = useSession()
+  if (user?.accountType !== 'provider') return null
+  return (
+    <Link href={href} className={className}>
       {row ? <RowContent glyph={label.slice(0, 1)} label={label} /> : label}
     </Link>
   )
