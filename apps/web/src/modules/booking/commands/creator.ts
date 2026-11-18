@@ -7,7 +7,7 @@ import type {
   MyProfileV1,
 } from '@shoot/domain/api/v1'
 import { addDays, allConfirmed, dubaiToday, respond, type Assignment } from '@shoot/domain/booking'
-import type { Booking, User } from '@/payload-types'
+import type { Booking, Brief, User } from '@/payload-types'
 import { getDirectoryContext, getLocations } from '@/modules/creators'
 import type { ActorContext } from '@/shared/api/actor'
 import { problem, type Problem } from '@/shared/api/problem'
@@ -52,15 +52,20 @@ function answerOf(a: Assignment, respondBy: string | null, now: Date): BookingRe
   return 'pending'
 }
 
-async function requestsOf(ctx: ActorContext, user: User): Promise<{ requests: BookingRequestV1[]; blocks: number }> {
+type RequestDetails = { time: string | null; duration: string | null; brief: Brief | null }
+
+async function requestsOf(ctx: ActorContext, user: User): Promise<{ requests: BookingRequestV1[]; blocks: number; details: Map<string, RequestDetails> }> {
   const profileIds = await myProfileIds(user.id)
   const mine = profileIds.map(String)
   const [bookings, directory, locations] = await Promise.all([bookingsOf(ctx, user, profileIds), getDirectoryContext(ctx.locale), getLocations(ctx.locale)])
   const place = new Map(locations.map((l) => [l.slug, l.name]))
   const now = ctx.now()
   const requests: BookingRequestV1[] = []
+  // 023: the creator home also shows each booking's start time and length.
+  const details = new Map<string, RequestDetails>()
   for (const b of bookings) {
     const brief = typeof b.brief === 'object' && b.brief ? b.brief : null
+    details.set(b.reference, { time: b.details?.startTime ?? null, duration: b.details?.duration ?? null, brief })
     const quotation = typeof b.quotation === 'object' && b.quotation ? ((b.quotation as { reference?: string | null }).reference ?? null) : null
     for (const a of toAssignments(b.assignments)) {
       if (!a.creatorId || !mine.includes(a.creatorId)) continue
@@ -81,7 +86,25 @@ async function requestsOf(ctx: ActorContext, user: User): Promise<{ requests: Bo
       })
     }
   }
-  return { requests, blocks: 0 }
+  return { requests, blocks: 0, details }
+}
+
+/** A booking request with the details only the creator home shows: start time, length slug and the client's brief. */
+export type HomeRequest = BookingRequestV1 & RequestDetails
+
+/**
+ * 023: the creator's requests for the creator home, the same three lists as `creatorBookings` (waiting by
+ * nearest deadline, upcoming by date, done newest first), each with the booking's start time and length slug.
+ */
+export async function homeRequests(ctx: ActorContext, user: User): Promise<{ waiting: HomeRequest[]; upcoming: HomeRequest[]; done: HomeRequest[] }> {
+  const { requests, details } = await requestsOf(ctx, user)
+  const withDetails = (r: BookingRequestV1): HomeRequest => ({ ...r, time: details.get(r.ref)?.time ?? null, duration: details.get(r.ref)?.duration ?? null, brief: details.get(r.ref)?.brief ?? null })
+  const byDeadline = (a: BookingRequestV1, b: BookingRequestV1) => (a.respondBy ?? '9').localeCompare(b.respondBy ?? '9')
+  return {
+    waiting: requests.filter((r) => r.answer === 'pending' && r.state === 'accepted' && r.respondBy !== null).sort(byDeadline).map(withDetails),
+    upcoming: requests.filter((r) => r.answer === 'confirmed' && UPCOMING.includes(r.state)).sort((a, b) => a.date.localeCompare(b.date)).map(withDetails),
+    done: requests.filter((r) => r.answer === 'confirmed' && DONE.includes(r.state)).sort((a, b) => b.date.localeCompare(a.date)).map(withDetails),
+  }
 }
 
 /** Waiting (nearest deadline first), upcoming (by date), done (newest first) and the creator's own notices. */

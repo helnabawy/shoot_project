@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shoot_mobile/core/auth/session.dart';
 import 'package:shoot_mobile/core/auth/session_cubit.dart';
 import 'package:shoot_mobile/core/error/result.dart';
 import 'package:shoot_mobile/core/l10n/app_locales.dart';
@@ -167,6 +168,18 @@ class _MenuPageState extends State<MenuPage> {
                                 () => context.push(afterSignIn(user)),
                                 hint: user.name,
                               ),
+                              // 023: a creator's `/` is their home; the client page is one row away.
+                              if (user.accountType == AccountType.provider)
+                                KeyedSubtree(
+                                  key: const ValueKey('menu:bookAShoot'),
+                                  child: row(
+                                    ShootIcons.camera,
+                                    l10n.chMenuBook,
+                                    () => context.push(
+                                      '${AppRoutes.home}?view=client',
+                                    ),
+                                  ),
+                                ),
                               KeyedSubtree(
                                 key: const ValueKey('menu:bookings'),
                                 child: row(

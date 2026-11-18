@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { AccountLink, MemberLink, resetSession, type SessionUser } from './SessionNav'
+import { AccountLink, MemberLink, ProviderLink, resetSession, type SessionUser } from './SessionNav'
 
 const props = {
   loginHref: '/login',
@@ -18,6 +18,32 @@ function serve(user: SessionUser | null) {
 
 beforeEach(() => resetSession())
 afterEach(() => vi.unstubAllGlobals())
+
+describe('CH-US2-S3 the creator links in the header', () => {
+  it('shows a creator the way to the client page and back to the creator home, and nobody else', async () => {
+    serve({ name: 'Sara', avatarUrl: null, accountType: 'provider' })
+    render(
+      <>
+        <ProviderLink href="/?view=client" label="Book a shoot" />
+        <ProviderLink href="/creator-home" label="Creator home" />
+      </>,
+    )
+    expect(await screen.findByRole('link', { name: 'Book a shoot' })).toHaveAttribute('href', '/?view=client')
+    expect(screen.getByRole('link', { name: 'Creator home' })).toHaveAttribute('href', '/creator-home')
+  })
+
+  it('hides them from a client and from a visitor', async () => {
+    serve({ name: 'Mona', avatarUrl: null, accountType: 'seeker' })
+    render(<ProviderLink href="/?view=client" label="Book a shoot" />)
+    await vi.waitFor(() => expect(fetch).toHaveBeenCalledOnce())
+    expect(screen.queryByRole('link', { name: 'Book a shoot' })).toBeNull()
+    resetSession()
+    serve(null)
+    render(<ProviderLink href="/creator-home" label="Creator home" />)
+    await vi.waitFor(() => expect(fetch).toHaveBeenCalledOnce())
+    expect(screen.queryByRole('link', { name: 'Creator home' })).toBeNull()
+  })
+})
 
 describe('header session links', () => {
   it('shows "Log in" and no Bookings link to a visitor', async () => {

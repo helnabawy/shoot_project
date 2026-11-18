@@ -29,12 +29,13 @@ is regenerated and must differ only by additions.
 }
 
 homeItemV1 =
-  | { kind: 'booking', ref, persona, occasion, emirate, profession,
-      date: day, time: string|null, length: string|null,
+  | { kind: 'booking', ref, occasion, emirate, profession,
+      date: day|null, time: string|null, length: string|null,
       client: string,                   // first name and initial only
       respondBy: iso-datetime }
   | { kind: 'brief', ref, persona, occasion, emirate, profession,
-      date: day|null, sentAt: iso-datetime }
+      date: day|null, sentAt: iso-datetime,
+      budgetFils?: int }                // 022: the client's price, only when creators offer prices
 ```
 
 Rules the server guarantees:
@@ -50,7 +51,7 @@ Rules the server guarantees:
 ### Examples (`packages/domain/src/api/v1/examples/`)
 
 - `creator-home.json`: live, one booking and two briefs, a next shoot.
-- `creator-home-clear.json`: live, empty queue, no next shoot.
+- `creator-home-clear.json`: live, empty queue, a next shoot (board 65).
 - `creator-home-not-live.json`: `incomplete` with two needs; no `counts`, empty queue.
 
 ## Answers: existing endpoints, unchanged

@@ -33,6 +33,7 @@ GoRouter createAppRouter({
   SessionCubit? session,
   List<RouteBase> routes = const [],
   required WidgetBuilder home,
+  Widget? Function(BuildContext context, GoRouterState state)? creatorHome,
 }) {
   final plainLaunch = initialLocation == AppRoutes.home;
   var firstNavigation = true;
@@ -62,7 +63,16 @@ GoRouter createAppRouter({
       GoRoute(
         path: AppRoutes.home,
         name: 'home',
-        builder: (context, state) => home(context),
+        // 023: a signed-in creator's `/` is their home; everyone else's is the landing. It follows the
+        // session, so signing out from a page on top of `/` leaves the landing underneath (FR-004).
+        builder: (context, state) => creatorHome == null || session == null
+            ? home(context)
+            : StreamBuilder<SessionState>(
+                stream: session.stream,
+                initialData: session.state,
+                builder: (context, _) =>
+                    creatorHome(context, state) ?? home(context),
+              ),
       ),
       ...routes,
       if (isDebug)

@@ -27,6 +27,7 @@ import 'package:shoot_mobile/features/account/account_injection.dart';
 import 'package:shoot_mobile/features/brief/brief_injection.dart';
 import 'package:shoot_mobile/features/content/content_injection.dart';
 import 'package:shoot_mobile/features/creator_account/creator_account_injection.dart';
+import 'package:shoot_mobile/features/creator_home/creator_home_injection.dart';
 import 'package:shoot_mobile/features/creators/creators_injection.dart';
 import 'package:shoot_mobile/features/landing/landing_injection.dart';
 import 'package:shoot_mobile/features/links/links_injection.dart';
@@ -79,6 +80,7 @@ void configureDependencies(
   registerSignInFeature(getIt);
   registerAccountFeature(getIt);
   registerCreatorAccountFeature(getIt);
+  registerCreatorHomeFeature(getIt);
   registerQuickMatchFeature(getIt);
   registerBriefFeature(getIt);
   registerWelcomeFeature(getIt);

@@ -32,7 +32,7 @@ A discriminated union on `kind`.
 |---|---|---|
 | `kind` | `booking` | `brief` |
 | `ref` | booking reference | brief reference |
-| `persona` | assignment's persona id | the item's persona id |
+| `persona` | — (answering a booking needs only its reference) | the item's persona id |
 | `occasion`, `emirate` | content words for the title | same |
 | `profession` | content word | content word ("Needs") |
 | `date` | day | day or `null` ("Date to agree") |

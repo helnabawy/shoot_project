@@ -81,6 +81,7 @@ Cache:
 | `creatorUpdateRead` | `POST /me/creator/updates/{id}/read` | req | no-store | — | `creatorBookingsV1` | `creators`/`booking` creator commands (014) | not a creator (403) |
 | `creatorBriefs` | `GET /me/creator/briefs` | req | no-store | — | `creatorBriefsV1` | `inbox` queries (019) | not a creator (403) |
 | `creatorBriefsStamp` | `GET /me/creator/briefs/stamp` | req | no-store | — | `stampV1` | `inbox` `inboxStamp` (022) | not a creator (403) |
+| `creatorHome` | `GET /me/creator/home` | req | no-store | — | `creatorHomeV1` | `creator-home` queries (023) | not a creator (403) |
 | `answerCreatorBrief` | `POST /me/creator/briefs/{ref}/answer` | req | no-store | `briefAnswerRequestV1` | `creatorBriefsV1` | `inbox` `answer-brief` (019) | not a creator (403), brief closed or not matching (409) |
 | `withdrawCreatorBrief` | `DELETE /me/creator/briefs/{ref}/answer?persona=` | req | no-store | `briefPersonaQueryV1` | `creatorBriefsV1` | `inbox` `withdraw-answer` (019) | not a creator (403), closed or already picked (409) |
 | `registerPushDevice` | `POST /me/push/devices` | req | no-store | `pushDeviceRequestV1` | 204 | `push` devices (019) | — |

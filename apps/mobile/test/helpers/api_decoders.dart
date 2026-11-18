@@ -7,6 +7,7 @@ import 'package:shoot_mobile/features/content/data/models/guide_models.dart';
 import 'package:shoot_mobile/features/content/data/models/legal_models.dart';
 import 'package:shoot_mobile/features/creator_account/data/models/creator_account_models.dart';
 import 'package:shoot_mobile/features/creator_account/data/models/inbox_models.dart';
+import 'package:shoot_mobile/features/creator_home/data/models/creator_home_model.dart';
 import 'package:shoot_mobile/features/creators/data/models/creator_models.dart';
 import 'package:shoot_mobile/features/landing/data/models/landing_model.dart';
 import 'package:shoot_mobile/features/links/data/models/resolution_model.dart';
@@ -93,6 +94,10 @@ final Map<String, Object Function(Json json)> apiDecoders = {
   'creator-availability-set-result': (json) =>
       AvailabilityModel.fromJson(json).toEntity(),
   'creator-account': (json) => CreatorAccountModel.fromJson(json).toEntity(),
+  // 023: the creator home.
+  'creator-home': (json) => CreatorHomeModel.fromJson(json).toEntity(),
+  'creator-home-clear': (json) => CreatorHomeModel.fromJson(json).toEntity(),
+  'creator-home-not-live': (json) => CreatorHomeModel.fromJson(json).toEntity(),
   // 019: the creator brief inbox and app push.
   'creator-account-briefs': (json) =>
       CreatorAccountModel.fromJson(json).toEntity(),

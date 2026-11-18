@@ -11,7 +11,7 @@ import { BriefBar, rowClass, RowContent } from '@/shared/ui/bar'
 import { CmsImage } from './CmsImage'
 import { MobileMenu } from './MobileMenu'
 import { SectionNav } from './SectionNav'
-import { AccountLink, MemberLink } from './SessionNav'
+import { AccountLink, MemberLink, ProviderLink } from './SessionNav'
 
 export interface NavItem {
   label: string
@@ -65,7 +65,7 @@ export async function Header({
   navigation: NavItem[]
   locale: Locale
 }) {
-  const [t, chrome] = await Promise.all([getTranslations({ locale }), chromeLabels(locale)])
+  const [t, chrome, creator] = await Promise.all([getTranslations({ locale }), chromeLabels(locale), getTranslations({ locale, namespace: 'creatorHome' })])
   const home = localizeHref('/', locale)
   const accountProps = {
     loginHref: localizeHref('/login', locale),
@@ -74,6 +74,9 @@ export async function Header({
     accountLabel: t('nav.account'),
   }
   const bookings = { href: localizeHref('/account/bookings', locale), label: t('nav.bookings') }
+  // 023: a creator's `/` is their home; these are the way to the client page and back (the token hint may be stale).
+  const creatorHome = { href: localizeHref('/creator-home', locale), label: creator('menuHome') }
+  const bookAShoot = { href: `${localizeHref('/', locale)}?view=client`, label: creator('menuBook') }
   const initial = Array.from(siteName.trim())[0] ?? ''
   return (
     <header className="toolbar relative">
@@ -115,6 +118,8 @@ export async function Header({
             />
           ))}
           <MemberLink {...bookings} className={NAV_LINK} />
+          <ProviderLink {...creatorHome} className={NAV_LINK} />
+          <ProviderLink {...bookAShoot} className={NAV_LINK} />
         </SectionNav>
 
         <div className="flex items-center gap-1 justify-self-end">
@@ -143,6 +148,8 @@ export async function Header({
                   />
                 ))}
                 <MemberLink {...bookings} className={rowClass('open')} row />
+                <ProviderLink {...creatorHome} className={rowClass('open')} row />
+                <ProviderLink {...bookAShoot} className={rowClass('open')} row />
               </nav>
               <div className="border-t border-hair pt-1">
                 <AccountLink {...accountProps} className={rowClass('open')} row />

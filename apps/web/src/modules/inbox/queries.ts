@@ -238,6 +238,16 @@ export async function creatorInbox(ctx: InboxContext, userId: number): Promise<C
   return { open: open.map((i) => i.view), accepted: accepted.map((i) => i.view), rejected: rejected.map((i) => i.view), reasons: read.reasons }
 }
 
+/**
+ * 023: the occasion word of each brief by the inbox's own rule, for the booking requests the creator home
+ * titles ("Wedding in Dubai"). The landing's brief slots are read once.
+ */
+export async function occasionsOf(ctx: InboxContext, briefs: readonly Brief[]): Promise<Map<number, string>> {
+  const landing = await getLandingPage({ locale: ctx.locale })
+  const slots = landing.briefBuilder?.slots ?? []
+  return new Map(briefs.map((b) => [b.id, occasionOf(b, slots)]))
+}
+
 /** What Up next leads with: how many open briefs wait and the soonest one (FR-005). `null` when not live. */
 export async function briefsSummary(ctx: InboxContext, userId: number): Promise<BriefsSummaryV1 | null> {
   const inbox = await creatorInbox(ctx, userId)

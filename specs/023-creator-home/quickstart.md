@@ -36,36 +36,36 @@ type only when it is next issued (research R1).
    live creator; the app opens on the creator home. Answer a request; pull to refresh. The menu's
    "Book a shoot" opens the client landing (`/?view=client`).
 
-## Scenarios and their tests
+## Scenario → test mapping
 
-Every scenario is covered by a test whose name starts with its id.
+Every scenario is covered by a test whose name starts with its id; `pnpm check:scenarios` checks that each file named here carries it.
 
-| Id | Scenario | Where |
+| Id | Scenario | Tests |
 |---|---|---|
-| CH-US1-S1 | One booking and two briefs: the booking is the card, "1 of 3", two Next rows | web integration + component; app widget |
-| CH-US1-S2 | Accept a booking: confirmed, next becomes the card, counts move | web integration; app cubit |
-| CH-US1-S3 | Accept a brief: accepted, To answer falls, Coming up unchanged | web integration; app cubit |
-| CH-US1-S4 | Decline opens the existing reason step; with, without a reason, and backing out | web component + integration; app widget |
-| CH-US1-S5 | The note under the buttons differs for a booking and a brief | web component; app widget |
-| CH-US1-S6 | Order: bookings by nearest deadline, then briefs newest first | domain unit |
-| CH-US1-S7 | Last answer: "You are up to date", no Accept or Decline | web component; app widget |
-| CH-US1-S8 | Answering a request that is no longer open records nothing and moves on | web integration; app cubit |
-| CH-US2-S1 | A signed-in creator sees the creator home at `/` and `/ar`, and in the app | proxy unit; e2e; app router |
-| CH-US2-S2 | Guest, client, editor and admin get the landing unchanged, still from cache | proxy unit; e2e |
-| CH-US2-S3 | The menu takes a creator to the client landing | e2e; app widget |
-| CH-US2-S4 | Signing in or out switches the home without a reload | e2e; app router |
-| CH-US2-S5 | A push or link to a booking or brief still opens that page | app router |
-| CH-US3-S1 | Identity row: photo or stand-in, name, professions from content, code, Live | web component; app widget |
-| CH-US3-S2 | The three counts equal the lists they open | web integration |
-| CH-US3-S3 | Next shoot shows the nearest confirmed booking and opens it | web component; app widget |
-| CH-US3-S4 | No upcoming booking: no Next shoot section | web component; app widget |
-| CH-US3-S5 | Manage rows; Availability says Free today or Busy today | web integration; app widget |
-| CH-US3-S6 | A creator with nothing: zeros, up to date, Manage; nothing invented | web component; app widget |
-| CH-US4-S1 | Incomplete profile: Not live yet, missing steps, Finish my profile | web component; app widget |
-| CH-US4-S2 | In review: the review message, no primary action | web component; app widget |
-| CH-US4-S3 | Not live: no queue, no counts, no Accept or Decline | web integration; API contract |
-| CH-US4-S4 | Approved profile: the live home on the next open | web integration |
-| CH-US4-S5 | Paused or suspended: the status and its wording, no queue, no primary action | web component; app widget |
+| CH-US1-S1 | One booking and two briefs: the booking is the card, "1 of 3", two Next rows | `CreatorHome.test.tsx`, `creator-home.int.test.ts`, `creator-home.test.ts`, `creator_home_cubit_test.dart`, `creator_home_model_test.dart`, `creator_home_page_test.dart`, `view.test.ts` |
+| CH-US1-S2 | Accept a booking: confirmed, next becomes the card, counts move | `creator-home-actions.int.test.ts`, `creator-home.spec.ts`, `creator_home_cubit_test.dart`, `creator_home_page_test.dart` |
+| CH-US1-S3 | Accept a brief: accepted, To answer falls, Coming up unchanged | `creator-home-actions.int.test.ts`, `creator_home_cubit_test.dart` |
+| CH-US1-S4 | Decline opens the existing reason step; with, without a reason, and backing out | `CreatorHome.test.tsx`, `creator-home-actions.int.test.ts`, `creator-home.int.test.ts`, `creator-home.spec.ts`, `creator_home_cubit_test.dart`, `creator_home_page_test.dart` |
+| CH-US1-S5 | The note under the buttons differs for a booking and a brief | `CreatorHome.test.tsx`, `creator_home_page_test.dart` |
+| CH-US1-S6 | Order: bookings by nearest deadline, then briefs newest first | `creator-home.int.test.ts`, `creator-home.test.ts` |
+| CH-US1-S7 | Last answer: "You are up to date", no Accept or Decline | `CreatorHome.test.tsx`, `creator_home_model_test.dart`, `creator_home_page_test.dart`, `view.test.ts` |
+| CH-US1-S8 | Answering a request that is no longer open records nothing and moves on | `creator-home-actions.int.test.ts`, `creator_home_cubit_test.dart`, `creator_home_page_test.dart` |
+| CH-US2-S1 | A signed-in creator sees the creator home at `/` and `/ar`, and in the app | `creator-home.spec.ts`, `creator_home_route_test.dart`, `proxy.creator-home.test.ts`, `token-hint.test.ts` |
+| CH-US2-S2 | Guest, client, editor and admin get the landing unchanged, still from cache | `creator-home.spec.ts`, `creator_home_route_test.dart`, `proxy.creator-home.test.ts` |
+| CH-US2-S3 | The menu takes a creator to the client landing | `SessionNav.test.tsx`, `creator-home.spec.ts`, `creator_home_route_test.dart` |
+| CH-US2-S4 | Signing in or out switches the home without a reload | `creator-home.spec.ts`, `creator_home_route_test.dart` |
+| CH-US2-S5 | A push or link to a booking or brief still opens that page | `creator_home_route_test.dart`, `proxy.creator-home.test.ts` |
+| CH-US3-S1 | Identity row: photo or stand-in, name, professions from content, code, Live | `CreatorHome.test.tsx`, `creator-home.int.test.ts`, `creator_home_page_test.dart`, `view.test.ts` |
+| CH-US3-S2 | The three counts equal the lists they open | `creator-home.int.test.ts`, `creator-home.test.ts`, `creator_home_model_test.dart`, `creator_home_page_test.dart` |
+| CH-US3-S3 | Next shoot shows the nearest confirmed booking and opens it | `CreatorHome.test.tsx`, `creator-home.int.test.ts`, `creator_home_page_test.dart`, `view.test.ts` |
+| CH-US3-S4 | No upcoming booking: no Next shoot section | `CreatorHome.test.tsx`, `creator_home_page_test.dart` |
+| CH-US3-S5 | Manage rows; Availability says Free today or Busy today | `CreatorHome.test.tsx`, `creator-home.int.test.ts`, `creator-home.test.ts`, `creator_home_page_test.dart`, `view.test.ts` |
+| CH-US3-S6 | A creator with nothing: zeros, up to date, Manage; nothing invented | `CreatorHome.test.tsx`, `creator_home_page_test.dart` |
+| CH-US4-S1 | Incomplete profile: Not live yet, missing steps, Finish my profile | `CreatorHome.test.tsx`, `creator-home.int.test.ts`, `creator-home.test.ts`, `creator_home_page_test.dart` |
+| CH-US4-S2 | In review: the review message, no primary action | `CreatorHome.test.tsx`, `creator-home.spec.ts`, `creator-home.test.ts`, `creator_home_page_test.dart` |
+| CH-US4-S3 | Not live: no queue, no counts, no Accept or Decline | `CreatorHome.test.tsx`, `creator-home.int.test.ts`, `creator-home.test.ts`, `creator_home_model_test.dart`, `creator_home_page_test.dart` |
+| CH-US4-S4 | Approved profile: the live home on the next open | `creator-home.int.test.ts` |
+| CH-US4-S5 | Paused or suspended: the status and its wording, no queue, no primary action | `CreatorHome.test.tsx`, `creator-home.int.test.ts`, `creator-home.test.ts`, `creator_home_page_test.dart` |
 
 Also proved: the endpoint's contract and examples (`MR-` style contract test for `creatorHome`), no
 client contact or price in the response (FR-026), the caller sees only their own data (FR-025),

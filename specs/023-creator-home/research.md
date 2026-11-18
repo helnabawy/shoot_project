@@ -106,6 +106,9 @@ changed. The client's name stays first name plus initial, produced on the server
   time (clarified). `requestsOf` reads every booking assigned to the creator; if it is capped, Completed
   uses a count query instead (task: check the cap).
 - **Next shoot** = `upcoming[0]` with `paid`; hidden when empty.
+- **Limit (found at T012)**: the creator's bookings are read 100 at a time, oldest first, the same list the
+  bookings page and the app use. Beyond 100 active bookings the newest are missing from every count;
+  the home matches the bookings page rather than differing from it.
 - **Availability today** = from `creatorAvailability`'s days: `blocked` or `booked` → "Busy today",
   otherwise "Free today". Today is the business day (Asia/Dubai), as `AvailabilityV1.today` already is.
 - Count links: To answer → `#answer` on the home; Coming up and Completed → `/account/bookings`.
@@ -156,6 +159,16 @@ Not on this branch. If it merges first: a brief item gains the client's price an
 offer at that price; the home's item shape gets the additive fields 022 defines and the note under the
 buttons changes. The queue, order, counts and the two actions are unaffected. Tasks carry one item to
 re-read this section against 022 before implementation starts.
+
+**T002 (2026-11-17): 022 is on `main`.** With "Creators offer prices" on, an open brief carries the
+client's price for the creator's type (`budgetFils`, whole fils). On the creator home a brief item
+carries the same `budgetFils` and the card shows it as "Client's price"; Accept sends an accept with no
+amount, which 022 records at the client's price (022 FR-011), exactly as the inbox's "I can do this"
+without a new amount. Offering another price, changing it and withdrawing stay in the inbox: the card
+keeps two actions, and its note links there ("Offer another price in your inbox"). The note under a
+brief's Accept reads "Accepting offers the client's price. Nothing is booked until they choose." when the
+price is shown, and the 019 wording otherwise. The client's price is the job's price, not a platform
+fee or the creator's earnings, so FR-026 still holds (022 FR-012: the creator never sees the fee).
 
 ## R10. Refresh
 

@@ -34,6 +34,8 @@ export default defineConfig({
           name: 'unit',
           environment: 'node',
           include: ['src/**/*.test.ts', 'tests/unit/**/*.test.ts'],
+          // 023: the proxy test runs next-intl's middleware, whose ESM build imports `next/server` without an extension.
+          server: { deps: { inline: [/next-intl/] } },
         },
       },
       {

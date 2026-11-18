@@ -278,8 +278,9 @@ the status, the message and the single action in each case.
 
 - **FR-025**: The creator home MUST be visible only to the signed-in creator it belongs to, and MUST
   show only that creator's requests, bookings and profile.
-- **FR-026**: The home MUST NOT show a client's full name, phone or email, and MUST NOT show fees or
-  earnings.
+- **FR-026**: The home MUST NOT show a client's full name, phone or email, and MUST NOT show the
+  platform fee or the creator's earnings. When creators offer prices (feature 022), a brief shows the
+  client's price exactly as the inbox does, and Accept accepts at that price.
 - **FR-027**: Every label MUST be available in English and Arabic; Arabic is laid out right to left;
   names of professional types, specialties and places come from content, never from the interface's
   own strings.

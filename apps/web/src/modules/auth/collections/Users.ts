@@ -87,6 +87,9 @@ export const Users: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'seeker',
+      // 023: in the session token so the proxy can send a creator's `/` to the creator home (a routing
+      // hint only; the page verifies the session). Changes the token's payload, not the schema.
+      saveToJWT: true,
       options: [
         { label: 'Needs a professional (seeker)', value: 'seeker' },
         { label: 'Is a professional (provider)', value: 'provider' },

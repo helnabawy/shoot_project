@@ -3206,6 +3206,412 @@
       },
       "path": "/api/mobile/v1/me/creator/briefs/stamp"
     },
+    "creatorHome": {
+      "auth": "required",
+      "cache": "no-store",
+      "deprecated": false,
+      "input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {},
+        "type": "object"
+      },
+      "method": "GET",
+      "output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "counts": {
+            "additionalProperties": false,
+            "properties": {
+              "comingUp": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "completed": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "toAnswer": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "toAnswer",
+              "comingUp",
+              "completed"
+            ],
+            "type": "object"
+          },
+          "mode": {
+            "enum": [
+              "live",
+              "incomplete",
+              "review",
+              "paused"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "needs": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "recommended": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "required": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "step": {
+                  "enum": [
+                    "basics",
+                    "about",
+                    "places",
+                    "links",
+                    "samples",
+                    "calendar",
+                    "identity"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "step",
+                "required",
+                "recommended"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "next": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "date": {
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                    "type": "string"
+                  },
+                  "emirate": {
+                    "type": "string"
+                  },
+                  "length": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "occasion": {
+                    "type": "string"
+                  },
+                  "paid": {
+                    "type": "boolean"
+                  },
+                  "quotation": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "ref": {
+                    "type": "string"
+                  },
+                  "time": {
+                    "anyOf": [
+                      {
+                        "pattern": "^\\d{2}:\\d{2}$",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "ref",
+                  "quotation",
+                  "occasion",
+                  "emirate",
+                  "date",
+                  "time",
+                  "length",
+                  "paid"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "photo": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "alt": {
+                    "type": "string"
+                  },
+                  "height": {
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991,
+                    "type": "integer"
+                  },
+                  "sizes": {
+                    "items": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "height": {
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991,
+                          "type": "integer"
+                        },
+                        "url": {
+                          "pattern": "^https?:\\/\\/\\S+$",
+                          "type": "string"
+                        },
+                        "width": {
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "url",
+                        "width",
+                        "height"
+                      ],
+                      "type": "object"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "width": {
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "alt",
+                  "width",
+                  "height",
+                  "sizes"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "professions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "queue": {
+            "items": {
+              "oneOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "client": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "anyOf": [
+                        {
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "emirate": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "const": "booking",
+                      "type": "string"
+                    },
+                    "length": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "occasion": {
+                      "type": "string"
+                    },
+                    "profession": {
+                      "type": "string"
+                    },
+                    "ref": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "respondBy": {
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                      "type": "string"
+                    },
+                    "time": {
+                      "anyOf": [
+                        {
+                          "pattern": "^\\d{2}:\\d{2}$",
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "ref",
+                    "occasion",
+                    "emirate",
+                    "profession",
+                    "date",
+                    "time",
+                    "length",
+                    "client",
+                    "respondBy"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "budgetFils": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991,
+                      "type": "integer"
+                    },
+                    "date": {
+                      "anyOf": [
+                        {
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "emirate": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "const": "brief",
+                      "type": "string"
+                    },
+                    "occasion": {
+                      "type": "string"
+                    },
+                    "persona": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "profession": {
+                      "type": "string"
+                    },
+                    "ref": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "sentAt": {
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "ref",
+                    "occasion",
+                    "emirate",
+                    "profession",
+                    "persona",
+                    "date",
+                    "sentAt"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "reasons": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "value",
+                "label"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "today": {
+            "enum": [
+              "free",
+              "blocked",
+              "booked"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "code",
+          "professions",
+          "photo",
+          "mode",
+          "needs",
+          "queue",
+          "next",
+          "today",
+          "reasons"
+        ],
+        "type": "object"
+      },
+      "path": "/api/mobile/v1/me/creator/home"
+    },
     "creatorIdentityUpload": {
       "auth": "required",
       "cache": "no-store",
