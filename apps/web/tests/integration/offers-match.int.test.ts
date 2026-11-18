@@ -134,16 +134,11 @@ describe('OF-US4 the client sees the offers and chooses', () => {
     }
   })
 
-  it('OF-US4-S1 while waiting, step 2 lists who can still answer; offering or "not for me" takes a creator off it', async () => {
+  it('OF-US4-S10 step 2 does not list the creators who have not answered', async () => {
     const b = await send()
-    const codes = async () => (await page(b)).sections[0]!.waiting!.map((c) => c.code).sort()
-    const sara = world.creators.sara!.code
-    const omar = world.creators.omar!.code
-    expect(await codes()).toEqual([omar, sara].sort())
-    await answerBrief(await actor('sara'), b.ref, { persona: photo, decision: 'accept' })
-    expect(await codes()).toEqual([omar])
+    expect((await page(b)).sections.every((s) => !('waiting' in s))).toBe(true)
     await answerBrief(await actor('omar'), b.ref, { persona: photo, decision: 'reject' })
-    expect(await codes()).toEqual([])
+    expect((await page(b)).sections.every((s) => !('waiting' in s))).toBe(true)
   })
 })
 

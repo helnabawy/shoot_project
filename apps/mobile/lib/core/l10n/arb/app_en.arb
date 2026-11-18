@@ -3640,19 +3640,6 @@
   "@qmOffersChangedIntro": {
     "description": "022: board 48 text."
   },
-  "qmOffersWaitingFrom": "{count, plural, =1{Waiting to hear from 1 creator} other{Waiting to hear from {count} creators}}",
-  "@qmOffersWaitingFrom": {
-    "description": "022: above the creators who have not answered yet.",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "qmOffersAsked": "Asked",
-  "@qmOffersAsked": {
-    "description": "022: badge on a creator who got the brief and has not answered."
-  },
   "qmOffersClosedTitle": "This brief is closed",
   "@qmOffersClosedTitle": {
     "description": "022: step 2 of a brief whose date passed (FR-012a)."

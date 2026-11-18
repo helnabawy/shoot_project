@@ -96,7 +96,6 @@ export async function matchView(payload: Payload, input: MatchInput): Promise<Ma
         ...(s.offers
           ? { offers: s.offers.map((o) => ({ creator: card(o.creator), amountFils: o.amountFils, feeFils: o.feeFils, totalFils: o.totalFils, atYourPrice: o.atYourPrice, answeredAt: o.answeredAt })) }
           : {}),
-        ...(s.waiting ? { waiting: s.waiting.map(card) } : {}),
       }
     }),
     nearby: page.nearby.map((date) => ({ date, free: page.nearbyFree[date] ?? 0 })),

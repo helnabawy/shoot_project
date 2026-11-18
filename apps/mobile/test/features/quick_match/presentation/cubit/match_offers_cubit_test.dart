@@ -194,18 +194,11 @@ void main() {
       },
     );
 
-    test(
-      'OF-US4-S1 waiting: the creators who can still answer come with the page',
-      () {
-        final page = MatchPageModel.fromJson(
-          loadExample('match-offers-waiting'),
-        ).toEntity();
-        final section = page.sections.first;
-        expect(section.offers, isEmpty);
-        expect(section.waiting.single.card.name, isNotEmpty);
-        // An older server sends no list: nothing to show, nothing breaks.
-        expect(offersPage().sections.first.waiting, isEmpty);
-      },
-    );
+    test('OF-US4-S10 a page that still carries `waiting` decodes; the app keeps no list of unanswered creators', () {
+      final page = MatchPageModel.fromJson(loadExample('match-offers-waiting'))
+          .toEntity();
+      expect(page.offersMode, isTrue);
+      expect(page.sections.first.offers, isEmpty);
+    });
   });
 }

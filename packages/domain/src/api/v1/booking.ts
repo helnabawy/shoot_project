@@ -46,7 +46,7 @@ export const matchSectionV1 = z.object({
   budgetFils: z.int().positive().optional(),
   /** 022 (additive): current offers, lowest total first. */
   offers: z.array(matchOfferV1).optional(),
-  /** 022 (additive): creators free for this type who have not answered yet; they can still offer. */
+  /** 022 (additive), no longer sent since 2026-11-18 (FR-016c): step 2 does not list unanswered creators. Kept because v1 changes are additive only. */
   waiting: z.array(matchCreatorV1).max(8).optional(),
 })
 

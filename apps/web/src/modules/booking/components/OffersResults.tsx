@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { formatPicks, withPick, type Pick } from '@shoot/domain/booking'
 import { formatMoney } from '@shoot/domain/pricing'
 import { getTranslations } from 'next-intl/server'
-import { creatorPath, describeCreator, getDirectoryContext } from '@/modules/creators'
+import { describeCreator, getDirectoryContext } from '@/modules/creators'
 import { PhotoTile } from '@/modules/creators/client'
 import type { Locale } from '@/shared/lib/locale'
 import { LiveRefresh } from '@/shared/components/LiveRefresh'
@@ -160,32 +160,6 @@ export async function OffersResults({
                   )
                 })}
               </ul>
-              {/* 022: the creators who can still answer, so a waiting list shows real people, not nothing. */}
-              {section.waiting?.length ? (
-                <div className="px-3 pb-2" data-testid={`offers-asked-${section.persona.slug}`}>
-                  <p className="px-1 pt-1 pb-1.5 text-[13px] text-mute">{t('waitingFrom', { count: section.waiting.length })}</p>
-                  <ul className="flex flex-col">
-                    {section.waiting.map((creator) => {
-                      const view = who(creator)
-                      return (
-                        <li key={creator.id}>
-                          <Link href={creatorPath(creator.code, locale)} className={rowClass('open')} data-testid="offers-asked">
-                            <PhotoTile photo={creator.photo} initials={view.initials} />
-                            <span className="min-w-0 flex-1">
-                              <span className="block font-medium text-ink">{view.name}</span>
-                              <span className="block text-[13px] text-mute">
-                                <Bidi>{view.displayCode}</Bidi>
-                                {view.place ? ` · ${view.place}` : ''}
-                              </span>
-                            </span>
-                            <span className="shrink-0 rounded-full bg-tile px-2.5 py-0.5 text-[13px] text-tile-ink">{t('askedBadge')}</span>
-                          </Link>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-              ) : null}
             </ResultGroup>
           )
         })}

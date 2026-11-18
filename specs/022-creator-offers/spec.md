@@ -32,6 +32,16 @@ in `manifest.json`; 55 and 56 are the Arabic dark references of 46 and 51). Draw
 FR-016a (a list, not the swipe rail), FR-016b (both account homes) and FR-018a (details lock what the
 creators priced).
 
+### Owner amendment 2026-11-18
+
+- Q: Should step 2 list the creators who have not answered yet ("Waiting to hear from N creators", each
+  with an "Asked" badge)? → A: No. The owner asked to hide that list: before an offer, step 2 shows only
+  how many creators the brief went to (FR-016); a creator appears to the client only once they offer.
+  Adds FR-016c and US4 scenario 10. The optional `waiting` field of the v1 contract stays (v1 changes are
+  additive only) but the server no longer sends it, so released apps hide the list too.
+- Q: Should the brief now go to every creator, not only those who match it? → A: No ("keep matching
+  only"): it still goes to every live creator who matches its type, emirate and date (FR-016, US2).
+
 ### Analysis 2026-11-17
 
 `/speckit-analyze` fixes: the emirate comes from the pin everywhere (US1-S1, US5-S2); FR-005 applies
@@ -203,6 +213,9 @@ continues to details.
    the team, as today's "no one free" state.
 9. **Given** a client with the app installed and push on, **When** a new or changed offer arrives,
    **Then** they get a push that opens the offers page.
+10. **Given** a sent brief that matching creators have not answered yet, **When** the client opens the
+   offers page, **Then** it does not list those creators (no names, codes or "Asked" rows); it shows
+   only the count from scenario 1, and a creator appears only with their offer (amended 2026-11-18).
 
 ---
 
@@ -351,6 +364,8 @@ setting while briefs already sent keep the mode and fee they started with.
   offer.
 - **FR-016**: Before any offer, the page MUST say how many creators the brief was sent to; if none
   matched, it MUST offer WhatsApp to the team.
+- **FR-016c**: The offers page MUST NOT list the creators who have not answered; the client sees a
+  creator only once that creator offers (amended 2026-11-18).
 - **FR-016a**: Offers MUST be shown as a list in which every offer's Accept and Decline are visible
   at once (not a swipe rail showing one creator at a time); only the first (lowest total) offer's
   Accept is the screen's primary action.

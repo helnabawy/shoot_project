@@ -113,8 +113,6 @@ export interface MatchSection {
   budgetFils?: number
   /** 022: current offers, lowest total first (offers mode). */
   offers?: MatchOffer[]
-  /** 022: creators free for this type who have not answered yet (offers mode); they can still offer. */
-  waiting?: CreatorSummary[]
 }
 
 /** 022: one creator's offer as the client sees it (FR-013). */
@@ -211,9 +209,6 @@ type OfferBrief = BriefRecord & {
  * 022 step 2 (US4): per type the client's price and the current offers: accepted, not withdrawn, not declined,
  * from a creator still listed and free on the date (edge case: blocking the date removes the offer).
  */
-/** 022: how many waiting creators step 2 shows per type. */
-const WAITING_SHOWN = 8
-
 async function offersPage(
   raw: BriefRecord,
   facts: BriefFacts,
@@ -260,17 +255,14 @@ async function offersPage(
             return { creator: free.get(idOf(a.creator)) as CreatorSummary, amountFils: amount, feeFils: fee, totalFils: amount + fee, atYourPrice: amount === budget, answeredAt: a.answeredAt }
           }),
       )
-      // Who can still answer: free and matching, no offer standing, not "not for me", not declined by the client.
-      const answered = new Set(rows.filter((a) => idOf(a.persona) === persona.id && !(a.decision === 'accepted' && a.withdrawnAt && !a.clientDecision)).map((a) => idOf(a.creator)))
-      const waiting = closed ? [] : [...free.values()].filter((c) => !answered.has(c.id)).slice(0, WAITING_SHOWN)
       return {
         persona,
         price: quotePrice(rules, { ...base, personaIds: [persona.id] }),
         creators: offers.map((o) => o.creator),
         saidYes: offers.map((o) => o.creator.id),
         ...(budget ? { budgetFils: budget } : {}),
+        // 022 (FR-016c, amended 2026-11-18): creators who have not answered are not listed.
         offers,
-        waiting,
       }
     })
   return {

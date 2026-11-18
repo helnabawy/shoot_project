@@ -66,20 +66,13 @@ describe('OF-US4 the client sees the offers', () => {
     expect(screen.getByText('AED 1,045')).toBeInTheDocument()
   })
 
-  it('OF-US4-S1 while waiting, the creators who can still answer are listed, each opening their profile', async () => {
+  it('OF-US4-S10 the creators who have not answered are not listed, even if the server sends them', async () => {
     await show(page([section('photographer', 'Photographer', [], [creator('0087', 'Omar K.'), creator('0421', 'Mariam S.')])]))
-    const asked = screen.getByTestId('offers-asked-photographer')
-    const rows = within(asked).getAllByTestId('offers-asked')
-    expect(rows.map((r) => r.getAttribute('href'))).toEqual(['/creators/0087', '/creators/0421'])
-    expect(rows[0]).toHaveTextContent('Omar K.')
-    expect(rows[0]).toHaveTextContent('Asked')
-    expect(screen.queryAllByTestId('offer-accept')).toHaveLength(0)
-  })
-
-  it('an offer moves the creator out of the waiting list (the server sends them once)', async () => {
-    await show(page([section('photographer', 'Photographer', [offer('0087', 'Omar K.', 80000, true)], [creator('0421', 'Mariam S.')])]))
-    expect(screen.getAllByTestId('offer-card')).toHaveLength(1)
-    expect(within(screen.getByTestId('offers-asked-photographer')).getAllByTestId('offers-asked')).toHaveLength(1)
+    expect(screen.getByTestId('offers-waiting')).toBeInTheDocument()
+    expect(screen.queryByTestId('offers-asked-photographer')).toBeNull()
+    expect(screen.queryAllByTestId('offers-asked')).toHaveLength(0)
+    expect(screen.queryByText('Omar K.')).toBeNull()
+    expect(screen.queryByText('Asked')).toBeNull()
   })
 })
 

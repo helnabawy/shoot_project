@@ -955,8 +955,6 @@
     "waitingIntro": "{count, plural, one {أُرسل إلى {type} واحد يغطي {emirate}. يرى المنطقة لا موقعك الدقيق. يظهر عرضه هنا عند ردّه.} other {أُرسل إلى # {types} يغطون {emirate}. يرون المنطقة لا موقعك الدقيق. تظهر العروض هنا عند ردهم.}}",
     "waitingNone": "لا عروض بعد",
     "waitingAuto": "تتحدّث هذه الصفحة تلقائياً",
-    "waitingFrom": "{count, plural, one {بانتظار ردّ مبدع واحد} two {بانتظار ردّ مبدعَين} few {بانتظار ردّ # مبدعين} many {بانتظار ردّ # مبدعًا} other {بانتظار ردّ # مبدع}}",
-    "askedBadge": "أُرسل إليه",
     "yourPrice": "سعرك",
     "serviceFee": "رسوم الخدمة",
     "serviceFeeHint": "{percent}٪ من العرض الذي تقبله",

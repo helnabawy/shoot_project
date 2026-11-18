@@ -8,11 +8,13 @@ import 'package:shoot_mobile/core/widgets/money.dart';
 import 'package:shoot_mobile/core/widgets/phone_field.dart';
 import 'package:shoot_mobile/core/widgets/snap_carousel.dart';
 import 'package:shoot_mobile/core/widgets/top_hit.dart';
+import 'package:shoot_mobile/features/quick_match/data/models/quick_match_models.dart';
 import 'package:shoot_mobile/features/quick_match/domain/entities/quick_match.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/book_flow_cubit.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/cubit/match_cubit.dart';
 import 'package:shoot_mobile/features/quick_match/presentation/pages/details_page.dart';
 
+import '../../../../helpers/api_examples.dart';
 import '../../../../helpers/quick_match_fixtures.dart';
 import '../../../../helpers/quick_match_harness.dart';
 import '../../../../helpers/sign_in_harness.dart';
@@ -53,6 +55,33 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Said yes'), findsOneWidget);
     });
+  });
+
+  group('OF-US4 step 2 in offers mode', () {
+    testWidgets(
+      'OF-US4-S10 creators who have not answered are not listed, even when the server sends them',
+      (tester) async {
+        final raw = loadExample('match-offers-waiting');
+        final name =
+            ((((raw['sections']! as List).first as Map)['waiting']! as List)
+                        .first
+                    as Map)['name']!
+                as String;
+        when(
+          () => repository.getMatch(
+            any(),
+            any(),
+            date: any(named: 'date'),
+            duration: any(named: 'duration'),
+          ),
+        ).thenAnswer((_) async => Ok(MatchPageModel.fromJson(raw).toEntity()));
+        await pumpQuickMatch(tester, repository: repository, location: match);
+        await tester.pump(const Duration(milliseconds: 500));
+        expect(find.textContaining('Waiting to hear from'), findsNothing);
+        expect(find.text('Asked'), findsNothing);
+        expect(find.text(name), findsNothing);
+      },
+    );
   });
 
   group('MQ-US1 screen 07', () {
